@@ -29,7 +29,7 @@ The full product strategy (market research, architecture options, security, KPIs
 | Tokens: Figma variables to CSS, light/dark and brand modes | Done | `storybook/src/tokens/tokens.css` |
 | Generated components: 3 with behaviour templates, 18 generic; stories, MDX docs, 42 icons | Done; 78/79 story tests pass (1 real design contrast issue) | `storybook/src/components` |
 | Discovery, `init`, installable CLI, Claude Skill, GitHub workflow, Figma plugin | Done (Phases A and B) | `engine/`, `skills/`, `plugin/` |
-| Engine tests | 23/23 pass | `engine/test` |
+| Engine tests | 26/26 pass | `engine/test` |
 
 **Figma file:** "Design system AI" (`I983NcgqSiY14YkpJbwjG8`). The variables come from `engine/inputs/figma-variables.json`, because the Variables REST API is Enterprise-only.
 
@@ -72,7 +72,7 @@ Each phase ends with something usable. The team is assumed to be 1 frontend engi
 - [x] `ds-sync init`: Figma link, token check, variables check, stack detection, config, `.gitignore` entries.
 - [x] Installable package (`npm pack` / `npm link`, compiled to JavaScript). Tested from a clean folder: init, then generate, then `npm install`, then 78 of 79 tests pass. **Not yet published to npm.**
 - [x] **Claude Skill** `skills/figma-to-storybook`: runs the CLI, asks the review questions, records the answers as overrides, and explains failures and gaps.
-- [x] GitHub Action template (`ds-sync init --ci`): regenerates weekly or on demand, runs the tests, opens a pull request. The same steps were dry-run locally from fresh GitHub clones: identical output, typecheck passes, 78/79 tests. It is installed in this repo as `.github/workflows/ds-sync.yml`. **Not yet run on GitHub** (needs the `FIGMA_TOKEN` secret).
+- [x] GitHub Action template (`ds-sync init --ci`): regenerates weekly or on demand, runs the tests, opens a pull request. The same steps were dry-run locally from fresh GitHub clones: identical output, typecheck passes, 78/79 tests. It is installed in this repo as `.github/workflows/ds-sync.yml` and **ran successfully on GitHub** (run 43244288117): generate, then test, with no pull request because Figma had not changed. The first runs surfaced, and drove fixes for, a missing secret check, lockfile noise and transient Figma 500 errors.
 - [x] Figma plugin `plugin/` that exports variables for non-Enterprise plans. Its export logic was run against the real file through the Figma Plugin API: it matches the existing export and finds 12 more collections. **The Download/Copy UI has not been clicked in Figma.**
 - [x] `overrides.knownIssues`: accept a design issue (its axe check becomes a warning) with a recorded reason.
 - **Done when:** a new user goes from a Figma link to a running Storybook with no help from us.
