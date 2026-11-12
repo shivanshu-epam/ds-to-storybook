@@ -94,6 +94,23 @@ export function loadTokens(json: { variables?: Record<string, unknown[]> }): Tok
       if (isModed(row.value) && !modes[collection]) modes[collection] = Object.keys(row.value);
     }
   }
+  // Two variables with one CSS name would overwrite (or reference) each other in tokens.css.
+  // The semantic layer keeps the public name, then primitives; the others get a collection prefix.
+  const rank = (c: string) => (/^semantic\b/i.test(c) ? 0 : /^primitives?\b/i.test(c) ? 1 : 2);
+  const groups = new Map<string, TokenRow[]>();
+  for (const row of rows) groups.set(row.cssVar, [...(groups.get(row.cssVar) ?? []), row]);
+  const taken = new Set(groups.keys());
+  for (const group of groups.values()) {
+    if (group.length < 2) continue;
+    const owner = [...group].sort((a, b) => rank(a.collection) - rank(b.collection))[0]!;
+    for (const row of group) {
+      if (row === owner) continue;
+      let name = `--${row.collection.replace(/[^A-Za-z0-9]+/g, '-')}-${row.name.replace(/[^A-Za-z0-9]+/g, '-')}`;
+      for (let i = 2; taken.has(name); i++) name = `${name}-${i}`;
+      taken.add(name);
+      row.cssVar = name;
+    }
+  }
   return { rows, byKey: new Map(rows.map((r) => [`${r.collection}:${r.name}`, r])), modes };
 }
 

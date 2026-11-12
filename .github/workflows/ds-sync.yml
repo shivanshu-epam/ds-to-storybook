@@ -1,0 +1,55 @@
+# ds-sync: regenerate the Storybook from Figma and open a pull request with the changes.
+# Needs a repository secret FIGMA_TOKEN (Figma personal access token, scope file_content:read).
+name: ds-sync
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Until ds-sync is published to npm, build it from its repository.
+      - name: Install ds-sync
+        run: |
+          git clone --depth 1 https://github.com/shivanshu-epam/ds-to-storybook.git "$RUNNER_TEMP/ds-sync"
+          cd "$RUNNER_TEMP/ds-sync/engine" && npm ci && npm run build
+
+      - name: Generate Storybook from Figma
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+        run: node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" generate
+
+      - name: Test the generated Storybook
+        id: test
+        continue-on-error: true
+        run: |
+          OUT=$(node -p "require('./ds-sync.config.json').generate.outDir")
+          cd "$OUT"
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          npm run typecheck
+          npm test
+
+      - name: Open a pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: ds-sync/figma-update
+          commit-message: 'ds-sync: update Storybook from Figma'
+          title: 'ds-sync: update Storybook from Figma'
+          body: |
+            Regenerated from Figma by ds-sync.
+            Story tests: **${{ steps.test.outcome }}**. See GENERATION-REPORT.md for what changed and what Figma does not specify.
+          delete-branch: true

@@ -47,3 +47,24 @@ describe('Variables API → export format', () => {
     expect(css).toContain('[data-theme="dark"] {\n  --bg-primary: #00000080;');
   });
 });
+
+describe('token name collisions', () => {
+  it('keeps the semantic name and prefixes the other collections on a CSS name clash', () => {
+    const set = loadTokens({
+      variables: {
+        'primitives.radius': [['radius/md', 'F', 6, 'var(--radius-md)']],
+        'semantic.radius': [['radius/md', 'F', { default: '@primitives.radius:radius/md', rounded: 8 }, 'var(--radius-md)']],
+        'semantic.dimension': [['stroke-width/default', 'F', 1, 'var(--stroke-width-default)']],
+        'component.input': [['stroke-width/default', 'F', 2, 'var(--stroke-width-default)'], ['color/default', 'C', '#111111', '']],
+        'component.divider': [['color/default', 'C', '#222222', '']],
+      },
+    });
+    expect(set.rows.map((r) => r.cssVar)).toEqual(['--primitives-radius-radius-md', '--radius-md', '--stroke-width-default', '--component-input-stroke-width-default', '--color-default', '--component-divider-color-default']);
+    const css = tokensCss(set, {});
+    // The semantic token keeps the public name and points at the renamed primitive (no self-reference).
+    expect(css).toContain('--radius-md: var(--primitives-radius-radius-md);');
+    expect(css).not.toMatch(/--radius-md: var\(--radius-md\)/);
+    expect(css).toContain('--stroke-width-default: 1px;');
+    expect(css).toContain('--component-input-stroke-width-default: 2px;');
+  });
+});
