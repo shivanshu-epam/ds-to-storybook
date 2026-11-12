@@ -104,6 +104,7 @@ Decision: support every stack through **layers**, as multi-framework design syst
 - [ ] Figma webhook (library publish) or polling, then re-extract only what changed.
 - [ ] Three-way diff (last accepted spec, new Figma, current code), then the smallest change set.
 - [x] **Proven end to end (2026-11-12):** a one-variant colour and radius edit in Figma became [pull request #1](https://github.com/shivanshu-epam/ds-to-storybook/pull/1) through the GitHub workflow: 4 files, including a 5-line CSS override for exactly that variant.
+- [x] No pull request for a new Figma version with no design change: the workflow ignores lines that only record the version, then skips the tests and the pull request.
 - [ ] Open a pull request per change type (tokens / styles / API / stories) with before/after images.
 - [ ] Update existing repos (Scenario 1), not just new ones.
 

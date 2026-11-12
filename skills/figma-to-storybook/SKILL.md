@@ -77,7 +77,7 @@ Summarise `GENERATION-REPORT.md`: what came from Figma, what came from archetype
 ## 5. Keep it in sync
 
 - After a Figma change, run `ds-sync generate` again and review the diff before committing.
-- To automate it, run `ds-sync init --ci` (or answer yes during init). That adds `.github/workflows/ds-sync.yml`, which regenerates weekly or on demand and opens a pull request. The repository needs a `FIGMA_TOKEN` secret.
+- To automate it, run `ds-sync init --ci` (or answer yes during init). That adds `.github/workflows/ds-sync.yml`, which regenerates weekly or on demand and opens a pull request only when the design changed (a new Figma version with no design change is skipped). The repository needs a `FIGMA_TOKEN` secret.
 
 ## Rules
 

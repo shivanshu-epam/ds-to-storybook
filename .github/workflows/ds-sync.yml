@@ -51,8 +51,24 @@ jobs:
         id: out
         run: node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" outputs >> "$GITHUB_OUTPUT"
 
+      - name: Check for design changes
+        id: changes
+        run: |
+          dirs="${{ steps.out.outputs.dirs }}"
+          git add -A -- $dirs
+          # Lines that only record the Figma version do not count: a new Figma version with no design change needs no pull request.
+          if git diff --cached --quiet -I 'version [0-9]+' -- $dirs; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=ds-sync::No design changes in Figma since the last generation (only the version number moved), so no pull request."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff --cached --stat -- $dirs
+          fi
+          git reset -q
+
       - name: Test the generated Storybooks
         id: test
+        if: steps.changes.outputs.changed == 'true'
         continue-on-error: true
         run: |
           npx playwright install --with-deps chromium
@@ -70,6 +86,7 @@ jobs:
           exit $status
 
       - name: Open a pull request
+        if: steps.changes.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           branch: ds-sync/figma-update
