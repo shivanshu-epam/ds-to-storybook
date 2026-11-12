@@ -1,0 +1,11 @@
+# Secrets and local caches
+.env
+**/.env
+engine/.cache/
+engine/out/
+.claude/
+.DS_Store
+
+# Dependencies and builds
+node_modules/
+storybook/storybook-static/

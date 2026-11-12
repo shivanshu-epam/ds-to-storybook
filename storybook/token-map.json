@@ -1,0 +1,986 @@
+{
+  "note": "How each Figma value became CSS. \"bound\": bound to a variable in Figma and matched to a token by value (the Variables REST API is Enterprise-only, so variable ids cannot be read directly). \"raw-in-figma\": not bound in Figma, kept as a raw value. \"no-matching-token\": bound in Figma, but no token has that value.",
+  "counts": {
+    "bound": 62,
+    "rawInFigma": 5,
+    "noMatchingToken": 0
+  },
+  "decisions": [
+    {
+      "value": "#4f46e5",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "primary",
+        "sm",
+        "default",
+        "default"
+      ],
+      "variableId": "VariableID:11:51",
+      "token": "--interactive-bg-primary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "6px",
+      "hint": [
+        "radius",
+        "interactive",
+        "primary",
+        "sm",
+        "default",
+        "default"
+      ],
+      "variableId": null,
+      "reason": "raw-in-figma"
+    },
+    {
+      "value": "12px",
+      "hint": [
+        "inline",
+        "inset",
+        "space",
+        "primary",
+        "sm",
+        "default",
+        "default"
+      ],
+      "variableId": "VariableID:14:5",
+      "token": "--space-inline-md",
+      "reason": "bound"
+    },
+    {
+      "value": "8px",
+      "hint": [
+        "inline",
+        "gap",
+        "space",
+        "primary",
+        "sm",
+        "default",
+        "default"
+      ],
+      "variableId": "VariableID:14:4",
+      "token": "--space-inline-sm",
+      "reason": "bound"
+    },
+    {
+      "value": "#4338ca",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "primary",
+        "sm",
+        "hover",
+        "default"
+      ],
+      "variableId": "VariableID:11:52",
+      "token": "--interactive-bg-primary-hover",
+      "reason": "bound"
+    },
+    {
+      "value": "#3730a3",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "primary",
+        "sm",
+        "pressed",
+        "default"
+      ],
+      "variableId": "VariableID:11:53",
+      "token": "--interactive-bg-primary-pressed",
+      "reason": "bound"
+    },
+    {
+      "value": "#4f46e5",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "primary",
+        "sm",
+        "focus",
+        "focused",
+        "default"
+      ],
+      "variableId": "VariableID:11:54",
+      "token": "--interactive-bg-primary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#4f46e5",
+      "hint": [
+        "border",
+        "focus",
+        "interactive",
+        "primary",
+        "sm",
+        "focus",
+        "focused",
+        "default"
+      ],
+      "variableId": "VariableID:11:35",
+      "token": "--border-interactive-focus",
+      "reason": "bound"
+    },
+    {
+      "value": "#e5e7eb",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "primary",
+        "sm",
+        "disabled",
+        "default"
+      ],
+      "variableId": "VariableID:11:55",
+      "token": "--interactive-bg-primary-disabled",
+      "reason": "bound"
+    },
+    {
+      "value": "16px",
+      "hint": [
+        "inline",
+        "inset",
+        "space",
+        "primary",
+        "md",
+        "default",
+        "default"
+      ],
+      "variableId": "VariableID:14:6",
+      "token": "--space-inline-lg",
+      "reason": "bound"
+    },
+    {
+      "value": "24px",
+      "hint": [
+        "inline",
+        "inset",
+        "space",
+        "primary",
+        "lg",
+        "default",
+        "default"
+      ],
+      "variableId": "VariableID:14:7",
+      "token": "--space-inline-xl",
+      "reason": "bound"
+    },
+    {
+      "value": "#f3f4f6",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "secondary",
+        "sm",
+        "default",
+        "default"
+      ],
+      "variableId": "VariableID:11:56",
+      "token": "--interactive-bg-secondary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#6b7280",
+      "hint": [
+        "border",
+        "focus",
+        "interactive",
+        "secondary",
+        "sm",
+        "default",
+        "default"
+      ],
+      "variableId": "VariableID:11:33",
+      "token": "--border-interactive-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#e5e7eb",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "secondary",
+        "sm",
+        "hover",
+        "default"
+      ],
+      "variableId": "VariableID:11:57",
+      "token": "--interactive-bg-secondary-hover",
+      "reason": "bound"
+    },
+    {
+      "value": "#4b5563",
+      "hint": [
+        "border",
+        "focus",
+        "interactive",
+        "secondary",
+        "sm",
+        "hover",
+        "default"
+      ],
+      "variableId": "VariableID:11:34",
+      "token": "--border-interactive-hover",
+      "reason": "bound"
+    },
+    {
+      "value": "#d1d5db",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "secondary",
+        "sm",
+        "pressed",
+        "default"
+      ],
+      "variableId": "VariableID:11:58",
+      "token": "--interactive-bg-secondary-pressed",
+      "reason": "bound"
+    },
+    {
+      "value": "#f3f4f6",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "secondary",
+        "sm",
+        "focus",
+        "focused",
+        "default"
+      ],
+      "variableId": "VariableID:11:59",
+      "token": "--interactive-bg-secondary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#f3f4f6",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "secondary",
+        "sm",
+        "disabled",
+        "default"
+      ],
+      "variableId": "VariableID:11:60",
+      "token": "--interactive-bg-secondary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#e5e7eb",
+      "hint": [
+        "border",
+        "focus",
+        "interactive",
+        "secondary",
+        "sm",
+        "disabled",
+        "default"
+      ],
+      "variableId": "VariableID:11:37",
+      "token": "--border-interactive-disabled",
+      "reason": "bound"
+    },
+    {
+      "value": "#00000000",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "ghost",
+        "sm",
+        "default",
+        "default"
+      ],
+      "variableId": "VariableID:101:12",
+      "token": "--interactive-bg-ghost-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#f3f4f6",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "ghost",
+        "sm",
+        "hover",
+        "default"
+      ],
+      "variableId": "VariableID:101:13",
+      "token": "--interactive-bg-ghost-hover",
+      "reason": "bound"
+    },
+    {
+      "value": "#e5e7eb",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "ghost",
+        "sm",
+        "pressed",
+        "default"
+      ],
+      "variableId": "VariableID:101:14",
+      "token": "--interactive-bg-ghost-pressed",
+      "reason": "bound"
+    },
+    {
+      "value": "#00000000",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "ghost",
+        "sm",
+        "focus",
+        "focused",
+        "default"
+      ],
+      "variableId": "VariableID:101:15",
+      "token": "--interactive-bg-ghost-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#00000000",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "ghost",
+        "sm",
+        "disabled",
+        "default"
+      ],
+      "variableId": "VariableID:101:16",
+      "token": "--interactive-bg-ghost-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#c81e1e",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "danger",
+        "sm",
+        "default",
+        "default"
+      ],
+      "variableId": "VariableID:101:2",
+      "token": "--interactive-bg-danger-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#b91c1c",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "danger",
+        "sm",
+        "hover",
+        "default"
+      ],
+      "variableId": "VariableID:101:3",
+      "token": "--interactive-bg-danger-hover",
+      "reason": "bound"
+    },
+    {
+      "value": "#991b1b",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "danger",
+        "sm",
+        "pressed",
+        "default"
+      ],
+      "variableId": "VariableID:101:4",
+      "token": "--interactive-bg-danger-pressed",
+      "reason": "bound"
+    },
+    {
+      "value": "#c81e1e",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "danger",
+        "sm",
+        "focus",
+        "focused",
+        "default"
+      ],
+      "variableId": "VariableID:101:5",
+      "token": "--interactive-bg-danger-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#f3f4f6",
+      "hint": [
+        "bg",
+        "surface",
+        "interactive",
+        "danger",
+        "sm",
+        "disabled",
+        "default"
+      ],
+      "variableId": "VariableID:101:6",
+      "token": "--interactive-bg-danger-disabled",
+      "reason": "bound"
+    },
+    {
+      "value": "9999px",
+      "hint": [
+        "radius",
+        "interactive",
+        "primary",
+        "sm",
+        "default",
+        "rounded"
+      ],
+      "variableId": null,
+      "reason": "raw-in-figma"
+    },
+    {
+      "value": "#ffffff",
+      "hint": [
+        "fg",
+        "text",
+        "primary",
+        "sm",
+        "default",
+        "default"
+      ],
+      "variableId": "VariableID:11:61",
+      "token": "--interactive-fg-primary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#ffffff",
+      "hint": [
+        "fg",
+        "text",
+        "primary",
+        "sm",
+        "hover",
+        "default"
+      ],
+      "variableId": "VariableID:11:62",
+      "token": "--interactive-fg-primary-hover",
+      "reason": "bound"
+    },
+    {
+      "value": "#ffffff",
+      "hint": [
+        "fg",
+        "text",
+        "primary",
+        "sm",
+        "pressed",
+        "default"
+      ],
+      "variableId": "VariableID:11:63",
+      "token": "--interactive-fg-primary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#ffffff",
+      "hint": [
+        "fg",
+        "text",
+        "primary",
+        "sm",
+        "focus",
+        "focused",
+        "default"
+      ],
+      "variableId": "VariableID:11:64",
+      "token": "--interactive-fg-primary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#6b7280",
+      "hint": [
+        "fg",
+        "text",
+        "primary",
+        "sm",
+        "disabled",
+        "default"
+      ],
+      "variableId": "VariableID:11:65",
+      "token": "--interactive-fg-primary-disabled",
+      "reason": "bound"
+    },
+    {
+      "value": "#111827",
+      "hint": [
+        "fg",
+        "text",
+        "secondary",
+        "sm",
+        "default",
+        "default"
+      ],
+      "variableId": "VariableID:11:66",
+      "token": "--interactive-fg-secondary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#111827",
+      "hint": [
+        "fg",
+        "text",
+        "secondary",
+        "sm",
+        "hover",
+        "default"
+      ],
+      "variableId": "VariableID:11:67",
+      "token": "--interactive-fg-secondary-hover",
+      "reason": "bound"
+    },
+    {
+      "value": "#111827",
+      "hint": [
+        "fg",
+        "text",
+        "secondary",
+        "sm",
+        "pressed",
+        "default"
+      ],
+      "variableId": "VariableID:11:68",
+      "token": "--interactive-fg-secondary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#111827",
+      "hint": [
+        "fg",
+        "text",
+        "secondary",
+        "sm",
+        "focus",
+        "focused",
+        "default"
+      ],
+      "variableId": "VariableID:11:69",
+      "token": "--interactive-fg-secondary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#6b7280",
+      "hint": [
+        "fg",
+        "text",
+        "secondary",
+        "sm",
+        "disabled",
+        "default"
+      ],
+      "variableId": "VariableID:11:70",
+      "token": "--interactive-fg-secondary-disabled",
+      "reason": "bound"
+    },
+    {
+      "value": "#4f46e5",
+      "hint": [
+        "fg",
+        "text",
+        "ghost",
+        "sm",
+        "default",
+        "default"
+      ],
+      "variableId": "VariableID:101:17",
+      "token": "--interactive-fg-ghost-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#4338ca",
+      "hint": [
+        "fg",
+        "text",
+        "ghost",
+        "sm",
+        "hover",
+        "default"
+      ],
+      "variableId": "VariableID:101:18",
+      "token": "--interactive-fg-ghost-hover",
+      "reason": "bound"
+    },
+    {
+      "value": "#3730a3",
+      "hint": [
+        "fg",
+        "text",
+        "ghost",
+        "sm",
+        "pressed",
+        "default"
+      ],
+      "variableId": "VariableID:101:19",
+      "token": "--interactive-fg-ghost-pressed",
+      "reason": "bound"
+    },
+    {
+      "value": "#4f46e5",
+      "hint": [
+        "fg",
+        "text",
+        "ghost",
+        "sm",
+        "focus",
+        "focused",
+        "default"
+      ],
+      "variableId": "VariableID:101:20",
+      "token": "--interactive-fg-ghost-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#9ca3af",
+      "hint": [
+        "fg",
+        "text",
+        "ghost",
+        "sm",
+        "disabled",
+        "default"
+      ],
+      "variableId": "VariableID:101:21",
+      "token": "--interactive-fg-ghost-disabled",
+      "reason": "bound"
+    },
+    {
+      "value": "#ffffff",
+      "hint": [
+        "fg",
+        "text",
+        "danger",
+        "sm",
+        "default",
+        "default"
+      ],
+      "variableId": "VariableID:101:7",
+      "token": "--interactive-fg-danger-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#ffffff",
+      "hint": [
+        "fg",
+        "text",
+        "danger",
+        "sm",
+        "hover",
+        "default"
+      ],
+      "variableId": "VariableID:101:8",
+      "token": "--interactive-fg-danger-hover",
+      "reason": "bound"
+    },
+    {
+      "value": "#ffffff",
+      "hint": [
+        "fg",
+        "text",
+        "danger",
+        "sm",
+        "pressed",
+        "default"
+      ],
+      "variableId": "VariableID:101:9",
+      "token": "--interactive-fg-danger-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#ffffff",
+      "hint": [
+        "fg",
+        "text",
+        "danger",
+        "sm",
+        "focus",
+        "focused",
+        "default"
+      ],
+      "variableId": "VariableID:101:10",
+      "token": "--interactive-fg-danger-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#9ca3af",
+      "hint": [
+        "fg",
+        "text",
+        "danger",
+        "sm",
+        "disabled",
+        "default"
+      ],
+      "variableId": "VariableID:101:11",
+      "token": "--interactive-fg-danger-disabled",
+      "reason": "bound"
+    },
+    {
+      "value": "#f9fafb",
+      "hint": [
+        "bg",
+        "surface",
+        "control",
+        "interactive",
+        "sm",
+        "unchecked",
+        "unselected",
+        "default",
+        "enabled"
+      ],
+      "variableId": "VariableID:11:3",
+      "token": "--surface-bg-default",
+      "reason": "bound"
+    },
+    {
+      "value": "4px",
+      "hint": [
+        "radius",
+        "control",
+        "interactive",
+        "sm",
+        "unchecked",
+        "unselected",
+        "default",
+        "enabled"
+      ],
+      "variableId": null,
+      "reason": "raw-in-figma"
+    },
+    {
+      "value": "#f3f4f6",
+      "hint": [
+        "bg",
+        "surface",
+        "control",
+        "interactive",
+        "sm",
+        "unchecked",
+        "unselected",
+        "disabled"
+      ],
+      "variableId": "VariableID:11:4",
+      "token": "--surface-bg-subtle",
+      "reason": "bound"
+    },
+    {
+      "value": "#c81e1e",
+      "hint": [
+        "border",
+        "focus",
+        "control",
+        "interactive",
+        "sm",
+        "error",
+        "unchecked",
+        "unselected",
+        "default",
+        "enabled"
+      ],
+      "variableId": "VariableID:11:36",
+      "token": "--border-interactive-error",
+      "reason": "bound"
+    },
+    {
+      "value": "#ffffff",
+      "hint": [
+        "icon",
+        "fg",
+        "sm",
+        "checked",
+        "selected",
+        "default",
+        "enabled"
+      ],
+      "variableId": "VariableID:11:19",
+      "token": "--icon-on-brand",
+      "reason": "bound"
+    },
+    {
+      "value": "#6b7280",
+      "hint": [
+        "icon",
+        "fg",
+        "sm",
+        "checked",
+        "selected",
+        "disabled"
+      ],
+      "variableId": "VariableID:11:40",
+      "token": "--icon-subtle",
+      "reason": "bound"
+    },
+    {
+      "value": "8px",
+      "hint": [
+        "stack",
+        "gap",
+        "space",
+        "unchecked",
+        "unselected",
+        "default",
+        "enabled"
+      ],
+      "variableId": null,
+      "reason": "raw-in-figma"
+    },
+    {
+      "value": "#111827",
+      "hint": [
+        "fg",
+        "text",
+        "unchecked",
+        "unselected",
+        "default",
+        "enabled"
+      ],
+      "variableId": "VariableID:11:14",
+      "token": "--interactive-fg-secondary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#6b7280",
+      "hint": [
+        "fg",
+        "text",
+        "unchecked",
+        "unselected",
+        "disabled"
+      ],
+      "variableId": "VariableID:11:17",
+      "token": "--interactive-fg-primary-disabled",
+      "reason": "bound"
+    },
+    {
+      "value": "#4b5563",
+      "hint": [
+        "fg",
+        "text",
+        "unchecked",
+        "unselected",
+        "default",
+        "enabled"
+      ],
+      "variableId": "VariableID:11:15",
+      "token": "--interactive-fg-readonly",
+      "reason": "bound"
+    },
+    {
+      "value": "#c81e1e",
+      "hint": [
+        "icon",
+        "fg",
+        "unchecked",
+        "unselected",
+        "error",
+        "invalid"
+      ],
+      "variableId": "VariableID:11:24",
+      "token": "--icon-danger",
+      "reason": "bound"
+    },
+    {
+      "value": "#b45309",
+      "hint": [
+        "icon",
+        "fg",
+        "unchecked",
+        "unselected",
+        "warning"
+      ],
+      "variableId": "VariableID:11:23",
+      "token": "--text-warning",
+      "reason": "bound"
+    },
+    {
+      "value": "24px",
+      "hint": [
+        "inline",
+        "gap",
+        "space",
+        "default",
+        "enabled",
+        "horizontal"
+      ],
+      "variableId": null,
+      "reason": "raw-in-figma"
+    },
+    {
+      "value": "#4b5563",
+      "hint": [
+        "border",
+        "focus",
+        "bordered",
+        "default"
+      ],
+      "variableId": "VariableID:11:32",
+      "token": "--border-strong",
+      "reason": "bound"
+    },
+    {
+      "value": "8px",
+      "hint": [
+        "block",
+        "stack",
+        "inset",
+        "space",
+        "bordered",
+        "default"
+      ],
+      "variableId": "VariableID:14:9",
+      "token": "--space-stack-xs",
+      "reason": "bound"
+    },
+    {
+      "value": "12px",
+      "hint": [
+        "inline",
+        "inset",
+        "space",
+        "bordered",
+        "default"
+      ],
+      "variableId": "VariableID:14:10",
+      "token": "--space-inline-md",
+      "reason": "bound"
+    },
+    {
+      "value": "#4b5563",
+      "hint": [
+        "icon",
+        "fg",
+        "bordered",
+        "default"
+      ],
+      "variableId": "VariableID:11:39",
+      "token": "--icon-default",
+      "reason": "bound"
+    }
+  ]
+}

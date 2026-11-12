@@ -1,0 +1,24 @@
+{
+  "name": "ds-sync-engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "POC: Figma design system -> IR -> component specs -> drift and health report.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "ds-sync": "tsx src/cli.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "typescript": "5.9.3",
+    "yaml": "2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "tsx": "4.20.6",
+    "vitest": "3.2.4"
+  }
+}

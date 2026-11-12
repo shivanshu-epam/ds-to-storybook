@@ -1,0 +1,9 @@
+# Checkbox, switch, radio. Behaviour source: WAI-ARIA APG checkbox / switch / radio group.
+id: selection.binary
+pattern: wai-aria/checkbox
+role: checkbox
+requiredStates: [default, hover, focus, disabled, checked, error]
+keyboard:
+  - { key: Space, action: toggle }
+  - { key: Tab, action: move focus to next control }
+requiredDocs: [usage, accessibility]

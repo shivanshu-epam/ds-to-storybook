@@ -1,0 +1,626 @@
+{
+  "component": "Checkbox",
+  "description": "A checkbox is a square control that users select or clear — used on its own, as a labeled field, or as a titled group of fields.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "CheckboxControl",
+        "nodeId": "178:1224"
+      },
+      {
+        "name": "CheckboxField",
+        "nodeId": "190:1205"
+      },
+      {
+        "name": "CheckboxGroup",
+        "nodeId": "192:1420"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "size",
+      "figma": "CheckboxControl Size"
+    },
+    {
+      "prop": "checked / defaultChecked",
+      "figma": "Type=Selected",
+      "note": "Native input attributes."
+    },
+    {
+      "prop": "indeterminate",
+      "figma": "Type=Indeterminate"
+    },
+    {
+      "prop": "error",
+      "figma": "State=Invalid",
+      "note": "Takes the message text."
+    },
+    {
+      "prop": "invalid",
+      "figma": "Type=Error-*",
+      "note": "Invalid styling without a message."
+    },
+    {
+      "prop": "warning",
+      "figma": "State=Warning"
+    },
+    {
+      "prop": "readOnly",
+      "figma": "State=Read-Only"
+    },
+    {
+      "prop": "disabled",
+      "figma": "State=Disabled"
+    },
+    {
+      "prop": "label",
+      "figma": "CheckboxField Value"
+    },
+    {
+      "prop": "heading",
+      "figma": "CheckboxField Label (Has label)"
+    },
+    {
+      "prop": "description",
+      "figma": "CheckboxField Has description"
+    },
+    {
+      "prop": "helperText",
+      "figma": "CheckboxField Has helper"
+    },
+    {
+      "prop": "CheckboxGroup legend",
+      "figma": "CheckboxGroup group label"
+    },
+    {
+      "prop": "CheckboxGroup orientation",
+      "figma": "CheckboxGroup Orientation"
+    }
+  ],
+  "tabs": [
+    {
+      "title": "Usage",
+      "nodeId": "1328:1001",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A checkbox is a square control that users select or clear — used on its own, as a labeled field, or as a titled group of fields."
+          ]
+        },
+        {
+          "heading": "Overview",
+          "level": 3,
+          "paragraphs": [
+            "Checkbox is built as three layered components, from atom to organism. Use the one that matches what you need: the bare control, a control with its label and messages, or a titled group of fields."
+          ]
+        },
+        {
+          "heading": "Components",
+          "level": 4,
+          "paragraphs": [
+            "CheckboxControl",
+            "CheckboxField",
+            "The box alone — border, fill, focus ring and check or dash icon. No label.",
+            "Label, control, value text, and optional description, helper and error or warning messages.",
+            "CheckboxGroup",
+            "A group label with three CheckboxFields, vertical or horizontal."
+          ]
+        },
+        {
+          "heading": "Selection types",
+          "level": 4,
+          "paragraphs": [
+            "Unselected",
+            "Selected",
+            "Indeterminate",
+            "Not chosen.",
+            "Chosen — shows a check.",
+            "Mixed — shows a dash; exposed as aria-checked=\"mixed\"."
+          ]
+        },
+        {
+          "heading": "Formatting",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Anatomy",
+          "level": 4,
+          "paragraphs": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "•   ① Label — the field label (Has label).",
+            "•   ② Description (optional) — text below the label (Has description).",
+            "•   ③ Control — a CheckboxControl instance: box, border, focus ring, check or dash icon.",
+            "•   ④ Value — the checkbox's own text, describing what checking it means (Value).",
+            "•   ⑤ Error or warning message — icon and text, shown in the Invalid and Warning states.",
+            "•   ⑥ Helper text (optional) — supporting text below the field (Has helper)."
+          ]
+        },
+        {
+          "heading": "Sizes",
+          "level": 4,
+          "paragraphs": [
+            "Small · 16px",
+            "Medium · 20px",
+            "Large · 24px",
+            "Sizes apply to CheckboxControl. Shown at 2× for legibility."
+          ]
+        },
+        {
+          "heading": "Alignment",
+          "level": 4,
+          "paragraphs": [
+            "Horizontal",
+            "Fields sit side by side in one row.",
+            "Vertical (default)",
+            "Fields stack under the group label."
+          ]
+        },
+        {
+          "heading": "Content",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Main elements",
+          "level": 4,
+          "paragraphs": [
+            "Label",
+            "•   The field or group title, set with the Label text property.",
+            "Value",
+            "•   The checkbox's own text, set with the Value text property — describes what checking it means.",
+            "Description and helper text",
+            "•   Optional supporting text — description sits under the label, helper text under the field.",
+            "Error and warning messages",
+            "•   Shown as text with a status icon in the Invalid and Warning states, so validation never relies on color alone."
+          ]
+        },
+        {
+          "heading": "Overflow content",
+          "level": 4,
+          "paragraphs": [
+            "Label and value text wrap. The skill defines a truncate-text option (ellipsis instead of wrapping); it isn't exposed as a Figma property yet."
+          ]
+        },
+        {
+          "heading": "Behaviors",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "States",
+          "level": 4,
+          "paragraphs": [
+            "Each field has a selection type — Unselected, Selected or Indeterminate — and a field state. Field states map to the control's type and state; for example, Invalid switches the control to its Error type.",
+            "•   Enabled — resting.",
+            "•   Focus — keyboard focus; the control shows a 3px focus ring (border/interactive/focus).",
+            "•   Invalid — error border and an error message.",
+            "•   Warning — a warning message.",
+            "•   Read-only — value text is dimmed and the value can't be changed.",
+            "•   Disabled — label, value and box are dimmed; the field is non-interactive.",
+            "•   Skeleton — placeholder shapes while content loads.",
+            "CheckboxControl adds Hovered and Pressed pointer states. See the Style tab for how each state looks."
+          ]
+        },
+        {
+          "heading": "Interactions",
+          "level": 4,
+          "paragraphs": [
+            "Keyboard",
+            "Key",
+            "Action",
+            "Tab",
+            "Moves focus to the next checkbox",
+            "Shift",
+            "+",
+            "Tab",
+            "Moves focus to the previous checkbox",
+            "Disabled checkboxes don't receive keyboard focus. Full keyboard details are on the Accessibility tab."
+          ]
+        },
+        {
+          "heading": "Related",
+          "level": 3,
+          "paragraphs": [
+            "Checkbox is reused inside other components in this system.",
+            "•   List item — uses CheckboxControl as its leading or trailing control for multi-select lists."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Style",
+      "nodeId": "1328:1387",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A checkbox is a square control that users select or clear — used on its own, as a labeled field, or as a titled group of fields."
+          ]
+        },
+        {
+          "heading": "Color",
+          "level": 3,
+          "paragraphs": [
+            "CheckboxControl box fill and border per type and state (Size=Md). Swatches are bound to the live tokens.",
+            "Type · State",
+            "Box fill",
+            "Border",
+            "Unselected · Enabled",
+            "surface/bg/default",
+            "border/interactive/default",
+            "Unselected · Hovered",
+            "surface/bg/default",
+            "border/interactive/hover",
+            "Unselected · Pressed",
+            "surface/bg/default",
+            "border/interactive/hover",
+            "Unselected · Focused",
+            "surface/bg/default",
+            "border/interactive/focus",
+            "Unselected · Disabled",
+            "surface/bg/subtle",
+            "border/interactive/disabled",
+            "Selected · Enabled",
+            "interactive/bg/primary/default",
+            "interactive/bg/primary/default",
+            "Selected · Hovered",
+            "interactive/bg/primary/hover",
+            "interactive/bg/primary/hover",
+            "Selected · Pressed",
+            "interactive/bg/primary/pressed",
+            "interactive/bg/primary/pressed",
+            "Selected · Focused",
+            "interactive/bg/primary/default",
+            "interactive/bg/primary/default",
+            "Selected · Disabled",
+            "interactive/bg/primary/disabled",
+            "interactive/bg/primary/disabled",
+            "Indeterminate · Enabled",
+            "interactive/bg/primary/default",
+            "interactive/bg/primary/default",
+            "Indeterminate · Hovered",
+            "interactive/bg/primary/hover",
+            "interactive/bg/primary/hover",
+            "Indeterminate · Pressed",
+            "interactive/bg/primary/pressed",
+            "interactive/bg/primary/pressed",
+            "Indeterminate · Focused",
+            "interactive/bg/primary/default",
+            "interactive/bg/primary/default",
+            "Indeterminate · Disabled",
+            "interactive/bg/primary/disabled",
+            "interactive/bg/primary/disabled",
+            "Error-Unselected · Enabled",
+            "surface/bg/default",
+            "border/interactive/error",
+            "Error-Unselected · Hovered",
+            "surface/bg/default",
+            "border/interactive/error",
+            "Error-Unselected · Pressed",
+            "surface/bg/default",
+            "border/interactive/error",
+            "Error-Unselected · Focused",
+            "surface/bg/default",
+            "border/interactive/error",
+            "Error-Unselected · Disabled",
+            "surface/bg/subtle",
+            "border/interactive/disabled",
+            "Error-Selected · Enabled",
+            "interactive/bg/danger/default",
+            "border/interactive/error",
+            "Error-Selected · Hovered",
+            "interactive/bg/danger/hover",
+            "border/interactive/error",
+            "Error-Selected · Pressed",
+            "interactive/bg/danger/pressed",
+            "border/interactive/error",
+            "Error-Selected · Focused",
+            "interactive/bg/danger/default",
+            "border/interactive/error",
+            "Error-Selected · Disabled",
+            "interactive/bg/danger/disabled",
+            "border/interactive/disabled",
+            "Error-Indeterminate · Enabled",
+            "interactive/bg/danger/default",
+            "border/interactive/error",
+            "Error-Indeterminate · Hovered",
+            "interactive/bg/danger/hover",
+            "border/interactive/error",
+            "Error-Indeterminate · Pressed",
+            "interactive/bg/danger/pressed",
+            "border/interactive/error",
+            "Error-Indeterminate · Focused",
+            "interactive/bg/danger/default",
+            "border/interactive/error",
+            "Error-Indeterminate · Disabled",
+            "interactive/bg/danger/disabled",
+            "border/interactive/disabled",
+            "Focused adds a 3px ring bound to border/interactive/focus on every type."
+          ]
+        },
+        {
+          "heading": "Field text",
+          "level": 4,
+          "paragraphs": [
+            "Element",
+            "Token",
+            "Label and value",
+            "text/primary",
+            "Disabled label / value, read-only value",
+            "text/disabled",
+            "Error message",
+            "text/danger",
+            "Warning message",
+            "text/warning"
+          ]
+        },
+        {
+          "heading": "Typography",
+          "level": 3,
+          "paragraphs": [
+            "Element",
+            "Tokens",
+            "Rendered size",
+            "Label and value",
+            "text-style/body/md/*",
+            "14px",
+            "Error and warning messages",
+            "text-style/caption/md/*",
+            "12px"
+          ]
+        },
+        {
+          "heading": "Structure",
+          "level": 3,
+          "paragraphs": [
+            "Size",
+            "Box",
+            "Radius",
+            "Border width",
+            "Sm",
+            "16 × 16",
+            "radius/sm · 4",
+            "stroke-width/default",
+            "Md",
+            "20 × 20",
+            "radius/sm · 4",
+            "stroke-width/default",
+            "Lg",
+            "24 × 24",
+            "radius/sm · 4",
+            "stroke-width/default"
+          ]
+        },
+        {
+          "heading": "Variants & states",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "CheckboxControl — 90 variants",
+          "level": 4,
+          "paragraphs": [
+            "Size (3) × Type (6) × State (5). Grid shows Type × State at Size=Md.",
+            "Type \\ State",
+            "Enabled",
+            "Hovered",
+            "Pressed",
+            "Focused",
+            "Disabled",
+            "Unselected",
+            "Selected",
+            "Indeterminate",
+            "Error-Unselected",
+            "Error-Selected",
+            "Error-Indeterminate"
+          ]
+        },
+        {
+          "heading": "CheckboxField — 21 variants",
+          "level": 4,
+          "paragraphs": [
+            "Type (3) × State (7).",
+            "State \\ Type",
+            "Unselected",
+            "Selected",
+            "Indeterminate",
+            "Enabled",
+            "Focus",
+            "Invalid",
+            "Warning",
+            "Read-Only",
+            "Disabled",
+            "Skeleton"
+          ]
+        },
+        {
+          "heading": "CheckboxGroup — 8 variants",
+          "level": 4,
+          "paragraphs": [
+            "State (4) × Orientation (2).",
+            "State \\ Orientation",
+            "Vertical",
+            "Horizontal",
+            "Enabled",
+            "Invalid",
+            "Warning",
+            "Read-Only"
+          ]
+        },
+        {
+          "heading": "Focus — zoomed",
+          "level": 4,
+          "paragraphs": [
+            "Unselected · Focused",
+            "Selected · Focused",
+            "Error-Selected · Focused",
+            "3px focus ring bound to border/interactive/focus, outside the box."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Accessibility",
+      "nodeId": "1328:2585",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A checkbox is a square control that users select or clear — used on its own, as a labeled field, or as a titled group of fields."
+          ]
+        },
+        {
+          "heading": "What the design system provides",
+          "level": 3,
+          "paragraphs": [
+            "•   A Focus state with a 3px ring outside the box, on every type.",
+            "•   An Indeterminate type for mixed selection.",
+            "•   Error and warning messages as text with an icon, not color alone.",
+            "•   Disabled and Read-only states for the field."
+          ]
+        },
+        {
+          "heading": "Development considerations",
+          "level": 3,
+          "paragraphs": [
+            "•   Use role=\"checkbox\" (or a native checkbox) with aria-checked — \"mixed\" for Indeterminate.",
+            "•   Group related checkboxes with role=\"group\", labelled by the group label.",
+            "•   Set aria-invalid on fields in the Invalid state and associate the error message with the control.",
+            "•   Disabled checkboxes must not receive keyboard focus.",
+            "•   Make the value text part of the clickable area — the box alone is 16–24px."
+          ]
+        },
+        {
+          "heading": "Keyboard interactions",
+          "level": 3,
+          "paragraphs": [
+            "Key",
+            "Action",
+            "Tab",
+            "Moves focus to the next checkbox",
+            "Shift",
+            "+",
+            "Tab",
+            "Moves focus to the previous checkbox"
+          ]
+        },
+        {
+          "heading": "Design recommendations",
+          "level": 3,
+          "paragraphs": [
+            "Automated contrast check — WCAG 2.x relative luminance (sRGB), against the page surface (surface/bg/default) or the box fill, for every theme combination. Minimums: 3:1 for the box, border and focus ring (non-text UI), 4.5:1 for text, 3:1 for disabled text (house rule TKN-005). Note: project-a / light is measured against the current surface/bg/default, which resolves to blue because of the gray/50 token."
+          ]
+        },
+        {
+          "heading": "Control (Size=Md)",
+          "level": 4,
+          "paragraphs": [
+            "Element",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Unselected · border",
+            "1.08:1",
+            "4.16:1",
+            "4.63:1",
+            "4.16:1",
+            "Unselected · Hovered border",
+            "1.69:1",
+            "7.93:1",
+            "7.23:1",
+            "7.93:1",
+            "Selected / Indeterminate · fill",
+            "1.41:1",
+            "3.20:1",
+            "3.14:1",
+            "6.14:1",
+            "Selected · Hovered fill",
+            "1.77:1",
+            "2.55:1",
+            "4.84:1",
+            "3.98:1",
+            "Selected · Pressed fill",
+            "2.23:1",
+            "2.03:1",
+            "7.50:1",
+            "2.57:1",
+            "Error-Unselected · border",
+            "1.29:1",
+            "7.28:1",
+            "5.49:1",
+            "7.28:1",
+            "Error-Selected · fill",
+            "1.29:1",
+            "3.51:1",
+            "5.49:1",
+            "3.51:1",
+            "Focus ring",
+            "1.41:1",
+            "6.75:1",
+            "3.14:1",
+            "9.07:1",
+            "Disabled, unselected · border",
+            "3.60:1",
+            "1.37:1",
+            "1.18:1",
+            "1.37:1",
+            "Disabled, selected · fill",
+            "3.60:1",
+            "1.95:1",
+            "1.18:1",
+            "1.95:1"
+          ]
+        },
+        {
+          "heading": "Field text",
+          "level": 4,
+          "paragraphs": [
+            "Element",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Label / value · text/primary",
+            "3.98:1",
+            "4.51:1",
+            "16.98:1",
+            "19.27:1",
+            "Error message · text/danger",
+            "1.29:1",
+            "7.28:1",
+            "5.49:1",
+            "7.28:1",
+            "Warning message · text/warning",
+            "1.13:1",
+            "12.06:1",
+            "4.81:1",
+            "12.06:1",
+            "Disabled / read-only · text/disabled",
+            "1.08:1",
+            "4.16:1",
+            "4.63:1",
+            "4.16:1"
+          ]
+        },
+        {
+          "heading": "Target size",
+          "level": 4,
+          "paragraphs": [
+            "The box is 16, 20 or 24px. Sm is below the 24×24px AA minimum (WCAG 2.5.8), and all sizes are below the 44×44px touch target in the component rules — expand the hit area, for example by making the value text clickable."
+          ]
+        }
+      ]
+    }
+  ]
+}

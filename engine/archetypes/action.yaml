@@ -1,0 +1,9 @@
+# Buttons and button-like controls. Behaviour source: WAI-ARIA APG button pattern.
+id: action
+pattern: wai-aria/button
+role: button
+requiredStates: [default, hover, pressed, focus, disabled]
+keyboard:
+  - { key: Enter, action: activate }
+  - { key: Space, action: activate }
+requiredDocs: [usage, accessibility]

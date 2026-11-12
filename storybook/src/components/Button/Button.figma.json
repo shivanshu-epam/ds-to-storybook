@@ -1,0 +1,588 @@
+{
+  "component": "Button",
+  "description": "A button triggers an immediate action, such as submit, confirm, open or delete.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "Button",
+        "nodeId": "102:122"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "variant",
+      "figma": "Variant (variant)"
+    },
+    {
+      "prop": "size",
+      "figma": "Size (variant)"
+    },
+    {
+      "prop": "radius",
+      "figma": "Radius (variant)"
+    },
+    {
+      "prop": "leadingIcon",
+      "figma": "Has leading icon (boolean)",
+      "note": "Slot: shown when an element is passed."
+    },
+    {
+      "prop": "trailingIcon",
+      "figma": "Has trailing icon (boolean)",
+      "note": "Slot: shown when an element is passed."
+    },
+    {
+      "prop": "children",
+      "figma": "Show label (boolean) + label text"
+    },
+    {
+      "prop": "—",
+      "figma": "State=Default"
+    },
+    {
+      "prop": ":hover:not(:disabled) (CSS)",
+      "figma": "State=Hover"
+    },
+    {
+      "prop": ":active:not(:disabled) (CSS)",
+      "figma": "State=Pressed"
+    },
+    {
+      "prop": ":focus-visible (CSS)",
+      "figma": "State=Focused"
+    },
+    {
+      "prop": "disabled",
+      "figma": "State=Disabled"
+    }
+  ],
+  "tabs": [
+    {
+      "title": "Usage",
+      "nodeId": "1320:168",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A button triggers an immediate action, such as submit, confirm, open or delete."
+          ]
+        },
+        {
+          "heading": "Overview",
+          "level": 3,
+          "paragraphs": [
+            "A button triggers an immediate action in the current context — submitting a form, confirming a choice, opening something or deleting an item. Four emphasis levels (Primary, Secondary, Ghost, Danger) keep the most important action on a screen the easiest one to find.",
+            "Use buttons for actions only. If activating it takes the user to another page or location, it is navigation and must not be a button."
+          ]
+        },
+        {
+          "heading": "When to use",
+          "level": 4,
+          "paragraphs": [
+            "•   To let users submit, confirm, open or delete something immediately.",
+            "•   To mark the single most important action in a context — Primary.",
+            "•   To offer supporting actions of lower weight next to a primary one — Secondary or Ghost.",
+            "•   To trigger destructive or irreversible actions such as delete or remove — Danger."
+          ]
+        },
+        {
+          "heading": "When not to use",
+          "level": 4,
+          "paragraphs": [
+            "•   When the action navigates to another page or location — use a text link instead.",
+            "•   Don't use Danger styling for actions that aren't destructive — use Primary, Secondary or Ghost."
+          ]
+        },
+        {
+          "heading": "Formatting",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Anatomy",
+          "level": 4,
+          "paragraphs": [
+            "2",
+            "3",
+            "1",
+            "•   ① Container — the interactive wrapper; owns variant, size and state.",
+            "•   ② Icon (optional) — leading or trailing, never both. Vertically centred with the label. Decorative icons are hidden from assistive technology.",
+            "•   ③ Label — text describing the action. Required unless the button is icon-only.",
+            "Not shown: the loading indicator that replaces the leading slot while is-loading is on. It is not built yet."
+          ]
+        },
+        {
+          "heading": "Sizes",
+          "level": 4,
+          "paragraphs": [
+            "Small · 32px",
+            "Medium · 40px",
+            "Large · 48px",
+            "Dense UIs, toolbars and table rows.",
+            "The default size for most buttons.",
+            "Primary page calls to action and touch-first screens.",
+            "Every variant shares the same size scale. Each size defines its own height, horizontal padding, font size and icon size."
+          ]
+        },
+        {
+          "heading": "Alignment",
+          "level": 4,
+          "paragraphs": [
+            "Content is always centred horizontally and vertically. The icon sits on the side set by the icon property and is vertically centred with the label; the icon–label gap is the same across variants.",
+            "Leading icon",
+            "Trailing icon",
+            "Icon only",
+            "Icon before the label.",
+            "Icon after the label.",
+            "Label hidden with Show label = off. Must have an accessible label (aria-label)."
+          ]
+        },
+        {
+          "heading": "Placement",
+          "level": 4,
+          "paragraphs": [
+            "Buttons hug their content within the size's padding and are not stretched. A full-width option (container spans its parent, content stays centred) is defined in the component skill but not exposed as a Figma property yet.",
+            "Do",
+            "Don't",
+            "Use one primary action, paired with lower-emphasis actions.",
+            "Don't place two primary buttons in the same context — they read as equally important.",
+            "Do",
+            "Don't",
+            "Keep every button in a group the same size.",
+            "Don't mix sizes in one group.",
+            "Do",
+            "Don't",
+            "Use Danger only for destructive or irreversible actions.",
+            "Don't use Danger styling for a non-destructive action."
+          ]
+        },
+        {
+          "heading": "Content",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Main elements",
+          "level": 4,
+          "paragraphs": [
+            "Label",
+            "•   Use a verb that describes the action, e.g. Save, Delete, Open.",
+            "•   Required on every button unless it is icon-only.",
+            "Icon",
+            "•   Optional — leading or trailing, never both.",
+            "•   Decorative icons must be hidden from assistive technology.",
+            "•   Icon-only buttons must have an accessible label (aria-label)."
+          ]
+        },
+        {
+          "heading": "Behaviors",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "States",
+          "level": 4,
+          "paragraphs": [
+            "A button has no persistent on/off state: it runs its action and returns to rest. Every variant starts in the Default state.",
+            "•   Default — resting.",
+            "•   Hover — the pointer is over the button.",
+            "•   Pressed — during a press; gives immediate visual feedback so the press registers.",
+            "•   Focused — keyboard focus; always shows a visible focus indicator.",
+            "•   Disabled — non-interactive, with reduced emphasis.",
+            "•   Loading — action in progress. Defined in the skill but not built yet.",
+            "See the Style tab for how each state looks."
+          ]
+        },
+        {
+          "heading": "Interactions",
+          "level": 4,
+          "paragraphs": [
+            "Mouse",
+            "Clicking anywhere on the button runs its action. Disabled buttons ignore clicks. While a button is loading, repeat clicks are ignored until the action finishes.",
+            "Keyboard",
+            "Key",
+            "Action",
+            "Tab",
+            "Moves focus to the button",
+            "Enter",
+            "Activates the button",
+            "Space",
+            "Activates the button",
+            "Full keyboard details are on the Accessibility tab."
+          ]
+        },
+        {
+          "heading": "Loading",
+          "level": 4,
+          "paragraphs": [
+            "While is-loading is on, a spinner replaces the leading slot and the label may stay for width stability. The button blocks repeat activation until the action resolves."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Style",
+      "nodeId": "1320:507",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A button triggers an immediate action, such as submit, confirm, open or delete."
+          ]
+        },
+        {
+          "heading": "Color",
+          "level": 3,
+          "paragraphs": [
+            "Each variant and state maps to a semantic interactive token. Swatches are bound to the live tokens.",
+            "Variant · State",
+            "Background",
+            "Label",
+            "Border",
+            "interactive/bg/primary/default",
+            "interactive/fg/primary/default",
+            "Primary · Default",
+            "—",
+            "Primary · Hover",
+            "interactive/bg/primary/hover",
+            "interactive/fg/primary/hover",
+            "—",
+            "interactive/bg/primary/pressed",
+            "interactive/fg/primary/pressed",
+            "Primary · Pressed",
+            "—",
+            "interactive/bg/primary/focused",
+            "interactive/fg/primary/focused",
+            "border/interactive/focus (3px)",
+            "Primary · Focused",
+            "interactive/bg/primary/disabled",
+            "interactive/fg/primary/disabled",
+            "Primary · Disabled",
+            "—",
+            "interactive/bg/secondary/default",
+            "interactive/fg/secondary/default",
+            "Secondary · Default",
+            "border/interactive/default",
+            "interactive/bg/secondary/hover",
+            "interactive/fg/secondary/hover",
+            "Secondary · Hover",
+            "border/interactive/hover",
+            "interactive/bg/secondary/pressed",
+            "interactive/fg/secondary/pressed",
+            "Secondary · Pressed",
+            "border/interactive/hover",
+            "interactive/bg/secondary/focused",
+            "interactive/fg/secondary/focused",
+            "border/interactive/focus (3px)",
+            "Secondary · Focused",
+            "interactive/bg/secondary/disabled",
+            "interactive/fg/secondary/disabled",
+            "Secondary · Disabled",
+            "border/interactive/disabled",
+            "Ghost · Default",
+            "interactive/bg/ghost/default",
+            "interactive/fg/ghost/default",
+            "—",
+            "Ghost · Hover",
+            "interactive/bg/ghost/hover",
+            "interactive/fg/ghost/hover",
+            "—",
+            "Ghost · Pressed",
+            "interactive/bg/ghost/pressed",
+            "interactive/fg/ghost/pressed",
+            "—",
+            "border/interactive/focus (3px)",
+            "Ghost · Focused",
+            "interactive/bg/ghost/focused",
+            "interactive/fg/ghost/focused",
+            "Ghost · Disabled",
+            "interactive/bg/ghost/disabled",
+            "interactive/fg/ghost/disabled",
+            "—",
+            "Danger · Default",
+            "interactive/bg/danger/default",
+            "interactive/fg/danger/default",
+            "—",
+            "Danger · Hover",
+            "interactive/bg/danger/hover",
+            "interactive/fg/danger/hover",
+            "—",
+            "Danger · Pressed",
+            "interactive/bg/danger/pressed",
+            "interactive/fg/danger/pressed",
+            "—",
+            "border/interactive/focus (3px)",
+            "Danger · Focused",
+            "interactive/bg/danger/focused",
+            "interactive/fg/danger/focused",
+            "interactive/bg/danger/disabled",
+            "interactive/fg/danger/disabled",
+            "Danger · Disabled",
+            "—"
+          ]
+        },
+        {
+          "heading": "Typography",
+          "level": 3,
+          "paragraphs": [
+            "The label binds all five typography properties (family, weight, size, line height in px, letter spacing) to the label text-style tokens for its size.",
+            "Size",
+            "Tokens",
+            "Rendered size",
+            "Sm",
+            "text-style/label/sm/{family, weight, size, line-height-px, letter-spacing}",
+            "11px",
+            "Md",
+            "text-style/label/md/{family, weight, size, line-height-px, letter-spacing}",
+            "12px",
+            "Lg",
+            "text-style/label/lg/{family, weight, size, line-height-px, letter-spacing}",
+            "14px"
+          ]
+        },
+        {
+          "heading": "Structure",
+          "level": 3,
+          "paragraphs": [
+            "Size",
+            "Min height",
+            "Horizontal padding",
+            "Icon–label gap",
+            "Radius",
+            "Sm",
+            "size/control/sm · 32",
+            "space/inline/md · 12",
+            "space/inline/sm · 8",
+            "radius/control · 6",
+            "Md",
+            "size/control/md · 40",
+            "space/inline/lg · 16",
+            "space/inline/sm · 8",
+            "radius/control · 6",
+            "Lg",
+            "size/control/lg · 48",
+            "space/inline/xl · 24",
+            "space/inline/sm · 8",
+            "radius/control · 6"
+          ]
+        },
+        {
+          "heading": "Radius",
+          "level": 4,
+          "paragraphs": [
+            "Default",
+            "Rounded",
+            "None",
+            "radius/control · 6px",
+            "radius/full · pill",
+            "radius/none · 0px"
+          ]
+        },
+        {
+          "heading": "Variants & states",
+          "level": 3,
+          "paragraphs": [
+            "180 variants: Variant (4) × Size (3) × State (5) × Radius (3). The grid shows Variant × State at Size=Md, Radius=Default.",
+            "Variant \\ State",
+            "Default",
+            "Hover",
+            "Pressed",
+            "Focused",
+            "Disabled",
+            "Primary",
+            "Secondary",
+            "Ghost",
+            "Danger"
+          ]
+        },
+        {
+          "heading": "Focus — zoomed",
+          "level": 4,
+          "paragraphs": [
+            "Primary · Focused",
+            "Secondary · Focused",
+            "Ghost · Focused",
+            "Danger · Focused",
+            "Every variant's Focused state adds a 3px ring bound to border/interactive/focus."
+          ]
+        },
+        {
+          "heading": "Icons",
+          "level": 3,
+          "paragraphs": [
+            "Leading and trailing icon slots are 20px at Size=Md, with width bound to an icon size token. Turn them on with Has leading icon / Has trailing icon."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Accessibility",
+      "nodeId": "1320:1020",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A button triggers an immediate action, such as submit, confirm, open or delete."
+          ]
+        },
+        {
+          "heading": "What the design system provides",
+          "level": 3,
+          "paragraphs": [
+            "•   A Focused state on every variant, with a 3px ring bound to border/interactive/focus.",
+            "•   A Disabled state on every variant.",
+            "•   Label typography bound to all five label text-style tokens for each size.",
+            "•   Minimum heights of 32, 40 and 48px — all above the 24×24px target-size minimum (WCAG 2.5.8)."
+          ]
+        },
+        {
+          "heading": "Development considerations",
+          "level": 3,
+          "paragraphs": [
+            "•   Use a native <button> element. Default to type=\"button\" to avoid accidental form submits; use submit or reset only when intended.",
+            "•   Disabled: use the disabled attribute or aria-disabled=\"true\". Disabled buttons must block clicks, keypresses and focus-triggered actions.",
+            "•   Icon-only buttons need an accessible name via aria-label.",
+            "•   Decorative icons get aria-hidden=\"true\".",
+            "•   While loading, block repeat activation until the action resolves.",
+            "•   Never convey state through color alone."
+          ]
+        },
+        {
+          "heading": "Keyboard interactions",
+          "level": 3,
+          "paragraphs": [
+            "Key",
+            "Action",
+            "Tab",
+            "Moves focus to the next focusable element",
+            "Shift",
+            "+",
+            "Tab",
+            "Moves focus to the previous focusable element",
+            "Enter",
+            "Activates the button",
+            "Space",
+            "Activates the button",
+            "Keyboard focus must always be visible. Pointer focus may hide the ring (focus-visible only)."
+          ]
+        },
+        {
+          "heading": "Design recommendations",
+          "level": 3,
+          "paragraphs": [
+            "Automated contrast check — WCAG 2.x relative luminance (sRGB), label against the rendered button fill, for every theme combination (project-a/b × light/dark). Minimum 4.5:1 for label text (11–14px); 3:1 for disabled text (house rule TKN-005). Size=Md, Radius=Default.",
+            "Variant · State",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Primary · Default",
+            "6.29:1",
+            "6.29:1",
+            "3.28:1",
+            "3.28:1",
+            "Primary · Hover",
+            "7.90:1",
+            "7.90:1",
+            "5.06:1",
+            "5.06:1",
+            "Primary · Pressed",
+            "9.93:1",
+            "9.93:1",
+            "7.84:1",
+            "7.84:1",
+            "Primary · Focused",
+            "6.29:1",
+            "6.29:1",
+            "3.28:1",
+            "3.28:1",
+            "Primary · Disabled",
+            "3.90:1",
+            "2.13:1",
+            "3.90:1",
+            "2.13:1",
+            "Secondary · Default",
+            "16.12:1",
+            "3.29:1",
+            "16.12:1",
+            "14.05:1",
+            "Secondary · Hover",
+            "14.33:1",
+            "2.31:1",
+            "14.33:1",
+            "9.86:1",
+            "Secondary · Pressed",
+            "12.04:1",
+            "1.69:1",
+            "12.04:1",
+            "7.23:1",
+            "Secondary · Focused",
+            "16.12:1",
+            "3.29:1",
+            "16.12:1",
+            "14.05:1",
+            "Secondary · Disabled",
+            "4.39:1",
+            "3.04:1",
+            "4.39:1",
+            "3.04:1",
+            "Ghost · Default",
+            "1.41:1",
+            "6.75:1",
+            "3.14:1",
+            "9.07:1",
+            "Ghost · Hover",
+            "7.18:1",
+            "7.36:1",
+            "4.59:1",
+            "7.69:1",
+            "Ghost · Pressed",
+            "8.02:1",
+            "6.91:1",
+            "6.33:1",
+            "6.22:1",
+            "Ghost · Focused",
+            "1.41:1",
+            "6.75:1",
+            "3.14:1",
+            "9.07:1",
+            "Ghost · Disabled",
+            "1.76:1",
+            "2.66:1",
+            "2.43:1",
+            "2.66:1",
+            "Danger · Default",
+            "5.74:1",
+            "5.74:1",
+            "5.74:1",
+            "5.74:1",
+            "Danger · Hover",
+            "6.47:1",
+            "6.47:1",
+            "6.47:1",
+            "6.47:1",
+            "Danger · Pressed",
+            "8.31:1",
+            "8.31:1",
+            "8.31:1",
+            "8.31:1",
+            "Danger · Focused",
+            "5.74:1",
+            "5.74:1",
+            "5.74:1",
+            "5.74:1",
+            "Danger · Disabled",
+            "2.31:1",
+            "1.94:1",
+            "2.31:1",
+            "1.94:1",
+            "Focus indicator: the ring measures 1.0–2.58:1 against the Primary and Danger fills; TKN-031 requires 3:1 against adjacent colors. Verify the ring's offset and contrast against the page surface manually."
+          ]
+        }
+      ]
+    }
+  ]
+}

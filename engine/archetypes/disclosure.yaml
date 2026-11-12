@@ -1,0 +1,16 @@
+# Accordion and tree-like disclosure. Behaviour source: WAI-ARIA APG accordion pattern.
+id: disclosure
+pattern: wai-aria/accordion
+role: button (header trigger) + region (panel)
+requiredStates: [default, hover, focus, expanded, disabled]
+keyboard:
+  - { key: Enter, action: toggle panel }
+  - { key: Space, action: toggle panel }
+  - { key: ArrowDown, action: next header }
+  - { key: ArrowUp, action: previous header }
+  - { key: Home, action: first header }
+  - { key: End, action: last header }
+requiredBehaviour:
+  - { field: expandMode, question: "Can several panels be open at once, or only one?" }
+  - { field: headingLevel, question: "Which heading level wraps each trigger?" }
+requiredDocs: [usage, accessibility]

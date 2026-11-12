@@ -1,0 +1,7 @@
+.button {
+  background: var(--color-action);
+  padding-inline: var(--space-4);
+  color: #ffffff; /* raw colour */
+  border-radius: var(--radius-missing);
+}
+.sm { min-height: 32px; }

@@ -1,0 +1,186 @@
+{
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8"
+  },
+  "repo": {
+    "path": "~/Downloads/AI Design system Repo",
+    "figmaVariables": "tokens/figma-variables.json",
+    "tokenCss": [
+      "src/styles/tokens.css",
+      "src/styles/base.css"
+    ]
+  },
+  "components": [
+    {
+      "id": "ds.button",
+      "archetype": "action",
+      "figma": {
+        "page": "↳ button",
+        "componentSet": {
+          "id": "102:122",
+          "name": "Button"
+        },
+        "docFrames": [
+          "1320:168",
+          "1320:507",
+          "1320:1020"
+        ]
+      },
+      "code": {
+        "file": "src/components/Button/Button.tsx",
+        "export": "Button",
+        "stories": "src/components/Button/Button.stories.tsx",
+        "css": "src/components/Button/Button.module.css",
+        "mdx": "src/components/Button/Button.mdx"
+      },
+      "propMap": {
+        "Show label": "children"
+      }
+    },
+    {
+      "id": "ds.checkbox-control",
+      "archetype": "selection.binary",
+      "figma": {
+        "page": "↳ checkbox",
+        "componentSet": {
+          "id": "178:1224",
+          "name": "CheckboxControl"
+        },
+        "docFrames": [
+          "1328:1001",
+          "1328:1387",
+          "1328:2585"
+        ]
+      },
+      "code": {
+        "file": "src/components/Checkbox/Checkbox.tsx",
+        "export": "Checkbox",
+        "stories": "src/components/Checkbox/Checkbox.stories.tsx",
+        "css": "src/components/Checkbox/Checkbox.module.css",
+        "mdx": "src/components/Checkbox/Checkbox.mdx"
+      },
+      "axisRoles": {
+        "Type": "state"
+      }
+    },
+    {
+      "id": "ds.checkbox-field",
+      "archetype": "selection.binary",
+      "figma": {
+        "page": "↳ checkbox",
+        "componentSet": {
+          "id": "190:1205",
+          "name": "CheckboxField"
+        },
+        "docFrames": [
+          "1328:1001",
+          "1328:1387",
+          "1328:2585"
+        ]
+      },
+      "code": {
+        "file": "src/components/Checkbox/Checkbox.tsx",
+        "export": "Checkbox",
+        "stories": "src/components/Checkbox/Checkbox.stories.tsx",
+        "css": "src/components/Checkbox/Checkbox.module.css",
+        "mdx": "src/components/Checkbox/Checkbox.mdx"
+      },
+      "axisRoles": {
+        "Type": "state"
+      },
+      "propMap": {
+        "Value": "label",
+        "Has description": "description",
+        "Has helper": "helperText",
+        "Has label": false,
+        "Label": false
+      }
+    },
+    {
+      "id": "ds.checkbox-group",
+      "archetype": "selection.binary",
+      "figma": {
+        "page": "↳ checkbox",
+        "componentSet": {
+          "id": "192:1420",
+          "name": "CheckboxGroup"
+        },
+        "docFrames": [
+          "1328:1001",
+          "1328:1387",
+          "1328:2585"
+        ]
+      },
+      "code": {
+        "file": "src/components/Checkbox/Checkbox.tsx",
+        "export": "CheckboxGroup",
+        "stories": "src/components/Checkbox/Checkbox.stories.tsx",
+        "css": "src/components/Checkbox/Checkbox.module.css",
+        "mdx": "src/components/Checkbox/Checkbox.mdx"
+      }
+    },
+    {
+      "id": "ds.accordion",
+      "archetype": "disclosure",
+      "figma": {
+        "page": "↳ accordion",
+        "componentSet": {
+          "id": "236:1875",
+          "name": "AccordionItem"
+        },
+        "docFrames": [
+          "1333:182",
+          "1333:457",
+          "1333:814"
+        ]
+      },
+      "code": {
+        "file": "src/components/Accordion/Accordion.tsx",
+        "export": "Accordion",
+        "stories": "src/components/Accordion/Accordion.stories.tsx",
+        "css": "src/components/Accordion/Accordion.module.css",
+        "mdx": "src/components/Accordion/Accordion.mdx"
+      },
+      "propMap": {
+        "Style": "variant"
+      },
+      "stateMap": {
+        "Disabled": null
+      }
+    }
+  ],
+  "generate": {
+    "outDir": "../storybook",
+    "packageName": "figma-design-system-storybook",
+    "variablesExport": "inputs/figma-variables.json",
+    "modeAttributes": {
+      "semantic.color": "data-theme",
+      "primitives.color": "data-project"
+    },
+    "components": [
+      {
+        "name": "Button",
+        "template": "action",
+        "sets": {
+          "main": "ds.button"
+        }
+      },
+      {
+        "name": "Checkbox",
+        "template": "checkbox",
+        "sets": {
+          "control": "ds.checkbox-control",
+          "field": "ds.checkbox-field",
+          "group": "ds.checkbox-group"
+        }
+      },
+      {
+        "name": "Accordion",
+        "template": "accordion",
+        "sets": {
+          "item": "ds.accordion"
+        }
+      }
+    ]
+  }
+}
