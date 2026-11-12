@@ -31,8 +31,10 @@ export interface FigmaClientOptions {
   /** Directory for cached responses. Responses are cached per URL; pass refresh to bypass. */
   cacheDir: string;
   refresh?: boolean;
-  /** Maximum number of 429 retries before giving up. */
+  /** Retries for rate limits (429), temporary server errors (5xx) and network failures. */
   maxRetries?: number;
+  /** First backoff delay for 5xx and network retries (default 2000 ms). */
+  retryBaseMs?: number;
   log?: (msg: string) => void;
 }
 
@@ -88,6 +90,16 @@ export class FigmaClient implements FigmaReader, FigmaRenderer {
     return text;
   }
 
+  /** 2s, 6s, 18s… (overridable for tests through retryBaseMs). */
+  private backoff(attempt: number): number {
+    return (this.opts.retryBaseMs ?? 2000) * 3 ** attempt;
+  }
+
+  private async wait(ms: number, message: string): Promise<void> {
+    this.opts.log?.(message);
+    await new Promise((r) => setTimeout(r, ms));
+  }
+
   private async get<T>(path: string): Promise<T> {
     const url = this.apiBase + path;
     const cacheFile = join(this.opts.cacheDir, `${sha256(url).slice(0, 24)}.json`);
@@ -95,11 +107,24 @@ export class FigmaClient implements FigmaReader, FigmaRenderer {
 
     const maxRetries = this.opts.maxRetries ?? 3;
     for (let attempt = 0; ; attempt++) {
-      const res = await fetch(url, { headers: { 'X-Figma-Token': this.opts.token } });
+      let res: Response;
+      try {
+        res = await fetch(url, { headers: { 'X-Figma-Token': this.opts.token } });
+      } catch (err) {
+        // Network failure: retry with backoff, then give up.
+        if (attempt >= maxRetries) throw err;
+        await this.wait(this.backoff(attempt), `Network error reaching Figma; retrying (${attempt + 1}/${maxRetries})`);
+        continue;
+      }
       if (res.status === 429 && attempt < maxRetries) {
         const wait = Number(res.headers.get('retry-after') ?? '60');
-        this.opts.log?.(`Figma rate limit hit; waiting ${wait}s (retry ${attempt + 1}/${maxRetries})`);
-        await new Promise((r) => setTimeout(r, wait * 1000));
+        await this.wait(wait * 1000, `Figma rate limit hit; waiting ${wait}s (retry ${attempt + 1}/${maxRetries})`);
+        continue;
+      }
+      // Temporary server errors ("please try again later"): retry with backoff.
+      if ([500, 502, 503, 504].includes(res.status) && attempt < maxRetries) {
+        await res.text();
+        await this.wait(this.backoff(attempt), `Figma returned ${res.status}; retrying (${attempt + 1}/${maxRetries})`);
         continue;
       }
       const body = await res.text();
