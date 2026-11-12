@@ -45,8 +45,22 @@ function paints(list: FigmaPaint[] | undefined, resolve: Resolver): IRValue<stri
     });
 }
 
-export function styleOf(node: FigmaNode, resolve: Resolver): IRStyle {
+export function styleOf(node: FigmaNode, resolve: Resolver, parent?: FigmaNode): IRStyle {
   const style: IRStyle = { fills: paints(node.fills, resolve), strokes: paints(node.strokes, resolve) };
+  if (node.layoutSizingHorizontal) style.sizingH = node.layoutSizingHorizontal;
+  if (node.layoutSizingVertical) style.sizingV = node.layoutSizingVertical;
+  if (node.layoutMode && node.layoutMode !== 'NONE') {
+    if (node.primaryAxisAlignItems) style.primaryAlign = node.primaryAxisAlignItems;
+    if (node.counterAxisAlignItems) style.counterAlign = node.counterAxisAlignItems;
+    if (node.layoutWrap === 'WRAP') style.wrap = true;
+  }
+  if (node.clipsContent) style.clips = true;
+  if (node.layoutPositioning === 'ABSOLUTE') style.absolute = true;
+  if (parent?.absoluteBoundingBox && node.absoluteBoundingBox) {
+    style.x = round(node.absoluteBoundingBox.x - parent.absoluteBoundingBox.x);
+    style.y = round(node.absoluteBoundingBox.y - parent.absoluteBoundingBox.y);
+  }
+  if (node.type === 'TEXT' && node.style?.textAlignHorizontal && node.style.textAlignHorizontal !== 'LEFT') style.textAlign = node.style.textAlignHorizontal;
   if (node.layoutMode && node.layoutMode !== 'NONE') style.layoutMode = node.layoutMode;
   if (node.absoluteBoundingBox) {
     style.width = round(node.absoluteBoundingBox.width);
@@ -82,7 +96,11 @@ const round = (n: number) => Math.round(n * 100) / 100;
 function collectParts(node: FigmaNode, resolve: Resolver, prefix: string, out: IRPart[], componentNames: Record<string, string>, hiddenAncestor = false): void {
   for (const child of node.children ?? []) {
     const path = prefix ? `${prefix}/${child.name}` : child.name;
-    const part: IRPart = { path, type: child.type, style: styleOf(child, resolve) };
+    const part: IRPart = { path, parent: prefix, name: child.name, type: child.type, style: styleOf(child, resolve, node) };
+    const refs = child.componentPropertyReferences;
+    if (refs && (refs.visible || refs.characters || refs.mainComponent)) {
+      part.refs = Object.fromEntries(Object.entries(refs).filter(([, v]) => v).map(([k, v]) => [k, stripPropertyId(v!)]));
+    }
     // Hidden layers are kept: they are usually optional parts toggled by a boolean property.
     if (child.visible === false || hiddenAncestor) part.hidden = true;
     if (child.type === 'TEXT' && child.characters !== undefined) part.text = child.characters;
@@ -92,11 +110,29 @@ function collectParts(node: FigmaNode, resolve: Resolver, prefix: string, out: I
       part.instanceComponentId = child.componentId;
       const inner = firstSolidFill(child, resolve);
       if (inner) part.innerColor = inner;
+      const innerText = firstText(child);
+      if (innerText) part.innerText = innerText;
+      const props = Object.entries(child.componentProperties ?? {}).filter(([, v]) => v.type === 'BOOLEAN' || v.type === 'TEXT');
+      if (props.length) part.instanceProps = Object.fromEntries(props.map(([k, v]) => [stripPropertyId(k), v.value]));
+      const icons = (child.children ?? [])
+        .filter((c) => c.type === 'INSTANCE' && c.visible !== false && c.componentId && /^icons?\//i.test(componentNames[c.componentId] ?? ''))
+        .map((c) => ({ layer: c.name, name: componentNames[c.componentId!]!, componentId: c.componentId! }));
+      if (icons.length) part.innerIcons = icons;
     }
     out.push(part);
     // Instances are leaves: their internals belong to the referenced component.
     if (child.type !== 'INSTANCE') collectParts(child, resolve, path, out, componentNames, Boolean(part.hidden));
   }
+}
+
+function firstText(node: FigmaNode): string | undefined {
+  for (const c of node.children ?? []) {
+    if (c.visible === false) continue;
+    if (c.type === 'TEXT' && c.characters?.trim()) return c.characters;
+    const deeper = firstText(c);
+    if (deeper) return deeper;
+  }
+  return undefined;
 }
 
 function firstSolidFill(node: FigmaNode, resolve: Resolver): IRValue<string> | undefined {

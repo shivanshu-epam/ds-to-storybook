@@ -1,0 +1,445 @@
+{
+  "component": "Dialog",
+  "description": "A dialog is a focused window layered over the page that blocks interaction until a task or decision is resolved.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "Dialog",
+        "nodeId": "348:627"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "type",
+      "figma": "Type (variant)"
+    },
+    {
+      "prop": "size",
+      "figma": "Size (variant)"
+    },
+    {
+      "prop": "state",
+      "figma": "State (variant)"
+    },
+    {
+      "prop": "hasCloseButton",
+      "figma": "Has close button (boolean)"
+    },
+    {
+      "prop": "hasSecondaryAction",
+      "figma": "Has secondary action (boolean)"
+    },
+    {
+      "prop": "hasSubtitle",
+      "figma": "Has subtitle (boolean)"
+    },
+    {
+      "prop": "scrollableContent",
+      "figma": "Scrollable content (boolean)"
+    },
+    {
+      "prop": "title",
+      "figma": "Title (text)"
+    },
+    {
+      "prop": "subtitle",
+      "figma": "Subtitle (text)"
+    },
+    {
+      "prop": "bodyContent",
+      "figma": "Body content (text)"
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "The Figma set has 30 of 60 possible variant combinations; other combinations use the nearest defined styles.",
+    "Layer \"_divider-top\" is a line shape; approximated with its fill and size (no vector path).",
+    "Layer \"_divider-bottom\" is a line shape; approximated with its fill and size (no vector path)."
+  ],
+  "tabs": [
+    {
+      "title": "Usage",
+      "nodeId": "1341:976",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A dialog is a focused window layered over the page that blocks interaction until a task or decision is resolved."
+          ]
+        },
+        {
+          "heading": "Overview",
+          "level": 3,
+          "paragraphs": [
+            "A dialog interrupts the page to focus the user on exactly one task or decision. It's the most disruptive surface available — it blocks everything else until it's resolved — so use it sparingly."
+          ]
+        },
+        {
+          "heading": "Types",
+          "level": 4,
+          "paragraphs": [
+            "Confirmation",
+            "Alert",
+            "Form",
+            "Embedded form fields; the only type with an Error state.",
+            "Full-screen",
+            "Fills the viewport (1280 × 800).",
+            "Side-drawer",
+            "A full-height panel (800px tall) in three widths."
+          ]
+        },
+        {
+          "heading": "Footer patterns",
+          "level": 4,
+          "paragraphs": [
+            "Pattern",
+            "Purpose",
+            "Footer",
+            "Passive",
+            "Information to be aware of; no decision",
+            "No action buttons — dismiss only",
+            "Transactional",
+            "An action is needed to complete and close",
+            "Cancel + one primary action",
+            "Danger",
+            "A destructive or irreversible action",
+            "Cancel + a danger-styled primary action",
+            "Acknowledgment",
+            "The user must actively acknowledge something",
+            "A single button (commonly OK)",
+            "Cancel + Previous + Next (or the completing action on the last step)",
+            "Progress",
+            "A task in several steps"
+          ]
+        },
+        {
+          "heading": "When to use",
+          "level": 4,
+          "paragraphs": [
+            "•   To get an immediate response needed to continue something the user just started.",
+            "•   To notify the user of urgent information tied to their current work.",
+            "•   To confirm a decision — especially a destructive or irreversible one."
+          ]
+        },
+        {
+          "heading": "When not to use",
+          "level": 4,
+          "paragraphs": [
+            "•   For information that isn't urgent — use an inline Alert instead.",
+            "•   For tasks users repeat often — let them complete it on the page.",
+            "•   When even the largest size isn't enough room — use a full page."
+          ]
+        },
+        {
+          "heading": "Formatting",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Anatomy",
+          "level": 4,
+          "paragraphs": [
+            "1",
+            "3",
+            "2",
+            "4",
+            "5",
+            "6",
+            "•   ① Title — a short, specific verb phrase naming the task.",
+            "•   ② Subtitle (optional) — short context below the title (Has subtitle).",
+            "•   ③ Close icon — always available for dismissal.",
+            "•   ④ Body — message text and/or embedded content such as form fields.",
+            "•   ⑤ Secondary action — e.g. Cancel, on the left.",
+            "•   ⑥ Primary action — the one action that completes the task, on the right.",
+            "Not shown: the overlay — the dimmed layer behind the dialog. It isn't built as a component yet."
+          ]
+        },
+        {
+          "heading": "Sizes",
+          "level": 4,
+          "paragraphs": [
+            "Large · 640px",
+            "Medium · 480px",
+            "Small · 400px",
+            "Choose the size by content: brief text fits Small; complex embedded content needs Medium or Large. If content keeps scrolling, move up a size; if the largest isn't enough, use a full page."
+          ]
+        },
+        {
+          "heading": "Alignment",
+          "level": 4,
+          "paragraphs": [
+            "Buttons",
+            "Footer layout",
+            "1",
+            "Right-aligned, about half the footer width",
+            "2",
+            "Secondary left, primary right, each about half, flush to the edges",
+            "3",
+            "Each about a quarter, clustered right; only the rightmost may be primary",
+            "Progress",
+            "Cancel (ghost) alone on the left; Previous (secondary) and Next (primary) on the right"
+          ]
+        },
+        {
+          "heading": "Placement",
+          "level": 4,
+          "paragraphs": [
+            "Center the dialog vertically for short, predictable content, or pin it at a fixed offset from the top for longer or variable content. Use a dimmed backdrop by default. Clicking the backdrop may close passive dialogs, but never transactional or destructive ones. Avoid opening a dialog from inside another dialog.",
+            "Do",
+            "Don't",
+            "Secondary (Cancel) on the left, primary on the right — one clear emphasis.",
+            "Don't use two primary buttons — the user can't tell which action is safe.",
+            "Do",
+            "Don't",
+            "For destructive actions, name the action in the title and use a danger-styled, specific button.",
+            "Don't use vague titles or buttons like OK for a destructive action."
+          ]
+        },
+        {
+          "heading": "Content",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Main elements",
+          "level": 4,
+          "paragraphs": [
+            "Title",
+            "•   A short, specific verb phrase that matches whatever opened the dialog.",
+            "•   For a very short message, let the title carry it and skip the body.",
+            "Subtitle",
+            "•   Only when the purpose isn't obvious from the title.",
+            "Body",
+            "•   Brief — only the fields and content needed to complete the task.",
+            "Buttons",
+            "•   Short, specific verbs — Delete, Save, Add — not vague labels like Done.",
+            "•   OK is fine only for the acknowledgment pattern."
+          ]
+        },
+        {
+          "heading": "Overflow content",
+          "level": 4,
+          "paragraphs": [
+            "When the body needs to scroll, the header and footer stay fixed and only the body scrolls, with a fade at the bottom edge. Content never scrolls horizontally — move up a size instead."
+          ]
+        },
+        {
+          "heading": "Behaviors",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "States",
+          "level": 4,
+          "paragraphs": [
+            "•   Open — ready for input.",
+            "•   Loading — the footer buttons are disabled while the action runs, preventing a double submit.",
+            "•   Error — Form only: an error banner at the top of the body, with the fields to correct.",
+            "See the Style tab for how each state looks."
+          ]
+        },
+        {
+          "heading": "Interactions",
+          "level": 4,
+          "paragraphs": [
+            "•   Opens only as the direct result of a user action — never unprompted.",
+            "•   Initial focus lands on the first form field, or on the primary button if there's no form.",
+            "•   Focus stays inside the dialog while it's open; on close it returns to the trigger.",
+            "•   Close with the close icon, Escape, or — for passive dialogs only — a click outside. Cancel reverts any staged changes.",
+            "•   Validate before closing on submit; keep the dialog open and mark fields in error.",
+            "•   Background page scroll is locked while the dialog is open.",
+            "Keyboard",
+            "Key",
+            "Action",
+            "Tab",
+            "Moves to the next control inside the dialog",
+            "Shift",
+            "+",
+            "Tab",
+            "Moves to the previous control inside the dialog",
+            "Esc",
+            "Closes the dialog",
+            "Full keyboard details are on the Accessibility tab."
+          ]
+        },
+        {
+          "heading": "Related",
+          "level": 3,
+          "paragraphs": [
+            "•   Alert — for inline, non-urgent feedback that shouldn't interrupt the page.",
+            "•   Button — used for the footer actions."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Style",
+      "nodeId": "1341:1657",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A dialog is a focused window layered over the page that blocks interaction until a task or decision is resolved."
+          ]
+        },
+        {
+          "heading": "Color",
+          "level": 3,
+          "paragraphs": [
+            "Swatches are bound to the live tokens.",
+            "Element",
+            "Token",
+            "Container",
+            "surface/bg/elevated",
+            "Title",
+            "text/primary",
+            "Body and subtitle",
+            "text/secondary",
+            "Close icon",
+            "icon/color/default",
+            "Dividers (hidden by default)",
+            "border/default",
+            "Footer buttons are Button instances; their colors belong to the Button component."
+          ]
+        },
+        {
+          "heading": "Typography",
+          "level": 3,
+          "paragraphs": [
+            "Element",
+            "Tokens",
+            "Rendered size",
+            "Title",
+            "text-style/heading/sm/*",
+            "16px",
+            "Body",
+            "text-style/body/md/*",
+            "14px"
+          ]
+        },
+        {
+          "heading": "Structure",
+          "level": 3,
+          "paragraphs": [
+            "Property",
+            "Value",
+            "Width — Small / Medium / Large",
+            "400 / 480 / 640",
+            "Full-screen",
+            "1280 × 800",
+            "Side-drawer height",
+            "800",
+            "Padding",
+            "space/inset/xl · 24",
+            "Footer button gap",
+            "space/inline/md · 12",
+            "Radius",
+            "radius/overlay · 12",
+            "Elevation",
+            "Drop shadow",
+            "Close icon",
+            "Icon/action/close/20 · 20px"
+          ]
+        },
+        {
+          "heading": "Variants & states",
+          "level": 3,
+          "paragraphs": [
+            "30 variants: Type (5) × Size × State. Confirmation, Alert and Side-drawer have Open and Loading at Small, Medium and Large; Form adds Error; Full-screen has one Full size.",
+            "Form · Open",
+            "Form · Loading",
+            "Form · Error",
+            "Confirmation · Open",
+            "Confirmation · Loading",
+            "Alert · Open"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Accessibility",
+      "nodeId": "1341:1947",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A dialog is a focused window layered over the page that blocks interaction until a task or decision is resolved."
+          ]
+        },
+        {
+          "heading": "What the design system provides",
+          "level": 3,
+          "paragraphs": [
+            "•   A close icon on every type, alongside Escape.",
+            "•   Footer actions are real Buttons, with their focus and disabled states.",
+            "•   A Loading state that disables the footer buttons to prevent double submits.",
+            "•   A Form Error state with a text error banner, not color alone."
+          ]
+        },
+        {
+          "heading": "Development considerations",
+          "level": 3,
+          "paragraphs": [
+            "•   Use role=\"dialog\" with aria-modal=\"true\" and aria-labelledby pointing to the title.",
+            "•   Trap focus inside the dialog; return focus to the trigger on close.",
+            "•   Exclude background content from the accessibility tree while a decision is required — not just dim it.",
+            "•   The close icon is icon-only — give it an accessible name.",
+            "•   Set initial focus on the first field, or the primary button when there's no form."
+          ]
+        },
+        {
+          "heading": "Keyboard interactions",
+          "level": 3,
+          "paragraphs": [
+            "Key",
+            "Action",
+            "Tab",
+            "Moves to the next control inside the dialog",
+            "Shift",
+            "+",
+            "Tab",
+            "Moves to the previous control inside the dialog",
+            "Esc",
+            "Closes the dialog"
+          ]
+        },
+        {
+          "heading": "Design recommendations",
+          "level": 3,
+          "paragraphs": [
+            "Automated contrast check — WCAG 2.x relative luminance (sRGB), text and icon against the dialog container, container against the page surface, for every theme combination. Minimums: 4.5:1 for text, 3:1 for the icon and container edge. Note: project-a / light is measured against the current surface/bg/default, which resolves to blue because of the gray/50 token.",
+            "Element",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Title · text/primary",
+            "17.74:1",
+            "3.98:1",
+            "17.74:1",
+            "16.98:1",
+            "Body · text/secondary",
+            "7.56:1",
+            "6.99:1",
+            "7.56:1",
+            "6.99:1",
+            "Close icon",
+            "7.56:1",
+            "6.99:1",
+            "7.56:1",
+            "6.99:1",
+            "Container vs page surface",
+            "4.46:1",
+            "1.13:1",
+            "1.05:1",
+            "1.13:1",
+            "Where the container edge is below 3:1, the overlay and drop shadow have to separate the dialog from the page."
+          ]
+        }
+      ]
+    }
+  ]
+}

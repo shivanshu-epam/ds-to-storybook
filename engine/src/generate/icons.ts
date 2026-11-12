@@ -36,6 +36,7 @@ export function iconRefs(ir: FigmaIR, targetIds: string[]): Map<string, string> 
     for (const v of set.variants) {
       for (const p of v.parts) {
         if (p.type === 'INSTANCE' && p.instanceComponentId && p.instanceOf && /^icon\//i.test(p.instanceOf)) refs.set(p.instanceComponentId, p.instanceOf);
+        for (const i of p.innerIcons ?? []) refs.set(i.componentId, i.name);
       }
     }
   }

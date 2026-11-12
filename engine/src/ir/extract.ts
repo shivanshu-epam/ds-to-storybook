@@ -68,7 +68,10 @@ export async function extractIR(client: FigmaReader, config: LoadedConfig, log: 
 
   config.components.forEach((target, targetIndex) => {
     const page = findPage(file.document, target.figma.page);
-    const found = findSet(page, file.document, target.figma.componentSet.id, target.figma.componentSet.name);
+    const known = file.componentSets?.[target.figma.componentSet.id];
+    // Nested sets (inside frames or sections) are not visible at depth 2, but the file's set map lists them.
+    const found = findSet(page, file.document, target.figma.componentSet.id, target.figma.componentSet.name)
+      ?? (known ? { node: { id: target.figma.componentSet.id, name: known.name, type: 'COMPONENT_SET' } as FigmaNode } : undefined);
     if (!found) {
       missing.push({ targetId: target.id, reason: `Component set "${target.figma.componentSet.name}" (${target.figma.componentSet.id}) not found on any page.` });
       return;

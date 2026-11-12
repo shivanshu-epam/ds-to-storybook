@@ -1,0 +1,145 @@
+{
+  "component": "Input",
+  "description": "A single- or multi-line field for typed content, with specialized variants layered on the same underlying anatomy per the skill (not all present as Figma variants — see Flags).",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "Input",
+        "nodeId": "836:4005"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "type",
+      "figma": "Type (variant)"
+    },
+    {
+      "prop": "size",
+      "figma": "Size (variant)"
+    },
+    {
+      "prop": "state",
+      "figma": "State (variant)",
+      "note": "States: Default → default, Hover → :hover (CSS), Focus → :focus (CSS), Disabled → disabled, Error → state=\"error\""
+    },
+    {
+      "prop": "required",
+      "figma": "Required (boolean)"
+    },
+    {
+      "prop": "showLeadingIcon",
+      "figma": "Show leading icon (boolean)"
+    },
+    {
+      "prop": "showTrailingIcon",
+      "figma": "Show trailing icon (boolean)"
+    },
+    {
+      "prop": "clearable",
+      "figma": "Clearable (boolean)"
+    },
+    {
+      "prop": "showCharacterCount",
+      "figma": "Show character count (boolean)"
+    },
+    {
+      "prop": "label",
+      "figma": "Label (text)"
+    },
+    {
+      "prop": "placeholder",
+      "figma": "Placeholder (text)"
+    },
+    {
+      "prop": "helperText",
+      "figma": "Helper text (text)"
+    },
+    {
+      "prop": "characterCount",
+      "figma": "Character count (text)"
+    },
+    {
+      "prop": "—",
+      "figma": "Leading icon (instance swap)",
+      "note": "Not exposed yet."
+    },
+    {
+      "prop": "—",
+      "figma": "Trailing icon (instance swap)",
+      "note": "Not exposed yet."
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified.",
+    "Instance swap properties not exposed as props (default instance rendered): Leading icon, Trailing icon."
+  ],
+  "tabs": [
+    {
+      "title": "Documentation",
+      "nodeId": "1026:5643",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A single- or multi-line field for typed content, with specialized variants layered on the same underlying anatomy per the skill (not all present as Figma variants — see Flags)."
+          ]
+        },
+        {
+          "heading": "Anatomy — real Input Field example",
+          "level": 3,
+          "paragraphs": [
+            "1",
+            "2",
+            "3",
+            "① Label — persistent, always paired with the field (with an optional required indicator).",
+            "② Container — holds the value/placeholder text; visual treatment set by variant (Outlined/Filled/Borderless/Inline).",
+            "③ Helper text — optional supporting or validation message below the field."
+          ]
+        },
+        {
+          "heading": "Variants & States",
+          "level": 3,
+          "paragraphs": [
+            "60 variants total: Type(Outlined/Filled/Borderless/Inline) × Size(3) × State(Default/Hover/Focus/Disabled/Error). Grid below shows Type × State at Size=Md. The skill's Underlined variant and Warning/Read-only/Loading states are absent — see Flags.",
+            "Default",
+            "Hover",
+            "Focus",
+            "Disabled",
+            "Error",
+            "Outlined",
+            "Filled",
+            "Borderless",
+            "Inline"
+          ]
+        },
+        {
+          "heading": "Content Guidance (per skill)",
+          "level": 3,
+          "paragraphs": [
+            "Whichever container variant is chosen, the focus state must stay clearly visible — even Borderless needs a visible ring/underline on focus (confirmed above: Borderless/Focus shows the same blue ring as the other types). Validate on blur, not just at submit; clear the error the moment the value becomes valid again."
+          ]
+        },
+        {
+          "heading": "Token Map",
+          "level": 3,
+          "paragraphs": [
+            "color/border/focus — Outlined/Md/Focus border"
+          ]
+        },
+        {
+          "heading": "Do's and Don'ts",
+          "level": 3,
+          "paragraphs": [
+            "Show the clear icon only once the field has content; if it would collide with a suffix icon, the clear icon takes precedence while content is present. Match the mobile keyboard type to expected content. Associate error/helper text via the field's accessible description so screen readers announce it on focus, not just visually beside the field.",
+            "Flags",
+            "Gap: the skill's Variants table specifies Outlined, Filled, Underlined, Borderless. The actual build's Type axis is Outlined, Filled, Borderless, Inline — there is no Underlined variant anywhere in the 60-variant set, and Inline (visible above as the compact inline-label row) is not described anywhere in the skill at all.\n\nGap: the skill lists nine states (Default, Filled, Hover, Focus, Disabled, Read-only, Warning, Error, Loading). The build only implements five: Default, Hover, Focus, Disabled, Error — visible above. Error exists but Warning does not (an asymmetric gap); Read-only and Loading are absent entirely.\n\nPossible overlap with ↳ Form: see component-form.md — a very similar single-line field control with an overlapping state vocabulary exists on a separate page under a different component family (InputControl/InputField). Not resolved here.\n\nThe skill's specialized variants (textarea, search, password, OTP, numeric/precision) have no corresponding component observed on this page — none could be confirmed built, though the Outlined/Default example above does show a leading search icon as content, not as a named variant."
+          ]
+        }
+      ]
+    }
+  ]
+}

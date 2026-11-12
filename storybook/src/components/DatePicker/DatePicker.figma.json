@@ -1,0 +1,96 @@
+{
+  "component": "DatePicker",
+  "description": "A single component set covering single-date, date-range, and date+time selection, with the calendar panel handled as a boolean property.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "Date Picker",
+        "nodeId": "660:4998"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "type",
+      "figma": "Type (variant)"
+    },
+    {
+      "prop": "state",
+      "figma": "State (variant)",
+      "note": "States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Filled → state=\"filled\", Disabled → disabled, Read-only → state=\"read-only\", Error → state=\"error\""
+    },
+    {
+      "prop": "showCalendar",
+      "figma": "Show Calendar (boolean)"
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified."
+  ],
+  "tabs": [
+    {
+      "title": "Documentation",
+      "nodeId": "1009:669",
+      "sections": [
+        {
+          "heading": "Date Picker",
+          "level": 3,
+          "paragraphs": [
+            "A single component set covering single-date, date-range, and date+time selection, with the calendar panel handled as a boolean property."
+          ]
+        },
+        {
+          "heading": "Anatomy — real Range example",
+          "level": 3,
+          "paragraphs": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "① Date field(s) — every field carries a trailing calendar icon, never leading. A range field renders two side by side sharing one popover.",
+            "② Presets — Today, Yesterday, Last 7/30 days, This/Last month; a side list next to the calendar.",
+            "③ Calendar — month grid(s); day-cell states (Default/Selected/In-range/Today) are baked as plain layers, never promoted to their own component.",
+            "④ Footer actions — Clear / Cancel / Apply, so a stray click never commits a half-made range selection."
+          ]
+        },
+        {
+          "heading": "Variants & States",
+          "level": 3,
+          "paragraphs": [
+            "Built as exactly 21 variants: Type(Single/Range/DateTime) × State(Default/Hover/Focused/Filled/Disabled/Read-only/Error) — an exact match to the component skill's own spec.",
+            "Default",
+            "Hover",
+            "Focused",
+            "Filled",
+            "Disabled",
+            "Read-only",
+            "Error",
+            "Single",
+            "Range",
+            "DateTime"
+          ]
+        },
+        {
+          "heading": "Token Map",
+          "level": 3,
+          "paragraphs": [
+            "color/field/border/focused — Single/Focused field border",
+            "component/date-picker collection: color/field/border/{default|hover|focused|disabled|read-only|error}, color/field/text/error, color/field/icon/error, color/calendar/border, and equivalents for the calendar day-cell reference states."
+          ]
+        },
+        {
+          "heading": "Behaviour & Accessibility",
+          "level": 3,
+          "paragraphs": [
+            "Month grid always renders 42 cells (6 full weeks) so grid height never jumps between months. Range selection: first click sets start, second sets end, a third click starts a new range; clicking before the current start moves the start instead of erroring. Arrow keys move focus day-to-day (left/right ±1, up/down ±7); Enter/Space selects; Escape closes without committing. Each day announces weekday, full date, and active state to assistive tech.",
+            "Flags",
+            "No gaps identified — this is one of the cleanest matches between skill and build reviewed across the file, including the subtle \"don't componentize calendar internals\" rule being followed precisely (day cells, presets, and month headers are all plain layers, never their own component). No Do's/Don'ts section: no consumer-facing rule in the source material had a genuine visual counterexample that wouldn't just restate the anatomy already shown above."
+          ]
+        }
+      ]
+    }
+  ]
+}

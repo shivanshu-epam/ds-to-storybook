@@ -188,7 +188,7 @@ export function buildSpec(set: IRComponentSet, ir: FigmaIR, target: ComponentTar
     name: set.name,
     archetype: archetype.id,
     figma: { fileKey: ir.fileKey, nodeId: set.nodeId, ...(set.key ? { key: set.key } : {}), version: ir.version, page: set.page, irHash: set.hash },
-    code: { file: target.code.file, export: target.code.export },
+    code: { file: target.code?.file ?? '', export: target.code?.export ?? '' },
     props,
     states,
     variantMatrix: { axes, stateAxes, count: set.variants.length, fullCount, default: defaults },

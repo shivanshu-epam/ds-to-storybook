@@ -126,7 +126,7 @@ export function docTabs(frames: IRDocFrame[], componentName: string): DocTab[] {
   return tabs;
 }
 
-export function docsJson(ctx: TemplateContext, setsUsed: IRComponentSet[], name: string, description: string, mapping: ComponentReport['props']): string {
+export function docsJson(ctx: TemplateContext, setsUsed: IRComponentSet[], name: string, description: string, mapping: ComponentReport['props'], notes: string[] = []): string {
   const frames = setsUsed.flatMap((s) => s.docFrames);
   description = description || leadSentence(frames);
   return JSON.stringify(
@@ -135,6 +135,7 @@ export function docsJson(ctx: TemplateContext, setsUsed: IRComponentSet[], name:
       description,
       figma: { fileKey: ctx.fileKey, version: ctx.version, sets: setsUsed.map((s) => ({ name: s.name, nodeId: s.nodeId })) },
       mapping,
+      notes,
       tabs: docTabs(frames, name),
     },
     null,

@@ -46,6 +46,10 @@ function reader(opts: { variables?: boolean } = {}): FigmaReader & { calls: stri
       calls.push(`nodes:${ids.join(',')}`);
       return structuredClone(nodesResponse);
     },
+    async fileWithIds() {
+      calls.push('fileWithIds');
+      return structuredClone(fileResponse);
+    },
     async localVariables() {
       calls.push('variables');
       if (!opts.variables) throw new FigmaHttpError(403, 'https://api.figma.com/v1/files/FIXTURE/variables/local', 'Forbidden');

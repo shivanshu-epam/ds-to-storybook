@@ -13,7 +13,9 @@ export class FigmaHttpError extends Error {
 /** What the extractor needs from Figma; FigmaClient implements it, tests can pass a stub. */
 export interface FigmaReader {
   file(fileKey: string, depth?: number): Promise<FileResponse>;
-  nodes(fileKey: string, ids: string[], version?: string): Promise<NodesResponse>;
+  nodes(fileKey: string, ids: string[], version?: string, depth?: number): Promise<NodesResponse>;
+  /** The file tree containing only the given nodes and their ancestors (finds the page of nested sets). */
+  fileWithIds(fileKey: string, ids: string[], version?: string): Promise<FileResponse>;
   localVariables(fileKey: string): Promise<LocalVariablesResponse>;
 }
 
@@ -50,10 +52,17 @@ export class FigmaClient implements FigmaReader, FigmaRenderer {
     return this.get(`/v1/files/${fileKey}?depth=${depth}`);
   }
 
-  nodes(fileKey: string, ids: string[], version?: string): Promise<NodesResponse> {
+  nodes(fileKey: string, ids: string[], version?: string, depth?: number): Promise<NodesResponse> {
     const params = new URLSearchParams({ ids: ids.join(',') });
     if (version) params.set('version', version);
+    if (depth) params.set('depth', String(depth));
     return this.get(`/v1/files/${fileKey}/nodes?${params}`);
+  }
+
+  fileWithIds(fileKey: string, ids: string[], version?: string): Promise<FileResponse> {
+    const params = new URLSearchParams({ ids: ids.join(',') });
+    if (version) params.set('version', version);
+    return this.get(`/v1/files/${fileKey}?${params}`);
   }
 
   /** Enterprise plans only. Callers must handle a 403 and fall back. */

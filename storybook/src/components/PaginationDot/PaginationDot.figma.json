@@ -1,0 +1,427 @@
+{
+  "component": "PaginationDot",
+  "description": "A carousel shows a set of items one view at a time inside a fixed viewport, advanced with controls, swipe or autoplay.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "PaginationDot",
+        "nodeId": "241:1815"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "—",
+      "figma": "State (variant)",
+      "note": "States: Default → default, Active → :pressed (CSS)"
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified."
+  ],
+  "tabs": [
+    {
+      "title": "Usage",
+      "nodeId": "1336:73",
+      "sections": [
+        {
+          "heading": "Carousel",
+          "level": 3,
+          "paragraphs": [
+            "A carousel shows a set of items one view at a time inside a fixed viewport, advanced with controls, swipe or autoplay."
+          ]
+        },
+        {
+          "heading": "Overview",
+          "level": 3,
+          "paragraphs": [
+            "A carousel shows a subset of items at once when they exceed the available space. In this system it's assembled from three components — NavControl, PaginationDot and AutoplayToggle — around your own viewport and slides."
+          ]
+        },
+        {
+          "heading": "Variants",
+          "level": 4,
+          "paragraphs": [
+            "Item A",
+            "Item B",
+            "Slide 1 of 3",
+            "Slide 2 of 3",
+            "Multi-item",
+            "Several slides per view (slidesPerView).",
+            "Standard",
+            "Manual advance, finite — the edge control disables at the first and last slide.",
+            "Autoplay",
+            "Advances on a timer, always paired with a visible pause control.",
+            "Behavior options: infinite (wraps from last to first) or finite (stops at the edges); single-item or multi-item; slide or fade transition; horizontal or vertical."
+          ]
+        },
+        {
+          "heading": "When to use",
+          "level": 4,
+          "paragraphs": [
+            "•   When items exceed the available space and only a subset should be visible at once."
+          ]
+        },
+        {
+          "heading": "When not to use",
+          "level": 4,
+          "paragraphs": [
+            "•   For content users need to compare side by side.",
+            "•   For content users need to read in full."
+          ]
+        },
+        {
+          "heading": "Formatting",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Anatomy",
+          "level": 4,
+          "paragraphs": [
+            "3"
+          ]
+        },
+        {
+          "heading": "Slide 1 of 3",
+          "level": 3,
+          "paragraphs": [
+            "2",
+            "1",
+            "4",
+            "•   ① Container — the root; owns state and bounds.",
+            "•   ② Navigation controls — Prev and Next NavControl buttons.",
+            "•   ③ Viewport — clips overflow and shows the current slide; the track and slides sit inside it.",
+            "•   ④ Pagination — PaginationDots showing position and count; the active dot is larger.",
+            "Not shown: the autoplay control (AutoplayToggle) — see the Autoplay variant."
+          ]
+        },
+        {
+          "heading": "Alignment",
+          "level": 4,
+          "paragraphs": [
+            "All slides share identical dimensions within a breakpoint. The gap between slides is consistent, and the first and last slides align flush to the viewport edges. A partial peek of the next slide is allowed only when intentional."
+          ]
+        },
+        {
+          "heading": "Placement",
+          "level": 4,
+          "paragraphs": [
+            "Reserve the viewport height up front so loading media doesn't shift the layout. Don't nest a horizontal carousel inside another on the same axis.",
+            "Slide 2 of 3",
+            "Slide 2 of 3",
+            "Do",
+            "Don't",
+            "Always pair autoplay with a visible, reachable pause control.",
+            "Don't autoplay without a pause control.",
+            "Slide 1 of 3",
+            "Slide 1 of 3",
+            "Don't",
+            "Don't hide navigation with no alternative way to advance.",
+            "Do",
+            "Give users a way to advance — controls, pagination or swipe."
+          ]
+        },
+        {
+          "heading": "Content",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Main elements",
+          "level": 4,
+          "paragraphs": [
+            "Slides",
+            "•   Every slide in a breakpoint has the same size.",
+            "•   Off-screen slides are inert — not reachable by Tab.",
+            "Pagination",
+            "•   Dots show position and count; the active dot is larger.",
+            "Autoplay interval",
+            "•   At least 4000ms (default 5000ms) so content stays readable."
+          ]
+        },
+        {
+          "heading": "Behaviors",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "States",
+          "level": 4,
+          "paragraphs": [
+            "•   Active slide — the current slide; its pagination dot is marked current (PaginationDot · Active).",
+            "•   Disabled navigation — in finite mode, Prev or Next disables at the edges (NavControl · Disabled).",
+            "•   Hover — controls become more prominent and autoplay pauses (NavControl · Hover).",
+            "•   Focus — visible 3px focus ring on the focused control (NavControl · Focused).",
+            "•   Autoplay — Playing or Paused (AutoplayToggle).",
+            "•   Loading — placeholders for slides that haven't loaded yet.",
+            "See the Style tab for how each state looks."
+          ]
+        },
+        {
+          "heading": "Interactions",
+          "level": 4,
+          "paragraphs": [
+            "Mouse and touch",
+            "Prev and Next advance by one slide, or one page when several slides are in view, and the pagination updates with the slide. Swipe and drag commit past about 25% of the slide width or on a fast flick, otherwise snap back — and never hijack vertical page scroll.",
+            "Keyboard",
+            "Key",
+            "Action",
+            "←",
+            "+",
+            "→",
+            "Move to the previous or next slide",
+            "↑",
+            "+",
+            "↓",
+            "Move slides when the carousel is vertical",
+            "Home",
+            "Jump to the first slide",
+            "End",
+            "Jump to the last slide",
+            "Tab",
+            "Move through the controls, including pagination dots",
+            "Full keyboard details are on the Accessibility tab."
+          ]
+        },
+        {
+          "heading": "Autoplay",
+          "level": 4,
+          "paragraphs": [
+            "Autoplay advances on the interval and pauses on hover, when focus is inside the carousel and when the tab is hidden. It stops for good once the user interacts with any control."
+          ]
+        },
+        {
+          "heading": "Transition",
+          "level": 4,
+          "paragraphs": [
+            "Slide or fade, animating transform or opacity only (default 300ms). One transition runs at a time — input during a transition is ignored or queued. Infinite mode wraps without a visible jump."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Style",
+      "nodeId": "1336:417",
+      "sections": [
+        {
+          "heading": "Carousel",
+          "level": 3,
+          "paragraphs": [
+            "A carousel shows a set of items one view at a time inside a fixed viewport, advanced with controls, swipe or autoplay."
+          ]
+        },
+        {
+          "heading": "Color",
+          "level": 3,
+          "paragraphs": [
+            "Swatches are bound to the live tokens.",
+            "Component · State",
+            "Fill",
+            "Icon",
+            "Focus ring",
+            "NavControl · Default",
+            "surface/bg/elevated",
+            "icon/default",
+            "—",
+            "NavControl · Hover",
+            "surface/bg/subtle",
+            "icon/default",
+            "—",
+            "border/interactive/focus (3px)",
+            "NavControl · Focused",
+            "surface/bg/elevated",
+            "icon/default",
+            "NavControl · Disabled",
+            "surface/bg/elevated",
+            "icon/subtle",
+            "—",
+            "PaginationDot · Default",
+            "border/strong",
+            "—",
+            "—",
+            "interactive/bg/primary/default",
+            "PaginationDot · Active",
+            "—",
+            "—",
+            "AutoplayToggle · Playing",
+            "surface/bg/elevated",
+            "icon/default (pause)",
+            "—",
+            "AutoplayToggle · Paused",
+            "surface/bg/elevated",
+            "icon/default (play)",
+            "—"
+          ]
+        },
+        {
+          "heading": "Structure",
+          "level": 3,
+          "paragraphs": [
+            "Component",
+            "Size",
+            "Radius",
+            "Icon",
+            "NavControl",
+            "36 × 36",
+            "radius/full",
+            "Icon/nav/chevron-left|right/20",
+            "AutoplayToggle",
+            "32 × 32",
+            "radius/full",
+            "Icon/media/pause|play/16",
+            "PaginationDot · Default",
+            "8 × 8",
+            "radius/full",
+            "—",
+            "PaginationDot · Active",
+            "10 × 10",
+            "radius/full",
+            "—"
+          ]
+        },
+        {
+          "heading": "Variants & states",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "NavControl — 8 variants",
+          "level": 4,
+          "paragraphs": [
+            "Direction \\ State",
+            "Default",
+            "Hover",
+            "Focused",
+            "Disabled",
+            "Prev",
+            "Next",
+            "PaginationDot and AutoplayToggle — 2 variants each",
+            "Dot · Default",
+            "Dot · Active",
+            "Autoplay · Playing",
+            "Autoplay · Paused",
+            "Dots shown at 3×."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Accessibility",
+      "nodeId": "1336:649",
+      "sections": [
+        {
+          "heading": "Carousel",
+          "level": 3,
+          "paragraphs": [
+            "A carousel shows a set of items one view at a time inside a fixed viewport, advanced with controls, swipe or autoplay."
+          ]
+        },
+        {
+          "heading": "What the design system provides",
+          "level": 3,
+          "paragraphs": [
+            "•   A Focused state with a 3px ring on NavControl.",
+            "•   A Disabled NavControl state for the edges of finite carousels.",
+            "•   An AutoplayToggle with Playing and Paused states, so autoplay can always be stopped."
+          ]
+        },
+        {
+          "heading": "Development considerations",
+          "level": 3,
+          "paragraphs": [
+            "•   Wrap the slides in a live region (aria-live=\"polite\"), turned off during autoplay, so slide changes are announced.",
+            "•   Make off-screen slides inert so they can't be reached by Tab.",
+            "•   Don't move focus when the slide changes unless the user triggered it by keyboard.",
+            "•   Pagination dots must be reachable and operable by keyboard.",
+            "•   Prev, Next, pause and dot controls are icon-only — each needs an accessible name.",
+            "•   Pause autoplay on hover, focus-within and a hidden tab; stop it after any interaction."
+          ]
+        },
+        {
+          "heading": "Keyboard interactions",
+          "level": 3,
+          "paragraphs": [
+            "Key",
+            "Action",
+            "←",
+            "+",
+            "→",
+            "Move to the previous or next slide",
+            "↑",
+            "+",
+            "↓",
+            "Move slides when the carousel is vertical",
+            "Home",
+            "Jump to the first slide",
+            "End",
+            "Jump to the last slide",
+            "Tab",
+            "Move through the controls, including pagination dots"
+          ]
+        },
+        {
+          "heading": "Design recommendations",
+          "level": 3,
+          "paragraphs": [
+            "Automated contrast check — WCAG 2.x relative luminance (sRGB), for every theme combination. Minimum 3:1 for icons, control boundaries, dots and the focus ring (non-text UI). Note: project-a / light is measured against the current surface/bg/default, which resolves to blue because of the gray/50 token.",
+            "Element",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Nav icon · Default",
+            "7.56:1",
+            "6.99:1",
+            "7.56:1",
+            "6.99:1",
+            "Nav icon · Hover",
+            "6.87:1",
+            "6.99:1",
+            "6.87:1",
+            "6.99:1",
+            "Nav icon · Disabled",
+            "4.83:1",
+            "3.67:1",
+            "4.83:1",
+            "3.67:1",
+            "Nav button vs page surface",
+            "4.46:1",
+            "1.13:1",
+            "1.05:1",
+            "1.13:1",
+            "Focus ring",
+            "1.41:1",
+            "6.75:1",
+            "3.14:1",
+            "9.07:1",
+            "Pagination dot · Default",
+            "1.69:1",
+            "7.93:1",
+            "7.23:1",
+            "7.93:1",
+            "Pagination dot · Active",
+            "1.41:1",
+            "3.20:1",
+            "3.14:1",
+            "6.14:1",
+            "Autoplay icon",
+            "7.56:1",
+            "6.99:1",
+            "7.56:1",
+            "6.99:1"
+          ]
+        },
+        {
+          "heading": "Target size",
+          "level": 4,
+          "paragraphs": [
+            "NavControl (36px) and AutoplayToggle (32px) meet the 24×24px AA minimum but are below the 44×44px touch target in the component rules. Pagination dots (8–10px) are below the AA minimum — give each dot a larger hit area if dots are interactive."
+          ]
+        }
+      ]
+    }
+  ]
+}

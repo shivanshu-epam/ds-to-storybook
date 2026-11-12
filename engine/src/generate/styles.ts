@@ -30,11 +30,22 @@ export interface StateAxis {
   states: Record<string, StateSelector | null | 'skip'>;
 }
 
+export interface Found {
+  style: IRStyle;
+  part?: IRPart;
+  /** Style of the parent node (needed by kind "node" for auto-layout sizing and absolute positions). */
+  parentStyle?: IRStyle;
+}
+
 export interface RoleDef {
   role: string;
-  kind: 'box' | 'text' | 'icon';
+  /**
+   * box / text / icon: fixed vocabularies used by archetype templates.
+   * node: full generic rendering of any Figma layer (layout, sizing, position, paint, text).
+   */
+  kind: 'box' | 'text' | 'icon' | 'node';
   /** Finds this role's node in a variant. Return undefined when the part is absent. */
-  find: (v: IRVariant) => { style: IRStyle; part?: IRPart } | undefined;
+  find: (v: IRVariant) => Found | undefined;
   /** Ancestor role, for composing state selectors. Root is implicit. */
   parent?: string;
   /** Emit width/height from Figma (fixed-size parts such as a checkbox box). */
@@ -85,7 +96,59 @@ function length(r: TokenResolver, v: IRValue<number> | undefined, strong: string
   return v.value === 0 ? '0' : r.css(px(v.value), v.variableId, strong, weak);
 }
 
-function declarations(role: RoleDef, found: { style: IRStyle; part?: IRPart }, variant: IRVariant, r: TokenResolver): Record<string, string> {
+const JUSTIFY: Record<string, string> = { MIN: 'flex-start', CENTER: 'center', MAX: 'flex-end', SPACE_BETWEEN: 'space-between' };
+const ALIGN: Record<string, string> = { MIN: 'flex-start', CENTER: 'center', MAX: 'flex-end', BASELINE: 'baseline' };
+
+/** Generic rendering of one Figma node: its own paint and layout, plus how it sits in its parent. */
+function nodeDeclarations(role: RoleDef, found: Found, variant: IRVariant, r: TokenResolver): Record<string, string> {
+  const s = found.style;
+  const type = found.part?.type ?? 'FRAME';
+  const out: Record<string, string> = {};
+  if (type === 'TEXT') {
+    Object.assign(out, declarations({ ...role, kind: 'text' }, found, variant, r));
+    out['white-space'] = s.sizingH === 'HUG' ? 'nowrap' : 'normal';
+    if (s.textAlign) out['text-align'] = ({ CENTER: 'center', RIGHT: 'right', JUSTIFIED: 'justify' } as Record<string, string>)[s.textAlign] ?? 'left';
+  } else if (type === 'INSTANCE' && found.part?.instanceOf && /^icon\//i.test(found.part.instanceOf)) {
+    Object.assign(out, declarations({ ...role, kind: 'icon' }, found, variant, r));
+  } else {
+    Object.assign(out, declarations({ ...role, kind: 'box' }, found, variant, r));
+    if (type === 'ELLIPSE') out['border-radius'] = '50%';
+    if (s.layoutMode) {
+      if (s.primaryAlign) out['justify-content'] = JUSTIFY[s.primaryAlign] ?? 'flex-start';
+      if (s.counterAlign) out['align-items'] = ALIGN[s.counterAlign] ?? 'flex-start';
+      out['flex-wrap'] = s.wrap ? 'wrap' : 'nowrap';
+    }
+    if (s.clips) out.overflow = 'hidden';
+  }
+  // Size and position inside the parent.
+  const parent = found.parentStyle;
+  const inFlow = parent?.layoutMode && !s.absolute;
+  const parentRow = parent?.layoutMode === 'HORIZONTAL';
+  if (role.role !== 'root' && parent && !inFlow) {
+    out.position = 'absolute';
+    out.left = px(s.x ?? 0);
+    out.top = px(s.y ?? 0);
+  }
+  const fixedW = s.sizingH === 'FIXED' || (!s.sizingH && !s.layoutMode && type !== 'TEXT') || (!inFlow && role.role !== 'root' && type !== 'TEXT');
+  const fixedH = s.sizingV === 'FIXED' || (!s.sizingV && !s.layoutMode && type !== 'TEXT') || (!inFlow && role.role !== 'root' && type !== 'TEXT');
+  if (s.sizingH === 'FILL' && inFlow) {
+    if (parentRow) out.flex = '1 1 0';
+    else out['align-self'] = 'stretch';
+  } else if (fixedW && s.width !== undefined && !(type === 'INSTANCE' && found.part?.instanceOf && !/^icon\//i.test(found.part.instanceOf))) {
+    out.width = px(s.width);
+  }
+  if (s.sizingV === 'FILL' && inFlow) {
+    if (!parentRow) out.flex = '1 1 0';
+    else out['align-self'] = 'stretch';
+  } else if (fixedH && s.height !== undefined && type !== 'TEXT' && !(type === 'INSTANCE' && found.part?.instanceOf && !/^icon\//i.test(found.part.instanceOf))) {
+    out.height = px(s.height);
+  }
+  if (inFlow) out['flex-shrink'] = s.sizingH === 'FIXED' && parentRow ? '0' : out['flex-shrink'] ?? '1';
+  return out;
+}
+
+function declarations(role: RoleDef, found: Found, variant: IRVariant, r: TokenResolver): Record<string, string> {
+  if (role.kind === 'node') return nodeDeclarations(role, found, variant, r);
   const s = found.style;
   const roleHint = role.hint ?? [];
   const weak = words(variant);
@@ -162,7 +225,7 @@ export function generateStyles(variants: IRVariant[], model: StyleModel, resolve
       const found = role.find(v);
       if (!found || (found.part?.hidden && !role.includeHidden)) return role.presence ? { display: 'none' } : {};
       const d = declarations(role, found, v, resolver);
-      if (role.presence || d['flex-direction']) d.display = role.display ?? (d['flex-direction'] ? 'flex' : 'inline-flex');
+      if (role.presence || d['flex-direction'] || role.kind === 'node') d.display = role.display ?? (d['flex-direction'] ? 'flex' : 'inline-flex');
       return d;
     }));
   }

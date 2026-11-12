@@ -31,12 +31,20 @@ export interface FigmaNode {
   componentProperties?: Record<string, { type: string; value: string | boolean }>;
   componentId?: string;
   characters?: string;
-  style?: { fontFamily?: string; fontSize?: number; fontWeight?: number; lineHeightPx?: number; letterSpacing?: number; textCase?: string; textDecoration?: string };
+  style?: { fontFamily?: string; fontSize?: number; fontWeight?: number; lineHeightPx?: number; letterSpacing?: number; textCase?: string; textDecoration?: string; textAlignHorizontal?: string };
   opacity?: number;
   strokeAlign?: 'INSIDE' | 'OUTSIDE' | 'CENTER';
   individualStrokeWeights?: { top: number; right: number; bottom: number; left: number } | null;
   /** Radians. */
   rotation?: number;
+  layoutSizingHorizontal?: 'FIXED' | 'HUG' | 'FILL';
+  layoutSizingVertical?: 'FIXED' | 'HUG' | 'FILL';
+  primaryAxisAlignItems?: 'MIN' | 'CENTER' | 'MAX' | 'SPACE_BETWEEN';
+  counterAxisAlignItems?: 'MIN' | 'CENTER' | 'MAX' | 'BASELINE';
+  layoutPositioning?: 'AUTO' | 'ABSOLUTE';
+  layoutWrap?: 'NO_WRAP' | 'WRAP';
+  clipsContent?: boolean;
+  componentPropertyReferences?: { visible?: string; characters?: string; mainComponent?: string };
   effects?: { type: string; visible?: boolean; color?: FigmaColor; offset?: { x: number; y: number }; radius?: number; spread?: number }[];
   fills?: FigmaPaint[];
   strokes?: FigmaPaint[];

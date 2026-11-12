@@ -1,0 +1,97 @@
+{
+  "component": "Switch",
+  "description": "A two-state control that applies its change the instant it's toggled — distinct from a checkbox, which marks a selection typically confirmed later.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "Switch",
+        "nodeId": "723:3038"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "value",
+      "figma": "Value (variant)"
+    },
+    {
+      "prop": "interaction",
+      "figma": "Interaction (variant)",
+      "note": "States: Default → default, Disabled → disabled, Loading → interaction=\"loading\""
+    },
+    {
+      "prop": "size",
+      "figma": "Size (variant)"
+    },
+    {
+      "prop": "showInnerContent",
+      "figma": "Show Inner Content (boolean)"
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified."
+  ],
+  "tabs": [
+    {
+      "title": "Documentation",
+      "nodeId": "995:37",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A two-state control that applies its change the instant it's toggled — distinct from a checkbox, which marks a selection typically confirmed later."
+          ]
+        },
+        {
+          "heading": "Anatomy",
+          "level": 3,
+          "paragraphs": [
+            "1",
+            "3",
+            "2",
+            "① Track — the pill-shaped background the handle slides within.",
+            "② Handle — the circular thumb that slides from one side to the other to indicate state.",
+            "③ Inner icon — a real Icon instance inside the handle, swapping between On/Off glyphs as the state changes."
+          ]
+        },
+        {
+          "heading": "Variants & States",
+          "level": 3,
+          "paragraphs": [
+            "12 variants total: Value(Off/On) × Interaction(Default/Disabled/Loading) × Size(Medium/Small). Grid below shows Value × Interaction at Size=Medium.",
+            "Default",
+            "Disabled",
+            "Loading",
+            "Off",
+            "On"
+          ]
+        },
+        {
+          "heading": "Properties & Content",
+          "level": 3,
+          "paragraphs": [
+            "Two sizes: Medium (default/general use) and Small (dense contexts). Inner icon content swaps between On/Off glyphs immediately as state changes, reinforcing the resulting state at a glance rather than relying on handle position alone."
+          ]
+        },
+        {
+          "heading": "Token Map",
+          "level": 3,
+          "paragraphs": [
+            "color/track/bg/on — track fill, On/Default/Medium"
+          ]
+        },
+        {
+          "heading": "Behaviour & Accessibility",
+          "level": 3,
+          "paragraphs": [
+            "Click/tap anywhere on the track toggles state, not just the handle. Keyboard: focusable, toggles via Space. Loading shows a pending indicator on the handle, distinct from Disabled. Implement with real switch semantics (role=switch, aria-checked), not a generic checkbox role. Label by what the setting controls (\"Notifications\"), not by its current state.",
+            "Flags",
+            "Resolved from the earlier pass: the inner-icon slot described as \"optional, unverified\" in this component's prior review is in fact present and real — every On/Off variant carries a live Icon instance inside the handle (visible above in the anatomy diagram and the variant grid), not just a documented possibility."
+          ]
+        }
+      ]
+    }
+  ]
+}

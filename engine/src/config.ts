@@ -23,7 +23,8 @@ export interface ComponentTarget {
     componentSet: { id: string; name: string };
     docFrames?: string[];
   };
-  code: {
+  /** Code to compare against (drift report). Optional: discovered components have none. */
+  code?: {
     /** Path inside the repo. */
     file: string;
     export: string;

@@ -1,0 +1,446 @@
+{
+  "component": "RadioField",
+  "description": "A radio button lets users pick exactly one option from a set — shown on its own, as a labeled field, or in a titled group.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "RadioField",
+        "nodeId": "522:125"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "state",
+      "figma": "State (variant)",
+      "note": "States: Enabled → default, Focused → :focus (CSS), Invalid → state=\"invalid\", Warning → state=\"warning\", Read-Only → state=\"read-only\", Disabled → disabled, Skeleton → state=\"skeleton\""
+    },
+    {
+      "prop": "position",
+      "figma": "Position (variant)"
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified."
+  ],
+  "tabs": [
+    {
+      "title": "Usage",
+      "nodeId": "1344:351",
+      "sections": [
+        {
+          "heading": "Radio",
+          "level": 3,
+          "paragraphs": [
+            "A radio button lets users pick exactly one option from a set — shown on its own, as a labeled field, or in a titled group."
+          ]
+        },
+        {
+          "heading": "Overview",
+          "level": 3,
+          "paragraphs": [
+            "Radio is built as three layered components, from atom to organism. Only one radio in a group can be selected at a time."
+          ]
+        },
+        {
+          "heading": "Components",
+          "level": 4,
+          "paragraphs": [
+            "RadioField",
+            "A control with its value text and optional error or warning row.",
+            "RadioControl",
+            "The circle alone — outer ring and inner dot. No label.",
+            "RadioGroup",
+            "A group label with RadioFields, vertical or horizontal."
+          ]
+        },
+        {
+          "heading": "Selection",
+          "level": 4,
+          "paragraphs": [
+            "Unselected",
+            "Selected",
+            "The inner dot shows the chosen option."
+          ]
+        },
+        {
+          "heading": "Formatting",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Anatomy",
+          "level": 4,
+          "paragraphs": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "•   ① Control — a RadioControl instance: outer circle, inner dot when selected, focus ring when focused.",
+            "•   ② Value — the option's own text.",
+            "•   ③ Status icon — error or warning icon, shown in the Invalid and Warning states.",
+            "•   ④ Message — the error or warning text.",
+            "In a RadioGroup, a group label sits above the fields."
+          ]
+        },
+        {
+          "heading": "Alignment",
+          "level": 4,
+          "paragraphs": [
+            "Position · Left",
+            "Position · Right",
+            "Control before the value.",
+            "Value before the control.",
+            "Horizontal group",
+            "Fields sit in one row.",
+            "Vertical group",
+            "Fields stack under the group label."
+          ]
+        },
+        {
+          "heading": "Content",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Main elements",
+          "level": 4,
+          "paragraphs": [
+            "Group label",
+            "•   Required on every RadioGroup — names the choice being made.",
+            "Value",
+            "•   The text of each option.",
+            "Error and warning messages",
+            "•   Text with a status icon, shown in the Invalid and Warning states."
+          ]
+        },
+        {
+          "heading": "Behaviors",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "States",
+          "level": 4,
+          "paragraphs": [
+            "Selecting a radio clears the other radios in its group. Read-only only ever shows an option that's already selected — it displays a prior choice, so there is no read-only radio with nothing selected.",
+            "•   RadioControl — Enabled, Hovered, Focused, Pressed, Disabled, Skeleton, Read-Only, Invalid, Warning; each Selected or not.",
+            "•   RadioField — Enabled, Focused, Invalid, Warning, Read-Only, Disabled, Skeleton.",
+            "•   RadioGroup — Enabled, Read-Only, Invalid, Warning.",
+            "See the Style tab for how each state looks."
+          ]
+        },
+        {
+          "heading": "Interactions",
+          "level": 4,
+          "paragraphs": [
+            "Keyboard",
+            "Key",
+            "Action",
+            "↑",
+            "+",
+            "↓",
+            "Moves between options in the group",
+            "←",
+            "+",
+            "→",
+            "Moves between options in the group",
+            "Full keyboard details are on the Accessibility tab."
+          ]
+        },
+        {
+          "heading": "Related",
+          "level": 3,
+          "paragraphs": [
+            "•   List item — uses RadioControl as its control for single-select lists.",
+            "•   Checkbox — the equivalent control for multi-select lists."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Style",
+      "nodeId": "1344:699",
+      "sections": [
+        {
+          "heading": "Radio",
+          "level": 3,
+          "paragraphs": [
+            "A radio button lets users pick exactly one option from a set — shown on its own, as a labeled field, or in a titled group."
+          ]
+        },
+        {
+          "heading": "Color",
+          "level": 3,
+          "paragraphs": [
+            "RadioControl tokens per state, from the component.radio collection. Swatches are bound to the live tokens.",
+            "State",
+            "Border",
+            "Dot",
+            "Enabled",
+            "color/control/border/enabled",
+            "color/control/dot/enabled",
+            "Hovered",
+            "color/control/border/hovered",
+            "color/control/dot/hovered",
+            "Focused",
+            "color/control/border/focused",
+            "color/control/dot/focused",
+            "Pressed",
+            "color/control/border/pressed",
+            "color/control/dot/pressed",
+            "Disabled",
+            "color/control/border/disabled",
+            "color/control/dot/disabled",
+            "Skeleton",
+            "color/control/border/skeleton",
+            "color/control/border/skeleton",
+            "Read-Only",
+            "color/control/border/read-only",
+            "color/control/dot/read-only",
+            "Invalid",
+            "color/control/border/invalid",
+            "color/control/dot/invalid",
+            "Warning",
+            "color/control/border/warning",
+            "color/control/dot/warning",
+            "Focused adds a ring bound to color/focus-ring. The outer circle fill isn't bound to a token."
+          ]
+        },
+        {
+          "heading": "Field text",
+          "level": 4,
+          "paragraphs": [
+            "Element",
+            "Token",
+            "Group label",
+            "color/label/enabled",
+            "Value",
+            "color/value/enabled",
+            "Value · Disabled",
+            "color/value/disabled",
+            "Error message",
+            "color/error",
+            "Warning message",
+            "color/warning"
+          ]
+        },
+        {
+          "heading": "Typography",
+          "level": 3,
+          "paragraphs": [
+            "Element",
+            "Rendered size",
+            "Value",
+            "13px",
+            "Group label",
+            "12px",
+            "Error and warning messages",
+            "12px",
+            "Text isn't bound to typography tokens yet (raw values)."
+          ]
+        },
+        {
+          "heading": "Structure",
+          "level": 3,
+          "paragraphs": [
+            "Property",
+            "Value",
+            "RadioControl frame",
+            "28 × 28",
+            "Border width",
+            "border/width (component.radio)",
+            "Field gap",
+            "space/gap/items · 8",
+            "Disabled",
+            "Control opacity 45% · field opacity 60%"
+          ]
+        },
+        {
+          "heading": "Variants & states",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "RadioControl — 17 variants",
+          "level": 4,
+          "paragraphs": [
+            "State (9) × Selected (2), minus Read-Only unselected.",
+            "State \\ Selected",
+            "false",
+            "true",
+            "Enabled",
+            "Hovered",
+            "Focused",
+            "Pressed",
+            "Disabled",
+            "Skeleton",
+            "Read-Only",
+            "—",
+            "Invalid",
+            "Warning"
+          ]
+        },
+        {
+          "heading": "RadioField — 14 variants",
+          "level": 4,
+          "paragraphs": [
+            "State \\ Position",
+            "Left",
+            "Right",
+            "Enabled",
+            "Focused",
+            "Invalid",
+            "Warning",
+            "Read-Only",
+            "Disabled",
+            "Skeleton"
+          ]
+        },
+        {
+          "heading": "RadioGroup — 8 variants",
+          "level": 4,
+          "paragraphs": [
+            "State \\ Horizontal",
+            "false",
+            "true",
+            "Enabled",
+            "Read-Only",
+            "Invalid",
+            "Warning"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Accessibility",
+      "nodeId": "1344:1389",
+      "sections": [
+        {
+          "heading": "Radio",
+          "level": 3,
+          "paragraphs": [
+            "A radio button lets users pick exactly one option from a set — shown on its own, as a labeled field, or in a titled group."
+          ]
+        },
+        {
+          "heading": "What the design system provides",
+          "level": 3,
+          "paragraphs": [
+            "•   A Focused state with a focus ring on the control.",
+            "•   Invalid and Warning states with a text message and icon, not color alone.",
+            "•   Read-Only and Disabled states."
+          ]
+        },
+        {
+          "heading": "Development considerations",
+          "level": 3,
+          "paragraphs": [
+            "•   Each option uses role=\"radio\" (or a native radio) with aria-checked.",
+            "•   Wrap the options in role=\"radiogroup\", labelled by the group label.",
+            "•   Only one option in a group can be checked.",
+            "•   Disabled radios must not receive keyboard focus."
+          ]
+        },
+        {
+          "heading": "Keyboard interactions",
+          "level": 3,
+          "paragraphs": [
+            "Key",
+            "Action",
+            "↑",
+            "+",
+            "↓",
+            "Moves between options in the group",
+            "←",
+            "+",
+            "→",
+            "Moves between options in the group"
+          ]
+        },
+        {
+          "heading": "Design recommendations",
+          "level": 3,
+          "paragraphs": [
+            "Automated contrast check — WCAG 2.x relative luminance (sRGB), against the page surface (surface/bg/default), for every theme combination. Minimums: 3:1 for the circle, dot and focus ring (non-text UI), 4.5:1 for text. Values are before the Disabled opacity is applied. Note: project-a / light is measured against the current surface/bg/default, which resolves to blue because of the gray/50 token.",
+            "Element",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Border · Enabled",
+            "4.63:1",
+            "4.16:1",
+            "4.63:1",
+            "4.16:1",
+            "Border · Hovered / Pressed",
+            "7.23:1",
+            "7.93:1",
+            "7.23:1",
+            "7.93:1",
+            "Border · Invalid",
+            "5.49:1",
+            "7.28:1",
+            "5.49:1",
+            "7.28:1",
+            "Border · Warning",
+            "3.05:1",
+            "6.32:1",
+            "3.05:1",
+            "6.32:1",
+            "Border · Disabled",
+            "1.18:1",
+            "1.37:1",
+            "1.18:1",
+            "1.37:1",
+            "Dot · Enabled / Focused",
+            "6.02:1",
+            "3.20:1",
+            "3.14:1",
+            "6.14:1",
+            "Dot · Hovered",
+            "7.56:1",
+            "2.55:1",
+            "4.84:1",
+            "3.98:1",
+            "Dot · Pressed",
+            "9.51:1",
+            "2.03:1",
+            "7.50:1",
+            "2.57:1",
+            "Focus ring",
+            "6.02:1",
+            "6.75:1",
+            "3.14:1",
+            "9.07:1",
+            "Value text",
+            "16.98:1",
+            "19.27:1",
+            "16.98:1",
+            "19.27:1",
+            "Error message",
+            "5.49:1",
+            "7.28:1",
+            "5.49:1",
+            "7.28:1",
+            "Warning message",
+            "4.81:1",
+            "12.06:1",
+            "4.81:1",
+            "12.06:1"
+          ]
+        },
+        {
+          "heading": "Target size",
+          "level": 4,
+          "paragraphs": [
+            "The control frame is 28px — above the 24×24px AA minimum but below the 44×44px touch target in the component rules. Make the value text part of the clickable area."
+          ]
+        }
+      ]
+    }
+  ]
+}

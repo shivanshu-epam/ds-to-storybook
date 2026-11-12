@@ -1,0 +1,112 @@
+{
+  "component": "Divider",
+  "description": "A rule line in five true Figma variant axes — Orientation, Style, Size, Color, and State — all directly switchable, matching how every other component in this file exposes its options.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "Divider",
+        "nodeId": "697:1083"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "orientation",
+      "figma": "Orientation (variant)"
+    },
+    {
+      "prop": "styleVariant",
+      "figma": "Style (variant)"
+    },
+    {
+      "prop": "size",
+      "figma": "Size (variant)"
+    },
+    {
+      "prop": "color",
+      "figma": "Color (variant)"
+    },
+    {
+      "prop": "state",
+      "figma": "State (variant)",
+      "note": "States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Selected → state=\"selected\", Disabled → disabled"
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified."
+  ],
+  "tabs": [
+    {
+      "title": "Documentation",
+      "nodeId": "975:3",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A rule line in five true Figma variant axes — Orientation, Style, Size, Color, and State — all directly switchable, matching how every other component in this file exposes its options."
+          ]
+        },
+        {
+          "heading": "Anatomy",
+          "level": 3,
+          "paragraphs": [
+            "1",
+            "① Line — a single rectangle rendered via strokes only (never fills), for every Style value. Never a LINE node type, on either orientation.",
+            "Root is an auto-layout frame that hugs both axes at the Size-driven length (Sm=24px, Md=48px) and carries no fill of its own."
+          ]
+        },
+        {
+          "heading": "Variants & States",
+          "level": 3,
+          "paragraphs": [
+            "540 variants total: Orientation(2) × Style(3) × Size(2) × Color(9) × State(5) — an owner-approved deviation from the 80-variant ceiling, so every combination stays directly selectable. Grid below is a deliberate representative subset: Color × Style at Orientation=Horizontal, Size=Md, State=Default. A mid-grey backdrop band is used since Light, Subtle, and Transparent are intentionally pale and would be invisible on plain white.",
+            "Solid",
+            "Dotted",
+            "Dash",
+            "Light",
+            "Dark",
+            "Subtle",
+            "Transparent",
+            "Danger",
+            "Success",
+            "Neutral",
+            "Warning",
+            "Info"
+          ]
+        },
+        {
+          "heading": "State — zoomed callout",
+          "level": 3,
+          "paragraphs": [
+            "Focused/Selected render at the strong stroke width (2px); Default/Hover/Disabled render at 1px — a difference easy to miss at grid thumbnail size. Shown here at Color=Dark, Style=Solid, Size=Md.",
+            "Default",
+            "Hover",
+            "Disabled",
+            "Focused",
+            "Selected"
+          ]
+        },
+        {
+          "heading": "Token Map",
+          "level": 3,
+          "paragraphs": [
+            "color/dark — Color=Dark stroke colour",
+            "component.divider collection (single value mode, 30 variables): 9 colour variables (each aliasing an existing semantic border token), 9 colour-opacity floats (0-100 scale — only Transparent is 0), 5 state stroke-width floats (Focused/Selected alias the 2px \"strong\" width, the rest alias 1px \"default\"), 5 state opacity floats (only Disabled is 40), 2 hug-length floats (Sm→24px, Md→48px)."
+          ]
+        },
+        {
+          "heading": "Behaviour & Accessibility",
+          "level": 3,
+          "paragraphs": [
+            "Divider itself is not clickable — State is a visual signal set by the consumer, not user interaction. A List Item or Tabs component might instance a divider with State=Selected/Focused to draw a heavier, tinted line next to an active row/tab. Decorative — use role=separator when semantically meaningful, otherwise aria-hidden=true.",
+            "Flags",
+            "No gaps identified — the build matches the skill's 540-variant spec exactly, including the documented rectangle-thickness gotcha having been addressed (every variant binds both the length and thickness dimensions of its line rectangle).\n\nNo Do's/Don'ts section: the source skill's explicit rules (never use a LINE node, always bind both rectangle dimensions) are build-time instructions for whoever constructs the component, not consumer-facing usage guidance with a genuine visual counterexample — so none was fabricated here.\n\nVariant grid shown is a deliberate 27-instance representative subset (Color × Style, 2 of 5 axes) rather than all 540 — reproducing the full matrix in one documentation frame was judged impractical; Orientation, Size, and State are demonstrated separately (State via the zoomed callout above)."
+          ]
+        }
+      ]
+    }
+  ]
+}

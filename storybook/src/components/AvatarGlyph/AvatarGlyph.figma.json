@@ -1,0 +1,507 @@
+{
+  "component": "AvatarGlyph",
+  "description": "An avatar represents a user or entity with an image, an icon or initials, optionally paired with a name and email.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "AvatarGlyph",
+        "nodeId": "276:1716"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "type",
+      "figma": "Type (variant)"
+    },
+    {
+      "prop": "color",
+      "figma": "Color (variant)"
+    },
+    {
+      "prop": "size",
+      "figma": "Size (variant)"
+    },
+    {
+      "prop": "—",
+      "figma": "Icon (instance swap)",
+      "note": "Not exposed yet."
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "The Figma set has 21 of 45 possible variant combinations; other combinations use the nearest defined styles.",
+    "Instance swap properties not exposed as props (default instance rendered): Icon."
+  ],
+  "tabs": [
+    {
+      "title": "Usage",
+      "nodeId": "1337:116",
+      "sections": [
+        {
+          "heading": "Avatar",
+          "level": 3,
+          "paragraphs": [
+            "An avatar represents a user or entity with an image, an icon or initials, optionally paired with a name and email."
+          ]
+        },
+        {
+          "heading": "Overview",
+          "level": 3,
+          "paragraphs": [
+            "Avatars represent people and entities at a glance. Use AvatarGlyph on its own, or AvatarIdentity to pair it with a name, email and optional trailing icon."
+          ]
+        },
+        {
+          "heading": "Components",
+          "level": 4,
+          "paragraphs": [
+            "AvatarIdentity",
+            "An AvatarGlyph with name, optional email and optional trailing icon.",
+            "AvatarGlyph",
+            "The avatar alone — image, icon or initials."
+          ]
+        },
+        {
+          "heading": "Content types",
+          "level": 4,
+          "paragraphs": [
+            "Image",
+            "Icon",
+            "Text",
+            "A photo of the person.",
+            "For system or bot accounts, placeholders and entities that aren't people.",
+            "Initials — first letter of the first and last name."
+          ]
+        },
+        {
+          "heading": "When to use",
+          "level": 4,
+          "paragraphs": [
+            "•   To represent a person with their photo or initials.",
+            "•   To represent a system account, bot or non-person entity — Icon type.",
+            "•   To identify someone next to their name and email — AvatarIdentity."
+          ]
+        },
+        {
+          "heading": "Formatting",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Anatomy",
+          "level": 4,
+          "paragraphs": [
+            "2",
+            "1",
+            "4",
+            "3",
+            "•   ① Avatar — an AvatarGlyph instance (image, icon or initials).",
+            "•   ② Name — the person's or entity's name (Has name, Name).",
+            "•   ③ Email (optional) — secondary line (Has email, Email).",
+            "•   ④ Trailing icon (optional) — e.g. a chevron for a menu (Has trailing icon)."
+          ]
+        },
+        {
+          "heading": "Sizes",
+          "level": 4,
+          "paragraphs": [
+            "Small · 24px",
+            "Medium · 32px (default)",
+            "Large · 40px",
+            "Shown at 2×."
+          ]
+        },
+        {
+          "heading": "Colors",
+          "level": 4,
+          "paragraphs": [
+            "Color 1",
+            "Color 2",
+            "Color 3",
+            "Color 4",
+            "Color 5",
+            "Derive an initials avatar's color from a hash of the user's name or ID, so the same person always gets the same color.",
+            "Do",
+            "Don't",
+            "The same person gets the same color everywhere.",
+            "Don't assign a random color on each render."
+          ]
+        },
+        {
+          "heading": "Content",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Main elements",
+          "level": 4,
+          "paragraphs": [
+            "Initials",
+            "•   First letter of the first and last name — Jane Doe → JD.",
+            "•   If the initials don't fit, shrink the font to fit rather than clip.",
+            "Image",
+            "•   Needs alt text that names the person.",
+            "•   If the image fails to load, fall back to the icon (if configured), then to initials.",
+            "Name and email",
+            "•   Set with the Name and Email text properties."
+          ]
+        },
+        {
+          "heading": "Behaviors",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "States",
+          "level": 4,
+          "paragraphs": [
+            "AvatarGlyph is static. AvatarIdentity has interactive states for when it opens a profile card or menu.",
+            "•   Default — resting.",
+            "•   Hover — background shifts (surface/bg/subtle).",
+            "•   Focused — 3px focus ring.",
+            "•   Active — pressed.",
+            "•   Selected — persistent highlight.",
+            "•   Disabled — non-interactive.",
+            "See the Style tab for how each state looks."
+          ]
+        },
+        {
+          "heading": "Interactions",
+          "level": 4,
+          "paragraphs": [
+            "An avatar that opens a profile card or menu needs hover and focus states like a button. A purely decorative avatar has no hover styling, so it doesn't look clickable.",
+            "Keyboard",
+            "Key",
+            "Action",
+            "Tab",
+            "Moves focus to an interactive AvatarIdentity"
+          ]
+        },
+        {
+          "heading": "Related",
+          "level": 3,
+          "paragraphs": [
+            "•   Badge — overlay a Dot or Numeric badge on an avatar for notifications. Keep it distinct from a presence/status dot, which signals identity state rather than action required."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Style",
+      "nodeId": "1337:388",
+      "sections": [
+        {
+          "heading": "Avatar",
+          "level": 3,
+          "paragraphs": [
+            "An avatar represents a user or entity with an image, an icon or initials, optionally paired with a name and email."
+          ]
+        },
+        {
+          "heading": "Color",
+          "level": 3,
+          "paragraphs": [
+            "Swatches are bound to the live tokens."
+          ]
+        },
+        {
+          "heading": "AvatarGlyph",
+          "level": 4,
+          "paragraphs": [
+            "Type · Color",
+            "Background",
+            "Content",
+            "Text · 1",
+            "avatar/bg/1",
+            "text/inverse",
+            "Text · 2",
+            "avatar/bg/2",
+            "text/inverse",
+            "Text · 3",
+            "avatar/bg/3",
+            "text/inverse",
+            "Text · 4",
+            "avatar/bg/4",
+            "text/inverse",
+            "Text · 5",
+            "avatar/bg/5",
+            "text/inverse",
+            "Icon",
+            "avatar/bg/icon",
+            "icon/inverse",
+            "Image",
+            "Image fill",
+            "—"
+          ]
+        },
+        {
+          "heading": "AvatarIdentity",
+          "level": 4,
+          "paragraphs": [
+            "State",
+            "Background",
+            "Name",
+            "Email",
+            "Focus ring",
+            "Default",
+            "—",
+            "text/primary",
+            "text/secondary",
+            "—",
+            "Hover",
+            "surface/bg/subtle",
+            "text/primary",
+            "text/secondary",
+            "—",
+            "border/interactive/focus (3px)",
+            "Focused",
+            "—",
+            "text/primary",
+            "text/secondary",
+            "interactive/bg/secondary/pressed",
+            "Active",
+            "text/primary",
+            "text/secondary",
+            "—",
+            "interactive/bg/activated",
+            "Selected",
+            "text/primary",
+            "text/secondary",
+            "—",
+            "Disabled",
+            "—",
+            "text/disabled",
+            "text/disabled",
+            "—"
+          ]
+        },
+        {
+          "heading": "Typography",
+          "level": 3,
+          "paragraphs": [
+            "Element",
+            "Tokens",
+            "Rendered size",
+            "Initials (Md)",
+            "text-style/label/md/*",
+            "12px",
+            "Name",
+            "text-style/label/md/*",
+            "12px",
+            "Email",
+            "text-style/caption/md/*",
+            "12px"
+          ]
+        },
+        {
+          "heading": "Structure",
+          "level": 3,
+          "paragraphs": [
+            "Property",
+            "Value",
+            "Glyph size",
+            "size/avatar/sm · 24 · md · 32 · lg · 40",
+            "Glyph shape",
+            "radius/full (circle)",
+            "Icon",
+            "Icon/user/profile/20 · 20px",
+            "Identity padding",
+            "space/inset/xs · 4",
+            "Identity gap",
+            "space/inline/sm · 8",
+            "Identity radius",
+            "radius/md · 6"
+          ]
+        },
+        {
+          "heading": "Variants & states",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "AvatarGlyph — 21 variants",
+          "level": 4,
+          "paragraphs": [
+            "Text: Color (5) × Size (3). Icon and Image: Color 1 × Size (3).",
+            "Color \\ Size",
+            "Sm",
+            "Md",
+            "Lg",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "Type \\ Size",
+            "Sm",
+            "Md",
+            "Lg",
+            "Icon",
+            "Image"
+          ]
+        },
+        {
+          "heading": "AvatarIdentity — 6 variants",
+          "level": 4,
+          "paragraphs": [
+            "Default",
+            "Hover",
+            "Focused",
+            "Active",
+            "Selected",
+            "Disabled"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Accessibility",
+      "nodeId": "1337:800",
+      "sections": [
+        {
+          "heading": "Avatar",
+          "level": 3,
+          "paragraphs": [
+            "An avatar represents a user or entity with an image, an icon or initials, optionally paired with a name and email."
+          ]
+        },
+        {
+          "heading": "What the design system provides",
+          "level": 3,
+          "paragraphs": [
+            "•   A Focused state with a 3px ring on AvatarIdentity.",
+            "•   Hover, Active, Selected and Disabled states for interactive avatars.",
+            "•   Sizes of 24, 32 and 40px — the smallest meets the 24×24px AA target minimum (WCAG 2.5.8)."
+          ]
+        },
+        {
+          "heading": "Development considerations",
+          "level": 3,
+          "paragraphs": [
+            "•   Image avatars need alt text that names the person — not \"avatar\" or \"user photo\".",
+            "•   Icon and initials avatars need an accessible name (aria-label); two letters alone aren't enough context.",
+            "•   Announce a numbered notification badge as part of the name — e.g. \"Jane Doe, 3 notifications\".",
+            "•   Interactive avatars need hover and focus states like a button; decorative avatars have none.",
+            "•   An overflow \"+N\" avatar in a group must reveal the remaining names with a keyboard-triggerable popover, not hover only."
+          ]
+        },
+        {
+          "heading": "Keyboard interactions",
+          "level": 3,
+          "paragraphs": [
+            "Key",
+            "Action",
+            "Tab",
+            "Moves focus to an interactive AvatarIdentity",
+            "Shift",
+            "+",
+            "Tab",
+            "Moves focus to the previous focusable element"
+          ]
+        },
+        {
+          "heading": "Design recommendations",
+          "level": 3,
+          "paragraphs": [
+            "Automated contrast check — WCAG 2.x relative luminance (sRGB), for every theme combination. Initials (12px) and name/email text need 4.5:1; icons and the focus ring 3:1; disabled text 3:1 (house rule TKN-005). Note: project-a / light is measured against the current surface/bg/default, which resolves to blue because of the gray/50 token."
+          ]
+        },
+        {
+          "heading": "AvatarGlyph",
+          "level": 4,
+          "paragraphs": [
+            "Element",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Initials · Color 1",
+            "1.41:1",
+            "2.82:1",
+            "3.14:1",
+            "5.41:1",
+            "Initials · Color 2",
+            "1.12:1",
+            "3.54:1",
+            "4.80:1",
+            "3.54:1",
+            "Initials · Color 3",
+            "1.13:1",
+            "3.53:1",
+            "4.81:1",
+            "3.53:1",
+            "Initials · Color 4",
+            "1.45:1",
+            "2.74:1",
+            "6.19:1",
+            "2.74:1",
+            "Initials · Color 5",
+            "1.96:1",
+            "2.03:1",
+            "8.35:1",
+            "2.03:1",
+            "Icon · icon/inverse",
+            "1.08:1",
+            "2.35:1",
+            "4.63:1",
+            "2.35:1"
+          ]
+        },
+        {
+          "heading": "AvatarIdentity",
+          "level": 4,
+          "paragraphs": [
+            "Element",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Name · Default / Focused",
+            "3.98:1",
+            "4.51:1",
+            "16.98:1",
+            "19.27:1",
+            "Name · Hover",
+            "16.12:1",
+            "3.98:1",
+            "16.12:1",
+            "16.98:1",
+            "Name · Active",
+            "12.04:1",
+            "1.69:1",
+            "12.04:1",
+            "7.23:1",
+            "Name · Selected",
+            "15.86:1",
+            "3.58:1",
+            "12.55:1",
+            "18.03:1",
+            "Email · Default",
+            "1.69:1",
+            "7.93:1",
+            "7.23:1",
+            "7.93:1",
+            "Email · Active",
+            "5.13:1",
+            "2.98:1",
+            "5.13:1",
+            "2.98:1",
+            "Disabled text",
+            "1.08:1",
+            "4.16:1",
+            "4.63:1",
+            "4.16:1",
+            "Focus ring",
+            "1.41:1",
+            "6.75:1",
+            "3.14:1",
+            "9.07:1"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,540 @@
+{
+  "component": "ListItem",
+  "description": "A list item is a single row in a list, menu or file browser that shows a headline and, depending on its type, an icon, supporting text, metadata or a selection control.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "ListItem",
+        "nodeId": "520:3110"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "type",
+      "figma": "Type (variant)"
+    },
+    {
+      "prop": "state",
+      "figma": "State (variant)",
+      "note": "States: Default → default, Hover → :hover (CSS), Pressed → :pressed (CSS), Focused → :focus (CSS), Disabled → disabled, Selected → state=\"selected\", Activated → state=\"activated\", Dragged → state=\"dragged\", Skeleton → state=\"skeleton\""
+    },
+    {
+      "prop": "size",
+      "figma": "Size (variant)"
+    },
+    {
+      "prop": "hasLeadingControl",
+      "figma": "has-leading-control (boolean)"
+    },
+    {
+      "prop": "hasTrailingControl",
+      "figma": "has-trailing-control (boolean)"
+    },
+    {
+      "prop": "—",
+      "figma": "leading-control (instance swap)",
+      "note": "Not exposed yet."
+    },
+    {
+      "prop": "—",
+      "figma": "trailing-control (instance swap)",
+      "note": "Not exposed yet."
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified.",
+    "Instance swap properties not exposed as props (default instance rendered): leading-control, trailing-control.",
+    "Layer \"_interaction-wrapper/_visual-container/_content-container/leading-control\" is an instance of \"Size=Md, Type=Unselected, State=Enabled\", which is not generated here; rendered as an empty box.",
+    "Layer \"_interaction-wrapper/_visual-container/_content-container/trailing-control\" is an instance of \"Size=Md, Type=Unselected, State=Enabled\", which is not generated here; rendered as an empty box."
+  ],
+  "tabs": [
+    {
+      "title": "Usage",
+      "nodeId": "1322:771",
+      "sections": [
+        {
+          "heading": "List item",
+          "level": 3,
+          "paragraphs": [
+            "A list item is a single row in a list, menu or file browser that shows a headline and, depending on its type, an icon, supporting text, metadata or a selection control."
+          ]
+        },
+        {
+          "heading": "Overview",
+          "level": 3,
+          "paragraphs": [
+            "List items are the rows that make up a list. Each type has a fixed set of content, so choose the type that matches what the row represents. Any type can also hold a Checkbox or Radio at its start or end, for multi-select or single-select lists."
+          ]
+        },
+        {
+          "heading": "Types",
+          "level": 4,
+          "paragraphs": [
+            "Default",
+            "Menu",
+            "File",
+            "Setting",
+            "Headline only.",
+            "Headline with a trailing chevron.",
+            "Leading icon, headline, supporting text and metadata.",
+            "Leading icon, headline and supporting text."
+          ]
+        },
+        {
+          "heading": "When to use",
+          "level": 4,
+          "paragraphs": [
+            "•   To show a vertical set of related items — Default.",
+            "•   To list actions or destinations in a menu — Menu.",
+            "•   To show files with an icon, details and metadata — File.",
+            "•   To show a setting with a short description — Setting.",
+            "•   To let users pick one or several items — add a Radio or Checkbox as a leading or trailing control."
+          ]
+        },
+        {
+          "heading": "Formatting",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Anatomy",
+          "level": 4,
+          "paragraphs": [
+            "3",
+            "2",
+            "5",
+            "4",
+            "1",
+            "•   ① Container — the row's visual container; carries state colors, padding and radius.",
+            "•   ② Leading icon — File and Setting types only.",
+            "•   ③ Headline — required title text, on every type.",
+            "•   ④ Supporting text — File and Setting types only.",
+            "•   ⑤ Metadata — trailing text such as a count or file size; File type only.",
+            "Not shown: leading-control / trailing-control (a real Checkbox or Radio instance, toggled with has-leading-control / has-trailing-control) and the Menu type's trailing chevron."
+          ]
+        },
+        {
+          "heading": "Sizes",
+          "level": 4,
+          "paragraphs": [
+            "Small · min 32px",
+            "Medium · min 40px",
+            "Large · min 48px",
+            "Dense lists and menus.",
+            "Standard lists.",
+            "Spacious and touch-first lists.",
+            "Each size has its own minimum height, padding, gap, icon size and type size."
+          ]
+        },
+        {
+          "heading": "Alignment",
+          "level": 4,
+          "paragraphs": [
+            "Leading control",
+            "Trailing control",
+            "The control sits before the content — e.g. multi-select lists.",
+            "The control sits after the content — e.g. settings lists.",
+            "Do",
+            "Don't",
+            "Use either a leading icon or a leading control in a row.",
+            "Don't combine a leading control with the leading icon — they are mutually exclusive."
+          ]
+        },
+        {
+          "heading": "Placement",
+          "level": 4,
+          "paragraphs": [
+            "List items are stacked in a List container (vertical, no fill, stretches to its parent's width). The List component isn't built yet."
+          ]
+        },
+        {
+          "heading": "Content",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Main elements",
+          "level": 4,
+          "paragraphs": [
+            "Headline",
+            "•   Required on every type and always visible.",
+            "Supporting text",
+            "•   Secondary detail under the headline — File and Setting types.",
+            "Metadata",
+            "•   Short trailing text such as a timestamp, size or count — File type."
+          ]
+        },
+        {
+          "heading": "Overflow content",
+          "level": 4,
+          "paragraphs": [
+            "The skill defines a truncate-text option: on, the headline and supporting text end in an ellipsis and a tooltip shows the full text in code; off, text wraps. It isn't exposed as a Figma property yet."
+          ]
+        },
+        {
+          "heading": "Behaviors",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "States",
+          "level": 4,
+          "paragraphs": [
+            "Items start unselected (Default). Selected is a persistent highlight for chosen items; Activated is a persistent indicator for the current navigation location. Both are token swaps on the container.",
+            "•   Hover and Pressed — pointer feedback.",
+            "•   Focused — keyboard focus, shown with a 2px border (color/border/focused).",
+            "•   Disabled — non-interactive.",
+            "•   Dragged — the item is being moved; 2px border (color/border/dragged).",
+            "•   Skeleton — placeholder shapes while content loads.",
+            "See the Style tab for how each state looks."
+          ]
+        },
+        {
+          "heading": "Interactions",
+          "level": 4,
+          "paragraphs": [
+            "Mouse",
+            "Hovering and pressing a row show the Hover and Pressed states. A leading or trailing control is a real Checkbox or Radio and keeps its own interaction.",
+            "Keyboard",
+            "Key",
+            "Action",
+            "↑",
+            "+",
+            "↓",
+            "Move between items at the same level",
+            "→",
+            "Expand a collapsed parent",
+            "←",
+            "Collapse an expanded parent",
+            "Tab",
+            "Move between interactive elements",
+            "Full keyboard details are on the Accessibility tab."
+          ]
+        },
+        {
+          "heading": "Nesting",
+          "level": 4,
+          "paragraphs": [
+            "The skill defines up to four nesting levels, indented with space/indent/level-{n}, and a chevron that rotates 90° when a parent is expanded. Nesting isn't built as a property yet."
+          ]
+        },
+        {
+          "heading": "Related",
+          "level": 3,
+          "paragraphs": [
+            "These components are used inside list items as selection controls.",
+            "•   Checkbox — CheckboxControl is the atomic check box used as a leading or trailing control in multi-select lists.",
+            "•   Radio — RadioControl is the atomic radio circle used as a control in single-select lists."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Style",
+      "nodeId": "1322:1217",
+      "sections": [
+        {
+          "heading": "List item",
+          "level": 3,
+          "paragraphs": [
+            "A list item is a single row in a list, menu or file browser that shows a headline and, depending on its type, an icon, supporting text, metadata or a selection control."
+          ]
+        },
+        {
+          "heading": "Color",
+          "level": 3,
+          "paragraphs": [
+            "Each state aliases its own component/list-item token. Swatches are bound to the live tokens.",
+            "State",
+            "Background",
+            "Headline",
+            "Supporting text",
+            "Border",
+            "color/supporting-text/default",
+            "Default",
+            "color/bg/default",
+            "color/label/default",
+            "—",
+            "color/supporting-text/hover",
+            "Hover",
+            "color/bg/hover",
+            "color/label/hover",
+            "—",
+            "color/supporting-text/pressed",
+            "Pressed",
+            "color/bg/pressed",
+            "color/label/pressed",
+            "—",
+            "color/supporting-text/focused",
+            "color/border/focused (2px)",
+            "Focused",
+            "color/bg/focused",
+            "color/label/focused",
+            "color/supporting-text/disabled",
+            "Disabled",
+            "color/bg/disabled",
+            "color/label/disabled",
+            "—",
+            "color/supporting-text/selected",
+            "Selected",
+            "color/bg/selected",
+            "color/label/selected",
+            "—",
+            "color/supporting-text/activated",
+            "Activated",
+            "color/bg/activated",
+            "color/label/activated",
+            "—",
+            "color/supporting-text/dragged",
+            "color/border/dragged (2px)",
+            "Dragged",
+            "color/bg/dragged",
+            "color/label/dragged",
+            "Skeleton",
+            "Unbound (raw) fill",
+            "—",
+            "—",
+            "—",
+            "Icon color follows the same pattern: color/icon/{state}. All tokens live in the component.list-item collection."
+          ]
+        },
+        {
+          "heading": "Typography",
+          "level": 3,
+          "paragraphs": [
+            "Size",
+            "Headline",
+            "Supporting text · metadata",
+            "Sm",
+            "12px",
+            "11px",
+            "Md",
+            "13px",
+            "12px",
+            "Lg",
+            "14px",
+            "13px",
+            "Text is not bound to typography tokens yet (raw values)."
+          ]
+        },
+        {
+          "heading": "Structure",
+          "level": 3,
+          "paragraphs": [
+            "Size",
+            "Min height",
+            "Padding",
+            "Gap",
+            "Radius",
+            "Leading icon",
+            "Sm",
+            "size/height/sm · 32",
+            "space/padding/sm · 8",
+            "space/gap/sm · 4",
+            "radius · 6",
+            "icon/size/sm · 16",
+            "Md",
+            "size/height/md · 40",
+            "space/padding/md · 12",
+            "space/gap/md · 8",
+            "radius · 6",
+            "icon/size/md · 20",
+            "Lg",
+            "size/height/lg · 48",
+            "space/padding/lg · 16",
+            "space/gap/lg · 8",
+            "radius · 6",
+            "icon/size/lg · 24"
+          ]
+        },
+        {
+          "heading": "Variants & states",
+          "level": 3,
+          "paragraphs": [
+            "108 variants: Type (4) × State (9) × Size (3). The grid shows State × Type at Size=Md.",
+            "State \\ Type",
+            "Default",
+            "Menu",
+            "File",
+            "Setting",
+            "Default",
+            "Hover",
+            "Pressed",
+            "Focused",
+            "Disabled",
+            "Selected",
+            "Activated",
+            "Dragged",
+            "Skeleton"
+          ]
+        },
+        {
+          "heading": "Focus — zoomed",
+          "level": 4,
+          "paragraphs": [
+            "Focused",
+            "Dragged",
+            "2px border bound to color/border/focused.",
+            "2px border bound to color/border/dragged."
+          ]
+        },
+        {
+          "heading": "Icons",
+          "level": 3,
+          "paragraphs": [
+            "The leading icon is 16 / 20 / 24px for Sm / Md / Lg, bound to icon/size/{sm|md|lg}. The Menu type has a fixed trailing chevron. Leading and trailing controls are 20px Checkbox instances by default, swappable to Radio."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Accessibility",
+      "nodeId": "1322:1971",
+      "sections": [
+        {
+          "heading": "List item",
+          "level": 3,
+          "paragraphs": [
+            "A list item is a single row in a list, menu or file browser that shows a headline and, depending on its type, an icon, supporting text, metadata or a selection control."
+          ]
+        },
+        {
+          "heading": "What the design system provides",
+          "level": 3,
+          "paragraphs": [
+            "•   A Focused state on every type, with a 2px border bound to color/border/focused.",
+            "•   Disabled, Selected, Activated, Dragged and Skeleton states, each a token swap on the container.",
+            "•   Selection controls are real Checkbox / Radio instances, so they inherit those components' accessibility.",
+            "•   Minimum heights of 32, 40 and 48px — above the 24×24px target-size minimum (WCAG 2.5.8)."
+          ]
+        },
+        {
+          "heading": "Development considerations",
+          "level": 3,
+          "paragraphs": [
+            "•   Use role=\"list\" on the container and role=\"listitem\" on each item; nested groups use role=\"group\".",
+            "•   Expose the nesting level with aria-level, and aria-expanded on parents that have children.",
+            "•   Expose selection with aria-selected.",
+            "•   When text is truncated, provide a tooltip with the full text.",
+            "•   Dragging must have a non-drag alternative (gesture alternatives, WCAG rules §7)."
+          ]
+        },
+        {
+          "heading": "Keyboard interactions",
+          "level": 3,
+          "paragraphs": [
+            "Key",
+            "Action",
+            "↑",
+            "+",
+            "↓",
+            "Move between items at the same level",
+            "→",
+            "Expand a collapsed parent",
+            "←",
+            "Collapse an expanded parent",
+            "Tab",
+            "Move between interactive elements",
+            "Enter, Space and Escape are listed in the skill without defined actions."
+          ]
+        },
+        {
+          "heading": "Design recommendations",
+          "level": 3,
+          "paragraphs": [
+            "Automated contrast check — WCAG 2.x relative luminance (sRGB), text against the rendered row background, for every theme combination (project-a/b × light/dark). Minimum 4.5:1; 3:1 for disabled text (house rule TKN-005). Size=Md.",
+            "Element · State",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Headline · Default",
+            "17.74:1",
+            "3.98:1",
+            "17.74:1",
+            "16.98:1",
+            "Headline · Hover",
+            "16.12:1",
+            "3.29:1",
+            "16.12:1",
+            "14.05:1",
+            "Headline · Pressed",
+            "14.33:1",
+            "2.31:1",
+            "14.33:1",
+            "9.86:1",
+            "Headline · Focused",
+            "17.74:1",
+            "3.98:1",
+            "17.74:1",
+            "16.98:1",
+            "Headline · Disabled",
+            "4.83:1",
+            "3.67:1",
+            "4.83:1",
+            "3.67:1",
+            "Headline · Selected",
+            "7.07:1",
+            "8.02:1",
+            "3.58:1",
+            "9.87:1",
+            "Headline · Activated",
+            "7.07:1",
+            "8.02:1",
+            "3.58:1",
+            "9.87:1",
+            "Headline · Dragged",
+            "15.86:1",
+            "3.58:1",
+            "12.55:1",
+            "18.03:1",
+            "Supporting · Default",
+            "7.56:1",
+            "6.99:1",
+            "7.56:1",
+            "6.99:1",
+            "Supporting · Hover",
+            "6.87:1",
+            "5.78:1",
+            "6.87:1",
+            "5.78:1",
+            "Supporting · Pressed",
+            "6.10:1",
+            "4.06:1",
+            "6.10:1",
+            "4.06:1",
+            "Supporting · Focused",
+            "7.56:1",
+            "6.99:1",
+            "7.56:1",
+            "6.99:1",
+            "Supporting · Disabled",
+            "4.83:1",
+            "3.67:1",
+            "4.83:1",
+            "3.67:1",
+            "Supporting · Selected",
+            "6.76:1",
+            "6.30:1",
+            "5.35:1",
+            "7.42:1",
+            "Supporting · Activated",
+            "6.76:1",
+            "6.30:1",
+            "5.35:1",
+            "7.42:1",
+            "Supporting · Dragged",
+            "6.76:1",
+            "6.30:1",
+            "5.35:1",
+            "7.42:1"
+          ]
+        }
+      ]
+    }
+  ]
+}

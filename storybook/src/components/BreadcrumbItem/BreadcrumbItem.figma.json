@@ -1,0 +1,420 @@
+{
+  "component": "BreadcrumbItem",
+  "description": "A breadcrumb shows where the current page sits in a content hierarchy and links back to each parent level.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "BreadcrumbItem",
+        "nodeId": "224:1461"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "type",
+      "figma": "Type (variant)"
+    },
+    {
+      "prop": "—",
+      "figma": "State (variant)",
+      "note": "States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Disabled → disabled"
+    },
+    {
+      "prop": "hasIcon",
+      "figma": "Has icon (boolean)"
+    },
+    {
+      "prop": "label",
+      "figma": "Label (text)"
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "The Figma set has 8 of 12 possible variant combinations; other combinations use the nearest defined styles.",
+    "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified."
+  ],
+  "tabs": [
+    {
+      "title": "Usage",
+      "nodeId": "1332:152",
+      "sections": [
+        {
+          "heading": "Breadcrumb",
+          "level": 3,
+          "paragraphs": [
+            "A breadcrumb shows where the current page sits in a content hierarchy and links back to each parent level."
+          ]
+        },
+        {
+          "heading": "Overview",
+          "level": 3,
+          "paragraphs": [
+            "Breadcrumbs are secondary navigation. They show the user's current position in a hierarchy and give one-click access to every ancestor level."
+          ]
+        },
+        {
+          "heading": "Variants",
+          "level": 4,
+          "paragraphs": [
+            "Standard",
+            "Truncated",
+            "Icon-based",
+            "All levels shown inline.",
+            "Middle levels collapse behind a trigger when the trail exceeds maxItems.",
+            "Items pair an icon with their label."
+          ]
+        },
+        {
+          "heading": "When to use",
+          "level": 4,
+          "paragraphs": [
+            "•   To show the user's position within a content hierarchy.",
+            "•   To give quick, one-click navigation back to parent levels."
+          ]
+        },
+        {
+          "heading": "When not to use",
+          "level": 4,
+          "paragraphs": [
+            "•   As the primary navigation of the app."
+          ]
+        },
+        {
+          "heading": "Formatting",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Anatomy",
+          "level": 4,
+          "paragraphs": [
+            "1",
+            "3",
+            "2",
+            "4",
+            "•   ① Item (link) — a clickable ancestor level.",
+            "•   ② Separator — a decorative divider between items (chevron or slash).",
+            "•   ③ Collapse trigger (optional) — an ellipsis that reveals hidden middle items.",
+            "•   ④ Current page — the final item; the active location, not interactive.",
+            "Not shown: the optional leading icon on each item (Has icon) — see the Icon-based variant."
+          ]
+        },
+        {
+          "heading": "Alignment",
+          "level": 4,
+          "paragraphs": [
+            "Items and separators sit on one horizontal line, with equal spacing around each separator. Use one separator style for the whole trail.",
+            "Chevron separator",
+            "Slash separator"
+          ]
+        },
+        {
+          "heading": "Placement",
+          "level": 4,
+          "paragraphs": [
+            "The trail never wraps and never causes horizontal page scroll. On small screens, collapse it to the root and the current page.",
+            "Small screens",
+            "Root and current page only.",
+            "Do",
+            "Don't",
+            "Show the current page as plain, non-interactive text.",
+            "Don't style the current page as a link — it implies it's still clickable.",
+            "Do",
+            "Don't",
+            "Use one separator style per trail.",
+            "Don't mix separator styles within one trail.",
+            "Do",
+            "Don't",
+            "Collapse the middle of deep trails, keeping the root and current page.",
+            "Don't show many deep levels without collapsing the middle."
+          ]
+        },
+        {
+          "heading": "Content",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Main elements",
+          "level": 4,
+          "paragraphs": [
+            "Item labels",
+            "•   Each item except the last names and links to its parent level.",
+            "•   Long labels truncate with an ellipsis; the full label stays available in a tooltip.",
+            "Current page",
+            "•   The final item names the page the user is on."
+          ]
+        },
+        {
+          "heading": "Overflow content",
+          "level": 4,
+          "paragraphs": [
+            "When the trail has more items than maxItems, the middle items collapse behind the ellipsis trigger. The root and the current page always stay visible."
+          ]
+        },
+        {
+          "heading": "Behaviors",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "States",
+          "level": 4,
+          "paragraphs": [
+            "•   Link — Default, Hover (underline), Focused (3px focus ring) and Disabled (rare: an ancestor with no valid target).",
+            "•   Current — Default only; never interactive.",
+            "•   Collapse trigger — Default, Hover and Focused.",
+            "•   Separators have no states.",
+            "See the Style tab for how each state looks."
+          ]
+        },
+        {
+          "heading": "Interactions",
+          "level": 4,
+          "paragraphs": [
+            "Mouse",
+            "Clicking a link goes to that level. Clicking the collapse trigger reveals the hidden items. The current page and separators do nothing.",
+            "Keyboard",
+            "Key",
+            "Action",
+            "Tab",
+            "Moves focus to the next link, left to right",
+            "Enter",
+            "Opens the collapse trigger",
+            "Space",
+            "Opens the collapse trigger",
+            "The current page and separators are skipped. Full keyboard details are on the Accessibility tab."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Style",
+      "nodeId": "1332:578",
+      "sections": [
+        {
+          "heading": "Breadcrumb",
+          "level": 3,
+          "paragraphs": [
+            "A breadcrumb shows where the current page sits in a content hierarchy and links back to each parent level."
+          ]
+        },
+        {
+          "heading": "Color",
+          "level": 3,
+          "paragraphs": [
+            "Swatches are bound to the live tokens.",
+            "Type · State",
+            "Label",
+            "Icon",
+            "Focus ring",
+            "Link · Default",
+            "text/link",
+            "icon/default",
+            "—",
+            "Link · Hover",
+            "text/link + underline",
+            "icon/default",
+            "—",
+            "border/interactive/focus (3px)",
+            "Link · Focused",
+            "text/link + underline",
+            "icon/default",
+            "Link · Disabled",
+            "text/disabled",
+            "—",
+            "—",
+            "Current · Default",
+            "text/primary",
+            "icon/default",
+            "—",
+            "Collapse · Default",
+            "—",
+            "icon/subtle",
+            "—",
+            "Collapse · Hover",
+            "—",
+            "icon/default",
+            "—",
+            "border/interactive/focus (3px)",
+            "Collapse · Focused",
+            "—",
+            "icon/default",
+            "Separator · Slash",
+            "text/secondary",
+            "—",
+            "—",
+            "Separator · Chevron",
+            "—",
+            "icon/subtle",
+            "—"
+          ]
+        },
+        {
+          "heading": "Typography",
+          "level": 3,
+          "paragraphs": [
+            "Element",
+            "Tokens",
+            "Rendered size",
+            "Item label and slash",
+            "text-style/label/sm/{family, weight, size}",
+            "11px"
+          ]
+        },
+        {
+          "heading": "Structure",
+          "level": 3,
+          "paragraphs": [
+            "Property",
+            "Value",
+            "Item height",
+            "24",
+            "Item padding",
+            "space/inset/xs · 4",
+            "Icon–label gap",
+            "space/inline/xs",
+            "Focus ring radius",
+            "radius/sm",
+            "Leading icon",
+            "Icon/nav/home/16 · 16px",
+            "Separator",
+            "Slash 5 × 16 · Chevron 16 × 16"
+          ]
+        },
+        {
+          "heading": "Variants & states",
+          "level": 3,
+          "paragraphs": [
+            "BreadcrumbItem has 8 variants: Link (Default, Hover, Focused, Disabled), Current (Default) and Collapse (Default, Hover, Focused). Separator has 2 (Slash, Chevron).",
+            "Link · Default",
+            "Link · Hover",
+            "Link · Focused",
+            "Link · Disabled",
+            "Current · Default",
+            "Collapse · Default",
+            "Collapse · Hover",
+            "Collapse · Focused",
+            "Separator · Slash",
+            "Separator · Chevron",
+            "Shown at 2×."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Accessibility",
+      "nodeId": "1332:836",
+      "sections": [
+        {
+          "heading": "Breadcrumb",
+          "level": 3,
+          "paragraphs": [
+            "A breadcrumb shows where the current page sits in a content hierarchy and links back to each parent level."
+          ]
+        },
+        {
+          "heading": "What the design system provides",
+          "level": 3,
+          "paragraphs": [
+            "•   A Focused state with a 3px ring on links and the collapse trigger.",
+            "•   Hover adds an underline, so the link affordance doesn't rely on color alone.",
+            "•   The current page is styled differently from links (text/primary, no underline).",
+            "•   Items are 24px tall — meeting the 24×24px AA target minimum (WCAG 2.5.8)."
+          ]
+        },
+        {
+          "heading": "Development considerations",
+          "level": 3,
+          "paragraphs": [
+            "•   Wrap the trail in a <nav> landmark with aria-label=\"Breadcrumb\", containing an ordered list (<ol>).",
+            "•   Each ancestor is an <a> inside an <li>.",
+            "•   The current page is not a link and carries aria-current=\"page\".",
+            "•   Separators are decorative: aria-hidden=\"true\", not focusable, not clickable.",
+            "•   The collapse trigger is keyboard-operable and reveals the hidden items.",
+            "•   Truncated labels keep their full text available via a title or tooltip."
+          ]
+        },
+        {
+          "heading": "Keyboard interactions",
+          "level": 3,
+          "paragraphs": [
+            "Key",
+            "Action",
+            "Tab",
+            "Moves focus to the next link, left to right",
+            "Shift",
+            "+",
+            "Tab",
+            "Moves focus to the previous link",
+            "Enter",
+            "Opens the collapse trigger",
+            "Space",
+            "Opens the collapse trigger"
+          ]
+        },
+        {
+          "heading": "Design recommendations",
+          "level": 3,
+          "paragraphs": [
+            "Automated contrast check — WCAG 2.x relative luminance (sRGB), against the page surface (surface/bg/default), for every theme combination. Minimums: 4.5:1 for labels, 3:1 for separators, icons, the focus ring and disabled text (house rule TKN-005). Note: project-a / light is measured against the current surface/bg/default, which resolves to blue because of the gray/50 token.",
+            "Element",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Link label · text/link",
+            "1.41:1",
+            "6.75:1",
+            "3.14:1",
+            "9.07:1",
+            "Current page · text/primary",
+            "3.98:1",
+            "4.51:1",
+            "16.98:1",
+            "19.27:1",
+            "Disabled label · text/disabled",
+            "1.08:1",
+            "4.16:1",
+            "4.63:1",
+            "4.16:1",
+            "Slash separator · text/secondary",
+            "1.69:1",
+            "7.93:1",
+            "7.23:1",
+            "7.93:1",
+            "Chevron separator · icon/subtle",
+            "1.08:1",
+            "4.16:1",
+            "4.63:1",
+            "4.16:1",
+            "Collapse icon · icon/subtle",
+            "1.08:1",
+            "4.16:1",
+            "4.63:1",
+            "4.16:1",
+            "Leading icon · icon/default",
+            "1.69:1",
+            "7.93:1",
+            "7.23:1",
+            "7.93:1",
+            "Focus ring",
+            "1.41:1",
+            "6.75:1",
+            "3.14:1",
+            "9.07:1"
+          ]
+        },
+        {
+          "heading": "Target size",
+          "level": 4,
+          "paragraphs": [
+            "Items and the collapse trigger are 24px tall, meeting the AA minimum but below the 44×44px touch target in the component rules — pad the hit area on touch screens."
+          ]
+        }
+      ]
+    }
+  ]
+}

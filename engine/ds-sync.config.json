@@ -150,6 +150,7 @@
     }
   ],
   "generate": {
+    "mode": "auto",
     "outDir": "../storybook",
     "packageName": "figma-design-system-storybook",
     "variablesExport": "inputs/figma-variables.json",
@@ -157,30 +158,8 @@
       "semantic.color": "data-theme",
       "primitives.color": "data-project"
     },
-    "components": [
-      {
-        "name": "Button",
-        "template": "action",
-        "sets": {
-          "main": "ds.button"
-        }
-      },
-      {
-        "name": "Checkbox",
-        "template": "checkbox",
-        "sets": {
-          "control": "ds.checkbox-control",
-          "field": "ds.checkbox-field",
-          "group": "ds.checkbox-group"
-        }
-      },
-      {
-        "name": "Accordion",
-        "template": "accordion",
-        "sets": {
-          "item": "ds.accordion"
-        }
-      }
-    ]
+    "overrides": {
+      "skipPages": []
+    }
   }
 }

@@ -1,0 +1,412 @@
+{
+  "component": "Alert",
+  "description": "An alert shows a short, sentiment-coded message inline on the page, with an optional action and close button.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "Alert",
+        "nodeId": "516:2837"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "sentiment",
+      "figma": "Sentiment (variant)"
+    },
+    {
+      "prop": "size",
+      "figma": "Size (variant)"
+    },
+    {
+      "prop": "state",
+      "figma": "State (variant)"
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "Icon-only Button \"_interaction-wrapper/_visual-container/close-button\" is named \"Close\" from its Figma layer name; confirm the wording."
+  ],
+  "tabs": [
+    {
+      "title": "Usage",
+      "nodeId": "1340:767",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "An alert shows a short, sentiment-coded message inline on the page, with an optional action and close button."
+          ]
+        },
+        {
+          "heading": "Overview",
+          "level": 3,
+          "paragraphs": [
+            "Alerts surface feedback inline on the page. Each sentiment has its own colors and icon. The action and close buttons are real Button instances, and the icon is a real Icon instance."
+          ]
+        },
+        {
+          "heading": "Sentiments",
+          "level": 4,
+          "paragraphs": [
+            "Neutral, Info, Success, Warning and Danger — each maps to its own background, border, text and icon tokens and its own status icon."
+          ]
+        },
+        {
+          "heading": "Configurations",
+          "level": 4,
+          "paragraphs": [
+            "Default, With Action, With Close, and With Action + Close."
+          ]
+        },
+        {
+          "heading": "Formatting",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Anatomy",
+          "level": 4,
+          "paragraphs": [
+            "3",
+            "2",
+            "6",
+            "5",
+            "4",
+            "1",
+            "•   ① Container — carries the sentiment background, border, padding and radius.",
+            "•   ② Leading icon — the sentiment's status icon (an Icon instance).",
+            "•   ③ Headline — required title.",
+            "•   ④ Supporting text — optional description.",
+            "•   ⑤ Action button — a Button instance (Ghost, Sm).",
+            "•   ⑥ Close button — a Button instance with its label hidden (icon only)."
+          ]
+        },
+        {
+          "heading": "Sizes",
+          "level": 4,
+          "paragraphs": [
+            "Small",
+            "Medium",
+            "Padding 12 / 8, 16px icon.",
+            "Padding 16 / 12, 20px icon.",
+            "Spacing comes from the component.alert.density variable collection, with Compact, Comfortable and Spacious modes.",
+            "Do",
+            "Don't",
+            "Use a Ghost, Sm Button for the action — matching the alert's compact footprint.",
+            "Don't use a large primary button — it overpowers the alert."
+          ]
+        },
+        {
+          "heading": "Content",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Main elements",
+          "level": 4,
+          "paragraphs": [
+            "Headline",
+            "•   Required on every alert.",
+            "Supporting text",
+            "•   Optional description below the headline."
+          ]
+        },
+        {
+          "heading": "Overflow content",
+          "level": 4,
+          "paragraphs": [
+            "Text wraps. The skill defines a truncate-text option (ellipsis, with a tooltip for the full text in code); it isn't exposed as a Figma property yet."
+          ]
+        },
+        {
+          "heading": "Behaviors",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "States",
+          "level": 4,
+          "paragraphs": [
+            "The alert itself has no interactive states — sentiment changes swap its background, border, icon and text tokens. The action and close buttons inherit Default, Hover, Pressed, Focused and Disabled from Button."
+          ]
+        },
+        {
+          "heading": "Interactions",
+          "level": 4,
+          "paragraphs": [
+            "•   Close — dismisses the alert, collapsing it out of the layout.",
+            "•   Action — runs the alert's action; while it's running, the action button shows its loading state.",
+            "Keyboard",
+            "Key",
+            "Action",
+            "Tab",
+            "Moves focus to the action button, then the close button",
+            "Enter",
+            "Activates the focused button",
+            "Space",
+            "Activates the focused button",
+            "Button behavior is inherited from the Button component."
+          ]
+        },
+        {
+          "heading": "Related",
+          "level": 3,
+          "paragraphs": [
+            "•   Button — used for the action and close controls.",
+            "•   Dialog — for urgent messages that must interrupt the page; alerts stay inline."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Style",
+      "nodeId": "1340:1159",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "An alert shows a short, sentiment-coded message inline on the page, with an optional action and close button."
+          ]
+        },
+        {
+          "heading": "Color",
+          "level": 3,
+          "paragraphs": [
+            "Each sentiment aliases its own component.alert tokens. Swatches are bound to the live tokens.",
+            "Sentiment",
+            "Background",
+            "Text",
+            "Icon",
+            "Border",
+            "Neutral",
+            "color/bg/neutral",
+            "color/label/neutral",
+            "color/icon/neutral",
+            "color/border/neutral",
+            "Info",
+            "color/bg/info",
+            "color/label/info",
+            "color/icon/info",
+            "color/border/info",
+            "Success",
+            "color/bg/success",
+            "color/label/success",
+            "color/icon/success",
+            "color/border/success",
+            "Warning",
+            "color/bg/warning",
+            "color/label/warning",
+            "color/icon/warning",
+            "color/border/warning",
+            "Danger",
+            "color/bg/danger",
+            "color/label/danger",
+            "color/icon/danger",
+            "color/border/danger",
+            "Headline and supporting text share one label token per sentiment. Button colors belong to the Button component."
+          ]
+        },
+        {
+          "heading": "Typography",
+          "level": 3,
+          "paragraphs": [
+            "Element",
+            "Rendered size",
+            "Headline",
+            "13px",
+            "Supporting text",
+            "12px",
+            "Text isn't bound to typography tokens yet (raw values)."
+          ]
+        },
+        {
+          "heading": "Structure",
+          "level": 3,
+          "paragraphs": [
+            "Size",
+            "Padding (h)",
+            "Padding (v)",
+            "Gap",
+            "Radius",
+            "Icon",
+            "space/padding/h/sm · 12",
+            "space/padding/v/sm · 8",
+            "Sm",
+            "space/gap/sm · 8",
+            "radius/default · 8",
+            "16",
+            "space/padding/h/md · 16",
+            "space/padding/v/md · 12",
+            "Md",
+            "space/gap/md · 12",
+            "radius/default · 8",
+            "20",
+            "Width 400. Border 1px on all sides."
+          ]
+        },
+        {
+          "heading": "Variants & states",
+          "level": 3,
+          "paragraphs": [
+            "40 variants: Sentiment (5) × Size (2) × State (4). Grid shows Sentiment × State at Size=Md.",
+            "Sentiment \\ State",
+            "Default",
+            "With Action",
+            "With Close",
+            "With Action + Close",
+            "Neutral",
+            "Info",
+            "Success",
+            "Warning",
+            "Danger"
+          ]
+        },
+        {
+          "heading": "Icons",
+          "level": 3,
+          "paragraphs": [
+            "Neutral and Info use Icon/status/info, Success uses Icon/status/success, Warning uses Icon/status/warning and Danger uses Icon/status/error — 16px at Sm, 20px at Md."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Accessibility",
+      "nodeId": "1340:1663",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "An alert shows a short, sentiment-coded message inline on the page, with an optional action and close button."
+          ]
+        },
+        {
+          "heading": "What the design system provides",
+          "level": 3,
+          "paragraphs": [
+            "•   Each sentiment pairs its color with a distinct status icon, so meaning doesn't rely on color alone.",
+            "•   Action and close controls are real Buttons, with Button's focus and disabled states."
+          ]
+        },
+        {
+          "heading": "Development considerations",
+          "level": 3,
+          "paragraphs": [
+            "•   Use role=\"alert\" for assertive, urgent messages and role=\"status\" for polite ones.",
+            "•   The close button is icon-only — give it an accessible name (e.g. \"Dismiss\").",
+            "•   Show loading on the action with the Button's is-loading state, not a separate spinner.",
+            "•   When text is truncated, provide the full text in a tooltip."
+          ]
+        },
+        {
+          "heading": "Keyboard interactions",
+          "level": 3,
+          "paragraphs": [
+            "Key",
+            "Action",
+            "Tab",
+            "Moves focus to the action button, then the close button",
+            "Shift",
+            "+",
+            "Tab",
+            "Moves focus back",
+            "Enter",
+            "Activates the focused button",
+            "Space",
+            "Activates the focused button"
+          ]
+        },
+        {
+          "heading": "Design recommendations",
+          "level": 3,
+          "paragraphs": [
+            "Automated contrast check — WCAG 2.x relative luminance (sRGB), text and icon against the alert background, border against the page surface, for every theme combination. Minimums: 4.5:1 for text (12–13px), 3:1 for the icon and border. Note: project-a / light is measured against the current surface/bg/default, which resolves to blue because of the gray/50 token.",
+            "Sentiment · Element",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Neutral · text",
+            "9.37:1",
+            "9.96:1",
+            "9.37:1",
+            "9.96:1",
+            "Neutral · icon",
+            "9.37:1",
+            "5.78:1",
+            "9.37:1",
+            "5.78:1",
+            "Neutral · border",
+            "1.08:1",
+            "4.16:1",
+            "4.63:1",
+            "4.16:1",
+            "Info · text",
+            "6.16:1",
+            "5.78:1",
+            "6.16:1",
+            "5.78:1",
+            "Info · icon",
+            "6.16:1",
+            "5.78:1",
+            "6.16:1",
+            "5.78:1",
+            "Info · border",
+            "1.50:1",
+            "3.00:1",
+            "6.41:1",
+            "3.00:1",
+            "Success · text",
+            "4.79:1",
+            "8.55:1",
+            "4.79:1",
+            "8.55:1",
+            "Success · icon",
+            "3.15:1",
+            "8.55:1",
+            "3.15:1",
+            "8.55:1",
+            "Success · border",
+            "1.35:1",
+            "6.11:1",
+            "3.15:1",
+            "6.11:1",
+            "Warning · text",
+            "4.84:1",
+            "8.97:1",
+            "4.84:1",
+            "8.97:1",
+            "Warning · icon",
+            "3.07:1",
+            "8.97:1",
+            "3.07:1",
+            "8.97:1",
+            "Warning · border",
+            "1.40:1",
+            "6.32:1",
+            "3.05:1",
+            "6.32:1",
+            "Danger · text",
+            "5.24:1",
+            "5.84:1",
+            "5.24:1",
+            "5.84:1",
+            "Danger · icon",
+            "5.24:1",
+            "5.84:1",
+            "5.24:1",
+            "5.84:1",
+            "Danger · border",
+            "1.29:1",
+            "7.28:1",
+            "5.49:1",
+            "7.28:1"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,628 @@
+{
+  "component": "Badge",
+  "description": "A badge is a small element that communicates a status, a count, a label or a notification on another element.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420200599083390279",
+    "sets": [
+      {
+        "name": "Badge",
+        "nodeId": "211:1961"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "status",
+      "figma": "Status (variant)"
+    },
+    {
+      "prop": "styleVariant",
+      "figma": "Style (variant)"
+    },
+    {
+      "prop": "type",
+      "figma": "Type (variant)"
+    },
+    {
+      "prop": "size",
+      "figma": "Size (variant)"
+    },
+    {
+      "prop": "hasLeadingIcon",
+      "figma": "Has leading icon (boolean)"
+    },
+    {
+      "prop": "isDismissible",
+      "figma": "Is dismissible (boolean)"
+    },
+    {
+      "prop": "label",
+      "figma": "Label (text)"
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified."
+  ],
+  "tabs": [
+    {
+      "title": "Usage",
+      "nodeId": "1330:140",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A badge is a small element that communicates a status, a count, a label or a notification on another element."
+          ]
+        },
+        {
+          "heading": "Overview",
+          "level": 3,
+          "paragraphs": [
+            "A badge annotates another element with a status, a count or a short label. It never stands alone as a primary control."
+          ]
+        },
+        {
+          "heading": "Types",
+          "level": 4,
+          "paragraphs": [
+            "Dot",
+            "Text",
+            "Numeric",
+            "No content — a pure indicator.",
+            "A short label.",
+            "A count only."
+          ]
+        },
+        {
+          "heading": "Status",
+          "level": 4,
+          "paragraphs": [
+            "Success",
+            "Warning",
+            "Error",
+            "Info",
+            "Neutral",
+            "Each status color maps to exactly one meaning and is never reused for another."
+          ]
+        },
+        {
+          "heading": "When to use",
+          "level": 4,
+          "paragraphs": [
+            "•   To show the status of an item — success, warning, error, info or neutral.",
+            "•   To show a count, such as unread notifications — Numeric.",
+            "•   To show that something needs attention without a count — Dot.",
+            "•   To tag an item with a short label — Text; a dismissible badge lets users remove it."
+          ]
+        },
+        {
+          "heading": "When not to use",
+          "level": 4,
+          "paragraphs": [
+            "•   As a primary action, button or main navigation target — use a Button.",
+            "•   For more than a short label, a single count or one icon — no paragraphs, multiple icons or nested badges."
+          ]
+        },
+        {
+          "heading": "Formatting",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Anatomy",
+          "level": 4,
+          "paragraphs": [
+            "3",
+            "2",
+            "4",
+            "1",
+            "•   ① Container — the pill-shaped container that wraps all content.",
+            "•   ② Icon (optional) — leading and vertically centred with the label; text badges only.",
+            "•   ③ Label — text or a number; omitted on dot badges.",
+            "•   ④ Dismiss (optional) — trailing close control, shown only when the badge is dismissible; text badges only."
+          ]
+        },
+        {
+          "heading": "Sizes",
+          "level": 4,
+          "paragraphs": [
+            "Small",
+            "Large",
+            "Medium",
+            "Padding space/inline/xs · dot 6px",
+            "Padding space/inline/md · dot 10px",
+            "Padding space/inline/sm · dot 8px",
+            "Height is fixed per size; horizontal padding scales with size."
+          ]
+        },
+        {
+          "heading": "Alignment",
+          "level": 4,
+          "paragraphs": [
+            "Content is centred in the container. The icon is always leading and vertically centred with the label, with a fixed gap (space/inline/xs).",
+            "Leading icon",
+            "Dismissible",
+            "Icon before the label.",
+            "Close control after the label."
+          ]
+        },
+        {
+          "heading": "Placement",
+          "level": 4,
+          "paragraphs": [
+            "Place a badge next to or on the element it describes. Content must never overflow, break or expand the parent layout.",
+            "Do",
+            "Don't",
+            "Use one style for badges of the same status in a view.",
+            "Don't mix styles within the same status group.",
+            "Do",
+            "Don't",
+            "Cap large counts: show {max-count}+ (e.g. 99+).",
+            "Don't render a wider raw count.",
+            "Do",
+            "Don't",
+            "Use a status color only for its meaning.",
+            "Don't reuse a status color for an unrelated meaning."
+          ]
+        },
+        {
+          "heading": "Content",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Main elements",
+          "level": 4,
+          "paragraphs": [
+            "Label",
+            "•   A short label or a single count — nothing longer.",
+            "Count",
+            "•   If the count is above max-count (default 99), show {max-count}+.",
+            "•   A count of 0 doesn't render unless explicitly forced.",
+            "•   Dot badges ignore the count and label."
+          ]
+        },
+        {
+          "heading": "Overflow content",
+          "level": 4,
+          "paragraphs": [
+            "Text badges truncate with an ellipsis at their maximum width and never wrap to a second line."
+          ]
+        },
+        {
+          "heading": "Behaviors",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "States",
+          "level": 4,
+          "paragraphs": [
+            "Badges are static by default and have no hover, focus or disabled states. Only a clickable badge defines Hover, Focus (visible focus ring) and Disabled."
+          ]
+        },
+        {
+          "heading": "Interactions",
+          "level": 4,
+          "paragraphs": [
+            "A clickable badge exposes one clear action. A dismissible badge's close control is separately focusable and emits a dismiss event.",
+            "Keyboard",
+            "Key",
+            "Action",
+            "Tab",
+            "Moves focus to the dismiss control (dismissible badges only)",
+            "Full keyboard details are on the Accessibility tab."
+          ]
+        },
+        {
+          "heading": "Related",
+          "level": 3,
+          "paragraphs": [
+            "•   Button — use for actions; a badge must never act as a primary action."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Style",
+      "nodeId": "1330:491",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A badge is a small element that communicates a status, a count, a label or a notification on another element."
+          ]
+        },
+        {
+          "heading": "Color",
+          "level": 3,
+          "paragraphs": [
+            "Each Status × Style pair binds a semantic surface, text and border token. Swatches are bound to the live tokens.",
+            "Status · Style",
+            "Fill",
+            "Label",
+            "Border",
+            "Success · Filled",
+            "surface/bg/success/strong",
+            "text/inverse",
+            "—",
+            "Success · Outlined",
+            "—",
+            "text/success",
+            "border/success",
+            "Success · Subtle",
+            "surface/bg/success",
+            "text/success",
+            "—",
+            "Warning · Filled",
+            "surface/bg/warning/strong",
+            "text/inverse",
+            "—",
+            "Warning · Outlined",
+            "—",
+            "text/warning",
+            "border/warning",
+            "Warning · Subtle",
+            "surface/bg/warning",
+            "text/warning",
+            "—",
+            "Error · Filled",
+            "interactive/bg/danger/default",
+            "text/inverse",
+            "—",
+            "Error · Outlined",
+            "—",
+            "text/danger",
+            "border/interactive/error",
+            "Error · Subtle",
+            "surface/bg/danger",
+            "text/danger",
+            "—",
+            "Info · Filled",
+            "surface/bg/info/strong",
+            "text/inverse",
+            "—",
+            "Info · Outlined",
+            "—",
+            "text/info",
+            "border/info",
+            "Info · Subtle",
+            "surface/bg/info",
+            "text/info",
+            "—",
+            "Neutral · Filled",
+            "surface/bg/neutral/strong",
+            "text/inverse",
+            "—",
+            "Neutral · Outlined",
+            "—",
+            "text/neutral",
+            "border/neutral",
+            "Neutral · Subtle",
+            "surface/bg/neutral",
+            "text/neutral",
+            "—",
+            "Dot badges use the same fill (Filled, Subtle) or border (Outlined) tokens."
+          ]
+        },
+        {
+          "heading": "Typography",
+          "level": 3,
+          "paragraphs": [
+            "Size",
+            "Tokens",
+            "Rendered size",
+            "Sm",
+            "text-style/caption/sm/*",
+            "11px",
+            "Md",
+            "text-style/caption/md/*",
+            "12px",
+            "Lg",
+            "text-style/label/sm/*",
+            "11px"
+          ]
+        },
+        {
+          "heading": "Structure",
+          "level": 3,
+          "paragraphs": [
+            "Size",
+            "Height",
+            "Horizontal padding",
+            "Icon gap",
+            "Radius",
+            "Dot",
+            "Sm",
+            "24",
+            "space/inline/xs · 4",
+            "space/inline/xs",
+            "radius/full",
+            "6 × 6",
+            "Md",
+            "26",
+            "space/inline/sm · 8",
+            "space/inline/xs",
+            "radius/full",
+            "8 × 8",
+            "Lg",
+            "24",
+            "space/inline/md · 12",
+            "space/inline/xs",
+            "radius/full",
+            "10 × 10"
+          ]
+        },
+        {
+          "heading": "Variants & states",
+          "level": 3,
+          "paragraphs": [
+            "135 variants: Status (5) × Style (3) × Type (3) × Size (3). No interactive states — badges are static."
+          ]
+        },
+        {
+          "heading": "Status × Style (Type=Text, Size=Md)",
+          "level": 4,
+          "paragraphs": [
+            "Status \\ Style",
+            "Filled",
+            "Outlined",
+            "Subtle",
+            "Success",
+            "Warning",
+            "Error",
+            "Info",
+            "Neutral"
+          ]
+        },
+        {
+          "heading": "Type × Status (Style=Filled, Size=Md)",
+          "level": 4,
+          "paragraphs": [
+            "Type \\ Status",
+            "Success",
+            "Warning",
+            "Error",
+            "Info",
+            "Neutral",
+            "Text",
+            "Numeric",
+            "Dot"
+          ]
+        },
+        {
+          "heading": "Icons",
+          "level": 3,
+          "paragraphs": [
+            "The leading icon (default Icon/feedback/star) and dismiss icon (Icon/action/close) render at 12px at Size=Md. Turn them on with Has leading icon and Is dismissible."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Accessibility",
+      "nodeId": "1330:933",
+      "sections": [
+        {
+          "level": 3,
+          "paragraphs": [
+            "A badge is a small element that communicates a status, a count, a label or a notification on another element."
+          ]
+        },
+        {
+          "heading": "What the design system provides",
+          "level": 3,
+          "paragraphs": [
+            "•   Static badges have no focusable states, so they never add stray tab stops.",
+            "•   Each status color maps to one meaning.",
+            "•   Text badges carry their meaning in the label, not in color alone."
+          ]
+        },
+        {
+          "heading": "Development considerations",
+          "level": 3,
+          "paragraphs": [
+            "•   A static badge is not interactive — don't give it a button role.",
+            "•   Dot badges have no text: expose the status they signal on the element they annotate, so meaning never relies on color alone.",
+            "•   The dismiss control needs its own accessible name and must be separately focusable.",
+            "•   A clickable badge needs a visible focus ring."
+          ]
+        },
+        {
+          "heading": "Keyboard interactions",
+          "level": 3,
+          "paragraphs": [
+            "Key",
+            "Action",
+            "Tab",
+            "Moves focus to the dismiss control (dismissible badges only)",
+            "Shift",
+            "+",
+            "Tab",
+            "Moves focus to the previous focusable element"
+          ]
+        },
+        {
+          "heading": "Design recommendations",
+          "level": 3,
+          "paragraphs": [
+            "Automated contrast check — WCAG 2.x relative luminance (sRGB), for every theme combination. Label vs. badge fill (or page surface for Outlined): 4.5:1. Dot vs. page surface: 3:1 (non-text). Note: project-a / light is measured against the current surface/bg/default, which resolves to blue because of the gray/50 token."
+          ]
+        },
+        {
+          "heading": "Label (Type=Text, Size=Md)",
+          "level": 4,
+          "paragraphs": [
+            "Status · Style",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Success · Filled",
+            "1.12:1",
+            "3.54:1",
+            "4.80:1",
+            "3.54:1",
+            "Success · Outlined",
+            "1.12:1",
+            "11.55:1",
+            "4.80:1",
+            "11.55:1",
+            "Success · Subtle",
+            "4.79:1",
+            "8.55:1",
+            "4.79:1",
+            "8.55:1",
+            "Warning · Filled",
+            "1.13:1",
+            "3.53:1",
+            "4.81:1",
+            "3.53:1",
+            "Warning · Outlined",
+            "1.13:1",
+            "12.06:1",
+            "4.81:1",
+            "12.06:1",
+            "Warning · Subtle",
+            "4.84:1",
+            "8.97:1",
+            "4.84:1",
+            "8.97:1",
+            "Error · Filled",
+            "1.29:1",
+            "3.09:1",
+            "5.49:1",
+            "3.09:1",
+            "Error · Outlined",
+            "1.29:1",
+            "7.28:1",
+            "5.49:1",
+            "7.28:1",
+            "Error · Subtle",
+            "5.24:1",
+            "5.84:1",
+            "5.24:1",
+            "5.84:1",
+            "Info · Filled",
+            "1.96:1",
+            "2.03:1",
+            "8.35:1",
+            "2.03:1",
+            "Info · Outlined",
+            "1.50:1",
+            "7.92:1",
+            "6.41:1",
+            "7.92:1",
+            "Info · Subtle",
+            "6.16:1",
+            "5.78:1",
+            "6.16:1",
+            "5.78:1",
+            "Neutral · Filled",
+            "2.31:1",
+            "1.72:1",
+            "9.86:1",
+            "1.72:1",
+            "Neutral · Outlined",
+            "2.31:1",
+            "13.66:1",
+            "9.86:1",
+            "13.66:1",
+            "Neutral · Subtle",
+            "9.37:1",
+            "9.96:1",
+            "9.37:1",
+            "9.96:1"
+          ]
+        },
+        {
+          "heading": "Dot (Size=Md)",
+          "level": 4,
+          "paragraphs": [
+            "Status · Style",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Success · Filled",
+            "1.12:1",
+            "4.01:1",
+            "4.80:1",
+            "4.01:1",
+            "Success · Outlined",
+            "1.35:1",
+            "6.11:1",
+            "3.15:1",
+            "6.11:1",
+            "Success · Subtle",
+            "4.26:1",
+            "1.35:1",
+            "1.00:1",
+            "1.35:1",
+            "Warning · Filled",
+            "1.13:1",
+            "4.01:1",
+            "4.81:1",
+            "4.01:1",
+            "Warning · Outlined",
+            "1.40:1",
+            "6.32:1",
+            "3.05:1",
+            "6.32:1",
+            "Warning · Subtle",
+            "4.30:1",
+            "1.34:1",
+            "1.01:1",
+            "1.34:1",
+            "Error · Filled",
+            "1.29:1",
+            "3.51:1",
+            "5.49:1",
+            "3.51:1",
+            "Error · Outlined",
+            "1.29:1",
+            "7.28:1",
+            "5.49:1",
+            "7.28:1",
+            "Error · Subtle",
+            "4.08:1",
+            "1.25:1",
+            "1.05:1",
+            "1.25:1",
+            "Info · Filled",
+            "1.96:1",
+            "2.31:1",
+            "8.35:1",
+            "2.31:1",
+            "Info · Outlined",
+            "1.50:1",
+            "3.00:1",
+            "6.41:1",
+            "3.00:1",
+            "Info · Subtle",
+            "4.10:1",
+            "1.37:1",
+            "1.04:1",
+            "1.37:1",
+            "Neutral · Filled",
+            "2.31:1",
+            "1.95:1",
+            "9.86:1",
+            "1.95:1",
+            "Neutral · Outlined",
+            "1.08:1",
+            "4.16:1",
+            "4.63:1",
+            "4.16:1",
+            "Neutral · Subtle",
+            "4.05:1",
+            "1.37:1",
+            "1.05:1",
+            "1.37:1"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -29,6 +29,20 @@ export interface IRStyle {
   strokeSides?: { top: number; right: number; bottom: number; left: number };
   /** Degrees, clockwise as in CSS. */
   rotation?: number;
+  /** Auto-layout sizing of this node inside its parent. */
+  sizingH?: 'FIXED' | 'HUG' | 'FILL';
+  sizingV?: 'FIXED' | 'HUG' | 'FILL';
+  /** Auto-layout alignment of this node's children. */
+  primaryAlign?: string;
+  counterAlign?: string;
+  wrap?: boolean;
+  clips?: boolean;
+  /** Absolutely positioned inside an auto-layout parent. */
+  absolute?: boolean;
+  /** Position relative to the parent node (px). */
+  x?: number;
+  y?: number;
+  textAlign?: string;
   opacity?: number;
   /** Drop and inner shadows as CSS box-shadow fragments. */
   shadows?: string[];
@@ -37,8 +51,12 @@ export interface IRStyle {
 }
 
 export interface IRPart {
-  /** Layer path from the variant root, e.g. "Container/Label". */
+  /** Layer path from the variant root, e.g. "Container/Label". Layer names may contain "/", so use parent for structure. */
   path: string;
+  /** Path of the parent layer ("" for direct children of the variant root). */
+  parent: string;
+  /** Layer name. */
+  name: string;
   type: string;
   style: IRStyle;
   text?: string;
@@ -46,10 +64,18 @@ export interface IRPart {
   instanceOf?: string;
   /** Main component node id for instances. */
   instanceComponentId?: string;
+  /** Component properties bound to this layer (names without the #id suffix). */
+  refs?: { visible?: string; characters?: string; mainComponent?: string };
   /** Hidden in this variant (an optional part, usually toggled by a boolean property). */
   hidden?: boolean;
   /** First solid fill found inside an instance (e.g. an icon's vector colour). */
   innerColor?: IRValue<string>;
+  /** First text inside an instance (e.g. a nested button's label override). */
+  innerText?: string;
+  /** Boolean and text property values set on this instance (overrides of the main component's defaults). */
+  instanceProps?: Record<string, string | boolean>;
+  /** Visible icon instances directly inside this instance (e.g. a nested button's leading icon). */
+  innerIcons?: { layer: string; name: string; componentId: string }[];
 }
 
 export interface IRVariant {

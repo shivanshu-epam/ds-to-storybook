@@ -4,9 +4,11 @@ import { parseArgs } from 'node:util';
 
 import { loadConfig } from './config.ts';
 import { FigmaClient } from './figma/client.ts';
-import { generateStorybook } from './generate/index.ts';
+import { discover, discoveryMarkdown, targetsFromDiscovery, type Discovery } from './discover/discover.ts';
+import { generateStorybook, type PlannedComponent } from './generate/index.ts';
+import { extractIR } from './ir/extract.ts';
 import { loadIR, paths, stepAnalyze, stepExtract, stepReport, stepSpecs } from './pipeline.ts';
-import { loadDotEnv } from './util/core.ts';
+import { loadDotEnv, writeJson, writeText } from './util/core.ts';
 
 const USAGE = `ds-sync — Figma design system → specs → drift report (read-only POC)
 
@@ -18,7 +20,9 @@ Commands:
   analyze   Read the code repo into out/code-ir.json
   report    Diff specs against code → out/report.html + report.json
   run       All of the above, in order
-  generate  Build a fresh Storybook project from the IR (config "generate")
+  discover  Find every component set and classify frames → out/discovery.md
+  generate  Build a fresh Storybook project from Figma (auto-discovers components
+            unless "generate.components" is set in the config)
 
 Options:
   --config <file>   Config file (default: ds-sync.config.json)
@@ -26,6 +30,28 @@ Options:
   --refresh         Ignore the Figma response cache
   --help            Show this help
 `;
+
+function figmaClient() {
+  const token = process.env.FIGMA_TOKEN;
+  if (!token) throw new Error('FIGMA_TOKEN is not set. Copy .env.example to .env and add a Figma personal access token.');
+  return new FigmaClient({ token, cacheDir: CTX.cache, log: CTX.log, ...(CTX.refresh ? { refresh: true } : {}) });
+}
+
+/** "↳ Date Picker" -> "Date Picker". */
+function pageLabel(page: string): string {
+  const t = page.replace(/^[^A-Za-z0-9]+/, '').trim();
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+const CTX = { cache: '', out: '', fileKey: '', refresh: false, overrides: {} as NonNullable<NonNullable<ReturnType<typeof loadConfig>['generate']>['overrides']>, log: (_m: string) => {} };
+
+async function runDiscovery(client: FigmaClient): Promise<Discovery> {
+  const d = await discover(client, CTX.fileKey, CTX.overrides, CTX.log);
+  writeJson(join(CTX.out, 'discovery.json'), d);
+  writeText(join(CTX.out, 'discovery.md'), discoveryMarkdown(d));
+  CTX.log(`Discovery → ${join(CTX.out, 'discovery.md')} (${d.proposals.length} components, ${d.review.length} to review)`);
+  return d;
+}
 
 async function main() {
   const { values, positionals } = parseArgs({
@@ -46,6 +72,7 @@ async function main() {
   loadDotEnv(join(config.baseDir, '.env'));
   const p = paths(config, values.out);
   const log = (m: string) => process.stderr.write(`· ${m}\n`);
+  Object.assign(CTX, { cache: p.cache, out: p.out, fileKey: config.figma.fileKey, refresh: values.refresh!, overrides: config.generate?.overrides ?? {}, log });
 
   switch (command) {
     case 'extract': {
@@ -76,13 +103,36 @@ async function main() {
       log(`Report → ${p.reportHtml}`);
       break;
     }
+    case 'discover': {
+      const client = figmaClient();
+      const d = await runDiscovery(client);
+      for (const r of d.review) log(`review: ${r.item}: ${r.question}`);
+      break;
+    }
     case 'generate': {
       if (!config.generate) throw new Error('No "generate" section in the config.');
-      const token = process.env.FIGMA_TOKEN;
-      if (!token) throw new Error('FIGMA_TOKEN is not set (needed to export icons).');
-      const ir = values.refresh ? await stepExtract(config, p, { refresh: true, log }) : loadIR(p);
-      const client = new FigmaClient({ token, cacheDir: p.cache, log });
-      const res = await generateStorybook(config, config.generate, ir, client, log);
+      const client = figmaClient();
+      const auto = config.generate.mode === 'auto' || !config.generate.components?.length;
+      let ir;
+      let plan: PlannedComponent[] | undefined;
+      if (auto) {
+        const d = await runDiscovery(client);
+        const targets = targetsFromDiscovery(d);
+        ir = await extractIR(client, { ...config, components: targets }, log);
+        writeJson(join(p.out, 'figma-ir.auto.json'), ir);
+        const perPage = new Map<string, number>();
+        for (const x of d.proposals) perPage.set(x.page, (perPage.get(x.page) ?? 0) + 1);
+        plan = d.proposals.map((x) => ({
+          name: x.name,
+          template: x.template,
+          sets: Object.fromEntries(Object.entries(x.sets).map(([role, id]) => [role, `auto.${id}`])),
+          title: (perPage.get(x.page) ?? 0) > 1 ? `Components/${pageLabel(x.page)}/${x.name}` : `Components/${x.name}`,
+        }));
+        if (ir.missing.length) log(`Not extracted: ${ir.missing.map((m) => m.targetId).join(', ')}`);
+      } else {
+        ir = values.refresh ? await stepExtract(config, p, { refresh: true, log }) : loadIR(p);
+      }
+      const res = await generateStorybook(config, config.generate, ir, client, log, plan);
       log(`Tokens: ${res.tokenCounts.bound} bound, ${res.tokenCounts.rawInFigma} raw in Figma, ${res.tokenCounts.noMatchingToken} unmatched`);
       log(`Storybook project: ${res.files.length} files → ${res.outDir}`);
       break;

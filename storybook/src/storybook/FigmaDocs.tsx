@@ -4,6 +4,8 @@ interface Docs {
   component: string;
   figma: { fileKey: string; version: string; sets: { name: string; nodeId: string }[] };
   mapping: { prop: string; figma: string; note?: string }[];
+  /** Generation caveats: what Figma did not specify, approximations. */
+  notes?: string[];
   tabs: DocTab[];
 }
 
@@ -13,6 +15,12 @@ const link = (fileKey: string, nodeId: string) => `https://www.figma.com/design/
 export function FigmaDocs({ docs }: { docs: Docs }) {
   return (
     <div>
+      {docs.notes && docs.notes.length > 0 && (
+        <>
+          <h2>Generation notes</h2>
+          <ul>{docs.notes.map((n) => <li key={n}>{n}</li>)}</ul>
+        </>
+      )}
       <h2>Figma to code</h2>
       <table>
         <thead><tr><th scope="col">Figma</th><th scope="col">Prop</th><th scope="col">Note</th></tr></thead>

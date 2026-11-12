@@ -11,6 +11,8 @@ import { projectFiles } from './project.ts';
 import { accordionTemplate } from './templates/accordion.ts';
 import { actionTemplate } from './templates/action.ts';
 import { checkboxTemplate } from './templates/checkbox.ts';
+import { genericTemplate, instanceRef, type RegistryEntry } from './templates/generic.ts';
+import type { Overrides } from '../discover/discover.ts';
 import type { ComponentReport, GeneratedFile, TemplateContext, TemplateResult } from './templates/common.ts';
 import { loadTokens, TokenResolver, tokensCss } from './tokens.ts';
 
@@ -23,10 +25,25 @@ export interface GenerateConfig {
   variablesExport: string;
   /** Variable collection -> HTML attribute that selects its non-default modes. */
   modeAttributes?: Record<string, string>;
-  components: { name: string; template: 'action' | 'checkbox' | 'accordion'; sets: Record<string, string> }[];
+  /**
+   * Components to generate. Omit (or set mode "auto") to discover every component set in the file.
+   * Each entry maps template roles to engine target ids.
+   */
+  components?: PlannedComponent[];
+  mode?: 'auto' | 'config';
+  /** Corrections to discovery (exclude sets, rename, force a template, reclassify frames). */
+  overrides?: Overrides;
 }
 
-const TEMPLATES: Record<GenerateConfig['components'][number]['template'], (ctx: TemplateContext, name: string) => TemplateResult> = {
+export interface PlannedComponent {
+  name: string;
+  template: 'action' | 'checkbox' | 'accordion' | 'generic';
+  sets: Record<string, string>;
+  /** Storybook title; default Components/<name>. */
+  title?: string;
+}
+
+const SPECIALISED: Record<'action' | 'checkbox' | 'accordion', (ctx: TemplateContext, name: string) => TemplateResult> = {
   action: actionTemplate,
   checkbox: checkboxTemplate,
   accordion: accordionTemplate,
@@ -35,14 +52,14 @@ const TEMPLATES: Record<GenerateConfig['components'][number]['template'], (ctx: 
 /** Generated folders are replaced; files are only written under them, so the target stays clean between runs. */
 const OWNED = ['src', '.storybook'];
 
-export async function generateStorybook(config: LoadedConfig, gen: GenerateConfig, ir: FigmaIR, renderer: FigmaRenderer, log: (m: string) => void) {
+export async function generateStorybook(config: LoadedConfig, gen: GenerateConfig, ir: FigmaIR, renderer: FigmaRenderer, log: (m: string) => void, plan: PlannedComponent[] = gen.components ?? []) {
   const outDir = resolve(config.baseDir, gen.outDir);
   const tokens = loadTokens(readJson(resolve(config.baseDir, expandHome(gen.variablesExport))));
   const resolver = new TokenResolver(tokens);
   const modeAttributes = gen.modeAttributes ?? {};
 
   const setsById = new Map(ir.components.map((c) => [c.targetId, c]));
-  const usedTargets = gen.components.flatMap((c) => Object.values(c.sets));
+  const usedTargets = plan.flatMap((c) => Object.values(c.sets));
   const missing = usedTargets.filter((t) => !setsById.has(t));
   if (missing.length) throw new Error(`Component sets missing from the IR: ${missing.join(', ')}. Run "extract" first.`);
 
@@ -50,12 +67,30 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   log(`Icons: ${icons.length} exported as SVG`);
   const iconMap = new Map(icons.map((i) => [i.figmaName, i]));
 
+  // Nested instances: a variant node id of a generated set -> the component that renders it.
+  const registry = new Map<string, RegistryEntry>();
+  for (const c of plan) {
+    if (c.template !== 'generic' && c.template !== 'action') continue;
+    const set = setsById.get(c.sets.main ?? '');
+    if (!set) continue;
+    const entry: RegistryEntry = { component: c.name, importPath: `../${c.name}/${c.name}`, kind: c.template, set };
+    for (const v of set.variants) registry.set(v.nodeId, entry);
+  }
+
   const files: GeneratedFile[] = [];
   const reports: ComponentReport[] = [];
-  for (const c of gen.components) {
+  for (const c of plan) {
     const sets: Record<string, IRComponentSet> = Object.fromEntries(Object.entries(c.sets).map(([role, id]) => [role, setsById.get(id)!]));
     const ctx: TemplateContext = { fileKey: ir.fileKey, version: ir.version, sets, resolver, icons: iconMap };
-    const result = TEMPLATES[c.template](ctx, c.name);
+    const result = c.template === 'generic'
+      ? genericTemplate(ctx, c.name, {
+          title: c.title ?? `Components/${c.name}`,
+          instance: (part) => {
+            const entry = part.instanceComponentId ? registry.get(part.instanceComponentId) : undefined;
+            return entry ? instanceRef(entry, part, iconMap) : undefined;
+          },
+        })
+      : SPECIALISED[c.template](ctx, c.name);
     files.push(...result.files);
     reports.push(result.report);
     log(`${c.name}: ${result.files.length} files (template ${c.template})`);
@@ -71,7 +106,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
       figma: { fileKey: ir.fileKey, fileName: ir.fileName, version: ir.version },
       modes: tokens.modes,
       modeAttributes,
-      components: gen.components.map((c) => c.name),
+      components: plan.map((c) => c.name),
       icons,
       colorTokens,
       page: {
@@ -93,7 +128,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   };
   files.push({ path: 'token-map.json', content: JSON.stringify(tokenMap, null, 2) + '\n' });
   files.push({ path: 'GENERATION-REPORT.md', content: report(ir, reports, tokenMap.counts, icons) });
-  files.push({ path: 'README.md', content: readme(ir, gen) });
+  files.push({ path: 'README.md', content: readme(ir, plan) });
 
   // Replace generated folders, keep anything else (node_modules, user files) in place.
   for (const dir of OWNED) {
@@ -133,11 +168,12 @@ function report(ir: FigmaIR, reports: ComponentReport[], counts: Record<string, 
   return lines.join('\n');
 }
 
-function readme(ir: FigmaIR, gen: GenerateConfig): string {
+function readme(ir: FigmaIR, plan: PlannedComponent[]): string {
   return `# Storybook generated from Figma
 
 Generated by the ds-sync engine from the Figma file "${ir.fileName}" (\`${ir.fileKey}\`), version ${ir.version}.
-Components: ${gen.components.map((c) => c.name).join(', ')}.
+Components (${plan.length}): ${plan.map((c) => `${c.name}${c.template === 'generic' ? '' : ` (${c.template})`}`).join(', ')}.
+Components marked with an archetype have behaviour from WAI-ARIA patterns; the others are generated by the generic template (visuals only).
 
 \`\`\`bash
 npm install

@@ -218,14 +218,16 @@ export function analyzeMdx(absFile: string, relFile: string): CodeComponent['mdx
 
 export function analyzeComponent(repoDir: string, target: ComponentTarget): CodeComponent {
   const abs = (rel: string) => join(repoDir, rel);
-  const result: CodeComponent = { targetId: target.id, file: target.code.file, export: target.code.export, found: false, props: [], inheritedProps: [], notes: [] };
-  if (!existsSync(abs(target.code.file))) {
-    result.notes.push(`File ${target.code.file} not found.`);
+  if (!target.code) return { targetId: target.id, file: '', export: '', found: false, props: [], inheritedProps: [], notes: ['No code configured for this component.'] };
+  const code = target.code;
+  const result: CodeComponent = { targetId: target.id, file: code.file, export: code.export, found: false, props: [], inheritedProps: [], notes: [] };
+  if (!existsSync(abs(code.file))) {
+    result.notes.push(`File ${code.file} not found.`);
     return result;
   }
-  const props = analyzeProps(abs(target.code.file), target.code.export);
+  const props = analyzeProps(abs(code.file), code.export);
   Object.assign(result, props);
-  const { css, stories, mdx } = target.code;
+  const { css, stories, mdx } = code;
   if (css && existsSync(abs(css))) result.css = analyzeCss(abs(css), css);
   if (stories && existsSync(abs(stories))) result.stories = analyzeStories(abs(stories), stories);
   if (mdx && existsSync(abs(mdx))) result.mdx = analyzeMdx(abs(mdx), mdx);
