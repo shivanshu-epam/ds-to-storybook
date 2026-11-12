@@ -1,0 +1,9 @@
+@import '@fontsource-variable/inter';
+@import '../tokens/tokens.css';
+
+body {
+  margin: 0;
+  font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--surface-bg-default);
+  color: var(--text-primary);
+}

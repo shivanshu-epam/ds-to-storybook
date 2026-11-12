@@ -31,7 +31,7 @@ Options:
   --config <file>   Config file (default: ds-sync.config.json)
   --out <dir>       Working directory for reports and cache (default: .ds-sync)
   --figma-version <id>  Read this Figma version instead of the latest (discover, generate)
-  init:  --figma <link>  --dir <folder>  --variables <file>  --ci  --yes
+  init:  --figma <link>  --target react|web-components|both  --dir <folder>  --variables <file>  --ci  --yes
   --refresh         Ignore the Figma response cache
   --help            Show this help
 `;
@@ -65,6 +65,7 @@ async function main() {
       config: { type: 'string', default: 'ds-sync.config.json' },
       out: { type: 'string', default: '.ds-sync' },
       figma: { type: 'string' },
+      target: { type: 'string' },
       'figma-version': { type: 'string' },
       dir: { type: 'string' },
       variables: { type: 'string' },
@@ -81,7 +82,7 @@ async function main() {
   }
   const log = (m: string) => process.stderr.write(`· ${m}\n`);
   if (command === 'init') {
-    await runInit({ ...(values.figma ? { figma: values.figma } : {}), ...(values.dir ? { dir: values.dir } : {}), ...(values.variables ? { variables: values.variables } : {}), yes: values.yes!, ci: values.ci!, log });
+    await runInit({ ...(values.figma ? { figma: values.figma } : {}), ...(values.target ? { target: values.target } : {}), ...(values.dir ? { dir: values.dir } : {}), ...(values.variables ? { variables: values.variables } : {}), yes: values.yes!, ci: values.ci!, log });
     return;
   }
   if (!existsSync(values.config!)) throw new Error(`${values.config} not found. Run "npx ds-sync init" first.`);
@@ -117,6 +118,13 @@ async function main() {
         log(`${d.name.padEnd(18)} errors ${n('error')}  warnings ${n('warning')}  info ${n('info')}`);
       }
       log(`Report → ${p.reportHtml}`);
+      break;
+    }
+    case 'outputs': {
+      // For CI: the generated folders, in GitHub Actions output format.
+      const g = config.generate;
+      const dirs = g?.targets?.length ? g.targets.map((t) => t.outDir) : g ? [g.outDir] : [];
+      process.stdout.write(`dirs=${dirs.join(' ')}\npaths<<EOF\n${dirs.map((d) => `${d}/**`).join('\n')}\nEOF\n`);
       break;
     }
     case 'discover': {

@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 
 import { parseFigmaFileKey } from '../src/config.ts';
 import { exportFromRest, loadTokens, tokensCss } from '../src/generate/tokens.ts';
-import { detectStack } from '../src/init.ts';
+import { detectStack, suggestTargets } from '../src/init.ts';
 
 describe('init helpers', () => {
   it('reads the file key from Figma links or a bare key', () => {
@@ -66,5 +66,32 @@ describe('token name collisions', () => {
     expect(css).not.toMatch(/--radius-md: var\(--radius-md\)/);
     expect(css).toContain('--stroke-width-default: 1px;');
     expect(css).toContain('--component-input-stroke-width-default: 2px;');
+  });
+});
+
+describe('platform-neutral tokens', () => {
+  it('writes DTCG JSON with references, units and modes', async () => {
+    const { tokensDtcg, tokensTs } = await import('../src/generate/tokens.ts');
+    const set = loadTokens({
+      variables: {
+        'primitives.color': [['blue/600', 'C', { a: '#4f46e5', b: '#ff7a00' }, 'var(--blue-600)']],
+        'primitives.dimension': [['size/4', 'F', 16, '']],
+        'semantic.color': [['bg/primary', 'C', '@primitives.color:blue/600', 'var(--bg-primary)']],
+      },
+    });
+    const json = JSON.parse(tokensDtcg(set));
+    expect(json.primitives.color.blue['600']).toEqual({ $type: 'color', $value: '#4f46e5', $extensions: { 'com.ds-sync.modes': { a: '#4f46e5', b: '#ff7a00' }, 'com.ds-sync.css': '--blue-600' } });
+    expect(json.primitives.dimension.size['4'].$value).toBe('16px');
+    expect(json.semantic.color.bg.primary.$value).toBe('{primitives.color.blue.600}');
+    expect(tokensTs(set)).toContain('"semantic.color/bg/primary": { css: "var(--bg-primary)", value: "#4f46e5" },');
+  });
+});
+
+describe('target suggestion', () => {
+  const base = { hasPackageJson: true, styling: [], typescript: true, packageManager: 'npm' as const, monorepo: false };
+  it('React apps get React; every other stack gets Web Components', () => {
+    expect(suggestTargets({ ...base, framework: 'react' })).toEqual(['react']);
+    expect(suggestTargets({ ...base, framework: 'react', monorepo: true })).toEqual(['react', 'web-components']);
+    for (const framework of ['vue', 'angular', 'svelte', 'web-components', 'unknown'] as const) expect(suggestTargets({ ...base, framework })).toEqual(['web-components']);
   });
 });

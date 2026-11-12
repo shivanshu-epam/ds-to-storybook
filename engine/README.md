@@ -14,9 +14,10 @@ npm ci && npm run build && npm link     # until published: puts ds-sync on your 
 
 | Command | What it does |
 | --- | --- |
-| `ds-sync init --figma <link> [--dir storybook] [--variables file.json] [--ci] [--yes]` | Checks that the token can open the file, detects the stack, writes `ds-sync.config.json`, and git-ignores `.env` and `.ds-sync/`. `--ci` adds the GitHub workflow. |
+| `ds-sync init --figma <link> [--target react\|web-components\|both] [--dir storybook] [--variables file.json] [--ci] [--yes]` | Checks that the token can open the file, detects the stack and chooses the output target(s), writes `ds-sync.config.json`, and git-ignores `.env` and `.ds-sync/`. `--ci` adds the GitHub workflow. |
 | `ds-sync discover` | Finds every component set, classifies frames and proposes templates. Writes `.ds-sync/discovery.md` with the items that need a person. |
-| `ds-sync generate` | Discover, then extract, then generate the Storybook project into `generate.outDir`. |
+| `ds-sync generate [--figma-version <id>]` | Discover, then extract, then generate one project per target (`react`, `web-components`). `--figma-version` pins a Figma version. |
+| `ds-sync outputs` | Lists the generated folders in GitHub Actions output format (used by the workflow). |
 | `ds-sync run` | Drift report for an existing repo (needs `repo` and hand-mapped `components` in the config). Writes `.ds-sync/report.html`. |
 | `extract`, `spec`, `analyze`, `report` | The drift report steps, one at a time. |
 
@@ -32,14 +33,15 @@ Config reference: [`../skills/figma-to-storybook/reference/config.md`](../skills
 | `src/discover` | Page, frame and component discovery; template proposals |
 | `src/ir` | Figma IR: layers, layout, styles, bound variables, property links |
 | `src/spec`, `src/code`, `src/diff`, `src/report` | Drift report: spec vs code |
-| `src/generate` | Tokens, style compiler, icons, project scaffold, templates (`action`, `checkbox`, `accordion`, `generic`) |
+| `src/generate` | Tokens (CSS, DTCG JSON, TS), style compiler, icons, React project scaffold, templates (`action`, `checkbox`, `accordion`, `generic`) |
+| `src/generate/wc` | Web Components target: Lit renderers that reuse each template's model, and the project scaffold |
 | `archetypes/` | Behaviour packs (required states, keyboard) |
 | `templates/github-workflow.yml` | CI template used by `init --ci` |
 
 ## Develop
 
 ```bash
-npm test              # 22 tests, against a recorded Figma fixture (no token needed)
+npm test              # 33 tests, against recorded Figma fixtures (no token needed)
 npm run typecheck
 npm run ds-sync -- generate   # run from source with tsx
 ```

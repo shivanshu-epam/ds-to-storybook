@@ -113,6 +113,24 @@ const iconName = (ctx: TemplateContext, set: IRComponentSet, test: RegExp) => {
   return figma ? ctx.icons.get(figma)?.name : undefined;
 };
 
+export interface CheckboxCore {
+  css: string;
+  icons: Record<'check' | 'minus' | 'error' | 'warning' | 'groupError' | 'groupWarning', string | undefined>;
+  sizes: { figma: string; value: string }[];
+  defaultSize: string;
+  names: { control: string; field: string; group: string | undefined };
+  nodeIds: string[];
+  copy: { value: string; heading: string; error: string; warning: string; legend: string; groupError: string; groupWarning: string };
+  types: string[];
+  states: string[];
+  fieldStates: string[];
+  orientations: { figma: string; value: string }[];
+  defaultOrientation: string;
+  hasGroup: boolean;
+  mapping: ComponentReport['props'];
+  description: string;
+}
+
 export function checkboxTemplate(ctx: TemplateContext, name: string): TemplateResult {
   const control = ctx.sets.control;
   const field = ctx.sets.field;
@@ -515,7 +533,25 @@ export const GroupStates: Story = {
     { path: `${dir}/${name}.figma.json`, content: docsJson(ctx, [control, field, ...(group ? [group] : [])], name, description, mapping) },
   ];
   const dependencies = Object.assign({}, ...parts.map((p, i) => Object.fromEntries(Object.entries(p.dependencies).map(([k, v]) => [`${['control', 'field', 'group'][i]}.${k}`, v]))));
+  const core: CheckboxCore = {
+    css,
+    icons,
+    sizes: sizes.map((x) => ({ figma: x, value: kebab(x) })),
+    defaultSize,
+    names: { control: control.name, field: field.name, group: group?.name },
+    nodeIds: [control, field, group].filter(Boolean).map((x) => x!.nodeId),
+    copy: { value: valueText, heading: headingText, error: errorText, warning: warningText, legend: legendText, groupError, groupWarning },
+    types,
+    states,
+    fieldStates,
+    orientations: group ? axisOptions(group, 'Orientation').map((o) => ({ figma: o, value: kebab(o) })) : [],
+    defaultOrientation: group ? kebab(axisDefault(group, 'Orientation')) : 'vertical',
+    hasGroup: Boolean(group),
+    mapping,
+    description,
+  };
   return {
+    core,
     files,
     report: {
       name,

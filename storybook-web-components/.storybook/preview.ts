@@ -1,0 +1,34 @@
+import type { Decorator, Preview } from '@storybook/web-components-vite';
+
+import '../src/styles/base.css';
+import '../src/index';
+
+// Figma variable modes are applied as attributes on <html>; tokens are CSS custom properties, which cross Shadow DOM.
+const withModes: Decorator = (story, { globals }) => {
+  const html = document.documentElement;
+  html.setAttribute('data-project', String(globals.project ?? 'project-a'));
+  html.setAttribute('data-theme', String(globals.theme ?? 'light'));
+  return story();
+};
+
+const preview: Preview = {
+  decorators: [withModes],
+  globalTypes: {
+    project: {
+      description: 'Figma mode: primitives.color',
+      toolbar: { title: 'project', icon: 'paintbrush', items: ['project-a', 'project-b'], dynamicTitle: true },
+    },
+    theme: {
+      description: 'Figma mode: semantic.color',
+      toolbar: { title: 'theme', icon: 'paintbrush', items: ['light', 'dark'], dynamicTitle: true },
+    },
+  },
+  initialGlobals: { project: 'project-a', theme: 'light' },
+  parameters: {
+    controls: { expanded: true },
+    // Accessibility violations fail the story tests (axe checks inside Shadow DOM).
+    a11y: { test: 'error' },
+  },
+};
+
+export default preview;

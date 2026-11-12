@@ -31,6 +31,8 @@ export interface TemplateContext {
 export interface TemplateResult {
   files: GeneratedFile[];
   report: ComponentReport;
+  /** The template's computed model (CSS, props, sample copy), reused by other output targets. */
+  core?: unknown;
 }
 
 /** "Read-Only" -> "read-only", "Primary" -> "primary". */

@@ -29,7 +29,7 @@ The full product strategy (market research, architecture options, security, KPIs
 | Tokens: Figma variables to CSS, light/dark and brand modes | Done | `storybook/src/tokens/tokens.css` |
 | Generated components: 3 with behaviour templates, 18 generic; stories, MDX docs, 42 icons | Done; 78/79 story tests pass (1 real design contrast issue) | `storybook/src/components` |
 | Discovery, `init`, installable CLI, Claude Skill, GitHub workflow, Figma plugin | Done (Phases A and B) | `engine/`, `skills/`, `plugin/` |
-| Engine tests | 27/27 pass | `engine/test` |
+| Engine tests | 33/33 pass | `engine/test` |
 
 **Figma file:** "Design system AI" (`I983NcgqSiY14YkpJbwjG8`). The variables come from `engine/inputs/figma-variables.json`, because the Variables REST API is Enterprise-only.
 
@@ -47,7 +47,7 @@ The full product strategy (market research, architecture options, security, KPIs
 | --- | --- | --- |
 | G1 | ~~Component pages and node ids are listed by hand~~ **Fixed in Phase A** (auto-discovery) | — |
 | G2 | Only 3 behaviour templates; the rest use the generic template (visuals only) | Interactive components need behaviour before production |
-| G3 | Output stack is fixed: React 19, TypeScript, CSS Modules, Storybook 10, Vite | Teams on Vue, Angular, Tailwind and others cannot use it |
+| G3 | ~~Output stack is fixed to React~~ **Fixed in Phase C**: Web Components for any framework, React kept | Native Vue/Angular output and Tailwind styling not offered |
 | G4 | ~~No packaging~~ **Fixed in Phase B** (init, package, skill, workflow); npm publishing still open | — |
 | G5 | Tests run in light mode only; no automated visual diff against Figma | Dark-mode and visual regressions are caught only by eye |
 | G6 | No sync: a Figma change is not turned into a pull request | One-shot generation only |
@@ -77,12 +77,20 @@ Each phase ends with something usable. The team is assumed to be 1 frontend engi
 - [x] `overrides.knownIssues`: accept a design issue (its axe check becomes a warning) with a recorded reason.
 - **Done when:** a new user goes from a Figma link to a running Storybook with no help from us.
 
-### Phase C: tech stack support (about 3 weeks per stack). Fixes G3.
+### Phase C: tech stack support. Done 2026-11-12 (G3).
 
-- [ ] Stack detection: framework, styling system, package manager, monorepo, Storybook version.
-- [ ] A per-stack output layer behind one interface. The order depends on what target teams use; the candidates are React + Tailwind, Vue 3, Angular and Web Components.
-- [ ] Use the headless library the stack already has (React Aria, Radix, Angular CDK, and so on) for behaviour.
-- **Done when:** the same Figma file generates a passing Storybook in two stacks.
+Decision: support every stack through **layers**, as multi-framework design systems do, rather than one adapter per framework.
+
+- [x] Platform-neutral tokens for every target: CSS custom properties, W3C DTCG JSON, typed TypeScript.
+- [x] **`web-components` target:** Lit custom elements in Shadow DOM, reusing each template's model, so the CSS is byte-identical to the React output. Button and Checkbox are form-associated, with focus delegation and composed events. React JSX typings are included (checked against @types/react), and each docs page has usage snippets for HTML, React, Vue, Angular and Svelte.
+- [x] `react` target kept for React teams that want idiomatic React.
+- [x] Several targets in one run (`generate.targets`); the GitHub workflow tests and commits every target folder.
+- [x] `init` detects the framework, styling, package manager and monorepo, and suggests the target: React → `react`; Vue, Angular, Svelte, Lit or none → `web-components`; React monorepo → both. Overridable with `--target`.
+- **Verified:** the Web Components example passes 78/79 story tests, the same as React (1 real design contrast issue). Button, Checkbox, Accordion and Alert are visually identical to React. A clean Vue project ran init, then generate, then tests, and got Web Components automatically.
+- **Not yet verified:**
+  - running the custom elements inside real Vue, Angular and Svelte apps (the docs snippets follow each framework's documented custom-element setup);
+  - Tab order inside Shadow DOM, which the test library cannot simulate, so keyboard tests focus elements directly.
+- **Later, if teams ask:** native Vue or Angular output (thin wrappers over the Web Components are the likely route), and Tailwind as a styling option.
 
 ### Phase D: more components and stronger checks (ongoing). Fixes G2, G5 and G8.
 
@@ -105,7 +113,7 @@ Hosted control plane, multiple design systems and repos, role-based access, audi
 
 ## 6. Decisions needed
 
-1. **Which tech stacks first?** This sets the order of Phase C.
+1. ~~Which tech stacks first?~~ Answered: support any stack. Web Components (any framework) plus native React.
 2. **Which second Figma design system** do we test Phase A against?
 3. **Where does the tool run?** As an npm package plus a GitHub Action (recommended first), a hosted service, or both.
 4. **Which AI model or provider is allowed** for the judgement steps, and is a no-AI mode required?
@@ -118,5 +126,5 @@ Hosted control plane, multiple design systems and repos, role-based access, audi
    - run the plugin in Figma;
    - run the GitHub workflow once;
    - decide on npm publishing (name, scope, public or private registry).
-2. Phase C, tech stack support: needs decision 1 (which stack first).
+2. ~~Phase C~~ done: Web Components for any stack, React kept.
 3. Phase D: behaviour templates for the components now on the generic template (input, radio, switch, dialog first), and dark-mode test runs.

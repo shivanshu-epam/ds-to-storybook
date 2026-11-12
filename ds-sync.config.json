@@ -5,6 +5,18 @@
   "generate": {
     "mode": "auto",
     "outDir": "storybook",
+    "targets": [
+      {
+        "target": "react",
+        "outDir": "storybook"
+      },
+      {
+        "target": "web-components",
+        "outDir": "storybook-web-components",
+        "packageName": "figma-design-system-web-components"
+      }
+    ],
+    "tagPrefix": "ds",
     "packageName": "figma-design-system-storybook",
     "variablesExport": "engine/inputs/figma-variables.json",
     "modeAttributes": {

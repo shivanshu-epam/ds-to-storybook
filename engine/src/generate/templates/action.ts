@@ -2,10 +2,23 @@
  * Archetype "action" (Button): native <button>, behaviour from the WAI-ARIA button pattern.
  * Figma supplies the variant axes, sizes, states, slots, styles and copy.
  */
+import type { IRComponentSet } from '../../ir/types.ts';
 import { generateStyles, type RoleDef, type StyleModel } from '../styles.ts';
 import { docsJson, forced, kebab, mdxPage, partAt, pascal, q, sampleText, type ComponentReport, type TemplateContext, type TemplateResult } from './common.ts';
 
 const STATE_AXIS = /^(state|interaction)$/i;
+
+export interface ActionCore {
+  set: IRComponentSet;
+  css: string;
+  axes: { figma: string; prop: string; options: { figma: string; value: string }[]; default: string }[];
+  states: { figma: string; kind: 'base' | 'disabled' | 'force'; force?: string }[];
+  stateAxis: string | undefined;
+  slots: { prop: string; figma: string; icon: string | undefined }[];
+  labelText: string;
+  mapping: ComponentReport['props'];
+  description: string;
+}
 
 export function actionTemplate(ctx: TemplateContext, name: string): TemplateResult {
   const set = ctx.sets.main;
@@ -243,7 +256,23 @@ ${storyExports.join('\n\n')}
     { path: `${dir}/${name}.mdx`, content: mdxPage(name, name, sections) },
     { path: `${dir}/${name}.figma.json`, content: docsJson(ctx, [set], name, description, mapping) },
   ];
+  const core: ActionCore = {
+    set,
+    css,
+    axes: enumAxes.map((a) => ({ figma: a.name, prop: axisProp(a.name), options: (a.options ?? []).map((o) => ({ figma: o, value: value(o) })), default: value(String(a.default)) })),
+    states: statesForGrid.map((s) => {
+      const sel = stateSel[s];
+      const force = sel && sel !== 'skip' ? /data-force-state~="(\w+)"/.exec(sel.selector)?.[1] : undefined;
+      return { figma: s, kind: sel === null ? ('base' as const) : /disabled/i.test(s) ? ('disabled' as const) : ('force' as const), ...(force ? { force } : {}) };
+    }),
+    stateAxis: stateAxis?.name,
+    slots: slots.map((s, i) => ({ prop: s, figma: slotBooleans[i]!.name, icon: iconImports[i] })),
+    labelText,
+    mapping,
+    description,
+  };
   return {
+    core,
     files,
     report: {
       name,

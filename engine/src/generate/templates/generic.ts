@@ -120,6 +120,26 @@ export function propPlan(set: IRComponentSet): PropPlan {
   };
 }
 
+export interface GenericCore {
+  set: IRComponentSet;
+  css: string;
+  layers: LayerInfo[];
+  axes: AxisInfo[];
+  booleans: { p: IRProperty; prop: string }[];
+  texts: { p: IRProperty; prop: string }[];
+  hasDisabled: boolean;
+  defaults: Record<string, string>;
+  assumptions: string[];
+  gaps: string[];
+  mapping: ComponentReport['props'];
+  title: string;
+  description: string;
+  rowAxis: AxisInfo | undefined;
+  colAxis: AxisInfo | undefined;
+  multi: AxisInfo[];
+  consumed: AxisInfo[];
+}
+
 /** A generated component another component can embed. */
 export interface RegistryEntry {
   component: string;
@@ -128,12 +148,47 @@ export interface RegistryEntry {
   set: IRComponentSet;
 }
 
+/** One prop set on a placed instance, independent of the output framework. */
+export type InstanceProp =
+  | { prop: string; kind: 'string'; value: string }
+  | { prop: string; kind: 'boolean'; value: boolean }
+  | { prop: string; kind: 'icon'; value: string }
+  | { prop: string; kind: 'force-state'; value: string };
+
 export interface InstanceRef {
   component: string;
   importPath: string;
+  /** React JSX attributes (derived from props). */
   attrs: string[];
+  props: InstanceProp[];
+  /** Text content (button label) when the component takes children. */
+  text?: string;
   usesIcon: boolean;
   notes: string[];
+}
+
+/** Variant values as framework-neutral props. */
+export function variantProps(axes: AxisInfo[], values: Record<string, string>): InstanceProp[] {
+  const out: InstanceProp[] = [];
+  for (const a of axes) {
+    const v = a.values.find((x) => x.figma === values[a.figma]);
+    if (!v) continue;
+    if (v.role === 'pseudo') out.push({ prop: 'data-force-state', kind: 'force-state', value: v.state! });
+    else if (v.role === 'disabled') out.push({ prop: 'disabled', kind: 'boolean', value: true });
+    else if (a.options.length > 1 && v.value !== a.defaultValue) out.push({ prop: a.prop, kind: 'string', value: v.value });
+  }
+  return out;
+}
+
+export function reactAttrs(props: InstanceProp[], text?: string): string[] {
+  const attrs = props.map((p) =>
+    p.kind === 'string' ? `${p.prop}=${JSON.stringify(p.value)}`
+      : p.kind === 'boolean' ? (p.value ? p.prop : `${p.prop}={false}`)
+      : p.kind === 'icon' ? `${p.prop}={<Icon name="${p.value}" />}`
+      : `data-force-state="${p.value}"`,
+  );
+  if (text !== undefined) attrs.push(`children=${JSON.stringify(text)}`);
+  return attrs;
 }
 
 /** "close-button" -> "Close". Used as an accessible name for icon-only nested buttons. */
@@ -147,10 +202,11 @@ export function humanize(layer: string): string {
 export function instanceRef(entry: RegistryEntry, part: IRPart, icons: Map<string, IconAsset>): InstanceRef {
   const plan = propPlan(entry.set);
   const variant = entry.set.variants.find((v) => v.nodeId === part.instanceComponentId);
-  const attrs = variant ? variantAttrs(plan.axes, variant.values) : [];
+  const props = variant ? variantProps(plan.axes, variant.values) : [];
   const over = part.instanceProps ?? {};
   const notes: string[] = [];
   let usesIcon = false;
+  let text: string | undefined;
   if (entry.kind === 'action') {
     for (const b of plan.booleans.filter((x) => /icon/i.test(x.p.name))) {
       const on = over[b.p.name] ?? b.p.default;
@@ -159,32 +215,32 @@ export function instanceRef(entry: RegistryEntry, part: IRPart, icons: Map<strin
       const icon = part.innerIcons?.find((i) => side.test(i.layer));
       const asset = icon ? icons.get(icon.name) : undefined;
       if (asset) {
-        attrs.push(`${/leading/i.test(b.p.name) ? 'leadingIcon' : 'trailingIcon'}={<Icon name="${asset.name}" />}`);
+        props.push({ prop: /leading/i.test(b.p.name) ? 'leadingIcon' : 'trailingIcon', kind: 'icon', value: asset.name });
         usesIcon = true;
       }
     }
     const labelBool = plan.booleans.find((x) => /label/i.test(x.p.name));
     const showLabel = labelBool ? (over[labelBool.p.name] ?? labelBool.p.default) !== false : true;
-    if (showLabel && part.innerText) attrs.push(`children=${JSON.stringify(part.innerText)}`);
+    if (showLabel && part.innerText) text = part.innerText;
     if (!showLabel) {
       const label = humanize(part.name);
-      attrs.push(`aria-label=${JSON.stringify(label)}`);
+      props.push({ prop: 'aria-label', kind: 'string', value: label });
       notes.push(`Icon-only ${entry.component} "${part.path}" is named "${label}" from its Figma layer name; confirm the wording.`);
     }
   } else {
     for (const b of plan.booleans) {
       const v = over[b.p.name];
-      if (typeof v === 'boolean' && v !== (String(b.p.default) === 'true')) attrs.push(`${b.prop}={${v}}`);
+      if (typeof v === 'boolean' && v !== (String(b.p.default) === 'true')) props.push({ prop: b.prop, kind: 'boolean', value: v });
     }
     for (const t of plan.texts) {
       const v = over[t.p.name];
-      if (typeof v === 'string' && v !== String(t.p.default)) attrs.push(`${t.prop}=${JSON.stringify(v)}`);
+      if (typeof v === 'string' && v !== String(t.p.default)) props.push({ prop: t.prop, kind: 'string', value: v });
     }
   }
-  return { component: entry.component, importPath: entry.importPath, attrs, usesIcon, notes };
+  return { component: entry.component, importPath: entry.importPath, attrs: reactAttrs(props, text), props, ...(text !== undefined ? { text } : {}), usesIcon, notes };
 }
 
-interface LayerInfo {
+export interface LayerInfo {
   path: string;
   parent: string;
   part: IRPart;
@@ -192,7 +248,7 @@ interface LayerInfo {
 }
 
 /** Union of layers across all variants, in a stable order (default variant first). */
-function layers(set: IRComponentSet, defaultVariant: IRVariant): LayerInfo[] {
+export function layers(set: IRComponentSet, defaultVariant: IRVariant): LayerInfo[] {
   const seen = new Map<string, IRPart>();
   for (const v of [defaultVariant, ...set.variants.filter((x) => x !== defaultVariant)]) {
     for (const p of v.parts) {
@@ -213,8 +269,8 @@ function layers(set: IRComponentSet, defaultVariant: IRVariant): LayerInfo[] {
   });
 }
 
-const isIcon = (p: IRPart) => p.type === 'INSTANCE' && Boolean(p.instanceOf && /^icons?\//i.test(p.instanceOf));
-const SHAPES = new Set(['VECTOR', 'BOOLEAN_OPERATION', 'STAR', 'LINE', 'POLYGON', 'REGULAR_POLYGON']);
+export const isIcon = (p: IRPart) => p.type === 'INSTANCE' && Boolean(p.instanceOf && /^icons?\//i.test(p.instanceOf));
+export const SHAPES = new Set(['VECTOR', 'BOOLEAN_OPERATION', 'STAR', 'LINE', 'POLYGON', 'REGULAR_POLYGON']);
 
 export function genericTemplate(ctx: TemplateContext, name: string, opts: { title: string; instance: (part: IRPart) => InstanceRef | undefined }): TemplateResult {
   const set = ctx.sets.main;
@@ -473,6 +529,7 @@ ${stories.join('\n\n')}
     ...swaps.map((s) => ({ prop: '—', figma: `${s.name} (instance swap)`, note: 'Not exposed yet.' })),
   ];
   const uniqueGaps = [...new Set(gaps)];
+  const core: GenericCore = { set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed] };
   const files = [
     { path: `${dir}/${name}.tsx`, content: tsx },
     { path: `${dir}/${name}.module.css`, content: css },
@@ -483,5 +540,6 @@ ${stories.join('\n\n')}
   return {
     files,
     report: { name, figmaSets: [`${set.name} (${set.nodeId})`], files: files.map((f) => f.path), props: mapping, assumptions, gaps: uniqueGaps, dependencies: styles.dependencies },
+    core,
   };
 }

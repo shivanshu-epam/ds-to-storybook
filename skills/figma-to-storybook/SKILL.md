@@ -1,6 +1,6 @@
 ---
 name: figma-to-storybook
-description: Generate a tested Storybook (React + TypeScript) from a Figma design system, or refresh it after Figma changes, using the ds-sync CLI. Use when the user wants to build, create, generate, refresh or sync Storybook, stories or component docs from a Figma file or link, set up ds-sync, answer ds-sync discovery questions, or understand a ds-sync generation report.
+description: Generate a tested Storybook from a Figma design system, as React components or framework-agnostic Web Components (for Vue, Angular, Svelte or any stack), or refresh it after Figma changes, using the ds-sync CLI. Use when the user wants to build, create, generate, refresh or sync Storybook, stories or component docs from a Figma file or link, set up ds-sync, answer ds-sync discovery questions, or understand a ds-sync generation report.
 ---
 
 # Figma to Storybook (ds-sync)
@@ -28,7 +28,7 @@ ds-sync init --figma "<figma link>" --yes [--dir storybook] [--variables <export
 
 - `init` checks that the token can open the file, detects the stack, and writes `ds-sync.config.json`. It also adds `.env` and `.ds-sync/` to `.gitignore`.
 - **Variables:** on non-Enterprise plans the Variables API returns 403, and init says so. Then ask the user to export variables with the ds-sync Figma plugin (`plugin/` in the repo), and pass the file with `--variables`. Without it, generation still works, but colours and spacing are raw values instead of tokens.
-- **Stack:** if init reports a framework other than React, tell the user that the output is a standalone React + TypeScript + CSS Modules Storybook for now.
+- **Stack and target:** init detects the framework and suggests the output. React apps get `react`. Vue, Angular, Svelte, Lit or no framework get `web-components` (custom elements that run in any framework). React monorepos get both. Explain the choice in one line and confirm it with the user; override with `--target react|web-components|both`.
 
 ## 3. Discover, then ask the questions
 

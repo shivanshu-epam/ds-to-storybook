@@ -47,20 +47,27 @@ jobs:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
         run: node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" generate
 
-      - name: Find the output folder
+      - name: Find the output folders
         id: out
-        run: echo "dir=$(node -p "require('./ds-sync.config.json').generate.outDir")" >> "$GITHUB_OUTPUT"
+        run: node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" outputs >> "$GITHUB_OUTPUT"
 
-      - name: Test the generated Storybook
+      - name: Test the generated Storybooks
         id: test
         continue-on-error: true
         run: |
-          cd "${{ steps.out.outputs.dir }}"
-          # npm ci installs exactly from the lockfile and never rewrites it, so only Figma changes reach the pull request.
-          if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
           npx playwright install --with-deps chromium
-          npm run typecheck
-          npm test
+          status=0
+          for dir in ${{ steps.out.outputs.dirs }}; do
+            echo "::group::$dir"
+            (
+              cd "$dir"
+              # npm ci installs exactly from the lockfile and never rewrites it, so only Figma changes reach the pull request.
+              if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
+              npm run typecheck && npm test
+            ) || status=1
+            echo "::endgroup::"
+          done
+          exit $status
 
       - name: Open a pull request
         uses: peter-evans/create-pull-request@v7
@@ -73,5 +80,4 @@ jobs:
             Story tests: **${{ steps.test.outcome }}**. See GENERATION-REPORT.md for what changed and what Figma does not specify.
           delete-branch: true
           # Only the generated Storybook belongs in this pull request.
-          add-paths: |
-            ${{ steps.out.outputs.dir }}/**
+          add-paths: ${{ steps.out.outputs.paths }}

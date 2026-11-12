@@ -2,6 +2,7 @@
  * Archetype "disclosure" (Accordion + AccordionItem): heading > button[aria-expanded] + region,
  * behaviour from the WAI-ARIA accordion pattern. Figma supplies the item set (Style × State).
  */
+import type { IRComponentSet } from '../../ir/types.ts';
 import { generateStyles, type RoleDef, type StateAxis, type StyleModel } from '../styles.ts';
 import { axisDefault, axisOptions, docsJson, forced, kebab, mdxPage, partAt, q, sampleText, type ComponentReport, type TemplateContext, type TemplateResult } from './common.ts';
 
@@ -12,6 +13,19 @@ const part = (test: RegExp, extra: Partial<RoleDef> & Pick<RoleDef, 'role' | 'ki
     return p ? { style: p.style, part: p } : undefined;
   },
 });
+
+export interface AccordionCore {
+  set: IRComponentSet;
+  css: string;
+  styleAxis: { figma: string; options: { figma: string; value: string }[]; default: string } | undefined;
+  stateAxis: string;
+  states: string[];
+  chevron: string | undefined;
+  title: string;
+  body: string;
+  width: number;
+  mapping: ComponentReport['props'];
+}
 
 export function accordionTemplate(ctx: TemplateContext, name: string): TemplateResult {
   const set = ctx.sets.item;
@@ -318,7 +332,20 @@ export const Keyboard: Story = {
     },
     { path: `${dir}/${name}.figma.json`, content: docsJson(ctx, [set], name, set.description, mapping) },
   ];
+  const core: AccordionCore = {
+    set,
+    css,
+    styleAxis: styleAxis ? { figma: styleAxis.name, options: (styleAxis.options ?? []).map((o) => ({ figma: o, value: kebab(o) })), default: defaultVariant! } : undefined,
+    stateAxis: stateAxisName,
+    states: stateList,
+    chevron,
+    title,
+    body,
+    width,
+    mapping,
+  };
   return {
+    core,
     files,
     report: {
       name,

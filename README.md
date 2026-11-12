@@ -1,9 +1,9 @@
 # ds-sync: Figma to Storybook
 
-**A tool that turns any Figma design system into a working, tested Storybook, and keeps it in sync.** Point it at a Figma file and it:
+**A tool that turns any Figma design system into a working, tested Storybook, and keeps it in sync, for any tech stack.** Point it at a Figma file and it:
 
 - finds every component;
-- generates React components, design tokens, stories (with interaction and accessibility tests) and docs pages built from your Figma documentation;
+- generates components (React, or Web Components for any framework), design tokens, stories (with interaction and accessibility tests) and docs pages built from your Figma documentation;
 - tells you what Figma doesn't specify.
 
 ## Quick start
@@ -34,8 +34,21 @@ Prefer a guided run? Use the **Claude Skill** in [`skills/figma-to-storybook`](s
 | [`skills/figma-to-storybook/`](skills/figma-to-storybook/) | **Claude Skill** that drives the CLI and handles the judgement calls. |
 | [`plugin/`](plugin/) | **Figma plugin** that exports variables, for teams not on a Figma Enterprise plan. |
 | [`engine/templates/github-workflow.yml`](engine/templates/github-workflow.yml) | **GitHub Action** (`ds-sync init --ci`) that regenerates weekly or on demand and opens a pull request. |
-| [`storybook/`](storybook/) | **Example output**: generated from the "Design system AI" Figma file. 21 components, 78 of 79 story tests pass (the failure is a real contrast issue in the design). |
+| [`storybook/`](storybook/) | **Example output, React**: generated from the "Design system AI" Figma file. 21 components, 78 of 79 story tests pass (the failure is a real contrast issue in the design). |
+| [`storybook-web-components/`](storybook-web-components/) | **Example output, Web Components** from the same file: the same 21 components as `<ds-…>` custom elements that work in React, Vue, Angular, Svelte or plain HTML. Same CSS, same 78 of 79 tests. |
 | [`PLAN.md`](PLAN.md) | Roadmap, status and open decisions. |
+
+## Any tech stack
+
+The tool follows the pattern multi-framework design systems use (Adobe Spectrum, IBM Carbon, Ionic, Shoelace): three layers, each usable on its own.
+
+| Layer | Output | Works with |
+| --- | --- | --- |
+| Tokens | `tokens.css` (custom properties, modes as attributes), `tokens.json` (W3C DTCG), `tokens.ts` | Any web stack; DTCG feeds Style Dictionary, Tokens Studio and native platforms |
+| Components: `web-components` target | Lit custom elements in Shadow DOM, form-associated, with React JSX typings | React, Vue, Angular, Svelte, plain HTML, any future framework |
+| Components: `react` target | Native React + TypeScript + CSS Modules | React teams who want idiomatic React components |
+
+`ds-sync init` detects the project's framework and suggests the output: React apps get `react`, every other stack gets `web-components`, and React monorepos get both. One run can produce several targets (`generate.targets`); they share the same CSS, generated once from Figma, so they look identical.
 
 ## How it works
 
