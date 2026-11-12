@@ -29,7 +29,7 @@ The full product strategy (market research, architecture options, security, KPIs
 | Tokens: Figma variables to CSS, light/dark and brand modes | Done | `storybook/src/tokens/tokens.css` |
 | Generated components: 3 with behaviour templates, 18 generic; stories, MDX docs, 42 icons | Done; 78/79 story tests pass (1 real design contrast issue) | `storybook/src/components` |
 | Discovery, `init`, installable CLI, Claude Skill, GitHub workflow, Figma plugin | Done (Phases A and B) | `engine/`, `skills/`, `plugin/` |
-| Engine tests | 26/26 pass | `engine/test` |
+| Engine tests | 27/27 pass | `engine/test` |
 
 **Figma file:** "Design system AI" (`I983NcgqSiY14YkpJbwjG8`). The variables come from `engine/inputs/figma-variables.json`, because the Variables REST API is Enterprise-only.
 
@@ -95,6 +95,7 @@ Each phase ends with something usable. The team is assumed to be 1 frontend engi
 
 - [ ] Figma webhook (library publish) or polling, then re-extract only what changed.
 - [ ] Three-way diff (last accepted spec, new Figma, current code), then the smallest change set.
+- [x] **Proven end to end (2026-11-12):** a one-variant colour and radius edit in Figma became [pull request #1](https://github.com/shivanshu-epam/ds-to-storybook/pull/1) through the GitHub workflow: 4 files, including a 5-line CSS override for exactly that variant.
 - [ ] Open a pull request per change type (tokens / styles / API / stories) with before/after images.
 - [ ] Update existing repos (Scenario 1), not just new ones.
 
