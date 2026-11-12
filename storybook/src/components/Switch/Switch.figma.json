@@ -12,8 +12,9 @@
   },
   "mapping": [
     {
-      "prop": "value",
-      "figma": "Value (variant)"
+      "prop": "checked / defaultChecked",
+      "figma": "Value (variant)",
+      "note": "Off → not checked, On → checked; aria-checked."
     },
     {
       "prop": "interaction",
@@ -30,7 +31,9 @@
     }
   ],
   "notes": [
-    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified."
+    "Behaviour from the WAI-ARIA switch pattern: a native button with role=\"switch\" and aria-checked. Tab focuses it; Space and Enter toggle it. Figma Value=On is checked.",
+    "Figma has no focus state; a 2px focus ring (var(--border-interactive-focus)) is added for keyboard users.",
+    "Figma has no label for Switch: give each one an accessible name with aria-label or aria-labelledby."
   ],
   "tabs": [
     {

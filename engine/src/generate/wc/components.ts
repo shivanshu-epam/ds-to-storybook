@@ -111,7 +111,9 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
   const { set, axes, hasDisabled } = core;
   const booleans = core.booleans.map((b) => ({ ...b, prop: wcProp(b.prop) }));
   const texts = core.texts.map((t) => ({ ...t, prop: wcProp(t.prop) }));
-  const enumAxes = axes.filter((a) => a.options.length > 1).map((a) => ({ ...a, prop: wcProp(a.prop) }));
+  const sw = core.behavior;
+  const enumAxes = axes.filter((a) => a.options.length > 1 && a !== sw?.axis).map((a) => ({ ...a, prop: wcProp(a.prop) }));
+  const busyProp = sw?.busy ? wcProp(sw.busy.prop) : undefined;
   const imports = new Set<string>();
   let usesIcon = false;
   const boolFor = (figma?: string) => booleans.find((b) => b.p.name === figma)?.prop;
@@ -135,7 +137,10 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
         const ntag = tagOf(nested.component);
         imports.add(`import '../${nested.component}/${ntag}';`);
         const props = nested.props
-          .map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? `.label=\${${js(x.value)}}` : `.${wcProp(x.prop)}=\${${js(x.value)}}`))
+          .map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}`
+            : x.prop === 'aria-label' ? (nested.kind === 'switch' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`)
+            : x.prop === 'defaultChecked' ? '?checked=${true}'
+            : `.${wcProp(x.prop)}=\${${js(x.value)}}`))
           .join(' ');
         el = `<span ${c}><${ntag}${props ? ' ' + props : ''}>${nested.text !== undefined ? `\${${js(nested.text)}}` : ''}</${ntag}></span>`;
       } else {
@@ -145,7 +150,8 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
       el = `<span ${c} aria-hidden="true"></span>`;
     } else {
       const kids = children(l.path);
-      el = kids.length ? `<div ${c}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</div>` : `<div ${c}></div>`;
+      const box = sw ? 'span' : 'div'; // a <button> may only hold phrasing content
+      el = kids.length ? `<${box} ${c}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</${box}>` : `<${box} ${c}></${box}>`;
     }
     const b = boolFor(p.refs?.visible);
     return b ? `${indent}\${this.${b} ? html\`${el}\` : nothing}` : `${indent}${el}`;
@@ -155,30 +161,39 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
   const figmaOf = (prop: string) =>
     [...enumAxes.map((a) => [a.prop, a.figma]), ...booleans.map((b) => [b.prop, b.p.name]), ...texts.map((t) => [t.prop, t.p.name]), ['disabled', 'State=Disabled']].find(([x]) => x === prop)?.[1] ?? prop;
   const props = [
+    ...(sw ? [
+      { prop: 'checked', type: 'boolean', init: 'false', decl: '{ type: Boolean, reflect: true }' },
+      { prop: 'accessibleLabel', type: 'string | undefined', init: 'undefined', decl: "{ type: String, attribute: 'accessible-label' }" },
+      { prop: 'name', type: 'string | undefined', init: 'undefined', decl: '{ type: String, reflect: true }' },
+      { prop: 'value', type: 'string', init: "'on'", decl: '{ type: String }' },
+    ] : []),
     ...enumAxes.map((a) => ({ prop: a.prop, type: a.options.map(js).join(' | '), init: js(a.defaultValue), decl: `{ type: String, reflect: true, attribute: ${js(attrFor(a.prop))} }` })),
     ...(hasDisabled ? [{ prop: 'disabled', type: 'boolean', init: 'false', decl: '{ type: Boolean, reflect: true }' }] : []),
     ...booleans.map((b) => ({ prop: b.prop, type: 'boolean', init: String(String(b.p.default) === 'true'), decl: `{ type: Boolean, attribute: ${js(attrFor(b.prop))} }` })),
     ...texts.map((t) => ({ prop: t.prop, type: 'string', init: js(String(t.p.default)), decl: `{ type: String, attribute: ${js(attrFor(t.prop))} }` })),
   ];
   const dataAttrs = [
+    ...(sw ? [`data-${sw.axis.attr}=\${this.checked ? ${js(sw.on)} : ${js(sw.off)}}`] : []),
     ...enumAxes.map((a) => `data-${a.attr}=\${this.${a.prop}}`),
-    ...(hasDisabled ? ['?data-disabled=${this.disabled}', "aria-disabled=${this.disabled ? 'true' : nothing}"] : []),
+    ...(hasDisabled ? ['?data-disabled=${this.disabled}', sw ? '?disabled=${this.disabled}' : "aria-disabled=${this.disabled ? 'true' : nothing}"] : []),
+    ...(busyProp ? [`aria-busy=\${this.${busyProp} === 'loading' ? 'true' : nothing}`] : []),
     'data-force-state=${this.forceState ?? nothing}',
   ];
 
-  const component = `${header(js(set.name), 'generic template')}// Visuals come from Figma. Behaviour (keyboard, focus, ARIA role) is not specified in Figma and is not generated.
+  const swDocs: Record<string, string> = { checked: `On or off. Figma: ${sw?.axis.figma}`, accessibleLabel: 'Accessible name (Figma has no label). Or use aria-labelledby on a wrapping label.', name: 'Form field name', value: 'Form value when on. Default "on"' };
+  const component = `${header(js(set.name), sw ? 'switch template' : 'generic template')}// Visuals come from Figma. ${sw ? 'Behaviour: WAI-ARIA switch pattern (native button, role="switch", aria-checked), form-associated.' : 'Behaviour (keyboard, focus, ARIA role) is not specified in Figma and is not generated.'}
 import { LitElement, html, nothing, unsafeCSS } from 'lit';
 
 ${usesIcon ? "import { icon } from '../../icons/icon';\n" : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import css from './${name}.css?inline';
 
 export class ${cls} extends LitElement {
-  static override styles = [unsafeCSS(':host { display: contents; }'), unsafeCSS(css)];
+${sw ? '  static formAssociated = true;\n  static override shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };\n' : ''}  static override styles = [unsafeCSS(':host { display: contents; }'), unsafeCSS(css)];
   static override properties = {
 ${props.map((p) => `    ${p.prop}: ${p.decl},`).join('\n')}
     forceState: { type: String, attribute: 'data-force-state' },
   };
 
-${props.map((p) => `  /** Figma: ${figmaOf(p.prop)} */\n  declare ${p.prop}: ${p.type};`).join('\n')}
+${props.map((p) => `  /** ${swDocs[p.prop] && sw ? swDocs[p.prop] : `Figma: ${figmaOf(p.prop)}`} */\n  declare ${p.prop}: ${p.type};`).join('\n')}
   /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */
   declare forceState: string | undefined;
 
@@ -187,12 +202,29 @@ ${props.map((p) => `  /** Figma: ${figmaOf(p.prop)} */\n  declare ${p.prop}: ${p
 ${props.map((p) => `    this.${p.prop} = ${p.init};`).join('\n')}
   }
 
+${sw ? `  private readonly internals = this.attachInternals();
+
+  override updated() {
+    this.internals.setFormValue(this.checked ? this.value : null);
+  }
+
+  private toggle() {
+    if (${[hasDisabled ? 'this.disabled' : '', busyProp ? `this.${busyProp} === 'loading'` : ''].filter(Boolean).join(' || ') || 'false'}) return;
+    this.checked = !this.checked;
+    this.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
+  }
+
   override render() {
+    return html\`<button type="button" role="switch" class="root" part="root" aria-checked=\${this.checked ? 'true' : 'false'} aria-label=\${this.accessibleLabel ?? nothing} ${dataAttrs.join(' ')} @click=\${this.toggle}>
+${body}
+      </button>\`;
+  }
+}` : `  override render() {
     return html\`<div class="root" part="root" ${dataAttrs.join(' ')}>
 ${body}
       </div>\`;
   }
-}
+}`}
 
 if (!customElements.get('${tag}')) customElements.define('${tag}', ${cls});
 
@@ -206,12 +238,13 @@ declare global {
   // Stories: one attribute map per element, so a story value replaces the default binding instead of duplicating it.
   type Bind = string | boolean | { force: string };
   const baseBinds = (): Map<string, Bind> => new Map<string, Bind>([
+    ...(sw ? [['checked', 'args.checked'], ['accessibleLabel', 'args.accessibleLabel']] as [string, Bind][] : []),
     ...enumAxes.map((a) => [a.prop, `args.${a.prop}`] as [string, Bind]),
     ...(hasDisabled ? [['disabled', 'args.disabled'] as [string, Bind]] : []),
     ...booleans.map((b) => [b.prop, `args.${b.prop}`] as [string, Bind]),
     ...texts.map((t) => [t.prop, `args.${t.prop}`] as [string, Bind]),
   ]);
-  const isBool = (prop: string) => prop === 'disabled' || booleans.some((b) => b.prop === prop);
+  const isBool = (prop: string) => prop === 'disabled' || prop === 'checked' || booleans.some((b) => b.prop === prop);
   const el = (over: Record<string, Bind> = {}) => {
     const m = baseBinds();
     let force: string | undefined;
@@ -234,11 +267,56 @@ declare global {
     if (!v) return {};
     if (v.role === 'pseudo') return { _force: { force: v.state! } };
     if (v.role === 'disabled') return { disabled: true };
+    if (a === sw?.axis) return { checked: v.value === sw.on };
     return a.options.length > 1 ? { [wcProp(a.prop)]: v.value } : {};
   };
-  const stories: string[] = ['export const Default: Story = {};'];
+  const find = sw ? `const host = canvasElement.querySelector('${tag}')!;
+    const control = within(shadowOf(canvasElement, '${tag}') as unknown as HTMLElement).getByRole('switch', { name: ${js(sw.label)} });
+    const onChange = fn();
+    host.addEventListener('change', onChange);` : '';
+  const stories: string[] = [sw ? `export const Default: Story = {
+  play: async ({ canvasElement }) => {
+    ${find}
+    await expect(control).toHaveAttribute('aria-checked', 'false');
+    await userEvent.click(control);
+    await expect(control).toHaveAttribute('aria-checked', 'true');
+    await expect(host.checked).toBe(true);
+    await expect(onChange).toHaveBeenCalledTimes(1);
+    // WAI-ARIA switch: Space toggles (Enter too, from the native button).
+    control.focus();
+    await userEvent.keyboard(' ');
+    await expect(control).toHaveAttribute('aria-checked', 'false');
+    await expect(onChange).toHaveBeenCalledTimes(2);
+  },
+};` : 'export const Default: Story = {};'];
+  if (sw && hasDisabled) {
+    stories.push(`/** Disabled: not focusable and does not toggle. */
+export const DisabledDoesNotToggle: Story = {
+  args: { disabled: true },
+  play: async ({ canvasElement }) => {
+    ${find}
+    await expect(control).toBeDisabled();
+    await userEvent.click(control, { pointerEventsCheck: 0 });
+    await expect(control).toHaveAttribute('aria-checked', 'false');
+    await expect(onChange).not.toHaveBeenCalled();
+  },
+};`);
+  }
+  if (sw && busyProp) {
+    stories.push(`/** Loading: aria-busy, and clicks do not toggle. */
+export const LoadingDoesNotToggle: Story = {
+  args: { ${busyProp}: 'loading' },
+  play: async ({ canvasElement }) => {
+    ${find}
+    await expect(control).toHaveAttribute('aria-busy', 'true');
+    await userEvent.click(control);
+    await expect(control).toHaveAttribute('aria-checked', 'false');
+    await expect(onChange).not.toHaveBeenCalled();
+  },
+};`);
+  }
   const sections: { heading: string; story: string }[] = [];
-  const names = new Set(['Default']);
+  const names = new Set(['Default', 'DisabledDoesNotToggle', 'LoadingDoesNotToggle']);
   const storyName = (s: string) => {
     let n = pascal(s) || 'Axis';
     if (/^[0-9]/.test(n)) n = `S${n}`;
@@ -284,18 +362,19 @@ ${booleans.map((b) => `    labelled(${js(`${b.p.name}: ${String(b.p.default) ===
 };`);
     sections.push({ heading: 'Options', story: n });
   }
-  const layoutImports = ['matrix', 'row', 'labelled'].filter((f) => stories.some((st) => st.includes(`${f}(`)));
-  const storiesFile = `${header(js(set.name), 'generic template')}import type { Meta, StoryObj } from '@storybook/web-components-vite';
+  const layoutImports = ['matrix', 'row', 'labelled', 'shadowOf'].filter((f) => stories.some((st) => st.includes(`${f}(`)));
+  const storiesFile = `${header(js(set.name), sw ? 'switch template' : 'generic template')}import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
-
+${sw ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}
 ${layoutImports.length ? `import { ${layoutImports.join(', ')} } from '../../storybook/layout';\n` : ''}import './${tag}';
 
 const meta = {
   title: ${js(core.title)},
   component: '${tag}',
-  args: { ${[...enumAxes.map((a) => `${a.prop}: ${js(a.defaultValue)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`)].join(', ')} },
+  args: { ${[...(sw ? ['checked: false', `accessibleLabel: ${js(sw.label)}`] : []), ...enumAxes.map((a) => `${a.prop}: ${js(a.defaultValue)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`)].join(', ')} },
   argTypes: {
 ${[
+    ...(sw ? [`    checked: { control: 'boolean', description: ${js(`On or off. Figma: ${sw.axis.figma}`)} },`, `    accessibleLabel: { control: 'text', description: 'Accessible name (Figma has no label)' },`] : []),
     ...enumAxes.map((a) => `    ${a.prop}: { control: '${a.options.length > 5 ? 'select' : 'inline-radio'}', options: ${js(a.options)}, description: ${js(`Figma: ${a.figma}`)} },`),
     ...(hasDisabled ? [`    disabled: { control: 'boolean', description: 'Figma: State=Disabled' },`] : []),
     ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${js(`Figma: ${b.p.name}`)} },`),
@@ -303,7 +382,7 @@ ${[
   ].join('\n')}
   },
   render: (args) => ${el()},
-  parameters: { figma: { fileKey: ${js(ctx.fileKey)}, nodeId: ${js(set.nodeId)} }, generator: 'generic' },
+  parameters: { figma: { fileKey: ${js(ctx.fileKey)}, nodeId: ${js(set.nodeId)} }, generator: '${sw ? 'switch' : 'generic'}' },
 } satisfies Meta;
 
 export default meta;
@@ -314,15 +393,15 @@ ${stories.join('\n\n')}
 `;
 
   const firstAxis = enumAxes[0];
-  const usageAttrs = firstAxis ? ` ${attrFor(firstAxis.prop)}=${js(firstAxis.defaultValue)}` : '';
+  const usageAttrs = sw ? ` accessible-label=${js(sw.label)} name=${js(kebab(name))}` : firstAxis ? ` ${attrFor(firstAxis.prop)}=${js(firstAxis.defaultValue)}` : '';
   const description = core.description || leadSentence(set.docFrames);
-  const mapping = core.mapping.map((m) => ({ ...m, prop: m.prop === '—' ? m.prop : wcProp(m.prop) }));
+  const mapping = core.mapping.map((m) => ({ ...m, prop: m.prop === '—' ? m.prop : m.prop === 'checked / defaultChecked' ? 'checked' : wcProp(m.prop) }));
   const docs = figmaDocsMdx(docTabs(set.docFrames, name), mapping, [...core.assumptions, ...core.gaps], [set], ctx.fileKey);
   const files: GeneratedFile[] = [
     { path: `${dir}/${tag}.ts`, content: component },
     { path: `${dir}/${name}.css`, content: core.css },
     { path: `${dir}/${name}.stories.ts`, content: storiesFile },
-    { path: `${dir}/${name}.mdx`, content: mdx(name, description, sections, usage(o, tag, usageAttrs, '', ''), docs) },
+    { path: `${dir}/${name}.mdx`, content: mdx(name, description, sections, usage(o, tag, usageAttrs, '', sw ? 'change' : ''), docs) },
   ];
   return {
     files,

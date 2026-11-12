@@ -30,30 +30,30 @@ This is a standard Web Component: it works in any framework, or none.
 
 ### HTML
 
-<Source language="html" code={"<script type=\"module\">\n  import 'figma-design-system-web-components';\n</script>\n<ds-switch value=\"off\"></ds-switch>"} dark />
+<Source language="html" code={"<script type=\"module\">\n  import 'figma-design-system-web-components';\n</script>\n<ds-switch accessible-label=\"Switch\" name=\"switch\"></ds-switch>"} dark />
 
 ### React 19
 
-<Source language="tsx" code={"import 'figma-design-system-web-components';\n// Typings: add figma-design-system-web-components/types/react.d.ts to your tsconfig.\n<ds-switch value=\"off\"></ds-switch>"} dark />
+<Source language="tsx" code={"import 'figma-design-system-web-components';\n// Typings: add figma-design-system-web-components/types/react.d.ts to your tsconfig.\n<ds-switch accessible-label=\"Switch\" name=\"switch\" onChange={handle}></ds-switch>"} dark />
 
 ### Vue 3
 
-<Source language="html" code={"<!-- vite.config: vue({ template: { compilerOptions: { isCustomElement: (t) => t.startsWith('ds-') } } }) -->\n<ds-switch value=\"off\"></ds-switch>"} dark />
+<Source language="html" code={"<!-- vite.config: vue({ template: { compilerOptions: { isCustomElement: (t) => t.startsWith('ds-') } } }) -->\n<ds-switch accessible-label=\"Switch\" name=\"switch\" @change=\"handle\"></ds-switch>"} dark />
 
 ### Angular
 
-<Source language="html" code={"<!-- Component: schemas: [CUSTOM_ELEMENTS_SCHEMA]; main.ts: import 'figma-design-system-web-components'; -->\n<ds-switch value=\"off\"></ds-switch>"} dark />
+<Source language="html" code={"<!-- Component: schemas: [CUSTOM_ELEMENTS_SCHEMA]; main.ts: import 'figma-design-system-web-components'; -->\n<ds-switch accessible-label=\"Switch\" name=\"switch\" (change)=\"handle($event)\"></ds-switch>"} dark />
 
 ### Svelte
 
-<Source language="html" code={"<script>import 'figma-design-system-web-components';</script>\n<ds-switch value=\"off\"></ds-switch>"} dark />
+<Source language="html" code={"<script>import 'figma-design-system-web-components';</script>\n<ds-switch accessible-label=\"Switch\" name=\"switch\" on:change={handle}></ds-switch>"} dark />
 
 ## Generation notes
 
-<ul><li>{"Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified."}</li></ul>
+<ul><li>{"Behaviour from the WAI-ARIA switch pattern: a native button with role=\"switch\" and aria-checked. Tab focuses it; Space and Enter toggle it. Figma Value=On is checked."}</li><li>{"Figma has no focus state; a 2px focus ring (var(--border-interactive-focus)) is added for keyboard users."}</li><li>{"Figma has no label for Switch: give each one an accessible name with aria-label or aria-labelledby."}</li></ul>
 ## Figma to code
 
-<table><thead><tr><th>Figma</th><th>Property / attribute</th><th>Note</th></tr></thead><tbody><tr><td>{"Value (variant)"}</td><td><code>{"value / value"}</code></td><td>{""}</td></tr><tr><td>{"Interaction (variant)"}</td><td><code>{"interaction / interaction"}</code></td><td>{"States: Default → default, Disabled → disabled, Loading → interaction=\"loading\""}</td></tr><tr><td>{"Size (variant)"}</td><td><code>{"size / size"}</code></td><td>{""}</td></tr><tr><td>{"Show Inner Content (boolean)"}</td><td><code>{"showInnerContent / show-inner-content"}</code></td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th>Figma</th><th>Property / attribute</th><th>Note</th></tr></thead><tbody><tr><td>{"Value (variant)"}</td><td><code>{"checked / checked"}</code></td><td>{"Off → not checked, On → checked; aria-checked."}</td></tr><tr><td>{"Interaction (variant)"}</td><td><code>{"interaction / interaction"}</code></td><td>{"States: Default → default, Disabled → disabled, Loading → interaction=\"loading\""}</td></tr><tr><td>{"Size (variant)"}</td><td><code>{"size / size"}</code></td><td>{""}</td></tr><tr><td>{"Show Inner Content (boolean)"}</td><td><code>{"showInnerContent / show-inner-content"}</code></td><td>{""}</td></tr></tbody></table>
 
 <p>Source: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=723-3038">{"Switch"}</a>. The Figma version is recorded in GENERATION-REPORT.md.</p>
 

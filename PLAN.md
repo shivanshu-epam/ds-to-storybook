@@ -27,9 +27,9 @@ The full product strategy (market research, architecture options, security, KPIs
 | Drift report against an existing repo (Scenario 5) | Done, React only | `engine/src/code`, `engine/src/diff`, `engine/src/report` |
 | **Storybook generation from Figma (Scenario 2)** | **Done for every component set (21 components)** | `engine/src/generate` → `storybook/` |
 | Tokens: Figma variables to CSS, light/dark and brand modes | Done | `storybook/src/tokens/tokens.css` |
-| Generated components: 3 with behaviour templates, 18 generic; stories, MDX docs, 42 icons | Done; 78/79 story tests pass (1 real design contrast issue) | `storybook/src/components` |
+| Generated components: 4 with behaviour templates (Button, Checkbox, Accordion, Switch), 17 generic; stories, MDX docs, 42 icons | Done; 80/81 story tests pass (1 real design contrast issue) | `storybook/src/components` |
 | Discovery, `init`, installable CLI, Claude Skill, GitHub workflow, Figma plugin | Done (Phases A and B) | `engine/`, `skills/`, `plugin/` |
-| Engine tests | 33/33 pass | `engine/test` |
+| Engine tests | 39/39 pass | `engine/test` |
 
 **Figma file:** "Design system AI" (`I983NcgqSiY14YkpJbwjG8`). The variables come from `engine/inputs/figma-variables.json`, because the Variables REST API is Enterprise-only.
 
@@ -94,7 +94,8 @@ Decision: support every stack through **layers**, as multi-framework design syst
 
 ### Phase D: more components and stronger checks (ongoing). Fixes G2, G5 and G8.
 
-- [ ] Archetypes: input, select/dropdown, dialog, tabs, tooltip, toast, radio, switch, slider, table.
+- [x] **Switch** (2026-11-12): a behaviour pack on the generic template. Any set named switch/toggle with an on/off variant axis gets a native button with `role="switch"` and `aria-checked`, controlled or uncontrolled state, Space/Enter toggling, disabled and loading (`aria-busy`) handling, and a focus ring from the focus token when Figma has none. The Web Component is form-associated. Play tests cover click, Space, disabled and loading. Both examples now pass 80/81.
+- [ ] Archetypes: input, select/dropdown, dialog, tabs, tooltip, toast, radio, slider, table. Radio and input next; they can reuse the behaviour-pack approach used for Switch.
 - [ ] Run the tests in every Figma mode (light, dark, brands).
 - [ ] Visual comparison against Figma renders: element positions, computed styles, then a perceptual score.
 - [ ] Resolve the open decisions in G8 with the design system team.
@@ -128,4 +129,4 @@ Hosted control plane, multiple design systems and repos, role-based access, audi
    - run the GitHub workflow once;
    - decide on npm publishing (name, scope, public or private registry).
 2. ~~Phase C~~ done: Web Components for any stack, React kept.
-3. Phase D: behaviour templates for the components now on the generic template (input, radio, switch, dialog first), and dark-mode test runs.
+3. Phase D: behaviour templates for the components now on the generic template (switch done; radio, input, dialog next), and dark-mode test runs.

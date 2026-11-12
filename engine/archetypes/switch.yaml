@@ -1,0 +1,11 @@
+# Switch / toggle. Behaviour source: WAI-ARIA APG switch pattern.
+id: switch
+pattern: wai-aria/switch
+role: switch
+element: native button (role="switch", aria-checked)
+requiredStates: [off, on, focus, disabled]
+keyboard:
+  - { key: Space, action: toggle }
+  - { key: Enter, action: toggle (optional in APG; native button) }
+  - { key: Tab, action: move focus to next control }
+requiredDocs: [usage, accessibility]

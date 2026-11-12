@@ -1942,14 +1942,19 @@ Figma: Switch (723:3038)
 
 | Figma | Prop | Note |
 | --- | --- | --- |
-| Value (variant) | `value` |  |
+| Value (variant) | `checked / defaultChecked` | Off → not checked, On → checked; aria-checked. |
 | Interaction (variant) | `interaction` | States: Default → default, Disabled → disabled, Loading → interaction="loading" |
 | Size (variant) | `size` |  |
 | Show Inner Content (boolean) | `showInnerContent` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
-- Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
+- Behaviour from the WAI-ARIA switch pattern: a native button with role="switch" and aria-checked. Tab focuses it; Space and Enter toggle it. Figma Value=On is checked.
+- Figma has no focus state; a 2px focus ring (var(--border-interactive-focus)) is added for keyboard users.
+
+**Gaps:**
+
+- Figma has no label for Switch: give each one an accessible name with aria-label or aria-labelledby.
 
 <details><summary>Which Figma axes each style depends on</summary>
 

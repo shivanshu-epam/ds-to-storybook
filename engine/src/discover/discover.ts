@@ -34,7 +34,7 @@ export interface DiscoveredFrame {
 export interface Proposal {
   /** Generated component name (PascalCase). */
   name: string;
-  template: 'action' | 'checkbox' | 'accordion' | 'generic';
+  template: 'action' | 'checkbox' | 'accordion' | 'switch' | 'generic';
   /** Template role -> component set id. */
   sets: Record<string, string>;
   page: string;
@@ -123,6 +123,12 @@ function baseName(name: string): { base: string; suffix: string } {
   return m && m[1] ? { base: m[1], suffix: m[2]! } : { base: name.replace(/\s+/g, ''), suffix: '' };
 }
 
+/** A variant property with exactly two options that read as off/on. */
+function hasOnOffAxis(node?: FigmaNode): boolean {
+  const defs = Object.values(node?.componentPropertyDefinitions ?? {}) as { type?: string; variantOptions?: string[] }[];
+  return defs.some((d) => d.type === 'VARIANT' && d.variantOptions?.length === 2 && /^(off|false|unchecked|unselected|inactive)$/i.test(d.variantOptions.find((o) => /^(off|false|unchecked|unselected|inactive)$/i.test(o)) ?? '') && d.variantOptions.some((o) => /^(on|true|checked|selected|active)$/i.test(o)));
+}
+
 function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides: Overrides): Proposal[] {
   const out: Proposal[] = [];
   const claimed = new Set<string>();
@@ -166,6 +172,10 @@ function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides
         template = 'accordion';
         reason = 'Accordion item with _header and _panel layers: disclosure archetype (WAI-ARIA accordion).';
         confidence = 0.9;
+      } else if (/switch|toggle/i.test(s.name) && hasOnOffAxis(nodes.get(s.id))) {
+        template = 'switch';
+        reason = 'Switch or toggle with an on/off variant axis: switch archetype (WAI-ARIA switch).';
+        confidence = 0.85;
       } else if (/button|accordion|checkbox|radio|switch|tab|dialog|modal|menu|select|dropdown|input|slider/i.test(s.name)) {
         confidence = 0.6;
         reason += ' The name suggests an interactive component, so behaviour must be specified before production use.';
@@ -270,7 +280,7 @@ export function targetsFromDiscovery(d: Discovery): ComponentTarget[] {
     const p = d.proposals.find((x) => Object.values(x.sets).includes(s.id));
     return {
       id: `auto.${s.id}`,
-      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' ? 'selection.binary' : p?.template === 'accordion' ? 'disclosure' : 'generic',
+      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' ? 'selection.binary' : p?.template === 'accordion' ? 'disclosure' : p?.template === 'switch' ? 'switch' : 'generic',
       figma: { page: s.page, componentSet: { id: s.id, name: s.name }, docFrames: p?.docFrames ?? [] },
     };
   });

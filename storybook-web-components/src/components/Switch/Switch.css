@@ -2,6 +2,11 @@
 .root { box-sizing: border-box; position: relative; }
 .track, .handle, .innerIcon { box-sizing: border-box; position: relative; margin: 0; min-width: 0; }
 
+/* Native button reset (zero specificity, so the Figma styles below win). */
+:where(.root) { appearance: none; border: 0; padding: 0; margin: 0; background: none; font: inherit; color: inherit; text-align: inherit; cursor: pointer; }
+.root:disabled, .root[aria-busy="true"] { cursor: not-allowed; }
+.root:focus-visible, .root[data-force-state~="focus"] { outline: 2px solid var(--border-interactive-focus); outline-offset: 2px; }
+
 .root {
   background: transparent;
   box-shadow: none;

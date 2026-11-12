@@ -196,6 +196,13 @@ export class TokenResolver {
     }
   }
 
+  /** `var(--x)` for the first token whose name matches, semantic collections first. */
+  byName(test: RegExp): string | undefined {
+    const rows = this.set.rows.filter((r) => test.test(r.name));
+    const row = rows.find((r) => r.collection.startsWith('semantic')) ?? rows[0];
+    return row ? `var(${row.cssVar})` : undefined;
+  }
+
   /**
    * @param strong property hints (e.g. "border", "bg"): weigh heavily
    * @param weak context words (e.g. variant names "primary", "hover"): break ties

@@ -33,7 +33,7 @@ Config reference: [`../skills/figma-to-storybook/reference/config.md`](../skills
 | `src/discover` | Page, frame and component discovery; template proposals |
 | `src/ir` | Figma IR: layers, layout, styles, bound variables, property links |
 | `src/spec`, `src/code`, `src/diff`, `src/report` | Drift report: spec vs code |
-| `src/generate` | Tokens (CSS, DTCG JSON, TS), style compiler, icons, React project scaffold, templates (`action`, `checkbox`, `accordion`, `generic`) |
+| `src/generate` | Tokens (CSS, DTCG JSON, TS), style compiler, icons, React project scaffold, templates (`action`, `checkbox`, `accordion`, `switch`, `generic`) |
 | `src/generate/wc` | Web Components target: Lit renderers that reuse each template's model, and the project scaffold |
 | `archetypes/` | Behaviour packs (required states, keyboard) |
 | `templates/github-workflow.yml` | CI template used by `init --ci` |
@@ -41,7 +41,7 @@ Config reference: [`../skills/figma-to-storybook/reference/config.md`](../skills
 ## Develop
 
 ```bash
-npm test              # 33 tests, against recorded Figma fixtures (no token needed)
+npm test              # 39 tests, against recorded Figma fixtures (no token needed)
 npm run typecheck
 npm run ds-sync -- generate   # run from source with tsx
 ```
