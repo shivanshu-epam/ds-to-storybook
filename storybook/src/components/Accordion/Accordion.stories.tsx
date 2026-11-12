@@ -21,7 +21,7 @@ const meta = {
     children: { table: { disable: true } },
   },
   decorators: [(Story) => <div style={{ width: 360, maxWidth: '100%' }}><Story /></div>],
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '236:1875', version: '2420200599083390279' } },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '236:1875' } },
 } satisfies Meta<typeof Accordion>;
 
 export default meta;

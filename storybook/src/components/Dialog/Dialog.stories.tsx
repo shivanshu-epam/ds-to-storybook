@@ -20,7 +20,7 @@ const meta = {
     bodyContent: { control: 'text', description: 'Figma: Body content' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '348:627', version: '2420200599083390279' }, generator: 'generic' },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '348:627' }, generator: 'generic' },
 } satisfies Meta<typeof Dialog>;
 
 export default meta;

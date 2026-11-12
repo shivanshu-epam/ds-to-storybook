@@ -257,7 +257,7 @@ export function Labelled({ label, children }: { label: string; children: ReactNo
 interface DocTab { title: string; nodeId: string; sections: DocSection[] }
 interface Docs {
   component: string;
-  figma: { fileKey: string; version: string; sets: { name: string; nodeId: string }[] };
+  figma: { fileKey: string; sets: { name: string; nodeId: string }[] };
   mapping: { prop: string; figma: string; note?: string }[];
   /** Generation caveats: what Figma did not specify, approximations. */
   notes?: string[];
@@ -288,7 +288,7 @@ export function FigmaDocs({ docs }: { docs: Docs }) {
       <p>
         Source: {docs.figma.sets.map((s, i) => (
           <span key={s.nodeId}>{i > 0 ? ', ' : ''}<a href={link(docs.figma.fileKey, s.nodeId)}>{s.name}</a></span>
-        ))} (Figma version {docs.figma.version}).
+        ))}. Generated from the Figma version recorded in GENERATION-REPORT.md.
       </p>
       {docs.tabs.map((tab) => (
         <section key={tab.nodeId}>

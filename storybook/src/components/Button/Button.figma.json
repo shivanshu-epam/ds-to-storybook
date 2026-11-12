@@ -3,7 +3,6 @@
   "description": "A button triggers an immediate action, such as submit, confirm, open or delete.",
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420200599083390279",
     "sets": [
       {
         "name": "Button",

@@ -3,7 +3,6 @@
   "description": "A single- or multi-line field for typed content, with specialized variants layered on the same underlying anatomy per the skill (not all present as Figma variants — see Flags).",
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420200599083390279",
     "sets": [
       {
         "name": "Input",

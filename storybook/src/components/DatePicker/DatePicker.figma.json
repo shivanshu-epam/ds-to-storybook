@@ -3,7 +3,6 @@
   "description": "A single component set covering single-date, date-range, and date+time selection, with the calendar panel handled as a boolean property.",
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420200599083390279",
     "sets": [
       {
         "name": "Date Picker",

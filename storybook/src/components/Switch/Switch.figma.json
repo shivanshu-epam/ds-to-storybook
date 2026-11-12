@@ -3,7 +3,6 @@
   "description": "A two-state control that applies its change the instant it's toggled — distinct from a checkbox, which marks a selection typically confirmed later.",
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420200599083390279",
     "sets": [
       {
         "name": "Switch",

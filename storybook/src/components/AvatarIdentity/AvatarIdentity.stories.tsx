@@ -17,7 +17,7 @@ const meta = {
     email: { control: 'text', description: 'Figma: Email' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '274:1803', version: '2420200599083390279' }, generator: 'generic' },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '274:1803' }, generator: 'generic' },
 } satisfies Meta<typeof AvatarIdentity>;
 
 export default meta;

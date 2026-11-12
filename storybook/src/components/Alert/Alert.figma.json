@@ -3,7 +3,6 @@
   "description": "An alert shows a short, sentiment-coded message inline on the page, with an optional action and close button.",
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420200599083390279",
     "sets": [
       {
         "name": "Alert",

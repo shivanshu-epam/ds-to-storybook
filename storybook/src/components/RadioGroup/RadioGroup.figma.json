@@ -3,7 +3,6 @@
   "description": "A radio button lets users pick exactly one option from a set — shown on its own, as a labeled field, or in a titled group.",
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420200599083390279",
     "sets": [
       {
         "name": "RadioGroup",

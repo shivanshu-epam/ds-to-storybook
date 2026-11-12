@@ -3,7 +3,6 @@
   "description": "A checkbox is a square control that users select or clear — used on its own, as a labeled field, or as a titled group of fields.",
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420200599083390279",
     "sets": [
       {
         "name": "CheckboxControl",

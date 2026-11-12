@@ -12,7 +12,7 @@ const meta = {
     horizontal: { control: 'inline-radio', options: ['false', 'true'], description: 'Figma: Horizontal' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '529:749', version: '2420200599083390279' }, generator: 'generic' },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '529:749' }, generator: 'generic' },
 } satisfies Meta<typeof RadioGroup>;
 
 export default meta;

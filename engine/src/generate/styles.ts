@@ -239,22 +239,43 @@ export function generateStyles(variants: IRVariant[], model: StyleModel, resolve
     const props = [...new Set(rows.flatMap((d) => Object.keys(d)))].sort();
     for (const prop of props) {
       const values = rows.map((d) => d[prop] ?? EMPTY);
-      // Smallest axis set the value is a function of.
-      const deps = subsets(allAxes).find((set) => {
-        const seen = new Map<string, string>();
-        return usable.every((v, i) => {
+      // Choose the axis set S with the fewest rules: one rule per combination of S (its majority value),
+      // plus one override per variant that differs from its group. A single odd variant then costs one
+      // extra rule instead of multiplying every rule by every axis.
+      // Overrides are for rare, isolated variants: at most 5% (min 1), each weighed as 3 rules so a real pattern wins ties.
+      const maxExceptions = Math.max(1, Math.floor(usable.length * 0.05));
+      let best: { deps: string[]; groups: Map<string, { axes: Record<string, string>; value: string }>; exceptions: number[]; cost: number } | undefined;
+      for (const set of subsets(allAxes)) {
+        const counts = new Map<string, Map<string, number>>();
+        usable.forEach((v, i) => {
           const key = set.map((a) => v.values[a]).join('|');
-          const prev = seen.get(key);
-          if (prev === undefined) seen.set(key, values[i]!);
-          return prev === undefined || prev === values[i];
+          const c = counts.get(key) ?? new Map<string, number>();
+          c.set(values[i]!, (c.get(values[i]!) ?? 0) + 1);
+          counts.set(key, c);
         });
-      }) ?? allAxes;
-      dependencies[`${role.role}.${prop}`] = deps;
-      const groups = new Map<string, { axes: Record<string, string>; value: string }>();
-      usable.forEach((v, i) => {
-        const axes = Object.fromEntries(deps.map((a) => [a, v.values[a]!]));
-        groups.set(JSON.stringify(axes), { axes, value: values[i]! });
-      });
+        const majority = new Map([...counts].map(([k, c]) => [k, [...c].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]![0]]));
+        const exceptions = usable.map((v, i) => (majority.get(set.map((a) => v.values[a]).join('|')) === values[i] ? -1 : i)).filter((i) => i >= 0);
+        if (exceptions.length > maxExceptions) continue;
+        const cost = counts.size + exceptions.length * 3;
+        if (best && cost >= best.cost) continue;
+        const groups = new Map<string, { axes: Record<string, string>; value: string }>();
+        usable.forEach((v) => {
+          const axes = Object.fromEntries(set.map((a) => [a, v.values[a]!]));
+          groups.set(JSON.stringify(axes), { axes, value: majority.get(set.map((a) => v.values[a]).join('|'))! });
+        });
+        best = { deps: set, groups, exceptions, cost };
+      }
+      const { deps, groups, exceptions } = best!;
+      dependencies[`${role.role}.${prop}`] = exceptions.length ? [...deps, `+${exceptions.length} variant override${exceptions.length > 1 ? 's' : ''}`] : deps;
+      const emit = (axes: Record<string, string>, value: string) => {
+        const key = JSON.stringify(axes);
+        const existing = rules.find((r) => r.role === role.role && JSON.stringify(r.axes) === key);
+        if (existing) existing.decls[prop] = value;
+        else rules.push({ role: role.role, axes, decls: { [prop]: value } });
+      };
+      for (const i of exceptions) {
+        if (values[i] !== EMPTY) emit({ ...usable[i]!.values }, values[i]!);
+      }
       for (const { axes, value } of groups.values()) {
         if (value === EMPTY) continue;
         // A non-base state that equals its base is inherited, not emitted.
@@ -268,10 +289,7 @@ export function generateStyles(variants: IRVariant[], model: StyleModel, resolve
           const base = groups.get(JSON.stringify(baseAxes));
           if (base && base.value === value) continue;
         }
-        const key = JSON.stringify(axes);
-        const existing = rules.find((r) => r.role === role.role && JSON.stringify(r.axes) === key);
-        if (existing) existing.decls[prop] = value;
-        else rules.push({ role: role.role, axes, decls: { [prop]: value } });
+        emit(axes, value);
       }
     }
   }
@@ -287,12 +305,15 @@ export function generateStyles(variants: IRVariant[], model: StyleModel, resolve
     return out;
   };
 
+  // Conditions sit inside :where(), which has zero specificity: every rule for a part weighs the same,
+  // so source order alone decides (base, then variant overrides, then states).
+  const where = (s: string) => (s ? `:where(${s})` : '');
   const selectorFor = (rule: Rule): string => {
     const rootClass = model.rootClass ?? 'root';
-    let root = `.${rootClass}`;
+    let attrs = '';
     for (const axis of model.axes) {
       const v = rule.axes[axis.figma];
-      if (v !== undefined) root += `[data-${axis.attr}="${axis.values[v] ?? v}"]`;
+      if (v !== undefined) attrs += `[data-${axis.attr}="${axis.values[v] ?? v}"]`;
     }
     const conds: StateSelector[] = [];
     for (const sa of model.stateAxes) {
@@ -302,16 +323,16 @@ export function generateStyles(variants: IRVariant[], model: StyleModel, resolve
     }
     const onRoot = conds.filter((c) => c.target === 'root').map((c) => c.selector).join('');
     const others = conds.filter((c) => c.target !== 'root');
-    root += onRoot;
-    if (rule.role === 'root') return root + others.map((c) => `:has(.${c.target}${c.selector})`).join('');
+    const root = `.${rootClass}${where(attrs + onRoot)}`;
+    if (rule.role === 'root') return root + where(others.map((c) => `:has(.${c.target}${c.selector})`).join(''));
     const chain = [...ancestors(rule.role)].reverse();
     const inChain = others.filter((c) => c.target === rule.role || chain.includes(c.target));
     const outside = others.filter((c) => !inChain.includes(c));
-    let sel = root + outside.map((c) => `:has(.${c.target}${c.selector})`).join('');
+    let sel = root + where(outside.map((c) => `:has(.${c.target}${c.selector})`).join(''));
     const targets = new Map(inChain.map((c) => [c.target, c.selector]));
     // Only the nearest in-chain targets need to appear; intermediate ancestors are implicit.
-    for (const anc of chain) if (targets.has(anc)) sel += ` .${anc}${targets.get(anc)}`;
-    sel += ` .${rule.role}${targets.get(rule.role) ?? ''}`;
+    for (const anc of chain) if (targets.has(anc)) sel += ` .${anc}${where(targets.get(anc)!)}`;
+    sel += ` .${rule.role}${where(targets.get(rule.role) ?? '')}`;
     return sel;
   };
 

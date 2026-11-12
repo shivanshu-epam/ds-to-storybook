@@ -12,7 +12,7 @@ export class FigmaHttpError extends Error {
 
 /** What the extractor needs from Figma; FigmaClient implements it, tests can pass a stub. */
 export interface FigmaReader {
-  file(fileKey: string, depth?: number): Promise<FileResponse>;
+  file(fileKey: string, depth?: number, version?: string): Promise<FileResponse>;
   nodes(fileKey: string, ids: string[], version?: string, depth?: number): Promise<NodesResponse>;
   /** The file tree containing only the given nodes and their ancestors (finds the page of nested sets). */
   fileWithIds(fileKey: string, ids: string[], version?: string): Promise<FileResponse>;
@@ -50,8 +50,8 @@ export class FigmaClient implements FigmaReader, FigmaRenderer {
   }
 
   /** depth=2 returns pages plus their top-level children (component sets and doc frames on DS pages). */
-  file(fileKey: string, depth = 2): Promise<FileResponse> {
-    return this.get(`/v1/files/${fileKey}?depth=${depth}`);
+  file(fileKey: string, depth = 2, version?: string): Promise<FileResponse> {
+    return this.get(`/v1/files/${fileKey}?depth=${depth}${version ? `&version=${encodeURIComponent(version)}` : ''}`);
   }
 
   nodes(fileKey: string, ids: string[], version?: string, depth?: number): Promise<NodesResponse> {

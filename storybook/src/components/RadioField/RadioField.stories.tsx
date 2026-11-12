@@ -13,7 +13,7 @@ const meta = {
     disabled: { control: 'boolean', description: 'Figma: State=Disabled' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '522:125', version: '2420200599083390279' }, generator: 'generic' },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '522:125' }, generator: 'generic' },
 } satisfies Meta<typeof RadioField>;
 
 export default meta;

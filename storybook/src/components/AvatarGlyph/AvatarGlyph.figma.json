@@ -3,7 +3,6 @@
   "description": "An avatar represents a user or entity with an image, an icon or initials, optionally paired with a name and email.",
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420200599083390279",
     "sets": [
       {
         "name": "AvatarGlyph",

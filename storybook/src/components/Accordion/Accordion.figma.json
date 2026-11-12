@@ -3,7 +3,6 @@
   "description": "An accordion is a vertical stack of collapsible sections that condenses long content into scannable headers.",
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420200599083390279",
     "sets": [
       {
         "name": "AccordionItem",

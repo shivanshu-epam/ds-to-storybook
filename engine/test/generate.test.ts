@@ -84,10 +84,10 @@ describe('generateStyles', () => {
   });
 
   it('emits one rule per combination and skips states equal to their base', () => {
-    expect(out.css).toContain('.root[data-size="sm"] {\n  padding: 0 12px 0 12px;\n}');
-    expect(out.css).toContain('.root[data-variant="primary"]:hover {\n  background: #111111;\n}');
+    expect(out.css).toContain('.root:where([data-size="sm"]) {\n  padding: 0 12px 0 12px;\n}');
+    expect(out.css).toContain('.root:where([data-variant="primary"]:hover) {\n  background: #111111;\n}');
     // Secondary hover equals secondary default: inherited, not emitted.
-    expect(out.css).not.toContain('.root[data-variant="secondary"]:hover');
+    expect(out.css).not.toContain('.root:where([data-variant="secondary"]:hover)');
   });
 });
 
@@ -111,5 +111,38 @@ describe('icons and docs', () => {
       'Button',
     );
     expect(tabs).toEqual([{ title: 'Usage', nodeId: '1:1', sections: [{ heading: 'Overview', level: 3, paragraphs: ['A button triggers an action.'] }] }]);
+  });
+});
+
+describe('one odd variant', () => {
+  it('becomes a single override rule instead of multiplying every rule', () => {
+    const variants: IRVariant[] = [];
+    for (const variant of ['Primary', 'Danger']) {
+      for (const size of ['Sm', 'Md', 'Lg']) {
+        for (const state of ['Default', 'Hover']) {
+          let fill = variant === 'Primary' ? '#222222' : '#cc0000';
+          if (state === 'Hover') fill = variant === 'Primary' ? '#111111' : '#990000';
+          // The designer recoloured one combination.
+          if (variant === 'Danger' && size === 'Md' && state === 'Default') fill = '#00cc66';
+          variants.push(v({ Variant: variant, Size: size, State: state }, fill, 16));
+        }
+      }
+    }
+    const model: StyleModel = {
+      axes: [
+        { figma: 'Variant', attr: 'variant', values: { Primary: 'primary', Danger: 'danger' } },
+        { figma: 'Size', attr: 'size', values: { Sm: 'sm', Md: 'md', Lg: 'lg' } },
+      ],
+      stateAxes: [{ figma: 'State', states: { Default: null, Hover: { target: 'root', selector: ':hover' } } }],
+      roles: [{ role: 'root', kind: 'box', find: (x) => ({ style: x.style }) }],
+    };
+    const out = generateStyles(variants, model, new TokenResolver(tokens));
+    expect(out.dependencies['root.background']).toEqual(['Variant', 'State', '+1 variant override']);
+    const rules = out.css.split('\n\n').filter((r) => r.includes('background'));
+    expect(rules).toHaveLength(5); // 2 variants × 2 states (hover for danger and primary) + 1 override
+    // Order: base, then the override, then hover (which must still win on the overridden combination).
+    const order = rules.map((r) => r.split(' {')[0]);
+    expect(order.indexOf('.root:where([data-variant="danger"][data-size="md"])')).toBeGreaterThan(order.indexOf('.root:where([data-variant="danger"])'));
+    expect(order.indexOf('.root:where([data-variant="danger"]:hover)')).toBeGreaterThan(order.indexOf('.root:where([data-variant="danger"][data-size="md"])'));
   });
 });

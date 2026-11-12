@@ -11,7 +11,7 @@ const meta = {
     type: { control: 'inline-radio', options: ['slash', 'chevron'], description: 'Figma: Type' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '224:1467', version: '2420200599083390279' }, generator: 'generic' },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '224:1467' }, generator: 'generic' },
 } satisfies Meta<typeof Separator>;
 
 export default meta;

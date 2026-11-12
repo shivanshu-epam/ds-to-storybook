@@ -23,7 +23,7 @@ const meta = {
     warning: { control: 'text', description: 'Figma: State=Warning' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeIds: ['178:1224', '190:1205', '192:1420'], version: '2420200599083390279' } },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeIds: ['178:1224', '190:1205', '192:1420'] } },
 } satisfies Meta<typeof Checkbox>;
 
 export default meta;

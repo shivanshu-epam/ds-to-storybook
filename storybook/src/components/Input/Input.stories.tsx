@@ -23,7 +23,7 @@ const meta = {
     characterCount: { control: 'text', description: 'Figma: Character count' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '836:4005', version: '2420200599083390279' }, generator: 'generic' },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '836:4005' }, generator: 'generic' },
 } satisfies Meta<typeof Input>;
 
 export default meta;

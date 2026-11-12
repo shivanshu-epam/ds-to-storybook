@@ -3,7 +3,6 @@
   "description": "A breadcrumb shows where the current page sits in a content hierarchy and links back to each parent level.",
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420200599083390279",
     "sets": [
       {
         "name": "BreadcrumbItem",

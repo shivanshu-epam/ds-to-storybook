@@ -10,7 +10,7 @@ const meta = {
   argTypes: {
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '241:1815', version: '2420200599083390279' }, generator: 'generic' },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '241:1815' }, generator: 'generic' },
 } satisfies Meta<typeof PaginationDot>;
 
 export default meta;

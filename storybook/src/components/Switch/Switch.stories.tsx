@@ -15,7 +15,7 @@ const meta = {
     showInnerContent: { control: 'boolean', description: 'Figma: Show Inner Content' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '723:3038', version: '2420200599083390279' }, generator: 'generic' },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '723:3038' }, generator: 'generic' },
 } satisfies Meta<typeof Switch>;
 
 export default meta;

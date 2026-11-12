@@ -3,7 +3,6 @@
   "description": "A list item is a single row in a list, menu or file browser that shows a headline and, depending on its type, an icon, supporting text, metadata or a selection control.",
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420200599083390279",
     "sets": [
       {
         "name": "ListItem",

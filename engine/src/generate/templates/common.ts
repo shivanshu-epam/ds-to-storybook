@@ -133,7 +133,7 @@ export function docsJson(ctx: TemplateContext, setsUsed: IRComponentSet[], name:
     {
       component: name,
       description,
-      figma: { fileKey: ctx.fileKey, version: ctx.version, sets: setsUsed.map((s) => ({ name: s.name, nodeId: s.nodeId })) },
+      figma: { fileKey: ctx.fileKey, sets: setsUsed.map((s) => ({ name: s.name, nodeId: s.nodeId })) },
       mapping,
       notes,
       tabs: docTabs(frames, name),

@@ -14,7 +14,7 @@ const meta = {
     showCalendar: { control: 'boolean', description: 'Figma: Show Calendar' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '660:4998', version: '2420200599083390279' }, generator: 'generic' },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '660:4998' }, generator: 'generic' },
 } satisfies Meta<typeof DatePicker>;
 
 export default meta;

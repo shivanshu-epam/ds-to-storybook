@@ -16,7 +16,7 @@ const meta = {
     hasTrailingControl: { control: 'boolean', description: 'Figma: has-trailing-control' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '520:3110', version: '2420200599083390279' }, generator: 'generic' },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '520:3110' }, generator: 'generic' },
 } satisfies Meta<typeof ListItem>;
 
 export default meta;

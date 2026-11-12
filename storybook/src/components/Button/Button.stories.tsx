@@ -22,7 +22,7 @@ const meta = {
     children: { control: 'text', description: 'Figma: label text' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '102:122', version: '2420200599083390279' } },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '102:122' } },
 } satisfies Meta<typeof Button>;
 
 export default meta;

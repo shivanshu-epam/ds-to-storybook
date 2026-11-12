@@ -17,7 +17,7 @@ const meta = {
     label: { control: 'text', description: 'Figma: Label' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '211:1961', version: '2420200599083390279' }, generator: 'generic' },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '211:1961' }, generator: 'generic' },
 } satisfies Meta<typeof Badge>;
 
 export default meta;

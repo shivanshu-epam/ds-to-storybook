@@ -3,7 +3,6 @@
   "description": "A carousel shows a set of items one view at a time inside a fixed viewport, advanced with controls, swipe or autoplay.",
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420200599083390279",
     "sets": [
       {
         "name": "PaginationDot",

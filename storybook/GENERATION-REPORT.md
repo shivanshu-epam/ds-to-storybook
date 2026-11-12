@@ -259,13 +259,13 @@ Figma: ListItem (520:3110)
 - `supportingText.line-height`: Type, Size, State
 - `supportingText.white-space`: Type, State
 - `metadata.color`: Type, State
-- `metadata.display`: Type, State
-- `metadata.flex-shrink`: Type, State
-- `metadata.font-family`: Type, State
-- `metadata.font-size`: Type, Size, State
-- `metadata.font-weight`: Type, State
-- `metadata.line-height`: Type, Size, State
-- `metadata.white-space`: Type, State
+- `metadata.display`: Type, +3 variant overrides
+- `metadata.flex-shrink`: Type, +3 variant overrides
+- `metadata.font-family`: Type, +3 variant overrides
+- `metadata.font-size`: Type, Size, +3 variant overrides
+- `metadata.font-weight`: Type, +3 variant overrides
+- `metadata.line-height`: Type, Size, +3 variant overrides
+- `metadata.white-space`: Type, +3 variant overrides
 
 </details>
 
@@ -525,7 +525,7 @@ Figma: BreadcrumbItem (224:1461)
 - `leadingIcon.height`: Type
 - `leadingIcon.transform`: Type
 - `leadingIcon.width`: Type
-- `label.color`: Type, State
+- `label.color`: Type, +1 variant override
 - `label.display`: Type
 - `label.flex-shrink`: Type
 - `label.font-family`: Type
@@ -534,7 +534,7 @@ Figma: BreadcrumbItem (224:1461)
 - `label.letter-spacing`: Type
 - `label.line-height`: Type
 - `label.white-space`: Type
-- `moreIcon.color`: Type, State
+- `moreIcon.color`: Type, +1 variant override
 - `moreIcon.display`: Type
 - `moreIcon.flex-shrink`: Type
 - `moreIcon.height`: Type
@@ -753,12 +753,12 @@ Figma: AvatarIdentity (274:1803)
 - `root.align-items`: none (same in every variant)
 - `root.background`: State
 - `root.border-radius`: none (same in every variant)
-- `root.box-shadow`: State
+- `root.box-shadow`: +1 variant override
 - `root.display`: none (same in every variant)
 - `root.flex-direction`: none (same in every variant)
 - `root.flex-wrap`: none (same in every variant)
 - `root.gap`: none (same in every variant)
-- `root.opacity`: State
+- `root.opacity`: +1 variant override
 - `root.padding`: none (same in every variant)
 - `avatar.align-items`: none (same in every variant)
 - `avatar.background`: none (same in every variant)
@@ -779,7 +779,7 @@ Figma: AvatarIdentity (274:1803)
 - `textCol.flex-wrap`: none (same in every variant)
 - `textCol.opacity`: none (same in every variant)
 - `textCol.overflow`: none (same in every variant)
-- `name.color`: State
+- `name.color`: +1 variant override
 - `name.display`: none (same in every variant)
 - `name.flex-shrink`: none (same in every variant)
 - `name.font-family`: none (same in every variant)
@@ -787,7 +787,7 @@ Figma: AvatarIdentity (274:1803)
 - `name.font-weight`: none (same in every variant)
 - `name.line-height`: none (same in every variant)
 - `name.white-space`: none (same in every variant)
-- `email.color`: State
+- `email.color`: +1 variant override
 - `email.display`: none (same in every variant)
 - `email.flex-shrink`: none (same in every variant)
 - `email.font-family`: none (same in every variant)
@@ -796,7 +796,7 @@ Figma: AvatarIdentity (274:1803)
 - `email.line-height`: none (same in every variant)
 - `email.white-space`: none (same in every variant)
 - `email.width`: none (same in every variant)
-- `trailing.color`: State
+- `trailing.color`: +1 variant override
 - `trailing.display`: none (same in every variant)
 - `trailing.flex-shrink`: none (same in every variant)
 - `trailing.height`: none (same in every variant)
@@ -1061,15 +1061,15 @@ Figma: Dialog (348:627)
 - `body.opacity`: none (same in every variant)
 - `body.overflow`: none (same in every variant)
 - `body.padding`: none (same in every variant)
-- `bodyContent.align-self`: Type, State
-- `bodyContent.color`: Type, State
-- `bodyContent.display`: Type, State
-- `bodyContent.flex-shrink`: Type, State
-- `bodyContent.font-family`: Type, State
-- `bodyContent.font-size`: Type, State
-- `bodyContent.font-weight`: Type, State
-- `bodyContent.line-height`: Type, State
-- `bodyContent.white-space`: Type, State
+- `bodyContent.align-self`: Type, +1 variant override
+- `bodyContent.color`: Type, +1 variant override
+- `bodyContent.display`: Type, +1 variant override
+- `bodyContent.flex-shrink`: Type, +1 variant override
+- `bodyContent.font-family`: Type, +1 variant override
+- `bodyContent.font-size`: Type, +1 variant override
+- `bodyContent.font-weight`: Type, +1 variant override
+- `bodyContent.line-height`: Type, +1 variant override
+- `bodyContent.white-space`: Type, +1 variant override
 - `dividerBottom.background`: none (same in every variant)
 - `dividerBottom.box-shadow`: none (same in every variant)
 - `dividerBottom.display`: none (same in every variant)
@@ -1114,56 +1114,56 @@ Figma: Dialog (348:627)
 - `primaryButton.justify-content`: none (same in every variant)
 - `primaryButton.opacity`: none (same in every variant)
 - `primaryButton.padding`: none (same in every variant)
-- `subtitle.color`: Type, State
-- `subtitle.display`: Type, State
-- `subtitle.flex-shrink`: Type, State
-- `subtitle.font-family`: Type, State
-- `subtitle.font-size`: Type, State
-- `subtitle.font-weight`: Type, State
-- `subtitle.line-height`: Type, State
-- `subtitle.white-space`: Type, State
-- `subtitle.width`: Type, Size, State
-- `formField.align-self`: Type, State
-- `formField.background`: Type, State
-- `formField.box-shadow`: Type, State
-- `formField.display`: Type, State
-- `formField.flex-direction`: Type, State
-- `formField.flex-shrink`: Type, State
-- `formField.flex-wrap`: Type, State
-- `formField.gap`: Type, State
-- `formField.opacity`: Type, State
-- `formField.overflow`: Type, State
-- `fieldLabel.color`: Type, State
-- `fieldLabel.display`: Type, State
-- `fieldLabel.flex-shrink`: Type, State
-- `fieldLabel.font-family`: Type, State
-- `fieldLabel.font-size`: Type, State
-- `fieldLabel.font-weight`: Type, State
-- `fieldLabel.letter-spacing`: Type, State
-- `fieldLabel.line-height`: Type, State
-- `fieldLabel.white-space`: Type, State
-- `fieldInput.align-items`: Type, State
-- `fieldInput.align-self`: Type, State
-- `fieldInput.background`: Type, State
-- `fieldInput.border-radius`: Type, State
+- `subtitle.color`: Type, +1 variant override
+- `subtitle.display`: Type, +1 variant override
+- `subtitle.flex-shrink`: Type, +1 variant override
+- `subtitle.font-family`: Type, +1 variant override
+- `subtitle.font-size`: Type, +1 variant override
+- `subtitle.font-weight`: Type, +1 variant override
+- `subtitle.line-height`: Type, +1 variant override
+- `subtitle.white-space`: Type, +1 variant override
+- `subtitle.width`: Type, Size, +1 variant override
+- `formField.align-self`: Type, +1 variant override
+- `formField.background`: Type, +1 variant override
+- `formField.box-shadow`: Type, +1 variant override
+- `formField.display`: Type, +1 variant override
+- `formField.flex-direction`: Type, +1 variant override
+- `formField.flex-shrink`: Type, +1 variant override
+- `formField.flex-wrap`: Type, +1 variant override
+- `formField.gap`: Type, +1 variant override
+- `formField.opacity`: Type, +1 variant override
+- `formField.overflow`: Type, +1 variant override
+- `fieldLabel.color`: Type, +1 variant override
+- `fieldLabel.display`: Type, +1 variant override
+- `fieldLabel.flex-shrink`: Type, +1 variant override
+- `fieldLabel.font-family`: Type, +1 variant override
+- `fieldLabel.font-size`: Type, +1 variant override
+- `fieldLabel.font-weight`: Type, +1 variant override
+- `fieldLabel.letter-spacing`: Type, +1 variant override
+- `fieldLabel.line-height`: Type, +1 variant override
+- `fieldLabel.white-space`: Type, +1 variant override
+- `fieldInput.align-items`: Type, +1 variant override
+- `fieldInput.align-self`: Type, +1 variant override
+- `fieldInput.background`: Type, +1 variant override
+- `fieldInput.border-radius`: Type, +1 variant override
 - `fieldInput.box-shadow`: Type, State
-- `fieldInput.display`: Type, State
-- `fieldInput.flex-direction`: Type, State
-- `fieldInput.flex-shrink`: Type, State
-- `fieldInput.flex-wrap`: Type, State
-- `fieldInput.height`: Type, State
-- `fieldInput.opacity`: Type, State
-- `fieldInput.overflow`: Type, State
-- `fieldInput.padding`: Type, State
-- `fieldPlaceholder.color`: Type, State
-- `fieldPlaceholder.display`: Type, State
-- `fieldPlaceholder.flex`: Type, State
-- `fieldPlaceholder.flex-shrink`: Type, State
-- `fieldPlaceholder.font-family`: Type, State
-- `fieldPlaceholder.font-size`: Type, State
-- `fieldPlaceholder.font-weight`: Type, State
-- `fieldPlaceholder.line-height`: Type, State
-- `fieldPlaceholder.white-space`: Type, State
+- `fieldInput.display`: Type, +1 variant override
+- `fieldInput.flex-direction`: Type, +1 variant override
+- `fieldInput.flex-shrink`: Type, +1 variant override
+- `fieldInput.flex-wrap`: Type, +1 variant override
+- `fieldInput.height`: Type, +1 variant override
+- `fieldInput.opacity`: Type, +1 variant override
+- `fieldInput.overflow`: Type, +1 variant override
+- `fieldInput.padding`: Type, +1 variant override
+- `fieldPlaceholder.color`: Type, +1 variant override
+- `fieldPlaceholder.display`: Type, +1 variant override
+- `fieldPlaceholder.flex`: Type, +1 variant override
+- `fieldPlaceholder.flex-shrink`: Type, +1 variant override
+- `fieldPlaceholder.font-family`: Type, +1 variant override
+- `fieldPlaceholder.font-size`: Type, +1 variant override
+- `fieldPlaceholder.font-weight`: Type, +1 variant override
+- `fieldPlaceholder.line-height`: Type, +1 variant override
+- `fieldPlaceholder.white-space`: Type, +1 variant override
 - `errorBanner.align-items`: State
 - `errorBanner.align-self`: State
 - `errorBanner.background`: State
@@ -1228,7 +1228,7 @@ Figma: RadioControl (521:2681)
 - `focusRing.position`: State
 - `focusRing.top`: State
 - `focusRing.width`: State
-- `outerCircle.background`: State
+- `outerCircle.background`: +1 variant override
 - `outerCircle.border-radius`: none (same in every variant)
 - `outerCircle.box-shadow`: State
 - `outerCircle.display`: none (same in every variant)
@@ -1593,15 +1593,15 @@ Figma: Date Picker (660:4998)
 - `l07302026.font-weight`: Type, State
 - `l07302026.line-height`: Type, State
 - `l07302026.white-space`: Type, State
-- `l13452026.color`: Type, State
-- `l13452026.display`: Type, State
-- `l13452026.flex`: Type, State
-- `l13452026.flex-shrink`: Type, State
-- `l13452026.font-family`: Type, State
-- `l13452026.font-size`: Type, State
-- `l13452026.font-weight`: Type, State
-- `l13452026.line-height`: Type, State
-- `l13452026.white-space`: Type, State
+- `l13452026.color`: +1 variant override
+- `l13452026.display`: +1 variant override
+- `l13452026.flex`: +1 variant override
+- `l13452026.flex-shrink`: +1 variant override
+- `l13452026.font-family`: +1 variant override
+- `l13452026.font-size`: +1 variant override
+- `l13452026.font-weight`: +1 variant override
+- `l13452026.line-height`: +1 variant override
+- `l13452026.white-space`: +1 variant override
 - `fieldsRow.background`: Type
 - `fieldsRow.box-shadow`: Type
 - `fieldsRow.display`: Type
@@ -1612,7 +1612,7 @@ Figma: Date Picker (660:4998)
 - `fieldsRow.opacity`: Type
 - `fieldsRow.overflow`: Type
 - `fieldRow2.align-items`: Type
-- `fieldRow2.background`: Type, State
+- `fieldRow2.background`: Type, +1 variant override
 - `fieldRow2.border-radius`: Type
 - `fieldRow2.box-shadow`: Type, State
 - `fieldRow2.display`: Type
@@ -1814,15 +1814,15 @@ Figma: Date Picker (660:4998)
 - `l08052026.font-weight`: Type, State
 - `l08052026.line-height`: Type, State
 - `l08052026.white-space`: Type, State
-- `l134520262.color`: Type, State
-- `l134520262.display`: Type, State
-- `l134520262.flex`: Type, State
-- `l134520262.flex-shrink`: Type, State
-- `l134520262.font-family`: Type, State
-- `l134520262.font-size`: Type, State
-- `l134520262.font-weight`: Type, State
-- `l134520262.line-height`: Type, State
-- `l134520262.white-space`: Type, State
+- `l134520262.color`: +1 variant override
+- `l134520262.display`: +1 variant override
+- `l134520262.flex`: +1 variant override
+- `l134520262.flex-shrink`: +1 variant override
+- `l134520262.font-family`: +1 variant override
+- `l134520262.font-size`: +1 variant override
+- `l134520262.font-weight`: +1 variant override
+- `l134520262.line-height`: +1 variant override
+- `l134520262.white-space`: +1 variant override
 - `mMDDYYYYHhMm.color`: Type, State
 - `mMDDYYYYHhMm.display`: Type, State
 - `mMDDYYYYHhMm.flex`: Type, State
@@ -1924,15 +1924,15 @@ Figma: Date Picker (660:4998)
 - `l07302026230PM.font-weight`: Type, State
 - `l07302026230PM.line-height`: Type, State
 - `l07302026230PM.white-space`: Type, State
-- `l134520263.color`: Type, State
-- `l134520263.display`: Type, State
-- `l134520263.flex`: Type, State
-- `l134520263.flex-shrink`: Type, State
-- `l134520263.font-family`: Type, State
-- `l134520263.font-size`: Type, State
-- `l134520263.font-weight`: Type, State
-- `l134520263.line-height`: Type, State
-- `l134520263.white-space`: Type, State
+- `l134520263.color`: +1 variant override
+- `l134520263.display`: +1 variant override
+- `l134520263.flex`: +1 variant override
+- `l134520263.flex-shrink`: +1 variant override
+- `l134520263.font-family`: +1 variant override
+- `l134520263.font-size`: +1 variant override
+- `l134520263.font-weight`: +1 variant override
+- `l134520263.line-height`: +1 variant override
+- `l134520263.white-space`: +1 variant override
 
 </details>
 

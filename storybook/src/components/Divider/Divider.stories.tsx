@@ -16,7 +16,7 @@ const meta = {
     disabled: { control: 'boolean', description: 'Figma: State=Disabled' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '697:1083', version: '2420200599083390279' }, generator: 'generic' },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '697:1083' }, generator: 'generic' },
 } satisfies Meta<typeof Divider>;
 
 export default meta;

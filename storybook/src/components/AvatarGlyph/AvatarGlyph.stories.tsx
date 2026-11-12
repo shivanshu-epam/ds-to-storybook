@@ -13,7 +13,7 @@ const meta = {
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'], description: 'Figma: Size' },
     'data-force-state': { table: { disable: true } },
   },
-  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '276:1716', version: '2420200599083390279' }, generator: 'generic' },
+  parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '276:1716' }, generator: 'generic' },
 } satisfies Meta<typeof AvatarGlyph>;
 
 export default meta;

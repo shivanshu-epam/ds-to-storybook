@@ -3,7 +3,6 @@
   "description": "A rule line in five true Figma variant axes — Orientation, Style, Size, Color, and State — all directly switchable, matching how every other component in this file exposes its options.",
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420200599083390279",
     "sets": [
       {
         "name": "Divider",

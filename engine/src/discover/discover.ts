@@ -192,8 +192,9 @@ function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides
   return final;
 }
 
-export async function discover(client: FigmaReader, fileKey: string, overrides: Overrides = {}, log: (m: string) => void = () => {}): Promise<Discovery> {
-  const file: FileResponse = await client.file(fileKey, 2);
+/** `version`: a Figma version id to read instead of the latest (reproducible runs). */
+export async function discover(client: FigmaReader, fileKey: string, overrides: Overrides = {}, log: (m: string) => void = () => {}, version?: string): Promise<Discovery> {
+  const file: FileResponse = await client.file(fileKey, 2, version);
   const allSets = file.componentSets ?? {};
   const pages = (file.document.children ?? []).filter((p) => p.type === 'CANVAS');
 

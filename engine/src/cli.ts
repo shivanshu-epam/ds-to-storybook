@@ -30,6 +30,7 @@ Commands:
 Options:
   --config <file>   Config file (default: ds-sync.config.json)
   --out <dir>       Working directory for reports and cache (default: .ds-sync)
+  --figma-version <id>  Read this Figma version instead of the latest (discover, generate)
   init:  --figma <link>  --dir <folder>  --variables <file>  --ci  --yes
   --refresh         Ignore the Figma response cache
   --help            Show this help
@@ -47,10 +48,10 @@ function pageLabel(page: string): string {
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
-const CTX = { cache: '', out: '', fileKey: '', refresh: false, overrides: {} as NonNullable<NonNullable<ReturnType<typeof loadConfig>['generate']>['overrides']>, log: (_m: string) => {} };
+const CTX = { cache: '', out: '', fileKey: '', version: undefined as string | undefined, refresh: false, overrides: {} as NonNullable<NonNullable<ReturnType<typeof loadConfig>['generate']>['overrides']>, log: (_m: string) => {} };
 
 async function runDiscovery(client: FigmaClient): Promise<Discovery> {
-  const d = await discover(client, CTX.fileKey, CTX.overrides, CTX.log);
+  const d = await discover(client, CTX.fileKey, CTX.overrides, CTX.log, CTX.version);
   writeJson(join(CTX.out, 'discovery.json'), d);
   writeText(join(CTX.out, 'discovery.md'), discoveryMarkdown(d));
   CTX.log(`Discovery → ${join(CTX.out, 'discovery.md')} (${d.proposals.length} components, ${d.review.length} to review)`);
@@ -64,6 +65,7 @@ async function main() {
       config: { type: 'string', default: 'ds-sync.config.json' },
       out: { type: 'string', default: '.ds-sync' },
       figma: { type: 'string' },
+      'figma-version': { type: 'string' },
       dir: { type: 'string' },
       variables: { type: 'string' },
       yes: { type: 'boolean', default: false },
@@ -86,7 +88,7 @@ async function main() {
   const config = loadConfig(values.config!);
   loadDotEnv(join(config.baseDir, '.env'));
   const p = paths(config, values.out);
-  Object.assign(CTX, { cache: p.cache, out: p.out, fileKey: config.figma.fileKey, refresh: values.refresh!, overrides: config.generate?.overrides ?? {}, log });
+  Object.assign(CTX, { cache: p.cache, out: p.out, fileKey: config.figma.fileKey, version: values['figma-version'], refresh: values.refresh!, overrides: config.generate?.overrides ?? {}, log });
 
   switch (command) {
     case 'extract': {
@@ -132,7 +134,7 @@ async function main() {
       if (auto) {
         const d = await runDiscovery(client);
         const targets = targetsFromDiscovery(d);
-        ir = await extractIR(client, { ...config, components: targets }, log);
+        ir = await extractIR(client, { ...config, components: targets }, log, CTX.version);
         writeJson(join(p.out, 'figma-ir.auto.json'), ir);
         const perPage = new Map<string, number>();
         for (const x of d.proposals) perPage.set(x.page, (perPage.get(x.page) ?? 0) + 1);

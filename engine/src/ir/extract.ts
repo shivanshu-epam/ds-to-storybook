@@ -58,9 +58,9 @@ async function loadVariables(client: FigmaReader, config: LoadedConfig, log: (m:
   }
 }
 
-export async function extractIR(client: FigmaReader, config: LoadedConfig, log: (m: string) => void = () => {}): Promise<FigmaIR> {
+export async function extractIR(client: FigmaReader, config: LoadedConfig, log: (m: string) => void = () => {}, version?: string): Promise<FigmaIR> {
   const fileKey = config.figma.fileKey;
-  const file = await client.file(fileKey, 2);
+  const file = await client.file(fileKey, 2, version);
   log(`Figma file "${file.name}", version ${file.version}`);
 
   const missing: FigmaIR['missing'] = [];
