@@ -6,7 +6,7 @@ Turns a Figma design system into a working, tested Storybook, and reports where 
 | --- | --- |
 | [`engine/`](engine/) | The `ds-sync` engine (TypeScript). Reads Figma through the REST API, builds a normalized IR and component specs, and either **generates a Storybook project** or writes a **drift report** against an existing repo. |
 | [`storybook/`](storybook/) | A Storybook project **generated entirely from Figma** by the engine: tokens, React components, stories with interaction tests, and MDX docs built from the Figma documentation frames. |
-| `*-story-skill.md`, `skill.md` | The earlier hand-written agent skills for the same components, kept as the reference the engine is checked against. |
+| [`PLAN.md`](PLAN.md) | What is built, known gaps, and the roadmap to a generic tool. |
 
 ## Generate the Storybook from Figma
 

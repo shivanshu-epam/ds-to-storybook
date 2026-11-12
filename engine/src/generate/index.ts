@@ -1,5 +1,5 @@
 /** Scenario 2: Figma design system -> a fresh, tested Storybook project. */
-import { existsSync, readdirSync, rmSync } from 'node:fs';
+import { existsSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 import type { LoadedConfig } from '../config.ts';
@@ -12,7 +12,7 @@ import { accordionTemplate } from './templates/accordion.ts';
 import { actionTemplate } from './templates/action.ts';
 import { checkboxTemplate } from './templates/checkbox.ts';
 import type { ComponentReport, GeneratedFile, TemplateContext, TemplateResult } from './templates/common.ts';
-import { loadTokens, resolveDefault, TokenResolver, tokensCss } from './tokens.ts';
+import { loadTokens, TokenResolver, tokensCss } from './tokens.ts';
 
 export interface GenerateConfig {
   /** Output directory, relative to the config file. */
@@ -153,8 +153,4 @@ npm run typecheck
 
 Everything under \`src/\` and \`.storybook/\` is regenerated. To change it, change Figma or the generator, not these files.
 `;
-}
-
-export function listFiles(dir: string): string[] {
-  return existsSync(dir) ? readdirSync(dir) : [];
 }
