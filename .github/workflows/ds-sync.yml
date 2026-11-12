@@ -27,6 +27,21 @@ jobs:
           git clone --depth 1 https://github.com/shivanshu-epam/ds-to-storybook.git "$RUNNER_TEMP/ds-sync"
           cd "$RUNNER_TEMP/ds-sync/engine" && npm ci && npm run build
 
+      - name: Check the FIGMA_TOKEN secret
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+        run: |
+          if [ -z "$FIGMA_TOKEN" ]; then
+            echo "::error title=ds-sync::The FIGMA_TOKEN repository secret is missing or empty (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+          # Ask Figma who the token belongs to, without printing the token.
+          status=$(curl -s -o /dev/null -w '%{http_code}' -H "X-Figma-Token: $FIGMA_TOKEN" https://api.figma.com/v1/me)
+          if [ "$status" != "200" ]; then
+            echo "::error title=ds-sync::Figma rejected FIGMA_TOKEN (HTTP $status). Create a new personal access token with file_content:read and update the secret."
+            exit 1
+          fi
+
       - name: Generate Storybook from Figma
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}

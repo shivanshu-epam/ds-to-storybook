@@ -158,6 +158,9 @@ async function main() {
 }
 
 main().catch((err: unknown) => {
-  process.stderr.write(`ds-sync: ${err instanceof Error ? err.message : String(err)}\n`);
+  const message = err instanceof Error ? err.message : String(err);
+  process.stderr.write(`ds-sync: ${message}\n`);
+  // In GitHub Actions, also emit an annotation so the reason shows on the run page and in the API.
+  if (process.env.GITHUB_ACTIONS) process.stdout.write(`::error title=ds-sync::${message.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A')}\n`);
   process.exitCode = 1;
 });
