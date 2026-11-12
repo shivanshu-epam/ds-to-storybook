@@ -1,60 +1,45 @@
-# ds-sync engine (POC, slice 1: read-only health report)
+# ds-sync engine
 
-Reads a Figma design system through the REST API, normalizes it into an IR,
-builds a framework-neutral spec per component set, analyses the React code with
-the TypeScript compiler API, and writes a drift and health report. It never
-changes the design-system repo.
+The `ds-sync` command-line tool. It reads a Figma design system through the REST API and generates a tested Storybook project. It can also report drift between Figma and an existing codebase. Needs Node 22+.
 
-This is the first slice of the proof of concept in the strategy doc (Chapter 19).
-
-## Run it
+## Install
 
 ```bash
-npm install
-cp .env.example .env    # then paste a Figma personal access token (file_content:read)
-npm run ds-sync -- run  # extract → spec → analyze → report
-open out/report.html
+npm ci && npm run build && npm link     # until published: puts ds-sync on your PATH
 ```
 
-Steps can also run one at a time: `extract`, `spec`, `analyze`, `report`.
-Figma responses are cached in `.cache/figma/`; pass `--refresh` to re-read.
-`npm test` runs the suite against a recorded Figma fixture, with no token needed.
+`npm pack` produces an installable tarball (`ds-sync-<version>.tgz`). The package ships `dist/`, `archetypes/` and `templates/`.
 
-## What it does
+## Commands
 
-| Step | Input | Output | Deterministic |
-| --- | --- | --- | --- |
-| `extract` | Figma REST: `GET /v1/files/:key?depth=2`, `GET /v1/files/:key/nodes`, `GET /v1/files/:key/variables/local` (Enterprise; falls back to the repo's `tokens/figma-variables.json`) | `out/figma-ir.json` with a sha256 per component set | Yes |
-| `spec` | IR + `archetypes/*.yaml` + config | `out/specs/<id>.spec.yaml` | Yes |
-| `analyze` | Repo source: component props (types, defaults, JSDoc), CSS modules, stories, MDX, token CSS | `out/code-ir.json` | Yes |
-| `report` | Specs + code IR | `out/report.html`, `out/report.json` | Yes |
+| Command | What it does |
+| --- | --- |
+| `ds-sync init --figma <link> [--dir storybook] [--variables file.json] [--ci] [--yes]` | Checks that the token can open the file, detects the stack, writes `ds-sync.config.json`, and git-ignores `.env` and `.ds-sync/`. `--ci` adds the GitHub workflow. |
+| `ds-sync discover` | Finds every component set, classifies frames and proposes templates. Writes `.ds-sync/discovery.md` with the items that need a person. |
+| `ds-sync generate` | Discover, then extract, then generate the Storybook project into `generate.outDir`. |
+| `ds-sync run` | Drift report for an existing repo (needs `repo` and hand-mapped `components` in the config). Writes `.ds-sync/report.html`. |
+| `extract`, `spec`, `analyze`, `report` | The drift report steps, one at a time. |
 
-There are no AI calls in this slice. Frame classification, prop mapping and doc
-interpretation use rules plus explicit config. Model-backed steps come later,
-behind schema-checked contracts.
+The token comes from `FIGMA_TOKEN` in the environment or in `.env` next to the config. Figma responses are cached in `.ds-sync/cache`; `--refresh` re-reads them.
 
-## Configuration (`ds-sync.config.json`)
+Config reference: [`../skills/figma-to-storybook/reference/config.md`](../skills/figma-to-storybook/reference/config.md).
 
-Each entry maps one Figma component set to one code export:
+## Layout
 
-- `propMap`: a Figma property name maps to a code prop. `null` means intentionally none; `false` means a confirmed code gap.
-- `axisRoles`: marks a variant axis as `state` (axes named State/Interaction default to `state`).
-- `stateMap`: a Figma state value maps to a code expression (`"disabled"`, `"error+checked"`), or `null` when it is handled elsewhere.
+| Path | Role |
+| --- | --- |
+| `src/figma` | REST client: cache, 429 retries, images |
+| `src/discover` | Page, frame and component discovery; template proposals |
+| `src/ir` | Figma IR: layers, layout, styles, bound variables, property links |
+| `src/spec`, `src/code`, `src/diff`, `src/report` | Drift report: spec vs code |
+| `src/generate` | Tokens, style compiler, icons, project scaffold, templates (`action`, `checkbox`, `accordion`, `generic`) |
+| `archetypes/` | Behaviour packs (required states, keyboard) |
+| `templates/github-workflow.yml` | CI template used by `init --ci` |
 
-Pinned node ids are tried first; if a set has moved, it is matched by name and the report says so.
+## Develop
 
-## Findings
-
-Findings fall into these categories: `api` (missing or code-only props, enum
-options, defaults), `states`, `tokens` (unbound Figma values, raw CSS values,
-undefined CSS variables), `stories` (axes without a story, keyboard story),
-`docs`, `design-gap` (what the archetype requires that Figma does not specify),
-and `extraction`.
-
-Code-only props are reported as info, to be documented rather than hidden.
-
-## Known limits
-
-- Without the Enterprise Variables API, bound variable ids cannot be resolved to names. The report counts bound vs raw values but cannot check that code uses the *same* token.
-- Story coverage is matched by story name, not by rendering.
-- React and TypeScript only. One code export per Figma component set.
+```bash
+npm test              # 22 tests, against a recorded Figma fixture (no token needed)
+npm run typecheck
+npm run ds-sync -- generate   # run from source with tsx
+```

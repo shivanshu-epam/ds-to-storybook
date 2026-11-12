@@ -42,22 +42,25 @@ export interface ComponentTarget {
 
 export interface Config {
   figma: { fileKey: string; apiBase?: string };
-  repo: {
+  /** Existing code repo to compare against (drift report). Optional for generation. */
+  repo?: {
     path: string;
     /** Exported Figma variables (repo-relative), used when the Variables REST API is unavailable. */
     figmaVariables?: string;
     /** CSS files that define token custom properties (repo-relative). */
     tokenCss?: string[];
   };
-  components: ComponentTarget[];
+  /** Hand-mapped components for the drift report. Optional. */
+  components?: ComponentTarget[];
   /** Scenario 2: generate a fresh Storybook project from Figma. */
   generate?: GenerateConfig;
 }
 
 export interface LoadedConfig extends Config {
+  components: ComponentTarget[];
   /** Absolute directory the config file lives in. */
   baseDir: string;
-  /** Absolute repo path. */
+  /** Absolute repo path ("" when no repo is configured). */
   repoDir: string;
 }
 
@@ -65,8 +68,19 @@ export function loadConfig(path: string): LoadedConfig {
   const abs = resolve(path);
   const config = readJson<Config>(abs);
   if (!config.figma?.fileKey) throw new Error(`${path}: figma.fileKey is required`);
-  if (!config.repo?.path) throw new Error(`${path}: repo.path is required`);
-  if (!Array.isArray(config.components) || config.components.length === 0) throw new Error(`${path}: components[] is empty`);
   const baseDir = dirname(abs);
-  return { ...config, baseDir, repoDir: resolve(baseDir, expandHome(config.repo.path)) };
+  return {
+    ...config,
+    components: config.components ?? [],
+    baseDir,
+    repoDir: config.repo?.path ? resolve(baseDir, expandHome(config.repo.path)) : '',
+  };
+}
+
+/** Accepts a Figma link or a bare file key. */
+export function parseFigmaFileKey(input: string): string | undefined {
+  const s = input.trim();
+  const m = /figma\.com\/(?:design|file|proto)\/([A-Za-z0-9]{10,})/.exec(s);
+  if (m) return m[1];
+  return /^[A-Za-z0-9]{10,}$/.test(s) ? s : undefined;
 }

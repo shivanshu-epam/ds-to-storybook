@@ -1,40 +1,47 @@
-# Figma to Storybook (proof of concept)
+# ds-sync: Figma to Storybook
 
-Turns a Figma design system into a working, tested Storybook, and reports where existing code has drifted from Figma.
+**A tool that turns any Figma design system into a working, tested Storybook, and keeps it in sync.** Point it at a Figma file and it:
+
+- finds every component;
+- generates React components, design tokens, stories (with interaction and accessibility tests) and docs pages built from your Figma documentation;
+- tells you what Figma doesn't specify.
+
+## Quick start
+
+Until ds-sync is published to npm, build it once from this repo:
+
+```bash
+git clone https://github.com/shivanshu-epam/ds-to-storybook.git ds-sync-tool
+cd ds-sync-tool/engine && npm ci && npm run build && npm link   # gives you the ds-sync command
+```
+
+Then, in your own project folder:
+
+```bash
+ds-sync init --figma "https://www.figma.com/design/<file-key>/..."   # asks for a Figma token, detects your stack
+ds-sync discover                                                     # review what was found: .ds-sync/discovery.md
+ds-sync generate                                                     # writes ./storybook
+cd storybook && npm install && npm run storybook                     # http://localhost:6006
+```
+
+Prefer a guided run? Use the **Claude Skill** in [`skills/figma-to-storybook`](skills/figma-to-storybook/SKILL.md). It runs these steps, asks the questions only a person can answer (for example, what a component should do), and explains the results.
+
+## What's in this repo
 
 | Folder | What it is |
 | --- | --- |
-| [`engine/`](engine/) | The `ds-sync` engine (TypeScript). Reads Figma through the REST API, builds a normalized IR and component specs, and either **generates a Storybook project** or writes a **drift report** against an existing repo. |
-| [`storybook/`](storybook/) | A Storybook project **generated entirely from Figma** by the engine: tokens, React components, stories with interaction tests, and MDX docs built from the Figma documentation frames. |
-| [`PLAN.md`](PLAN.md) | What is built, known gaps, and the roadmap to a generic tool. |
+| [`engine/`](engine/) | **The tool**: the `ds-sync` CLI (TypeScript, Node 22+). |
+| [`skills/figma-to-storybook/`](skills/figma-to-storybook/) | **Claude Skill** that drives the CLI and handles the judgement calls. |
+| [`plugin/`](plugin/) | **Figma plugin** that exports variables, for teams not on a Figma Enterprise plan. |
+| [`engine/templates/github-workflow.yml`](engine/templates/github-workflow.yml) | **GitHub Action** (`ds-sync init --ci`) that regenerates weekly or on demand and opens a pull request. |
+| [`storybook/`](storybook/) | **Example output**: generated from the "Design system AI" Figma file. 21 components, 78 of 79 story tests pass (the failure is a real contrast issue in the design). |
+| [`PLAN.md`](PLAN.md) | Roadmap, status and open decisions. |
 
-## Generate the Storybook from Figma
+## How it works
 
-```bash
-cd engine
-npm install
-cp .env.example .env                 # add a Figma personal access token (file_content:read)
-npm run ds-sync -- extract           # Figma → engine/out/figma-ir.json
-npm run ds-sync -- generate          # IR → ../storybook
-
-cd ../storybook
-npm install
-npm run storybook                    # http://localhost:6006
-npm test                             # every story: render, interactions, axe accessibility
-```
-
-## What the generator does
-
-1. **Tokens.** Every Figma variable becomes a CSS custom property. Modes become attributes: `data-theme` (light/dark) and `data-project` (brand).
-2. **Styles.** For each layer and CSS property, the engine finds the smallest set of Figma axes the value depends on (for example, background depends on Variant and State; padding only on Size). It emits one rule per combination, using semantic tokens matched from the Figma bindings.
-3. **Components.** Archetype templates (action, checkbox, disclosure) give the behaviour Figma cannot express: the WAI-ARIA button, checkbox and accordion patterns.
-4. **Stories.** These are generated from the Figma axes:
-   - a Default story;
-   - a variant × state matrix (pseudo states forced with `data-force-state`);
-   - one story per axis;
-   - slot stories;
-   - play-function tests for clicks and keyboard.
-5. **Docs.** An MDX page per component, with the Figma documentation text kept verbatim and a Figma-to-prop table.
-6. **Report.** `storybook/GENERATION-REPORT.md` and `token-map.json` record what came from Figma, what came from archetype defaults, and every token decision.
-
-Current scope: Button, Checkbox (with CheckboxGroup) and Accordion, from the Figma file `I983NcgqSiY14YkpJbwjG8`.
+1. **Discover.** It finds every component set on every page, including nested ones. It classifies frames as documentation, examples or other, and lists anything unclear for a person to confirm.
+2. **Extract.** It reads the Figma REST API into a normalized model: variants, properties, layout, tokens, icons and doc text.
+3. **Tokens.** Figma variables become CSS custom properties. Modes (light/dark, brands) become attributes.
+4. **Components.** Archetype templates (button, checkbox, accordion) add tested WAI-ARIA behaviour. Every other component is rendered by the generic template from its Figma layers, and its docs say that its behaviour isn't specified yet.
+5. **Stories and docs.** It writes variant × state matrices, axis stories, play tests and MDX pages with the Figma documentation text.
+6. **Report.** `GENERATION-REPORT.md` records every assumption and gap; `token-map.json` records every token decision.

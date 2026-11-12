@@ -3,7 +3,7 @@ import { existsSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 import type { LoadedConfig } from '../config.ts';
-import type { FigmaRenderer } from '../figma/client.ts';
+import type { FigmaReader, FigmaRenderer } from '../figma/client.ts';
 import type { FigmaIR, IRComponentSet } from '../ir/types.ts';
 import { expandHome, readJson, writeText } from '../util/core.ts';
 import { exportIcons, iconRefs, type IconAsset } from './icons.ts';
@@ -14,15 +14,18 @@ import { checkboxTemplate } from './templates/checkbox.ts';
 import { genericTemplate, instanceRef, type RegistryEntry } from './templates/generic.ts';
 import type { Overrides } from '../discover/discover.ts';
 import type { ComponentReport, GeneratedFile, TemplateContext, TemplateResult } from './templates/common.ts';
-import { loadTokens, TokenResolver, tokensCss } from './tokens.ts';
+import { exportFromRest, loadTokens, TokenResolver, tokensCss } from './tokens.ts';
 
 export interface GenerateConfig {
   /** Output directory, relative to the config file. */
   outDir: string;
   /** Package name of the generated project. */
   packageName?: string;
-  /** Figma variables export (stand-in for the Enterprise Variables API or a plugin export). */
-  variablesExport: string;
+  /**
+   * Figma variables export file (from the ds-sync Figma plugin). Optional: without it the
+   * Variables REST API is used (Enterprise plans); without either, values stay raw.
+   */
+  variablesExport?: string;
   /** Variable collection -> HTML attribute that selects its non-default modes. */
   modeAttributes?: Record<string, string>;
   /**
@@ -54,9 +57,23 @@ const OWNED = ['src', '.storybook'];
 
 export async function generateStorybook(config: LoadedConfig, gen: GenerateConfig, ir: FigmaIR, renderer: FigmaRenderer, log: (m: string) => void, plan: PlannedComponent[] = gen.components ?? []) {
   const outDir = resolve(config.baseDir, gen.outDir);
-  const tokens = loadTokens(readJson(resolve(config.baseDir, expandHome(gen.variablesExport))));
+  let source: { variables?: Record<string, unknown[]> } = { variables: {} };
+  if (gen.variablesExport) {
+    source = readJson(resolve(config.baseDir, expandHome(gen.variablesExport)));
+    log(`Variables: ${gen.variablesExport}`);
+  } else {
+    try {
+      source = exportFromRest(await (renderer as unknown as FigmaReader).localVariables(ir.fileKey));
+      log('Variables: read from the Figma Variables API');
+    } catch {
+      log('Variables: not available (the Variables API needs an Enterprise plan). Export them with the ds-sync Figma plugin and set generate.variablesExport; values stay raw until then.');
+    }
+  }
+  const tokens = loadTokens(source);
   const resolver = new TokenResolver(tokens);
-  const modeAttributes = gen.modeAttributes ?? {};
+  // Mode attributes: light/dark collections drive data-theme; others data-<collection>. Config can override.
+  const autoModes = Object.fromEntries(Object.entries(tokens.modes).map(([c, modes]) => [c, modes.some((m) => /dark/i.test(m)) ? 'data-theme' : `data-${c.replace(/^(primitives|semantic)\./, '').replace(/\W+/g, '-')}`]));
+  const modeAttributes = { ...autoModes, ...(gen.modeAttributes ?? {}) };
 
   const setsById = new Map(ir.components.map((c) => [c.targetId, c]));
   const usedTargets = plan.flatMap((c) => Object.values(c.sets));
@@ -91,6 +108,14 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
           },
         })
       : SPECIALISED[c.template](ctx, c.name);
+    const issue = gen.overrides?.knownIssues?.[c.name];
+    if (issue) {
+      // Accepted design issue: axe still runs and reports, but does not fail the story tests.
+      for (const f of result.files) {
+        if (f.path.endsWith('.stories.tsx')) f.content = f.content.replace('parameters: {', `parameters: {\n    // Known design issue (ds-sync.config.json overrides.knownIssues): ${issue.replace(/\*\//g, '')}\n    a11y: { test: 'todo' },`);
+      }
+      result.report.gaps.push(`Known design issue (accessibility checks set to todo): ${issue}`);
+    }
     files.push(...result.files);
     reports.push(result.report);
     log(`${c.name}: ${result.files.length} files (template ${c.template})`);

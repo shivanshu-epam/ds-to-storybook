@@ -1,0 +1,89 @@
+---
+name: figma-to-storybook
+description: Generate a tested Storybook (React + TypeScript) from a Figma design system, or refresh it after Figma changes, using the ds-sync CLI. Use when the user wants to build, create, generate, refresh or sync Storybook, stories or component docs from a Figma file or link, set up ds-sync, answer ds-sync discovery questions, or understand a ds-sync generation report.
+---
+
+# Figma to Storybook (ds-sync)
+
+ds-sync does the work; this skill runs it and handles what needs a person's judgement. Never write components, stories or CSS by hand: everything under the generated folder is rebuilt on every run. To change the output, change Figma, the config overrides, or the generator.
+
+## 1. Prerequisites
+
+- Node 22 or newer: `node --version`.
+- The CLI. Use `npx ds-sync` if the package is installed. Until it is published, build it once from the repository:
+  ```bash
+  git clone https://github.com/shivanshu-epam/ds-to-storybook.git ~/.ds-sync-tool
+  cd ~/.ds-sync-tool/engine && npm ci && npm run build
+  ```
+  Then use `node ~/.ds-sync-tool/engine/dist/cli.js` wherever this skill says `ds-sync`.
+- A Figma personal access token with `file_content:read`. Ask the user to put it in `.env` as `FIGMA_TOKEN=...` themselves. Do not ask them to paste it into the chat. If they already did, use it, write it only to `.env`, and recommend rotating it.
+
+## 2. Set up (once per project)
+
+Run in the folder that should hold the config:
+
+```bash
+ds-sync init --figma "<figma link>" --yes [--dir storybook] [--variables <export.json>] [--ci]
+```
+
+- `init` checks that the token can open the file, detects the stack, and writes `ds-sync.config.json`. It also adds `.env` and `.ds-sync/` to `.gitignore`.
+- **Variables:** on non-Enterprise plans the Variables API returns 403, and init says so. Then ask the user to export variables with the ds-sync Figma plugin (`plugin/` in the repo), and pass the file with `--variables`. Without it, generation still works, but colours and spacing are raw values instead of tokens.
+- **Stack:** if init reports a framework other than React, tell the user that the output is a standalone React + TypeScript + CSS Modules Storybook for now.
+
+## 3. Discover, then ask the questions
+
+```bash
+ds-sync discover
+```
+
+Read `.ds-sync/discovery.md` and summarise it for the user in plain words:
+
+- how many component sets were found, on which pages;
+- which components get an archetype template (behaviour from WAI-ARIA patterns);
+- which get the generic template (visuals only, behaviour not specified).
+
+Then work through **Needs a person**, one topic at a time:
+
+| Review item | What to ask | Where the answer goes (`generate.overrides` in `ds-sync.config.json`) |
+| --- | --- | --- |
+| Unclear frame | Is it documentation, an example, or neither? | `frames: { "<frame id>": "documentation" \| "example" \| "other" }` |
+| Interactive component on the generic template | What should it do: keyboard, focus, ARIA role? Is it fine as visuals-only for now? | Note the answer for the report. A matching template, if one exists: `sets: { "<name>": { "template": "action" } }` |
+| Unwanted set (an internal part, an old version) | Should it be left out? | `sets: { "<set name>": { "exclude": true } }` |
+| Wrong component name | What should it be called? | `sets: { "<set name>": { "name": "NewName" } }` |
+| Working or QA page found | Skip it? | `skipPages: ["<page name>"]` |
+
+Templates available: `action` (button), `checkbox` (control + field + group sets), `accordion` (item set with `_header` and `_panel` layers), and `generic` (any set). Never claim behaviour that no template provides.
+
+## 4. Generate and test
+
+```bash
+ds-sync generate
+cd <outDir> && npm install && npm run typecheck && npm test
+```
+
+Report to the user:
+
+- the components generated and the template behind each;
+- the token counts printed by `generate`;
+- the test result.
+
+For each failing test, read the error and say which kind it is:
+
+- **Design issue:** usually axe colour contrast, or a missing accessible name in Figma. Fixing it belongs in Figma. Accepting it for now needs the user's explicit OK. Then record `knownIssues: { "<Component>": "<what and why>" }`, which reports the story's axe check as a warning instead of failing it.
+- **Generator issue:** for example a TypeScript error or a broken render. Report it with the output. Do not patch the generated files.
+
+Summarise `GENERATION-REPORT.md`: what came from Figma, what came from archetype defaults, and the gaps. Offer to start Storybook (`npm run storybook`, port 6006).
+
+## 5. Keep it in sync
+
+- After a Figma change, run `ds-sync generate` again and review the diff before committing.
+- To automate it, run `ds-sync init --ci` (or answer yes during init). That adds `.github/workflows/ds-sync.yml`, which regenerates weekly or on demand and opens a pull request. The repository needs a `FIGMA_TOKEN` secret.
+
+## Rules
+
+- Do not edit generated files. Change Figma, the overrides, or the generator.
+- Do not invent behaviour, props or copy that Figma does not have. Name the gap instead.
+- Do not set `knownIssues` without the user's explicit agreement.
+- Never commit `.env`, and never print the token.
+
+More detail: [reference/config.md](reference/config.md) (every config field) and [reference/troubleshooting.md](reference/troubleshooting.md).

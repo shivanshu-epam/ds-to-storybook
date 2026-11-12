@@ -43,9 +43,9 @@ async function loadVariables(client: FigmaReader, config: LoadedConfig, log: (m:
     return { source: 'rest', byId, byName };
   } catch (err) {
     if (!(err instanceof FigmaHttpError) || (err.status !== 403 && err.status !== 404)) throw err;
-    const exportPath = config.repo.figmaVariables ? join(config.repoDir, config.repo.figmaVariables) : undefined;
+    const exportPath = config.repo?.figmaVariables ? join(config.repoDir, config.repo.figmaVariables) : undefined;
     if (exportPath && existsSync(exportPath)) {
-      log(`Variables REST API unavailable (HTTP ${err.status}, Enterprise only); using ${config.repo.figmaVariables}.`);
+      log(`Variables REST API unavailable (HTTP ${err.status}, Enterprise only); using ${config.repo?.figmaVariables}.`);
       return {
         source: 'export',
         note: `Variables REST API returned ${err.status}. Names come from the repo export; bound variable ids cannot be resolved to names.`,
@@ -53,7 +53,7 @@ async function loadVariables(client: FigmaReader, config: LoadedConfig, log: (m:
         byName: variablesFromExport(readJson(exportPath)),
       };
     }
-    log(`Variables REST API unavailable (HTTP ${err.status}) and no export configured.`);
+    log(`Variables API unavailable (HTTP ${err.status}, Enterprise only): bound variables are matched to tokens by value.`);
     return { ...emptyVariables(), note: `Variables REST API returned ${err.status}; no export configured.` };
   }
 }

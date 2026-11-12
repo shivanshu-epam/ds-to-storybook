@@ -1,6 +1,6 @@
 # Figma to Storybook: project plan
 
-_Last updated 2026-11-12._
+_Last updated 2026-11-12 (Phases A and B delivered)._
 
 ## 1. Goal
 
@@ -25,10 +25,11 @@ The full product strategy (market research, architecture options, security, KPIs
 | Figma extraction: REST client with cache and rate-limit retries, normalized IR | Done | `engine/src/figma`, `engine/src/ir` |
 | Component specs: props, states, variant matrix, anatomy, token binding, gaps | Done | `engine/src/spec` |
 | Drift report against an existing repo (Scenario 5) | Done, React only | `engine/src/code`, `engine/src/diff`, `engine/src/report` |
-| **Storybook generation from Figma (Scenario 2)** | **Done for 3 components** | `engine/src/generate` → `storybook/` |
+| **Storybook generation from Figma (Scenario 2)** | **Done for every component set (21 components)** | `engine/src/generate` → `storybook/` |
 | Tokens: Figma variables to CSS, light/dark and brand modes | Done | `storybook/src/tokens/tokens.css` |
-| Generated Button, Checkbox (+ Group), Accordion with stories, MDX docs and icons | Done; 24/24 story tests pass | `storybook/src/components` |
-| Engine tests | 19/19 pass | `engine/test` |
+| Generated components: 3 with behaviour templates, 18 generic; stories, MDX docs, 42 icons | Done; 78/79 story tests pass (1 real design contrast issue) | `storybook/src/components` |
+| Discovery, `init`, installable CLI, Claude Skill, GitHub workflow, Figma plugin | Done (Phases A and B) | `engine/`, `skills/`, `plugin/` |
+| Engine tests | 22/22 pass | `engine/test` |
 
 **Figma file:** "Design system AI" (`I983NcgqSiY14YkpJbwjG8`). The variables come from `engine/inputs/figma-variables.json`, because the Variables REST API is Enterprise-only.
 
@@ -44,13 +45,13 @@ The full product strategy (market research, architecture options, security, KPIs
 
 | # | Gap | Impact |
 | --- | --- | --- |
-| G1 | Component pages and node ids are listed by hand in `ds-sync.config.json` | Does not work on a new Figma file without manual setup |
-| G2 | Only 3 templates (action, checkbox, disclosure) | Any other component is not generated |
+| G1 | ~~Component pages and node ids are listed by hand~~ **Fixed in Phase A** (auto-discovery) | — |
+| G2 | Only 3 behaviour templates; the rest use the generic template (visuals only) | Interactive components need behaviour before production |
 | G3 | Output stack is fixed: React 19, TypeScript, CSS Modules, Storybook 10, Vite | Teams on Vue, Angular, Tailwind and others cannot use it |
-| G4 | No packaging: no `init`, no Claude Skill, no CI job | It needs someone to run the engine by hand |
+| G4 | ~~No packaging~~ **Fixed in Phase B** (init, package, skill, workflow); npm publishing still open | — |
 | G5 | Tests run in light mode only; no automated visual diff against Figma | Dark-mode and visual regressions are caught only by eye |
 | G6 | No sync: a Figma change is not turned into a pull request | One-shot generation only |
-| G7 | Variables come from an exported file on non-Enterprise plans | Needs a plugin exporter to be self-serve |
+| G7 | ~~Variables need a manual export~~ **Fixed in Phase B** (Figma plugin; the API is used on Enterprise) | Plugin untested in Figma |
 | G8 | Some decisions are open: icon-only buttons (accessible name), spacing between accordion items | Listed in the generation report |
 
 ## 5. Roadmap
@@ -59,19 +60,21 @@ Each phase ends with something usable. The team is assumed to be 1 frontend engi
 
 ### Phase A: works on any Figma file (about 3 weeks). Fixes G1 and G2 partly.
 
-- [ ] Auto-discover component sets on every page; no ids in config.
-- [ ] Classify frames as component, documentation, example or other: rules first, AI only for the unclear ones, and the user confirms low-confidence results.
-- [ ] Generic fallback template: any component set becomes a styled component with its variant props and a variant matrix story. Its behaviour is marked "not specified".
-- [ ] Choose the archetype by rules (names, structure), with a human check.
+- [x] Auto-discover component sets on every page, including nested ones; no ids in config (`ds-sync discover`).
+- [x] Classify frames as documentation, example, page text or other by rules and content profile. Low-confidence results are listed for a person to confirm. (AI classification is not used yet; the Claude Skill asks the person instead.)
+- [x] Generic template: any component set becomes a styled component with its variant, boolean and text props, icons, and nested components with their overrides, plus matrix and axis stories. Its behaviour is marked "not specified".
+- [x] Choose the template by rules (names and layer structure), with overrides in config.
+- [ ] Run against a second, unseen Figma design system. Only "Design system AI" has been tested so far.
 - **Done when:** a second, unseen Figma design system generates a Storybook in which every component set has stories, and the report lists every gap.
 
 ### Phase B: a tool anyone can run (about 2 weeks). Fixes G4 and G7.
 
-- [ ] `npx ds-sync init`: asks for the Figma URL and token, detects the stack, writes the config.
-- [ ] `npx ds-sync generate` and `npx ds-sync report` as a published package.
-- [ ] A **Claude Skill** (`SKILL.md` + scripts) that runs the engine, asks the judgement questions, and summarises the report. The skill is a thin wrapper; the engine does the work.
-- [ ] A GitHub Action that runs `report` on a schedule and `generate` on demand.
-- [ ] A small Figma plugin that exports variables for non-Enterprise plans.
+- [x] `ds-sync init`: Figma link, token check, variables check, stack detection, config, `.gitignore` entries.
+- [x] Installable package (`npm pack` / `npm link`, compiled to JavaScript). Tested from a clean folder: init, then generate, then `npm install`, then 78 of 79 tests pass. **Not yet published to npm.**
+- [x] **Claude Skill** `skills/figma-to-storybook`: runs the CLI, asks the review questions, records the answers as overrides, and explains failures and gaps.
+- [x] GitHub Action template (`ds-sync init --ci`): regenerates weekly or on demand, runs the tests, opens a pull request. **Not yet run on GitHub.**
+- [x] Figma plugin `plugin/` that exports variables for non-Enterprise plans. **Not yet run inside Figma.**
+- [x] `overrides.knownIssues`: accept a design issue (its axe check becomes a warning) with a recorded reason.
 - **Done when:** a new user goes from a Figma link to a running Storybook with no help from us.
 
 ### Phase C: tech stack support (about 3 weeks per stack). Fixes G3.
@@ -109,6 +112,10 @@ Hosted control plane, multiple design systems and repos, role-based access, audi
 
 ## 7. Immediate next steps
 
-1. Phase A: auto-discovery and the fallback template.
-2. Phase B: `init`, packaging and the Claude Skill.
-3. Answer the decisions in section 6, so Phase C can start.
+1. Close Phase A and B checks:
+   - run against a second Figma file;
+   - run the plugin in Figma;
+   - run the GitHub workflow once;
+   - decide on npm publishing (name, scope, public or private registry).
+2. Phase C, tech stack support: needs decision 1 (which stack first).
+3. Phase D: behaviour templates for the components now on the generic template (input, radio, switch, dialog first), and dark-mode test runs.

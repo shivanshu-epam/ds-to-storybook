@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { stringify as toYaml } from 'yaml';
 
@@ -25,7 +26,7 @@ export interface Paths {
   archetypes: string;
 }
 
-export function paths(config: LoadedConfig, outDir = 'out'): Paths {
+export function paths(config: LoadedConfig, outDir = '.ds-sync'): Paths {
   const out = resolve(config.baseDir, outDir);
   return {
     out,
@@ -34,8 +35,9 @@ export function paths(config: LoadedConfig, outDir = 'out'): Paths {
     codeIr: join(out, 'code-ir.json'),
     reportHtml: join(out, 'report.html'),
     reportJson: join(out, 'report.json'),
-    cache: join(config.baseDir, '.cache', 'figma'),
-    archetypes: join(config.baseDir, 'archetypes'),
+    cache: join(out, 'cache'),
+    // Bundled with the engine (src/ and dist/ both sit next to archetypes/).
+    archetypes: fileURLToPath(new URL('../archetypes', import.meta.url)),
   };
 }
 
@@ -63,6 +65,7 @@ export function stepSpecs(config: LoadedConfig, p: Paths, ir: FigmaIR): Componen
 }
 
 export function stepAnalyze(config: LoadedConfig, p: Paths): CodeIR {
+  if (!config.repo || !config.components.length) throw new Error('The drift report needs "repo" and "components" in the config. To build a new Storybook, run "generate".');
   const tokenCss = (config.repo.tokenCss ?? []).map((f) => join(config.repoDir, f));
   const codeIR: CodeIR = {
     repoDir: config.repoDir,
@@ -80,7 +83,7 @@ export function stepReport(config: LoadedConfig, p: Paths, ir: FigmaIR, specs: C
     return diffComponent(spec, code, codeIR);
   });
   writeJson(p.reportJson, { generatedAt, figma: { fileKey: ir.fileKey, version: ir.version }, missing: ir.missing, components: drifts });
-  writeText(p.reportHtml, renderReport({ ir, drifts, generatedAt, repoLabel: config.repo.path }));
+  writeText(p.reportHtml, renderReport({ ir, drifts, generatedAt, repoLabel: config.repo?.path ?? "" }));
   return drifts;
 }
 

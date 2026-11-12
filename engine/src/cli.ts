@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 
@@ -6,15 +7,17 @@ import { loadConfig } from './config.ts';
 import { FigmaClient } from './figma/client.ts';
 import { discover, discoveryMarkdown, targetsFromDiscovery, type Discovery } from './discover/discover.ts';
 import { generateStorybook, type PlannedComponent } from './generate/index.ts';
+import { runInit } from './init.ts';
 import { extractIR } from './ir/extract.ts';
 import { loadIR, paths, stepAnalyze, stepExtract, stepReport, stepSpecs } from './pipeline.ts';
 import { loadDotEnv, writeJson, writeText } from './util/core.ts';
 
-const USAGE = `ds-sync — Figma design system → specs → drift report (read-only POC)
+const USAGE = `ds-sync — generate and sync a tested Storybook from a Figma design system
 
-Usage: npm run ds-sync -- <command> [options]
+Usage: npx ds-sync <command> [options]
 
 Commands:
+  init      Set up this folder: Figma link, token, stack detection → ds-sync.config.json
   extract   Read Figma (REST) into out/figma-ir.json        (needs FIGMA_TOKEN)
   spec      Build out/specs/*.spec.yaml from the IR
   analyze   Read the code repo into out/code-ir.json
@@ -26,7 +29,8 @@ Commands:
 
 Options:
   --config <file>   Config file (default: ds-sync.config.json)
-  --out <dir>       Output directory (default: out)
+  --out <dir>       Working directory for reports and cache (default: .ds-sync)
+  init:  --figma <link>  --dir <folder>  --variables <file>  --ci  --yes
   --refresh         Ignore the Figma response cache
   --help            Show this help
 `;
@@ -58,7 +62,12 @@ async function main() {
     allowPositionals: true,
     options: {
       config: { type: 'string', default: 'ds-sync.config.json' },
-      out: { type: 'string', default: 'out' },
+      out: { type: 'string', default: '.ds-sync' },
+      figma: { type: 'string' },
+      dir: { type: 'string' },
+      variables: { type: 'string' },
+      yes: { type: 'boolean', default: false },
+      ci: { type: 'boolean', default: false },
       refresh: { type: 'boolean', default: false },
       help: { type: 'boolean', default: false },
     },
@@ -68,10 +77,15 @@ async function main() {
     process.stdout.write(USAGE);
     return;
   }
+  const log = (m: string) => process.stderr.write(`· ${m}\n`);
+  if (command === 'init') {
+    await runInit({ ...(values.figma ? { figma: values.figma } : {}), ...(values.dir ? { dir: values.dir } : {}), ...(values.variables ? { variables: values.variables } : {}), yes: values.yes!, ci: values.ci!, log });
+    return;
+  }
+  if (!existsSync(values.config!)) throw new Error(`${values.config} not found. Run "npx ds-sync init" first.`);
   const config = loadConfig(values.config!);
   loadDotEnv(join(config.baseDir, '.env'));
   const p = paths(config, values.out);
-  const log = (m: string) => process.stderr.write(`· ${m}\n`);
   Object.assign(CTX, { cache: p.cache, out: p.out, fileKey: config.figma.fileKey, refresh: values.refresh!, overrides: config.generate?.overrides ?? {}, log });
 
   switch (command) {

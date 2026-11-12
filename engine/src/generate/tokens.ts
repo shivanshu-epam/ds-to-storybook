@@ -6,6 +6,42 @@
  * type: C colour, F float, S string. A value "@collection:name" is an alias.
  */
 
+import type { LocalVariablesResponse } from '../figma/types.ts';
+
+/**
+ * The Variables REST API response (Enterprise) converted to the export format,
+ * so both sources feed the same token pipeline.
+ */
+export function exportFromRest(res: LocalVariablesResponse): { variables: Record<string, unknown[]> } {
+  const { variables, variableCollections } = res.meta;
+  const out: Record<string, unknown[]> = {};
+  const hex = (c: { r: number; g: number; b: number; a?: number }) => {
+    const ch = (v: number) => Math.round(v * 255).toString(16).padStart(2, '0');
+    return `#${ch(c.r)}${ch(c.g)}${ch(c.b)}${c.a !== undefined && c.a < 1 ? ch(c.a) : ''}`;
+  };
+  for (const v of Object.values(variables)) {
+    const col = variableCollections[v.variableCollectionId];
+    if (!col) continue;
+    const type = v.resolvedType === 'COLOR' ? 'C' : v.resolvedType === 'FLOAT' ? 'F' : v.resolvedType === 'STRING' ? 'S' : undefined;
+    if (!type) continue;
+    const convert = (raw: unknown): unknown => {
+      if (raw && typeof raw === 'object' && (raw as { type?: string }).type === 'VARIABLE_ALIAS') {
+        const target = variables[(raw as { id: string }).id];
+        const tc = target ? variableCollections[target.variableCollectionId] : undefined;
+        return target && tc ? `@${tc.name}:${target.name}` : null;
+      }
+      if (raw && typeof raw === 'object' && 'r' in (raw as object)) return hex(raw as { r: number; g: number; b: number; a?: number });
+      return raw;
+    };
+    const modes = col.modes;
+    const value = modes.length > 1
+      ? Object.fromEntries(modes.map((m) => [m.name, convert(v.valuesByMode[m.modeId])]))
+      : convert(v.valuesByMode[modes[0]?.modeId ?? '']);
+    (out[col.name] ??= []).push([v.name, type, value, v.codeSyntax?.WEB ?? '']);
+  }
+  return { variables: out };
+}
+
 export interface TokenRow {
   collection: string;
   name: string;

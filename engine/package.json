@@ -1,13 +1,30 @@
 {
-  "name": "ds-sync-engine",
+  "name": "ds-sync",
   "version": "0.1.0",
   "private": true,
-  "description": "POC: Figma design system -> IR -> component specs -> drift and health report.",
+  "description": "Generate and sync a tested Storybook from a Figma design system.",
+  "license": "UNLICENSED",
   "type": "module",
+  "bin": {
+    "ds-sync": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "archetypes",
+    "templates",
+    "README.md"
+  ],
   "engines": {
     "node": ">=22"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shivanshu-epam/ds-to-storybook.git",
+    "directory": "engine"
+  },
   "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && chmod +x dist/cli.js",
+    "prepack": "npm run build",
     "ds-sync": "tsx src/cli.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

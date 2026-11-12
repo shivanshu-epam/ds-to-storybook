@@ -62,6 +62,11 @@ export interface Overrides {
   frames?: Record<string, FrameKind>;
   /** Page names to skip entirely. */
   skipPages?: string[];
+  /**
+   * Accepted design issues, by component name, e.g. {"Input": "Placeholder contrast 4.39:1 on Filled; fix in Figma"}.
+   * Their accessibility checks are reported as warnings (todo) instead of failing, and the reason is shown in the docs.
+   */
+  knownIssues?: Record<string, string>;
 }
 
 const REVIEW_THRESHOLD = 0.7;

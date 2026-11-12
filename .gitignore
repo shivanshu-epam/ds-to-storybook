@@ -13,3 +13,5 @@ storybook/storybook-static/
 # Earlier hand-written prototype skills (kept locally, not part of the tool)
 /skill.md
 /*-story-skill.md
+engine/.ds-sync/
+engine/dist/
