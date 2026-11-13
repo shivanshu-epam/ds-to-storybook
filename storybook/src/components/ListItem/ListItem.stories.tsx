@@ -15,6 +15,8 @@ const meta = {
     disabled: { control: 'boolean', description: 'Figma: State=Disabled' },
     hasLeadingControl: { control: 'boolean', description: 'Figma: has-leading-control' },
     hasTrailingControl: { control: 'boolean', description: 'Figma: has-trailing-control' },
+    leadingControl: { control: false, description: 'Figma: leading-control (instance swap)' },
+    trailingControl: { control: false, description: 'Figma: trailing-control (instance swap)' },
     'data-force-state': { table: { disable: true } },
   },
   parameters: {

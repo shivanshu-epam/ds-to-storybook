@@ -280,7 +280,11 @@ async function main() {
       const level = (values.decisions ?? 'accepted') as ApplyLevel;
       const decisionsPath = resolve(config.baseDir, config.generate?.decisions?.file ?? DECISIONS_FILE);
       setActiveDecisions(activeDecisions(loadDecisions(decisionsPath), level));
-      const res = evaluate(ir, discovery, resolve(values.reference));
+      // The generated React components are the truth when they exist (slots, behaviour and exposed props included).
+      const reactDir = config.generate?.targets?.find((x) => x.target === 'react')?.outDir ?? ((config.generate?.target ?? 'react') === 'react' ? config.generate?.outDir : undefined);
+      const generated = values.dir ? resolve(values.dir) : reactDir ? resolve(config.baseDir, reactDir, 'src', 'components') : undefined;
+      if (generated && exists(generated)) log(`Eval: reading the generated API from ${generated} (run generate with the same --decisions level first)`);
+      const res = evaluate(ir, discovery, resolve(values.reference), generated && exists(generated) ? generated : undefined);
       const file = join(p.out, `eval-${level}.md`);
       writeText(file, evalMarkdown(res, `decisions: ${level}`));
       log(`Eval (${level}): ${res.rows.length} component(s), ${res.matched}/${res.reference} reference props matched (${res.reference ? Math.round((100 * res.matched) / res.reference) : 0}%) → ${file}`);

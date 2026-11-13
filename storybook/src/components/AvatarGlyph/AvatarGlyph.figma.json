@@ -24,15 +24,14 @@
       "figma": "Size (variant)"
     },
     {
-      "prop": "—",
+      "prop": "icon",
       "figma": "Icon (instance swap)",
-      "note": "Not exposed yet."
+      "note": "Slot: any content; the Figma instance is the default."
     }
   ],
   "notes": [
     "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
-    "The Figma set has 21 of 45 possible variant combinations; other combinations use the nearest defined styles.",
-    "Instance swap properties not exposed as props (default instance rendered): Icon."
+    "The Figma set has 21 of 45 possible variant combinations; other combinations use the nearest defined styles."
   ],
   "tabs": [
     {

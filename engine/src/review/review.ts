@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { setActiveDecisions, type DecisionsFile } from '../decisions/decisions.ts';
 import type { Discovery } from '../discover/discover.ts';
 import { isBuildingBlock } from '../generate/docs.ts';
-import { propPlan } from '../generate/templates/generic.ts';
+import { camel, propPlan } from '../generate/templates/generic.ts';
 import type { FigmaIR, IRComponentSet } from '../ir/types.ts';
 import { writeJson, writeText } from '../util/core.ts';
 
@@ -17,7 +17,7 @@ export interface ReviewProperty {
   /** Name the generator uses today without a decision ("—" for instance swaps, which are not props yet). */
   generatedName: string;
   /** How the generator reads it: a variant prop, a CSS state, a boolean or a text. */
-  generatedAs: 'variant' | 'state' | 'boolean' | 'text' | 'instance swap';
+  generatedAs: 'variant' | 'state' | 'boolean' | 'text' | 'slot' | 'instance swap';
 }
 
 export interface ReviewLayer {
@@ -101,14 +101,16 @@ export function buildReview(ir: FigmaIR, discovery: Discovery): ReviewItem[] {
     if (!sets.length) continue;
     const reviewSets = sets.map<ReviewSet>(({ role, set }) => {
       const plan = propPlan(set);
+      // An instance swap bound to a layer is a slot prop (content); unbound swaps are not exposed.
+      const bound = new Set(set.variants.flatMap((v) => v.parts.map((x) => x.refs?.mainComponent).filter(Boolean)) as string[]);
       const properties = set.properties.map<ReviewProperty>((p) => {
         const axis = plan.axes.find((a) => a.figma === p.name);
         const b = plan.booleans.find((x) => x.p.name === p.name);
         const t = plan.texts.find((x) => x.p.name === p.name);
         return {
           figma: p.name, type: p.type, default: p.default, ...(p.options ? { options: p.options } : {}),
-          generatedName: axis?.values.some((v) => v.role === 'disabled') ? 'disabled' : axis?.prop ?? b?.prop ?? t?.prop ?? '—',
-          generatedAs: axis ? axis.kind : b ? 'boolean' : t ? 'text' : 'instance swap',
+          generatedName: axis?.values.some((v) => v.role === 'disabled') ? 'disabled' : axis?.prop ?? b?.prop ?? t?.prop ?? (bound.has(p.name) ? camel(p.name.replace(/[^A-Za-z0-9 _-]+/g, ' ').trim()) : '—'),
+          generatedAs: axis ? axis.kind : b ? 'boolean' : t ? 'text' : bound.has(p.name) ? 'slot' : 'instance swap',
         };
       });
       const dv = set.variants.find((v) => set.properties.filter((p) => p.type === 'VARIANT').every((p) => v.values[p.name] === String(p.default))) ?? set.variants[0];

@@ -138,6 +138,10 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
   const boolFor = (figma?: string) => booleans.find((b) => b.p.name === figma)?.prop;
   const textFor = (figma?: string) => texts.find((t) => t.p.name === figma)?.prop;
   const children = (parent: string) => core.layers.filter((l) => l.parent === parent);
+  const dis = core.disclosure;
+  const disProp = dis ? wcProp(dis.prop) : undefined;
+  const byPathWc = new Map(core.layers.map((l) => [l.path, l]));
+  const inHeader = (l: LayerInfo): boolean => Boolean(dis) && (l.path === dis!.headerPath || (l.parent !== '' && byPathWc.has(l.parent) && inHeader(byPathWc.get(l.parent)!)));
 
   const render = (l: LayerInfo, indent: string): string => {
     const p = l.part;
@@ -176,7 +180,12 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
         }
         if (l.copies?.length) return `${indent}${el}`;
       } else {
-        el = `<span ${c} aria-hidden="true"></span>`;
+        el = l.slot ? `<span ${c}></span>` : `<span ${c} aria-hidden="true"></span>`;
+      }
+      // Slots (phase 2): the consumer's content replaces the Figma default, which stays as the slot's fallback.
+      if (l.slot && !l.copies?.length) {
+        const name = l.slot.name ? ` name="${l.slot.name}"` : '';
+        el = el.replace(/^<span ([^>]*)>([\s\S]*)<\/span>$/, (_m, attrs: string, inner: string) => `<span ${attrs}><slot${name}>${inner}</slot></span>`);
       }
     } else if (SHAPES.has(p.type) && children(l.path).some((k) => k.part.type === 'INSTANCE')) {
       el = `<span ${c}>\n${children(l.path).map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</span>`;
@@ -184,8 +193,14 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
       el = `<span ${c} aria-hidden="true"></span>`;
     } else {
       const kids = children(l.path);
-      const box = sw ? 'span' : 'div'; // a <button> may only hold phrasing content
-      el = kids.length ? `<${box} ${c}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</${box}>` : `<${box} ${c}></${box}>`;
+      const box = sw || inHeader(l) ? 'span' : 'div'; // a <button> may only hold phrasing content
+      if (dis && l.path === dis.headerPath) {
+        const btn = `<button type="button" ${c} aria-expanded=\${this.${disProp} ? 'true' : 'false'} aria-controls="panel" @click=\${this.toggleExpanded}${hasDisabled ? ' ?disabled=\${this.disabled}' : ''}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</button>`;
+        const b0 = boolFor(p.refs?.visible);
+        return b0 ? `${indent}\${this.${b0} ? html\`${btn}\` : nothing}` : `${indent}${btn}`;
+      }
+      const panelId = dis && l.role === dis.panel ? ' id="panel"' : '';
+      el = panelId && kids.length ? `<${box} ${c}${panelId}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</${box}>` : kids.length ? `<${box} ${c}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</${box}>` : `<${box} ${c}></${box}>`;
     }
     const b = boolFor(p.refs?.visible);
     return b ? `${indent}\${this.${b} ? html\`${el}\` : nothing}` : `${indent}${el}`;
@@ -217,7 +232,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
   ];
 
   const swDocs: Record<string, string> = { checked: `On or off. Figma: ${sw?.axis.figma}`, accessibleLabel: 'Accessible name (Figma has no label). Or use aria-labelledby on a wrapping label.', name: 'Form field name', value: 'Form value when on. Default "on"' };
-  const component = `${header(js(set.name), sw ? 'switch template' : 'generic template')}// Visuals come from Figma. ${sw ? 'Behaviour: WAI-ARIA switch pattern (native button, role="switch", aria-checked), form-associated.' : 'Behaviour (keyboard, focus, ARIA role) is not specified in Figma and is not generated.'}
+  const component = `${header(js(set.name), sw ? 'switch template' : 'generic template')}// Visuals come from Figma. ${sw ? `Behaviour: WAI-ARIA ${sw.role} pattern (native button, role="${sw.role}", aria-checked), form-associated.` : 'Behaviour (keyboard, focus, ARIA role) is not specified in Figma and is not generated.'}
 import { LitElement, html, nothing, unsafeCSS } from 'lit';
 
 ${usesIcon ? "import { icon } from '../../icons/icon';\n" : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import css from './${name}.css?inline';
@@ -238,7 +253,12 @@ ${props.map((p) => `  /** ${swDocs[p.prop] && sw ? swDocs[p.prop] : `Figma: ${fi
 ${props.map((p) => `    this.${p.prop} = ${p.init};`).join('\n')}
   }
 
-${sw ? `  private readonly internals = this.attachInternals();
+${dis ? `  private toggleExpanded() {
+    ${hasDisabled ? 'if (this.disabled) return;\n    ' : ''}this.${disProp} = !this.${disProp};
+    this.dispatchEvent(new CustomEvent('expanded-change', { detail: this.${disProp}, bubbles: true, composed: true }));
+  }
+
+` : ''}${sw ? `  private readonly internals = this.attachInternals();
 
   override updated() {
     this.internals.setFormValue(this.checked ? this.value : null);
@@ -251,7 +271,7 @@ ${sw ? `  private readonly internals = this.attachInternals();
   }
 
   override render() {
-    return html\`<button type="button" role="switch" class="root" part="root" aria-checked=\${this.checked ? 'true' : 'false'} aria-label=\${this.accessibleLabel ?? nothing} ${dataAttrs.join(' ')} @click=\${this.toggle}>
+    return html\`<button type="button" role="${sw.role}" class="root" part="root" aria-checked=\${${sw.mixed ? `this.${wcProp(sw.mixed.prop)} ? 'mixed' : ` : ''}this.checked ? 'true' : 'false'}${sw.role === 'checkbox' ? ' @keydown=\${(e: KeyboardEvent) => { if (e.key === \'Enter\') e.preventDefault(); }}' : ''} aria-label=\${this.accessibleLabel ?? nothing} ${dataAttrs.join(' ')} @click=\${this.toggle}>
 ${body}
       </button>\`;
   }
@@ -308,7 +328,7 @@ declare global {
     return a.options.length > 1 ? { [wcProp(a.prop)]: a.boolean ? v.value === 'true' : v.value } : {};
   };
   const find = sw ? `const host = canvasElement.querySelector('${tag}')!;
-    const control = within(shadowOf(canvasElement, '${tag}') as unknown as HTMLElement).getByRole('switch', { name: ${js(sw.label)} });
+    const control = within(shadowOf(canvasElement, '${tag}') as unknown as HTMLElement).getByRole('${sw.role}'${sw.labelled ? '' : `, { name: ${js(sw.label)} }`});
     const onChange = fn();
     host.addEventListener('change', onChange);` : '';
   const stories: string[] = [sw ? `export const Default: Story = {
@@ -399,16 +419,35 @@ ${booleans.map((b) => `    labelled(${js(`${b.p.name}: ${String(b.p.default) ===
 };`);
     sections.push({ heading: 'Options', story: n });
   }
+  if (dis) {
+    stories.push(`/** WAI-ARIA disclosure: the header button toggles the panel (test only). */
+export const ExpandsAndCollapses: Story = {
+  name: 'Expands and collapses',
+  play: async ({ canvasElement }) => {
+    const host = canvasElement.querySelector('${tag}')!;
+    const onChange = fn();
+    host.addEventListener('expanded-change', onChange);
+    const button = within(shadowOf(canvasElement, '${tag}') as unknown as HTMLElement).getAllByRole('button')[0]!;
+    const before = button.getAttribute('aria-expanded') === 'true';
+    await userEvent.click(button);
+    await expect(button).toHaveAttribute('aria-expanded', String(!before));
+    await expect(onChange).toHaveBeenCalledTimes(1);
+    button.focus();
+    await userEvent.keyboard('{Enter}');
+    await expect(button).toHaveAttribute('aria-expanded', String(before));
+  },
+};`);
+  }
   const layoutImports = ['matrix', 'row', 'labelled', 'shadowOf'].filter((f) => stories.some((st) => st.includes(`${f}(`)));
   const storiesFile = `${header(js(set.name), sw ? 'switch template' : 'generic template')}import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
-${sw ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}
+${sw || dis ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}
 ${layoutImports.length ? `import { ${layoutImports.join(', ')} } from '../../storybook/layout';\n` : ''}import './${tag}';
 
 const meta = {
   title: ${js(core.title)},
   component: '${tag}',
-  args: { ${[...(sw ? ['checked: false', `accessibleLabel: ${js(sw.label)}`] : []), ...enumAxes.map((a) => `${a.prop}: ${axisDefault(a, js)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`), ...exposed.map((e) => `${e.prop}: ${(e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default))}`)].join(', ')} },
+  args: { ${[...(sw ? ['checked: false', ...(sw.labelled ? [] : [`accessibleLabel: ${js(sw.label)}`])] : []), ...enumAxes.map((a) => `${a.prop}: ${axisDefault(a, js)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`), ...exposed.map((e) => `${e.prop}: ${(e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default))}`)].join(', ')} },
   argTypes: {
 ${[
     ...(sw ? [`    checked: { control: 'boolean', description: ${js(`On or off. Figma: ${sw.axis.figma}`)} },`, `    accessibleLabel: { control: 'text', description: 'Accessible name (Figma has no label)' },`] : []),
@@ -431,7 +470,7 @@ ${stories.join('\n\n')}
 `;
 
   const firstAxis = enumAxes[0];
-  const usageAttrs = sw ? ` accessible-label=${js(sw.label)} name=${js(kebab(name))}` : firstAxis ? ` ${attrFor(firstAxis.prop)}=${js(firstAxis.defaultValue)}` : '';
+  const usageAttrs = sw ? `${sw.labelled ? '' : ` accessible-label=${js(sw.label)}`} name=${js(kebab(name))}` : firstAxis ? ` ${attrFor(firstAxis.prop)}=${js(firstAxis.defaultValue)}` : '';
   const description = core.description || leadSentence(set.docFrames);
   const mapping = core.mapping.map((m) => ({ ...m, prop: m.prop === '—' ? m.prop : m.prop === 'checked / defaultChecked' ? 'checked' : wcProp(m.prop) }));
   const docs = figmaDocsMdx(docTabs(set.docFrames, name), mapping, [...core.assumptions, ...core.gaps], [set], ctx.fileKey);

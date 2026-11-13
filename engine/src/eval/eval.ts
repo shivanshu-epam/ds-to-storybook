@@ -58,7 +58,19 @@ export interface EvalRow {
   extra: string[];
 }
 
-export function evaluate(ir: FigmaIR, discovery: Discovery, referenceRoot: string): { rows: EvalRow[]; reference: number; matched: number; ours: number } {
+/** Props of a generated React component, read from its `export interface <Name>Props` (own members only). */
+export function generatedProps(componentsDir: string, name: string): string[] | null {
+  const file = join(componentsDir, name, `${name}.tsx`);
+  if (!existsSync(file)) return null;
+  const sf = ts.createSourceFile(file, readFileSync(file, 'utf8'), ts.ScriptTarget.ES2022, true, ts.ScriptKind.TSX);
+  const out: string[] = [];
+  sf.forEachChild((n) => {
+    if (ts.isInterfaceDeclaration(n) && n.name.text === `${name}Props`) for (const m of n.members) if (m.name && (ts.isIdentifier(m.name) || ts.isStringLiteral(m.name)) && !m.name.text.startsWith('data-')) out.push(m.name.text);
+  });
+  return out;
+}
+
+export function evaluate(ir: FigmaIR, discovery: Discovery, referenceRoot: string, generatedDir?: string): { rows: EvalRow[]; reference: number; matched: number; ours: number } {
   const byNode = new Map(ir.components.map((s) => [s.nodeId, s]));
   const rows: EvalRow[] = [];
   for (const prop of discovery.proposals) {
@@ -69,7 +81,8 @@ export function evaluate(ir: FigmaIR, discovery: Discovery, referenceRoot: strin
     const reference = ref.filter((p) => !NOT_COMPARABLE.test(p));
     if (!reference.length) continue;
     const plan = propPlan(set);
-    const ours = [...plan.axes.filter((a) => a.options.length > 1).map((a) => a.prop), ...plan.booleans.map((b) => b.prop), ...plan.texts.map((t) => t.prop), ...(plan.hasDisabled ? ['disabled'] : [])];
+    const fromCode = generatedDir ? generatedProps(generatedDir, prop.name) : null;
+    const ours = fromCode ?? [...plan.axes.filter((a) => a.options.length > 1).map((a) => a.prop), ...plan.booleans.map((b) => b.prop), ...plan.texts.map((t) => t.prop), ...(plan.hasDisabled ? ['disabled'] : [])];
     const oursN = new Set(ours.map(normalise));
     const refN = new Set(reference.map(normalise));
     rows.push({

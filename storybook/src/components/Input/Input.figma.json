@@ -73,12 +73,12 @@
     {
       "prop": "—",
       "figma": "Leading icon (instance swap)",
-      "note": "Not exposed yet."
+      "note": "Not exposed by this behaviour template yet."
     },
     {
       "prop": "—",
       "figma": "Trailing icon (instance swap)",
-      "note": "Not exposed yet."
+      "note": "Not exposed by this behaviour template yet."
     }
   ],
   "notes": [

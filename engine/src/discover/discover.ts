@@ -34,7 +34,7 @@ export interface DiscoveredFrame {
 export interface Proposal {
   /** Generated component name (PascalCase). */
   name: string;
-  template: 'action' | 'checkbox' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
+  template: 'action' | 'checkbox' | 'checkbox-single' | 'disclosure' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
   /** Template role -> component set id. */
   sets: Record<string, string>;
   page: string;
@@ -136,6 +136,47 @@ function hasOnOffAxis(node?: FigmaNode): boolean {
   return defs.some((d) => d.type === 'VARIANT' && d.variantOptions?.length === 2 && /^(off|false|unchecked|unselected|inactive)$/i.test(d.variantOptions.find((o) => /^(off|false|unchecked|unselected|inactive)$/i.test(o)) ?? '') && d.variantOptions.some((o) => /^(on|true|checked|selected|active)$/i.test(o)));
 }
 
+/**
+ * Disclosure by structure (phase 3): a True/False variant axis about being expanded or open, one layer shown only in
+ * the expanded variants (the panel) and one frame beside it shown in all (the header). The generator checks the same.
+ */
+function disclosureStructure(node?: FigmaNode): string | undefined {
+  const defs = Object.entries(node?.componentPropertyDefinitions ?? {}) as [string, { type?: string; variantOptions?: string[] }][];
+  const axis = defs.find(([k, d]) => d.type === 'VARIANT' && /expand|open/i.test(k) && d.variantOptions?.length === 2 && d.variantOptions.every((o) => /^(true|false)$/i.test(o)))?.[0];
+  if (!axis || !node?.children?.length) return undefined;
+  const valueOf = (v: FigmaNode) => Object.fromEntries(v.name.split(',').map((x) => x.split('=').map((y) => y.trim()) as [string, string]))[axis];
+  const walk = (n: FigmaNode, prefix: string, out: Map<string, { visible: boolean; type: string; parent: string }>, depth: number, hidden: boolean) => {
+    if (depth > 3) return;
+    for (const k of n.children ?? []) {
+      const path = prefix ? `${prefix}/${k.name}` : k.name;
+      const vis = !hidden && k.visible !== false;
+      out.set(path, { visible: vis, type: k.type, parent: prefix });
+      if (k.type !== 'INSTANCE') walk(k, path, out, depth + 1, !vis);
+    }
+  };
+  const variants = node.children.filter((v) => v.type === 'COMPONENT').map((v) => { const m = new Map<string, { visible: boolean; type: string; parent: string }>(); walk(v, '', m, 0, false); return { on: /^true$/i.test(valueOf(v) ?? ''), m }; });
+  const on = variants.filter((v) => v.on);
+  const off = variants.filter((v) => !v.on);
+  if (!on.length || !off.length) return undefined;
+  const vis = (v: (typeof variants)[number], path: string) => v.m.get(path)?.visible === true;
+  let parent = '';
+  for (let depth = 0; depth < 3; depth++) {
+    const kids = [...new Set(variants.flatMap((v) => [...v.m].filter(([, x]) => x.parent === parent && x.type !== 'TEXT').map(([k]) => k)))];
+    const panels = kids.filter((k) => on.every((v) => vis(v, k)) && off.every((v) => !vis(v, k)));
+    const headers = kids.filter((k) => variants.every((v) => vis(v, k) && v.m.get(k)!.type !== 'INSTANCE'));
+    if (panels.length === 1 && headers.length === 1) return axis;
+    if (kids.length !== 1) return undefined;
+    parent = kids[0]!;
+  }
+  return undefined;
+}
+
+/** A True/False variant axis about being checked (isChecked, Checked=On/Off). */
+function checkedAxis(node?: FigmaNode): string | undefined {
+  const defs = Object.entries(node?.componentPropertyDefinitions ?? {}) as [string, { type?: string; variantOptions?: string[] }][];
+  return defs.find(([k, d]) => d.type === 'VARIANT' && /check/i.test(k) && d.variantOptions?.length === 2 && d.variantOptions.some((o) => /^(true|checked|on)$/i.test(o)) && d.variantOptions.some((o) => /^(false|unchecked|off)$/i.test(o)))?.[0];
+}
+
 function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides: Overrides): Proposal[] {
   const out: Proposal[] = [];
   const claimed = new Set<string>();
@@ -204,6 +245,14 @@ function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides
         template = 'switch';
         reason = 'Switch or toggle with an on/off variant axis: switch archetype (WAI-ARIA switch).';
         confidence = 0.85;
+      } else if (disclosureStructure(nodes.get(s.id))) {
+        template = 'disclosure';
+        reason = `${disclosureStructure(nodes.get(s.id))} axis with a header and a panel shown only when expanded: disclosure archetype (WAI-ARIA disclosure), recognised from structure.`;
+        confidence = 0.8;
+      } else if (checkedAxis(nodes.get(s.id)) && !/radio|switch|toggle/i.test(s.name) && !/^[_.]|base$/i.test(s.name.trim())) {
+        template = 'checkbox-single';
+        reason = `${checkedAxis(nodes.get(s.id))} axis: checkbox archetype (WAI-ARIA checkbox), recognised from the property.`;
+        confidence = 0.75;
       } else if (/button|accordion|checkbox|radio|switch|tab|dialog|modal|menu|select|dropdown|input|slider/i.test(s.name)) {
         confidence = 0.6;
         reason += ' The name suggests an interactive component, so behaviour must be specified before production use.';
@@ -351,7 +400,7 @@ export function targetsFromDiscovery(d: Discovery): ComponentTarget[] {
     const p = d.proposals.find((x) => Object.values(x.sets).includes(s.id));
     return {
       id: `auto.${s.id}`,
-      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' ? 'selection.binary' : p?.template === 'accordion' ? 'disclosure' : p?.template === 'switch' ? 'switch' : p?.template?.startsWith('radio') ? 'radio' : p?.template === 'input' ? 'input' : p?.template === 'dialog' ? 'dialog' : 'generic',
+      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' || p?.template === 'checkbox-single' ? 'selection.binary' : p?.template === 'disclosure' ? 'disclosure' : p?.template === 'accordion' ? 'disclosure' : p?.template === 'switch' ? 'switch' : p?.template?.startsWith('radio') ? 'radio' : p?.template === 'input' ? 'input' : p?.template === 'dialog' ? 'dialog' : 'generic',
       figma: { page: s.page, componentSet: { id: s.id, name: s.name }, docFrames: p?.docFrames ?? [] },
     };
   });

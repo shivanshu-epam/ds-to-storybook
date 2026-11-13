@@ -52,7 +52,7 @@ Then work through **Needs a person**, one topic at a time:
 | Wrong component name | What should it be called? | `sets: { "<set name>": { "name": "NewName" } }` |
 | Working or QA page found | Skip it? | `skipPages: ["<page name>"]` |
 
-Templates available: `action` (button), `checkbox` (control + field + group sets), `accordion` (item set with `_header` and `_panel` layers), `switch` (a set with an on/off variant axis, such as Value=Off/On), `radio`, `radio-field` and `radio-group` (a Radio Control/Field/Group family whose control has a selected axis), `input` (a set with a Placeholder text property), `dialog` (a set named dialog or modal), and `generic` (any set). Never claim behaviour that no template provides.
+Templates available: `action` (button), `checkbox` (control + field + group sets), `accordion` (item set with `_header` and `_panel` layers), `switch` (a set with an on/off variant axis, such as Value=Off/On), `radio`, `radio-field` and `radio-group` (a Radio Control/Field/Group family whose control has a selected axis), `input` (a set with a Placeholder text property), `dialog` (a set named dialog or modal), `checkbox-single` (a set with a checked True/False axis, recognised from the property; a mixed axis sets aria-checked="mixed"), `disclosure` (an expanded True/False axis, with a header and a panel found from which layers Figma shows when expanded), and `generic` (any set). On every template, an instance swap bound to a layer becomes a content slot, and a placeholder "Slot" instance becomes `children`. Never claim behaviour that no template provides.
 
 ## 4. Generate and test
 

@@ -79,7 +79,7 @@ export interface GenerateConfig {
 
 export interface PlannedComponent {
   name: string;
-  template: 'action' | 'checkbox' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
+  template: 'action' | 'checkbox' | 'checkbox-single' | 'disclosure' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
   sets: Record<string, string>;
   /** Storybook title; default Components/<name>. */
   title?: string;
@@ -209,7 +209,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     if (c.template === 'checkbox' || c.template === 'accordion') continue;
     const set = setsById.get(c.sets.main ?? '');
     if (!set) continue;
-    const entry: RegistryEntry = { component: c.name, importPath: `../${c.name}/${c.name}`, kind: c.template, set };
+    const entry: RegistryEntry = { component: c.name, importPath: `../${c.name}/${c.name}`, kind: c.template === 'checkbox-single' ? 'switch' : c.template, set };
     for (const v of set.variants) registry.set(v.nodeId, entry);
   }
   const lookupEntry = (id: string) => registry.get(id);

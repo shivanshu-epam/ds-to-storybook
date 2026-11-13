@@ -24,7 +24,7 @@ For each Figma set in `sets[]`:
 3. **A set description**, only when `sets[].description` is empty: one or two sentences on what the component is for, taken from the docs text or the structure.
 4. **Questions** for what the evidence cannot settle, written for a designer to answer.
 
-The `hints` are patterns the engine noticed. Use them as leads, not answers. Patterns you cannot express yet as a name or description, such as a boolean and an instance swap that form one slot, or a viewport axis that should be responsive, go in `questions` or `evidence` for now; later versions of the schema add roles for them.
+The `hints` are patterns the engine noticed. Use them as leads, not answers. Properties with `generatedAs: "slot"` are content props (an instance swap bound to a layer): name them for what goes in them (`icon`, `trailing`), not for Figma's layer. Patterns you cannot express yet as a name or description, such as a viewport axis that should be responsive, go in `questions` or `evidence`.
 
 ## Rules
 

@@ -181,7 +181,35 @@ What this shows:
 3. **Name match is a weak score on its own.** A defensible rename can lower it (Tabs), and the reference is one team's choices, not ground truth. Future scoring should count *capabilities* (which Blade props have any generated counterpart, by role) as well as names.
 4. **Fixed during the run:** proposals renamed instance-swap properties, which are not props yet. Those names are now dropped (6 removed), and only their descriptions are kept.
 
-## 10. Reproduce
+## 10. Phases 2 and 3, first increment (13 Nov 2026)
+
+What changed, all deterministic and generic (no design-system names in the rules):
+
+| Piece | What it does | Where it applied on Blade |
+| --- | --- | --- |
+| Slots (step 10) | An instance swap bound to a layer becomes a content prop: React `ReactNode`, Web Components a named `<slot>`; the Figma instance stays as the default. The visibility boolean keeps working. | Badge, Tag, Chip, Toast, Alert and others (`leadingIcon`, `icon`) |
+| Placeholders as children (step 5, part) | An instance of a component named "Slot" (a common Figma convention) becomes `children`; several become named content props | Accordion item body, Drawer, Card, Popover, Bottom Sheet, Table, Toast (Modal uses the dialog template, which has its own `children`) |
+| Checkbox by structure (step 11, part) | A set with a checked True/False axis gets the WAI-ARIA checkbox pattern: native button, `role="checkbox"`, `aria-checked` with "mixed" from an indeterminate axis, Space toggles (Enter does not), controlled or uncontrolled. A visible label is the accessible name | Checkbox |
+| Disclosure by structure (step 11, part) | An expanded True/False axis, plus one layer Figma shows only when expanded (the panel) and one frame shown always (the header), gives the WAI-ARIA disclosure pattern: the header is a native button with `aria-expanded` and `aria-controls`; `isExpanded` controls it, `defaultExpanded` and `onExpandedChange` make it uncontrolled. Nested disclosures keep their own state | Accordion item (Blade's accordion was visuals-only before) |
+| Designed vs computed (step 7) | The docs page says how many combinations Figma designs, and that the rest are computed | Every set with undesigned combinations |
+
+Checks:
+
+| Check | Result |
+| --- | --- |
+| Engine tests | 97 passing (6 new) |
+| Design System AI | 306 of 306 story tests in React and Web Components; 2 components gained slots (ListItem controls, AvatarGlyph icon); no other output change apart from the docs note |
+| Blade story tests | 261 of 407 (was 259 of 405): the two new expand/collapse tests pass, and the per-component failure list is identical to before (colour contrast only). Both outputs type-check, both Storybooks build |
+| Blade visual check | Checkbox and Badge unchanged against Figma (24 and 35 matching variants). Accordion item, newly measured: 4 of 6 match |
+| API match with Blade's code (generated props, same rule) | 74 → 75 of 207; 76 with the AI proposals. Slots exist now, but Blade names them `icon` where Figma says `leadingIcon`: naming them is what the review files now allow the AI to propose |
+
+Not done yet, and why:
+
+- **Responsive viewport axes** (`Screen Size: Desktop / Mobile`). Figma does not say at which width the variant changes, so a media query would be a guess. It needs a breakpoint source (a variables collection or a decision) before generating. Until then the axis stays a prop and the review hint flags it.
+- **Button, link and single radio by structure.** Their properties (variant, size, state) look like any other component's; nothing structural says "button". These need the name, or an `archetype` decision, which is the next schema addition.
+- **Repeated children with parent context** (an Accordion that numbers its items). Still open.
+
+## 11. Reproduce
 
 - Blade Storybook inventory: `fetch('https://blade.razorpay.com/index.json')`.
 - Blade source: `git clone --depth 1 --filter=blob:none --sparse https://github.com/razorpay/blade`, with sparse paths `packages/blade/src/components` and `packages/blade-plugin`.

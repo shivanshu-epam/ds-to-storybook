@@ -177,6 +177,10 @@ import * as Stories from './${d.name}.stories';`;
   // Variants (designed variants, grouped by property)
   if (sections.length) {
     out.push('## Variants', '');
+    // Designed vs computed (fidelity step 7): Controls can combine values Figma never drew together.
+    const possible = sets.reduce((n, st) => n * (st.properties ?? []).filter((x) => x.type === 'VARIANT').reduce((m, x) => m * (x.options?.length ?? 1), 1), 1);
+    const designed = sets.reduce((n, st) => n * (st.variants?.length ?? 0), 1);
+    if (sets.length === 1 && designed > 0 && designed < possible) out.push(p(`Figma designs ${designed} of the ${possible} possible combinations of these properties. The stories below show designed variants only; other combinations set in the controls are computed from the nearest designed styles and are not reviewed designs.`), '');
     for (const s of sections) out.push(`### ${plainLabel(s.heading)}`, '', ...(s.note ? [s.note, ''] : []), `<Canvas of={Stories.${s.story}} />`, '');
   }
 
