@@ -9,7 +9,7 @@
  * (roving tabindex), as in the WAI-ARIA radio group pattern.
  */
 import { docTabs, leadSentence, pascal, type GeneratedFile, type TemplateContext } from '../templates/common.ts';
-import { isIcon, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
+import { axisControl, axisData, axisDefault, axisType, isIcon, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRPart } from '../../ir/types.ts';
 import { attrFor, classFor, figmaDocsMdx, header, mdx, tagFor, usage, wcProp, wcText, type WcOptions, type WcResult } from './components.ts';
 
@@ -77,7 +77,7 @@ export function wcRadio(ctx: TemplateContext, name: string, core: GenericCore, o
 
   // Properties
   type Prop = { prop: string; type: string; init: string; decl: string; doc: string };
-  const axisProps: Prop[] = enumAxes.map((a) => ({ prop: a.prop, type: a.options.map(js).join(' | '), init: js(a.defaultValue), decl: `{ type: String, reflect: true, attribute: ${js(attrFor(a.prop))} }`, doc: `Figma: ${a.figma}` }));
+  const axisProps: Prop[] = enumAxes.map((a) => ({ prop: a.prop, type: axisType(a, js), init: axisDefault(a, js), decl: `{ type: ${a.boolean ? 'Boolean' : 'String'}, reflect: true, attribute: ${js(attrFor(a.prop))} }`, doc: `Figma: ${a.figma}` }));
   const disabled: Prop = { prop: 'disabled', type: 'boolean', init: 'false', decl: '{ type: Boolean, reflect: true }', doc: hasDisabled ? 'Figma: State=Disabled' : 'Disabled' };
   const props: Prop[] =
     r.kind === 'control' ? [
@@ -103,7 +103,7 @@ export function wcRadio(ctx: TemplateContext, name: string, core: GenericCore, o
       ...axisProps,
       { ...disabled, doc: 'Disables every radio inside' },
     ];
-  const dataAttrs = [...enumAxes.map((a) => `data-${a.attr}=\${this.${a.prop}}`), '?data-disabled=${this.disabled}', 'data-force-state=${this.forceState ?? nothing}'];
+  const dataAttrs = [...enumAxes.map((a) => `data-${a.attr}=\${${axisData(a, `this.${a.prop}`)}}`), '?data-disabled=${this.disabled}', 'data-force-state=${this.forceState ?? nothing}'];
   const readOnlyExpr = `${has('read-only') && stateAxis ? `this.${stateAxis.prop} === 'read-only' || ` : ''}this.groupReadOnly`;
 
   const classBody =
@@ -303,7 +303,7 @@ declare global {
     if (a === r.axis) return { checked: v.value === r.on };
     if (v.role === 'pseudo') return { _force: { force: v.state! } };
     if (v.role === 'disabled') return { disabled: true };
-    return a.options.length > 1 ? { [wcProp(a.prop)]: v.value } : {};
+    return a.options.length > 1 ? { [wcProp(a.prop)]: a.boolean ? v.value === 'true' : v.value } : {};
   };
   const shadow = (root: string, sel: string) => `(${root}.querySelector(${js(sel)})!.shadowRoot!)`;
   const controlTag = r.control ? tagOf(r.control) : undefined;
@@ -410,7 +410,7 @@ const meta = {
   component: '${tag}',
   args: { ${args.join(', ')} },
   argTypes: {
-${enumAxes.map((a) => `    ${a.prop}: { control: '${a.options.length > 5 ? 'select' : 'inline-radio'}', options: ${js(a.options)}, description: ${js(`Figma: ${a.figma}`)} },`).join('\n')}
+${enumAxes.map((a) => `    ${a.prop}: ${axisControl(a, js)},`).join('\n')}
   },
   render: (args) => ${el()},
   parameters: { figma: { fileKey: ${js(ctx.fileKey)}, nodeId: ${js(set.nodeId)} }, generator: 'radio' },

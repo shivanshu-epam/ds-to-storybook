@@ -1,0 +1,105 @@
+{
+  "component": "InputControl",
+  "description": "This page builds three separate component families — InputControl, InputField, and a page-level Form wrapper — rather than one cohesive \"Form\" component.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "sets": [
+      {
+        "name": "InputControl",
+        "nodeId": "427:2001"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "state",
+      "figma": "State (variant)",
+      "note": "States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Filled → state=\"filled\", Disabled → disabled, Read-only → state=\"read-only\", Error → state=\"error\", Success → state=\"success\", State9 → state=\"state9\""
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified."
+  ],
+  "tabs": [
+    {
+      "title": "Documentation",
+      "nodeId": "1021:263",
+      "sections": [
+        {
+          "heading": "Form",
+          "level": 3,
+          "paragraphs": [
+            "This page builds three separate component families — InputControl, InputField, and a page-level Form wrapper — rather than one cohesive \"Form\" component.",
+            "No component skill exists for this component (form-label-skill.md is an unfilled placeholder). Everything below is derived solely from the actual Figma build."
+          ]
+        },
+        {
+          "heading": "Anatomy — real Multi-column example",
+          "level": 3,
+          "paragraphs": [
+            "1",
+            "2"
+          ]
+        },
+        {
+          "heading": "Shipping address",
+          "level": 4,
+          "paragraphs": [
+            "Country",
+            "3",
+            "① Section heading — labels the field group.",
+            "② Field rows — InputField instances, grouped in multi-column rows (name/last-name, city/state/zip) plus a full-width country field.",
+            "③ Actions — secondary + primary Button instances."
+          ]
+        },
+        {
+          "heading": "Variants & States",
+          "level": 3,
+          "paragraphs": [
+            "Three separate component families, each with its own State axis (see Flags for why this is three families rather than one).",
+            "InputControl (9 states — includes an unnamed \"State9\")",
+            "Default",
+            "State9",
+            "Hover",
+            "Focused",
+            "Filled",
+            "Disabled",
+            "Read-only",
+            "Error",
+            "Success",
+            "InputField (6 states)",
+            "Default",
+            "Focused",
+            "Disabled",
+            "Read-only",
+            "Invalid",
+            "Success",
+            "Form (5 states)",
+            "Default",
+            "Submitting",
+            "Success",
+            "Disabled",
+            "Error"
+          ]
+        },
+        {
+          "heading": "Token Map",
+          "level": 3,
+          "paragraphs": [
+            "border/interactive/error — InputControl/Error border"
+          ]
+        },
+        {
+          "heading": "Behaviour",
+          "level": 3,
+          "paragraphs": [
+            "InputControl is the bare field; InputField adds a label, helper, and validation message row; Form composes multiple InputField rows with a heading and Cancel/Submit actions, plus page-level submission states (Submitting/Success/Error/Disabled).",
+            "Flags",
+            "Missing tier-1 skill: form-label-skill.md is a bare placeholder, so nothing below has a documented spec to verify against.\n\nUnexplained variant name: InputControl includes a state literally named \"State9\" (bold/red above) alongside otherwise-sensible names (Default, Hover, Focused, Filled, Disabled, Read-only, Error, Success). This reads as an auto-generated Figma default that was never renamed — flagged for follow-up rather than guessed at.\n\nPossible page overlap with ↳ Input: this page's InputControl and InputField closely resemble (and may duplicate) the Input component built on the separate ↳ Input page — both represent a single-line field with an overlapping state vocabulary. Nothing documents whether these are intentionally distinct or an unintentional duplicate build.\n\nNo Do's/Don'ts section: with no source skill, there is no documented rule to visualize."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+# Publish the ds-sync CLI to npm when a version tag is pushed (git tag v0.1.0 && git push origin v0.1.0).
+# Authentication, either:
+#   - npm trusted publishing (recommended): on npmjs.com, package ds-sync > Settings > Trusted publishing, add this
+#     repository and the workflow file "release.yml". No secret needed.
+#   - or a granular npm access token with publish rights, stored as the repository secret NPM_TOKEN.
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write # npm trusted publishing and provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: engine
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Tag matches package version
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error title=release::Tag $GITHUB_REF_NAME does not match engine/package.json version $version."
+            exit 1
+          fi
+
+      - name: Install, test, build
+        run: |
+          npm ci
+          npm run typecheck
+          npm test
+          npm run build
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public

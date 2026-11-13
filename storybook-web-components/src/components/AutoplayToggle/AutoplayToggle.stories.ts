@@ -10,7 +10,7 @@ const meta = {
   component: 'ds-autoplay-toggle',
   args: { state: "playing" },
   argTypes: {
-    state: { control: 'inline-radio', options: ["playing","paused"], description: "Figma: State" },
+    state: { control: 'inline-radio', options: ["playing", "paused"], description: "Figma: State" },
   },
   render: (args) => html`<ds-autoplay-toggle state=${args.state}></ds-autoplay-toggle>`,
   parameters: { figma: { fileKey: "I983NcgqSiY14YkpJbwjG8", nodeId: "241:1883" }, generator: 'generic' },

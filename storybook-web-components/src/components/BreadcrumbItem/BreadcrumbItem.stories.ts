@@ -11,7 +11,7 @@ const meta = {
   component: 'ds-breadcrumb-item',
   args: { type: "link", disabled: false, hasIcon: false, label: "Breadcrumb" },
   argTypes: {
-    type: { control: 'inline-radio', options: ["link","current","collapse"], description: "Figma: Type" },
+    type: { control: 'inline-radio', options: ["link", "current", "collapse"], description: "Figma: Type" },
     disabled: { control: 'boolean', description: 'Figma: State=Disabled' },
     hasIcon: { control: 'boolean', description: "Figma: Has icon" },
     label: { control: 'text', description: "Figma: Label" },

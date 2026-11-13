@@ -24,7 +24,7 @@ export class DsAutoplayToggle extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-state=${this.state} data-force-state=${this.forceState ?? nothing}>
-        <span class="icon" aria-hidden="true">${icon((({"paused":"mediaPlay16"} as Record<string, string>)[this.state] ?? "mediaPause16"))}</span>
+        <span class="icon" aria-hidden="true">${icon((({"paused":"mediaPlay16"} as Record<string, string>)[String(this.state)] ?? "mediaPause16"))}</span>
       </div>`;
   }
 }

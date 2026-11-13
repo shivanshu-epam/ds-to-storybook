@@ -77,7 +77,9 @@ export interface Overrides {
 const REVIEW_THRESHOLD = 0.7;
 const DOC_NAME = /documentation|\bdocs?\b|usage|guideline|anatomy|\bspecs?\b|accessibility|do'?s|don'?t|handoff|how to read|overview|token map|redlines?/i;
 const EXAMPLE_NAME = /example|demo|playground|showcase|preview|use ?case|pattern|instances?/i;
-const SKIP_PAGE = /\b(qa|test|tests|archive|archived|deprecated|playground|cover|scratch|sandbox|wip)\b/i;
+const SKIP_PAGE = /\b(qa|test|tests|archive|archived|deprecated|deprecation|playground|cover|scratch|sandbox|wip)\b|^[_.]/i;
+/** Sets kept for history, not for use: left out unless an override names them. */
+const RETIRED_SET = /deprecated|do ?not ?use|\bold(er)?\b/i;
 
 export const pascalName = (s: string) => {
   const p = s.replace(/[^A-Za-z0-9]+/g, ' ').trim().split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('');
@@ -190,7 +192,7 @@ function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides
         template = 'accordion';
         reason = 'Accordion item with _header and _panel layers: disclosure archetype (WAI-ARIA accordion).';
         confidence = 0.9;
-      } else if (/dialog|modal/i.test(s.name)) {
+      } else if (/^(dialog|modal|drawer|alert ?dialog)$/i.test(s.name.replace(/\s+/g, ' ').trim())) {
         template = 'dialog';
         reason = 'Dialog or modal: dialog archetype (native <dialog>, WAI-ARIA dialog pattern).';
         confidence = 0.85;
@@ -231,7 +233,7 @@ function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides
 /** `version`: a Figma version id to read instead of the latest (reproducible runs). */
 export async function discover(client: FigmaReader, fileKey: string, overrides: Overrides = {}, log: (m: string) => void = () => {}, version?: string): Promise<Discovery> {
   const file: FileResponse = await client.file(fileKey, 2, version);
-  const allSets = file.componentSets ?? {};
+  const allSets: NonNullable<FileResponse['componentSets']> = { ...(file.componentSets ?? {}) };
   const pages = (file.document.children ?? []).filter((p) => p.type === 'CANVAS');
 
   // Where each set lives. Top-level sets are visible at depth 2; nested ones need their ancestors.
@@ -252,6 +254,45 @@ export async function discover(client: FigmaReader, fileKey: string, overrides: 
     walk(res.document, '', []);
   }
 
+  // Sets inside frames (a page frame "Checkbox" holding the sets next to "_Introduction" docs frames) are not in
+  // the depth-2 file or its set map. Read the other top-level frames a few levels deeper to find them.
+  const skipped = (p: FigmaNode) => SKIP_PAGE.test(p.name) || Boolean(overrides.skipPages?.some((x) => looseKey(x) === looseKey(p.name)));
+  const containers = pages
+    .filter((p) => !skipped(p))
+    .flatMap((p) => (p.children ?? []).filter((c) => (c.type === 'FRAME' || c.type === 'SECTION' || c.type === 'GROUP') && !/^_/.test(c.name) && !DOC_NAME.test(c.name)).map((c) => ({ page: p.name, node: c })));
+  // Breadth-first, a few levels per request: a container whose children were cut off by the depth limit is read
+  // again in the next round (Blade nests its sets six levels inside the page frame).
+  let queue = containers;
+  let looked = 0;
+  for (let round = 0; round < 4 && queue.length; round++) {
+    const next: typeof containers = [];
+    for (let i = 0; i < queue.length; i += 25) {
+      const batch = queue.slice(i, i + 25);
+      looked += batch.length;
+      const res = await client.nodes(fileKey, batch.map((c) => c.node.id), file.version, 4);
+      for (const c of batch) {
+        const root = res.nodes[c.node.id]?.document;
+        const walk = (n: FigmaNode, path: string[], depth: number) => {
+          if (n.type === 'COMPONENT_SET') {
+            if (!located.has(n.id)) located.set(n.id, { page: c.page, path });
+            if (!allSets[n.id]) allSets[n.id] = { name: n.name } as NonNullable<FileResponse['componentSets']>[string];
+            return;
+          }
+          if (n.type === 'INSTANCE' || n.type === 'COMPONENT' || n.type === 'TEXT') return;
+          // At the depth limit Figma returns containers with an empty child list: read those again next round.
+          if (!n.children?.length) {
+            if (depth >= 4 && (n.type === 'FRAME' || n.type === 'SECTION' || n.type === 'GROUP')) next.push({ page: c.page, node: n });
+            return;
+          }
+          for (const k of n.children) walk(k, [...path, n.name], depth + 1);
+        };
+        if (root) walk(root, [], 0);
+      }
+    }
+    queue = next;
+  }
+  if (looked) log(`Discovery: looked inside ${looked} frame(s) for nested component sets`);
+
   const pageInfo = pages.map((p) => {
     const setsOnPage = [...located.values()].filter((l) => l.page === p.name).length;
     const { kind, reason } = classifyPage(p, setsOnPage, overrides);
@@ -260,9 +301,13 @@ export async function discover(client: FigmaReader, fileKey: string, overrides: 
   });
   const activePages = new Set(pageInfo.filter((p) => p.kind === 'components').map((p) => p.name));
 
-  const sets: DiscoveredSet[] = Object.entries(allSets)
+  const kept = (name: string, id: string) => !RETIRED_SET.test(name) || Boolean(overrides.sets?.[name] ?? overrides.sets?.[id]);
+  const located2 = Object.entries(allSets)
     .map(([id, s]) => ({ id, name: s.name, ...(s.key ? { key: s.key } : {}), page: located.get(id)?.page ?? '', path: located.get(id)?.path ?? [] }))
     .filter((s) => activePages.has(s.page));
+  const retired = located2.filter((s) => !kept(s.name, s.id));
+  if (retired.length) log(`Discovery: left out ${retired.length} retired set(s) (deprecated, do-not-use or old): ${retired.slice(0, 5).map((s) => s.name).join(', ')}${retired.length > 5 ? ', …' : ''}`);
+  const sets: DiscoveredSet[] = located2.filter((s) => kept(s.name, s.id));
 
   // Frame candidates on component pages, read two levels deep for a content profile.
   const candidates = pages

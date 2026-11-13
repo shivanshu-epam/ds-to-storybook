@@ -40,7 +40,19 @@ export interface AxisInfo {
   /** Enum values the prop accepts (state axes: base + non-pseudo values). */
   options: string[];
   defaultValue: string;
+  /** A True/False variant property: a boolean prop (values "true" / "false" in data attributes and CSS). */
+  boolean?: boolean;
 }
+
+/** How an axis appears in code: True/False axes are booleans, the rest string unions. quote() quotes a string. */
+export const axisType = (a: AxisInfo, quote: (s: string) => string) => (a.boolean ? 'boolean' : a.options.map(quote).join(' | '));
+export const axisDefault = (a: AxisInfo, quote: (s: string) => string) => (a.boolean ? String(a.defaultValue === 'true') : quote(a.defaultValue));
+export const axisLiteral = (a: AxisInfo, value: string, quote: (s: string) => string) => (a.boolean ? String(value === 'true') : quote(value));
+/** data-* attribute value from a code reference: booleans render as "true" / "false", as the CSS expects. */
+export const axisData = (a: AxisInfo, ref: string) => (a.boolean ? `${ref} ? 'true' : 'false'` : ref);
+/** Storybook control for an axis. */
+export const axisControl = (a: AxisInfo, quote: (s: string) => string) =>
+  a.boolean ? `{ control: 'boolean', description: ${quote(`Figma: ${a.figma}`)} }` : `{ control: '${a.options.length > 5 ? 'select' : 'inline-radio'}', options: [${a.options.map(quote).join(', ')}], description: ${quote(`Figma: ${a.figma}`)} }`;
 
 export function analyzeAxes(set: IRComponentSet): AxisInfo[] {
   const used = new Set<string>();
@@ -48,7 +60,19 @@ export function analyzeAxes(set: IRComponentSet): AxisInfo[] {
     .filter((p) => p.type === 'VARIANT')
     .map((p) => {
       const opts = p.options ?? [];
-      const isState = opts.some((o) => PSEUDO.some((x) => x.test.test(o)) || /^disabled$/i.test(o));
+      const isBool = opts.length === 2 && opts.every((o) => /^(true|false)$/i.test(o));
+      // isDisabled=True/False is the disabled state, like State=Disabled.
+      if (isBool && /^(is[ _-]?)?disabled$/i.test(p.name)) {
+        let prop = camel(p.name);
+        if (RESERVED.has(prop) || used.has(prop)) prop = `${prop}Variant`;
+        used.add(prop);
+        return {
+          figma: p.name, prop, attr: kebab(p.name), kind: 'state' as const,
+          values: opts.map((o) => (/^true$/i.test(o) ? { figma: o, value: 'disabled', role: 'disabled' as const } : { figma: o, value: 'false', role: 'base' as const })),
+          options: ['false'], defaultValue: 'false',
+        };
+      }
+      const isState = !isBool && opts.some((o) => PSEUDO.some((x) => x.test.test(o)) || /^disabled$/i.test(o));
       const values: AxisValue[] = opts.map((o) => {
         const pseudo = PSEUDO.find((x) => x.test.test(o));
         if (isState && o === String(p.default)) return { figma: o, value: kebab(o), role: 'base' };
@@ -67,6 +91,7 @@ export function analyzeAxes(set: IRComponentSet): AxisInfo[] {
         values,
         options: values.filter((v) => v.role === 'base' || v.role === 'enum').map((v) => v.value),
         defaultValue: kebab(String(p.default)),
+        ...(isBool ? { boolean: true } : {}),
       };
     });
 }
@@ -79,7 +104,7 @@ export function variantAttrs(axes: AxisInfo[], values: Record<string, string>): 
     if (!v) continue;
     if (v.role === 'pseudo') attrs.push(`data-force-state="${v.state}"`);
     else if (v.role === 'disabled') attrs.push('disabled');
-    else if (a.options.length > 1 && v.value !== a.defaultValue) attrs.push(`${a.prop}="${v.value}"`);
+    else if (a.options.length > 1 && v.value !== a.defaultValue) attrs.push(a.boolean ? `${a.prop}={${v.value === 'true'}}` : `${a.prop}="${v.value}"`);
   }
   return attrs;
 }
@@ -90,7 +115,7 @@ function variantObject(a: AxisInfo, figma: string): string {
   if (!v) return '{}';
   if (v.role === 'pseudo') return `{ 'data-force-state': '${v.state}' }`;
   if (v.role === 'disabled') return '{ disabled: true }';
-  return a.options.length > 1 ? `{ ${a.prop}: ${q(v.value)} }` : '{}';
+  return a.options.length > 1 ? `{ ${a.prop}: ${axisLiteral(a, v.value, q)} }` : '{}';
 }
 
 export interface PropPlan {
@@ -271,7 +296,7 @@ export function variantProps(axes: AxisInfo[], values: Record<string, string>): 
     if (!v) continue;
     if (v.role === 'pseudo') out.push({ prop: 'data-force-state', kind: 'force-state', value: v.state! });
     else if (v.role === 'disabled') out.push({ prop: 'disabled', kind: 'boolean', value: true });
-    else if (a.options.length > 1 && v.value !== a.defaultValue) out.push({ prop: a.prop, kind: 'string', value: v.value });
+    else if (a.options.length > 1 && v.value !== a.defaultValue) out.push(a.boolean ? { prop: a.prop, kind: 'boolean', value: v.value === 'true' } : { prop: a.prop, kind: 'string', value: v.value });
   }
   return out;
 }
@@ -358,8 +383,8 @@ export interface VariantLookup {
 /** Expression for a lookup; ref turns a prop name into code (React: the variable; Lit: this.prop). */
 export function lookupExpr(l: VariantLookup, ref: (prop: string) => string, type: string): string {
   const r = (p: string) => (p === '$checked' && l.checked ? `(${ref(p)} ? ${JSON.stringify(l.checked.on)} : ${JSON.stringify(l.checked.off)})` : ref(p));
-  const table = `((${JSON.stringify(l.values)} as Record<string, ${type}>)[${r(l.prop)}] ?? ${JSON.stringify(l.fallback)})`;
-  return l.override ? `(${r(l.override.prop)} === ${JSON.stringify(l.override.value)} ? ${JSON.stringify(l.override.result)} : ${table})` : table;
+  const table = `((${JSON.stringify(l.values)} as Record<string, ${type}>)[String(${r(l.prop)})] ?? ${JSON.stringify(l.fallback)})`;
+  return l.override ? `(String(${r(l.override.prop)}) === ${JSON.stringify(l.override.value)} ? ${JSON.stringify(l.override.result)} : ${table})` : table;
 }
 
 export interface LayerInfo {
@@ -401,13 +426,14 @@ export function layers(set: IRComponentSet, defaultVariant: IRVariant): LayerInf
     let role = base;
     for (let i = 2; used.has(role); i++) role = `${base}${i}`;
     used.add(role);
-    const same = defaultVariant.parts.filter((p) => p.path === part.path && p.type === 'INSTANCE');
+    // Copies hidden in Figma (and not shown by a property) are not rendered.
+    const same = defaultVariant.parts.filter((p) => p.path === part.path && p.type === 'INSTANCE' && (!p.hidden || p.refs?.visible));
     const splitType = split(part);
     return { path: part.path, parent: part.parent, part, role, ...(same.length > 1 && part.type === 'INSTANCE' ? { copies: same.slice(1) } : {}), ...(splitType ? { splitType } : {}) };
   });
 }
 
-export const isIcon = (p: IRPart) => p.type === 'INSTANCE' && Boolean(p.instanceOf && /^icons?\//i.test(p.instanceOf));
+export const isIcon = (p: IRPart) => p.type === 'INSTANCE' && Boolean(p.icon || (p.instanceOf && /^icons?\//i.test(p.instanceOf)));
 export const SHAPES = new Set(['VECTOR', 'BOOLEAN_OPERATION', 'STAR', 'LINE', 'POLYGON', 'REGULAR_POLYGON']);
 
 export function genericTemplate(ctx: TemplateContext, name: string, opts: { title: string; instance: (part: IRPart) => InstanceRef | undefined; behavior?: Behavior; related?: { control?: { name: string; set: IRComponentSet } } }): TemplateResult {
@@ -452,6 +478,12 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
 
   // Props
   const { booleans, texts, swaps, hasDisabled } = propPlan(set);
+  // The input pack passes native input attributes through: a Figma property with the same name gets a suffix.
+  if (opts.behavior === 'input') {
+    const native = new Set(['value', 'defaultValue', 'name', 'type', 'id', 'maxLength', 'checked', 'onChange', 'invalid', 'onClear', 'style', 'className']);
+    for (const x of booleans) if (native.has(x.prop)) x.prop = `${x.prop}Prop`;
+    for (const x of texts) if (native.has(x.prop)) x.prop = `${x.prop}Text`;
+  }
   if (swaps.length) gaps.push(`Instance swap properties not exposed as props (default instance rendered): ${swaps.map((s) => s.name).join(', ')}.`);
   const boolFor = (figma?: string) => booleans.find((b) => b.p.name === figma)?.prop;
   const textFor = (figma?: string) => texts.find((t) => t.p.name === figma)?.prop;
@@ -696,12 +728,20 @@ ${indent}/>`;
           return `<span ${cls}><${n.component}${attrs.length ? ' ' + attrs.join(' ') : ''}${l === controlLayer ? ' {...control}' : ''} /></span>`;
         };
         // Repeated instances (for example three radio fields in a group) render once each, sharing the role's CSS.
-        const copies = (l.copies ?? []).map((c) => opts.instance(c)).filter((n): n is InstanceRef => Boolean(n));
-        el = [one(nested), ...copies.map(one)].join(`\n${indent}`);
+        // Each copy keeps its own boolean (Figma table rows bind column1…column7 to separate cells).
+        if (l.copies?.length) {
+          const guard = (part: IRPart, x: string) => { const b = boolFor(part.refs?.visible); return b ? `{${b} && (${x})}` : x; };
+          const all2 = [[p, nested] as const, ...l.copies.map((c) => [c, opts.instance(c)] as const)].filter((x): x is readonly [IRPart, InstanceRef] => Boolean(x[1]));
+          return `${indent}<>\n${all2.map(([part, n]) => `${indent}  ${guard(part, one(n))}`).join('\n')}\n${indent}</>`;
+        }
+        el = one(nested);
       } else {
         gaps.push(`Layer "${p.path}" is an instance of "${p.instanceOf ?? 'unknown'}", which is not generated here; rendered as an empty box.`);
         el = `<span ${cls} aria-hidden="true" />`;
       }
+    } else if (SHAPES.has(p.type) && children(l.path).some((k) => k.part.type === 'INSTANCE')) {
+      // A shape group used as a mask around an icon (Figma boolean operations): render what is inside it.
+      el = `<span ${cls}>\n${children(l.path).map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</span>`;
     } else if (SHAPES.has(p.type)) {
       gaps.push(`Layer "${p.path}" is a ${p.type.toLowerCase()} shape; approximated with its fill and size (no vector path).`);
       el = `<span ${cls} aria-hidden="true" />`;
@@ -738,7 +778,7 @@ ${indent}/>`;
       '  /** Initial state when uncontrolled. Default false. */\n  defaultChecked?: boolean;',
       '  /** Called with the new state when the user toggles the switch. */\n  onCheckedChange?: (checked: boolean) => void;',
     ] : []),
-    ...propAxes.map((a) => `  /** Figma: ${a.figma}. Default ${a.defaultValue}.${a === sw?.busy ? ' "loading" sets aria-busy and blocks toggling.' : ''} */\n  ${a.prop}?: ${a.options.map(q).join(' | ')};`),
+    ...propAxes.map((a) => `  /** Figma: ${a.figma}. Default ${a.defaultValue}.${a === sw?.busy ? ' "loading" sets aria-busy and blocks toggling.' : ''} */\n  ${a.prop}?: ${axisType(a, q)};`),
     ...(hasDisabled ? ['  /** Figma: State=Disabled. */\n  disabled?: boolean;'] : []),
     ...booleans.map((b) => `  /** Figma: ${b.p.name} (boolean). Default ${b.p.default}. */\n  ${b.prop}?: boolean;`),
     ...texts.map((t) => `  /** Figma: ${t.p.name} (text). */\n  ${t.prop}?: ReactNode;`),
@@ -747,7 +787,7 @@ ${indent}/>`;
   const ownProps = [...(sw ? ['checked', 'defaultChecked', 'value', 'onChange'] : []), ...propAxes.map((a) => a.prop), ...(hasDisabled ? ['disabled'] : []), ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop)];
   const destructure = [
     ...(sw ? ['checked', 'defaultChecked = false', 'onCheckedChange', 'onClick'] : []),
-    ...propAxes.map((a) => `${a.prop} = ${q(a.defaultValue)}`),
+    ...propAxes.map((a) => `${a.prop} = ${axisDefault(a, q)}`),
     ...(hasDisabled ? ['disabled = false'] : []),
     ...booleans.map((b) => `${b.prop} = ${String(b.p.default) === 'true'}`),
     ...texts.map((t) => `${t.prop} = ${q(String(t.p.default))}`),
@@ -756,7 +796,7 @@ ${indent}/>`;
   ];
   const dataAttrs = [
     ...(sw ? [`data-${sw.axis.attr}={on ? ${q(sw.on)} : ${q(sw.off)}}`] : []),
-    ...propAxes.map((a) => `data-${a.attr}={${a.prop}}`),
+    ...propAxes.map((a) => `data-${a.attr}={${axisData(a, a.prop)}}`),
     ...(hasDisabled ? ["data-disabled={disabled ? '' : undefined}", sw ? 'disabled={disabled}' : 'aria-disabled={disabled || undefined}'] : []),
     ...(sw?.busy ? ['aria-busy={busy || undefined}'] : []),
   ];
@@ -826,7 +866,7 @@ ${body}
       ...(d.footer ? ['  /** Action buttons. Default: the Figma buttons (no actions). */\n  footer?: ReactNode;'] : []),
       ...propLines.filter((x) => !x.includes('disabled?: boolean;')),
     ];
-    const destructure = [...propAxes.map((a) => `${a.prop} = ${q(a.defaultValue)}`), ...booleans.map((b) => `${b.prop} = ${String(b.p.default) === 'true'}`), ...texts.map((t) => `${t.prop} = ${q(String(t.p.default))}`), 'open', 'defaultOpen = false', 'modal = true', 'onOpenChange', ...(d.body ? ['children'] : []), ...(d.footer ? ['footer'] : []), 'className', 'onClose', 'onKeyDown', '...rest'];
+    const destructure = [...propAxes.map((a) => `${a.prop} = ${axisDefault(a, q)}`), ...booleans.map((b) => `${b.prop} = ${String(b.p.default) === 'true'}`), ...texts.map((t) => `${t.prop} = ${q(String(t.p.default))}`), 'open', 'defaultOpen = false', 'modal = true', 'onOpenChange', ...(d.body ? ['children'] : []), ...(d.footer ? ['footer'] : []), 'className', 'onClose', 'onKeyDown', '...rest'];
     return `// Generated by ds-sync (dialog template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 // Visuals come from Figma. Behaviour: WAI-ARIA dialog pattern on a native <dialog> (showModal).
 import { useEffect, useId, useRef, useState, type DialogHTMLAttributes, type ReactNode } from 'react';
@@ -860,7 +900,7 @@ export function ${name}({ ${destructure.join(', ')} }: ${name}Props) {
     <dialog
       ref={ref}
 ${d.alertValue ? `      role={${d.typeProp} === '${d.alertValue}' ? 'alertdialog' : undefined}\n` : ''}${d.title ? '      aria-labelledby={titleId}\n' : ''}${d.body ? '      aria-describedby={bodyId}\n' : ''}${d.busyValue ? `      aria-busy={${d.stateProp} === '${d.busyValue}' || undefined}\n` : ''}      className={[styles.root, className].filter(Boolean).join(' ')}
-      ${propAxes.map((a) => `data-${a.attr}={${a.prop}}`).join('\n      ')}
+      ${propAxes.map((a) => `data-${a.attr}={${axisData(a, a.prop)}}`).join('\n      ')}
       onKeyDown={(event) => {
         onKeyDown?.(event);
         // WAI-ARIA dialog: Escape closes it (modal or not).
@@ -889,7 +929,7 @@ ${body}
     const errorValue = stateProp?.options.find((o) => /^(error|invalid)$/.test(o));
     const own = [...propAxes.map((a) => a.prop), 'disabled', ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop)];
     const lines = [
-      ...propAxes.map((a) => `  /** Figma: ${a.figma}. Default ${a.defaultValue}.${a === renamedType ? ' (Figma "Type"; "type" is the native input type.)' : ''}${a === stateProp && errorValue ? ` "${errorValue}" also sets aria-invalid.` : ''} */\n  ${a.prop}?: ${a.options.map(q).join(' | ')};`),
+      ...propAxes.map((a) => `  /** Figma: ${a.figma}. Default ${a.defaultValue}.${a === renamedType ? ' (Figma "Type"; "type" is the native input type.)' : ''}${a === stateProp && errorValue ? ` "${errorValue}" also sets aria-invalid.` : ''} */\n  ${a.prop}?: ${axisType(a, q)};`),
       '  /** Figma: State=Disabled. */\n  disabled?: boolean;',
       ...booleans.map((b) => `  /** Figma: ${b.p.name} (boolean). Default ${b.p.default}.${b.prop === ip.props.required ? ' Also sets the native required attribute.' : ''} */\n  ${b.prop}?: boolean;`),
       ...texts.map((t) => `  /** Figma: ${t.p.name} (text).${t.prop === ip.props.counter ? ' Shown when maxLength is not set; with maxLength the count is live.' : ''} */\n  ${t.prop}?: ${t.prop === ip.props.placeholder || t.prop === ip.props.counter ? 'string' : 'ReactNode'};`),
@@ -897,7 +937,7 @@ ${body}
       ...(ip.clear ? ['  /** Called after the clear button empties the input. */\n  onClear?: () => void;'] : []),
       `  /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */\n  'data-force-state'?: string;`,
     ];
-    const destructure = [...propAxes.map((a) => `${a.prop} = ${q(a.defaultValue)}`), 'disabled = false', ...booleans.map((b) => `${b.prop} = ${String(b.p.default) === 'true'}`), ...texts.map((t) => `${t.prop} = ${q(String(t.p.default))}`), 'invalid: invalidProp', ...(ip.clear ? ['onClear'] : []), 'id', 'className', 'style', 'value', 'defaultValue', 'maxLength', 'onChange', "'aria-describedby': ariaDescribedBy", "'data-force-state': forceState", '...rest'];
+    const destructure = [...propAxes.map((a) => `${a.prop} = ${axisDefault(a, q)}`), 'disabled = false', ...booleans.map((b) => `${b.prop} = ${String(b.p.default) === 'true'}`), ...texts.map((t) => `${t.prop} = ${q(String(t.p.default))}`), 'invalid: invalidProp', ...(ip.clear ? ['onClear'] : []), 'id', 'className', 'style', 'value', 'defaultValue', 'maxLength', 'onChange', "'aria-describedby': ariaDescribedBy", "'data-force-state': forceState", '...rest'];
     return `// Generated by ds-sync (input template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 // Visuals come from Figma. Behaviour: a native <input> with its <label>, description and validity.
 import { useId, useRef, useState, type InputHTMLAttributes, type ReactNode } from 'react';
@@ -923,7 +963,7 @@ ${ip.clear ? `  const clear = () => {
     ref.current?.focus();
   };
 ` : ''}  return (
-    <div className={[styles.root, className].filter(Boolean).join(' ')} style={style} ${[...propAxes.map((a) => `data-${a.attr}={${a.prop}}`), "data-disabled={disabled ? '' : undefined}", "data-invalid={invalid ? '' : undefined}", 'data-force-state={forceState}'].join(' ')}>
+    <div className={[styles.root, className].filter(Boolean).join(' ')} style={style} ${[...propAxes.map((a) => `data-${a.attr}={${axisData(a, a.prop)}}`), "data-disabled={disabled ? '' : undefined}", "data-invalid={invalid ? '' : undefined}", 'data-force-state={forceState}'].join(' ')}>
 ${body.replace(/\{\.\.\.rest\}/, '{...rest}\n' + '          value={value}\n          defaultValue={defaultValue}\n          maxLength={maxLength}')}
     </div>
   );
@@ -937,8 +977,8 @@ ${body.replace(/\{\.\.\.rest\}/, '{...rest}\n' + '          value={value}\n     
     const head = `// Generated by ds-sync (radio template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 // Visuals come from Figma. Behaviour: WAI-ARIA radio group pattern with native radio inputs.`;
     const iconImports = `${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${all.some((l) => l.iconByAxis) ? `import type { IconName } from '../../icons/icons';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}`;
-    const axisProps = propAxes.map((a) => `${a.prop} = ${q(a.defaultValue)}`);
-    const axisData = propAxes.map((a) => `data-${a.attr}={${a.prop}}`);
+    const axisProps = propAxes.map((a) => `${a.prop} = ${axisDefault(a, q)}`);
+    const dataOfAxes = propAxes.map((a) => `data-${a.attr}={${axisData(a, a.prop)}}`);
     const extraProps = [...booleans.map((b) => `${b.prop} = ${String(b.p.default) === 'true'}`), ...texts.map((t) => `${t.prop} = ${q(String(t.p.default))}`)];
     const own = [...propAxes.map((a) => a.prop), 'disabled', ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop)];
     const lines = propLines.filter((x) => !x.includes('disabled?: boolean;'));
@@ -965,7 +1005,7 @@ export function ${name}({ ${[...axisProps, 'disabled = false', ...extraProps, 'c
   const readOnly = ${hasState('read-only') ? `${stateProp!.prop} === 'read-only' || ` : ''}Boolean(group.readOnly);
   const inGroup = group.value !== undefined && value !== undefined;
   return (
-    <span className={[styles.root, className].filter(Boolean).join(' ')} style={style} ${[...axisData, "data-disabled={isDisabled ? '' : undefined}", 'data-force-state={forceState}'].join(' ')}>
+    <span className={[styles.root, className].filter(Boolean).join(' ')} style={style} ${[...dataOfAxes, "data-disabled={isDisabled ? '' : undefined}", 'data-force-state={forceState}'].join(' ')}>
       <input
         type="radio"
         className={styles.input}
@@ -1018,7 +1058,7 @@ ${lines.join('\n')}
 export function ${name}({ ${[...axisProps, 'disabled = false', ...extraProps, 'label', 'name', 'value', 'checked', 'defaultChecked', 'onChange', 'className', '...rest'].join(', ')} }: ${name}Props) {
   const control = { name, value, checked, defaultChecked, onChange, disabled${forwardState && controlName ? `, state: (${JSON.stringify(states)} as string[]).includes(${stateProp!.prop}) ? (${stateProp!.prop} as ${controlName}Props['state']) : undefined` : ''} };
   return (
-    <div className={[styles.root, className].filter(Boolean).join(' ')} ${[...axisData, "data-disabled={disabled ? '' : undefined}"].join(' ')} {...rest}>
+    <div className={[styles.root, className].filter(Boolean).join(' ')} ${[...dataOfAxes, "data-disabled={disabled ? '' : undefined}"].join(' ')} {...rest}>
 ${body}
     </div>
   );
@@ -1060,7 +1100,7 @@ export function ${name}({ ${[...axisProps, 'disabled = false', ...extraProps, 'l
       aria-labelledby={labelId}
 ${hasState('invalid') ? `      aria-invalid={${stateProp!.prop} === 'invalid' || undefined}\n` : ''}${hasState('read-only') ? `      aria-readonly={${stateProp!.prop} === 'read-only' || undefined}\n` : ''}      aria-disabled={disabled || undefined}
       className={[styles.root, className].filter(Boolean).join(' ')}
-      ${axisData.join('\n      ')}
+      ${dataOfAxes.join('\n      ')}
       {...rest}
     >
 ${body}${itemsLayer ? '' : `\n      {children}`}
@@ -1297,7 +1337,7 @@ export const Default: Story = {
       else if (a === radio?.axis) { if (val.value === radio.on) out.push('defaultChecked: true'); }
       else if (val.role === 'pseudo') force.push(val.state!);
       else if (val.role === 'disabled') out.push('disabled: true');
-      else if (a.options.length > 1) out.push(`${a.prop}: ${q(val.value)}`);
+      else if (a.options.length > 1) out.push(`${a.prop}: ${axisLiteral(a, val.value, q)}`);
     }
     if (force.length) out.push(`'data-force-state': ${q(force.join(' '))}`);
     return `{ ${out.join(', ')} }`;
@@ -1403,7 +1443,7 @@ ${booleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.defa
 
   const argTypes = [
     ...(sw ? [`    checked: { control: 'boolean', description: ${q(`On or off (controlled). Figma: ${sw.axis.figma}`)} },`, `    defaultChecked: { control: 'boolean' },`] : []),
-    ...propAxes.map((a) => `    ${a.prop}: { control: '${a.options.length > 5 ? 'select' : 'inline-radio'}', options: [${a.options.map(q).join(', ')}], description: 'Figma: ${a.figma}' },`),
+    ...propAxes.map((a) => `    ${a.prop}: ${axisControl(a, q)},`),
     ...(hasDisabled ? [`    disabled: { control: 'boolean', description: 'Figma: State=Disabled' },`] : []),
     ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${q(`Figma: ${b.p.name}`)} },`),
     ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${q(`Figma: ${t.p.name}`)} },`),

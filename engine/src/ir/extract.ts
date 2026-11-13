@@ -70,8 +70,10 @@ export async function extractIR(client: FigmaReader, config: LoadedConfig, log: 
     const page = findPage(file.document, target.figma.page);
     const known = file.componentSets?.[target.figma.componentSet.id];
     // Nested sets (inside frames or sections) are not visible at depth 2, but the file's set map lists them.
+    // Sets deep inside frames (found by discovery) are not visible at depth 2: fetch them by their id; the nodes
+    // request below reports them missing if Figma has no such node.
     const found = findSet(page, file.document, target.figma.componentSet.id, target.figma.componentSet.name)
-      ?? (known ? { node: { id: target.figma.componentSet.id, name: known.name, type: 'COMPONENT_SET' } as FigmaNode } : undefined);
+      ?? (target.figma.componentSet.id ? { node: { id: target.figma.componentSet.id, name: known?.name ?? target.figma.componentSet.name, type: 'COMPONENT_SET' } as FigmaNode } : undefined);
     if (!found) {
       missing.push({ targetId: target.id, reason: `Component set "${target.figma.componentSet.name}" (${target.figma.componentSet.id}) not found on any page.` });
       return;
@@ -108,7 +110,7 @@ export async function extractIR(client: FigmaReader, config: LoadedConfig, log: 
     const target = config.components[p.targetIndex]!;
     const set = nodes[p.setId];
     if (!set) {
-      missing.push({ targetId: target.id, reason: `Node ${p.setId} returned no content.` });
+      missing.push({ targetId: target.id, reason: `Component set "${target.figma.componentSet.name}" (${p.setId}) not found in the file.` });
       return [];
     }
     const docFrames = p.docIds.map((id) => nodes[id]).filter((n): n is FigmaNode => Boolean(n));

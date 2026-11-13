@@ -19,7 +19,7 @@ export interface AvatarGlyphProps extends Omit<HTMLAttributes<HTMLDivElement>, '
 export function AvatarGlyph({ type = 'text', color = '1', size = 'sm', className, ...rest }: AvatarGlyphProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-type={type} data-color={color} data-size={size} {...rest}>
-      <span className={styles.initials}>{(({"2":"MK","3":"RS","4":"TL","5":"PV"} as Record<string, string>)[color] ?? "AJ")}</span>
+      <span className={styles.initials}>{(({"2":"MK","3":"RS","4":"TL","5":"PV"} as Record<string, string>)[String(color)] ?? "AJ")}</span>
       <span className={styles.icon} aria-hidden="true"><Icon name="userProfile20" /></span>
     </div>
   );

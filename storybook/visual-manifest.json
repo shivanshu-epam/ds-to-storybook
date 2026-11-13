@@ -11528,6 +11528,360 @@
           "height": 48
         }
       ]
+    },
+    {
+      "name": "DropdownTrigger",
+      "story": "components-dropdown-dropdowntrigger--figma-variants",
+      "variants": [
+        {
+          "nodeId": "396:1778",
+          "name": "Size=Small, State=Default, Expanded=false",
+          "width": 320,
+          "height": 32
+        },
+        {
+          "nodeId": "396:1779",
+          "name": "Size=Small, State=Hover, Expanded=false",
+          "width": 320,
+          "height": 32
+        },
+        {
+          "nodeId": "396:1780",
+          "name": "Size=Small, State=Focused, Expanded=false",
+          "width": 320,
+          "height": 32
+        },
+        {
+          "nodeId": "396:1781",
+          "name": "Size=Small, State=Disabled, Expanded=false",
+          "width": 320,
+          "height": 32
+        },
+        {
+          "nodeId": "396:1782",
+          "name": "Size=Small, State=Error, Expanded=false",
+          "width": 320,
+          "height": 32
+        },
+        {
+          "nodeId": "396:1783",
+          "name": "Size=Small, State=Read-only, Expanded=false",
+          "width": 320,
+          "height": 32
+        },
+        {
+          "nodeId": "396:1784",
+          "name": "Size=Medium, State=Default, Expanded=false",
+          "width": 320,
+          "height": 40
+        },
+        {
+          "nodeId": "396:1785",
+          "name": "Size=Medium, State=Hover, Expanded=false",
+          "width": 320,
+          "height": 40
+        },
+        {
+          "nodeId": "396:1786",
+          "name": "Size=Medium, State=Focused, Expanded=false",
+          "width": 320,
+          "height": 40
+        },
+        {
+          "nodeId": "396:1787",
+          "name": "Size=Medium, State=Disabled, Expanded=false",
+          "width": 320,
+          "height": 40
+        },
+        {
+          "nodeId": "396:1788",
+          "name": "Size=Medium, State=Error, Expanded=false",
+          "width": 320,
+          "height": 40
+        },
+        {
+          "nodeId": "396:1789",
+          "name": "Size=Medium, State=Read-only, Expanded=false",
+          "width": 320,
+          "height": 40
+        },
+        {
+          "nodeId": "396:1790",
+          "name": "Size=Large, State=Default, Expanded=false",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "396:1791",
+          "name": "Size=Large, State=Hover, Expanded=false",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "396:1792",
+          "name": "Size=Large, State=Focused, Expanded=false",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "396:1793",
+          "name": "Size=Large, State=Disabled, Expanded=false",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "396:1794",
+          "name": "Size=Large, State=Error, Expanded=false",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "396:1795",
+          "name": "Size=Large, State=Read-only, Expanded=false",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "396:1796",
+          "name": "Size=Small, State=Default, Expanded=true",
+          "width": 320,
+          "height": 32
+        },
+        {
+          "nodeId": "396:1797",
+          "name": "Size=Medium, State=Default, Expanded=true",
+          "width": 320,
+          "height": 40
+        },
+        {
+          "nodeId": "396:1798",
+          "name": "Size=Large, State=Default, Expanded=true",
+          "width": 320,
+          "height": 48
+        }
+      ]
+    },
+    {
+      "name": "DropdownMenu",
+      "story": "components-dropdown-dropdownmenu--figma-variants",
+      "variants": [
+        {
+          "nodeId": "400:1967",
+          "name": "State=Default",
+          "width": 320,
+          "height": 136,
+          "paintBox": [
+            0,
+            0,
+            328,
+            148
+          ]
+        },
+        {
+          "nodeId": "400:1968",
+          "name": "State=Loading",
+          "width": 320,
+          "height": 44,
+          "paintBox": [
+            8,
+            0,
+            336,
+            56
+          ]
+        },
+        {
+          "nodeId": "400:1969",
+          "name": "State=Empty",
+          "width": 320,
+          "height": 44,
+          "paintBox": [
+            8,
+            0,
+            328,
+            56
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dropdown",
+      "story": "components-dropdown-dropdown--figma-variants",
+      "variants": [
+        {
+          "nodeId": "401:2465",
+          "name": "Size=Small, State=Collapsed",
+          "width": 320,
+          "height": 32
+        },
+        {
+          "nodeId": "401:2466",
+          "name": "Size=Small, State=Expanded",
+          "width": 320,
+          "height": 176
+        },
+        {
+          "nodeId": "401:2467",
+          "name": "Size=Medium, State=Collapsed",
+          "width": 320,
+          "height": 40
+        },
+        {
+          "nodeId": "401:2468",
+          "name": "Size=Medium, State=Expanded",
+          "width": 320,
+          "height": 184
+        },
+        {
+          "nodeId": "401:2469",
+          "name": "Size=Large, State=Collapsed",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "401:2470",
+          "name": "Size=Large, State=Expanded",
+          "width": 320,
+          "height": 192
+        }
+      ]
+    },
+    {
+      "name": "InputControl",
+      "story": "components-form-inputcontrol--figma-variants",
+      "variants": [
+        {
+          "nodeId": "427:1993",
+          "name": "State=Default",
+          "width": 280,
+          "height": 40
+        },
+        {
+          "nodeId": "880:1557",
+          "name": "State=State9",
+          "width": 280,
+          "height": 40
+        },
+        {
+          "nodeId": "427:1994",
+          "name": "State=Hover",
+          "width": 280,
+          "height": 40
+        },
+        {
+          "nodeId": "427:1995",
+          "name": "State=Focused",
+          "width": 280,
+          "height": 40
+        },
+        {
+          "nodeId": "427:1996",
+          "name": "State=Filled",
+          "width": 280,
+          "height": 40
+        },
+        {
+          "nodeId": "427:1997",
+          "name": "State=Disabled",
+          "width": 280,
+          "height": 40
+        },
+        {
+          "nodeId": "427:1998",
+          "name": "State=Read-only",
+          "width": 280,
+          "height": 40
+        },
+        {
+          "nodeId": "427:1999",
+          "name": "State=Error",
+          "width": 280,
+          "height": 40
+        },
+        {
+          "nodeId": "427:2000",
+          "name": "State=Success",
+          "width": 280,
+          "height": 40
+        }
+      ]
+    },
+    {
+      "name": "InputField",
+      "story": "components-form-inputfield--figma-variants",
+      "variants": [
+        {
+          "nodeId": "428:2036",
+          "name": "State=Default",
+          "width": 280,
+          "height": 64
+        },
+        {
+          "nodeId": "428:2037",
+          "name": "State=Focused",
+          "width": 280,
+          "height": 64
+        },
+        {
+          "nodeId": "428:2038",
+          "name": "State=Invalid",
+          "width": 280,
+          "height": 88
+        },
+        {
+          "nodeId": "428:2039",
+          "name": "State=Success",
+          "width": 280,
+          "height": 88
+        },
+        {
+          "nodeId": "428:2040",
+          "name": "State=Disabled",
+          "width": 280,
+          "height": 64
+        },
+        {
+          "nodeId": "428:2041",
+          "name": "State=Read-only",
+          "width": 280,
+          "height": 64
+        }
+      ]
+    },
+    {
+      "name": "Form",
+      "story": "components-form-form--figma-variants",
+      "variants": [
+        {
+          "nodeId": "435:3",
+          "name": "State=Default",
+          "width": 420,
+          "height": 445
+        },
+        {
+          "nodeId": "435:4",
+          "name": "State=Submitting",
+          "width": 420,
+          "height": 445
+        },
+        {
+          "nodeId": "435:5",
+          "name": "State=Success",
+          "width": 420,
+          "height": 527
+        },
+        {
+          "nodeId": "435:6",
+          "name": "State=Error",
+          "width": 420,
+          "height": 551
+        },
+        {
+          "nodeId": "435:7",
+          "name": "State=Disabled",
+          "width": 420,
+          "height": 445
+        }
+      ]
     }
   ],
   "notCovered": []

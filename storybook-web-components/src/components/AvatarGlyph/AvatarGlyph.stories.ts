@@ -11,9 +11,9 @@ const meta = {
   component: 'ds-avatar-glyph',
   args: { type: "text", color: "1", size: "sm" },
   argTypes: {
-    type: { control: 'inline-radio', options: ["text","icon","image"], description: "Figma: Type" },
-    color: { control: 'inline-radio', options: ["1","2","3","4","5"], description: "Figma: Color" },
-    size: { control: 'inline-radio', options: ["sm","md","lg"], description: "Figma: Size" },
+    type: { control: 'inline-radio', options: ["text", "icon", "image"], description: "Figma: Type" },
+    color: { control: 'inline-radio', options: ["1", "2", "3", "4", "5"], description: "Figma: Color" },
+    size: { control: 'inline-radio', options: ["sm", "md", "lg"], description: "Figma: Size" },
   },
   render: (args) => html`<ds-avatar-glyph type=${args.type} color=${args.color} size=${args.size}></ds-avatar-glyph>`,
   parameters: {

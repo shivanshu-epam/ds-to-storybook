@@ -52,7 +52,7 @@ export function Switch({ checked, defaultChecked = false, onCheckedChange, onCli
       <span className={styles.track} />
       <span className={styles.handle} />
       {showInnerContent && (
-        <span className={styles.innerIcon} aria-hidden="true"><Icon name={(interaction === "loading" ? "statusLoading16" : (({"on":"formCheck16"} as Record<string, IconName>)[(on ? "on" : "off")] ?? "actionClose16"))} /></span>
+        <span className={styles.innerIcon} aria-hidden="true"><Icon name={(String(interaction) === "loading" ? "statusLoading16" : (({"on":"formCheck16"} as Record<string, IconName>)[String((on ? "on" : "off"))] ?? "actionClose16"))} /></span>
       )}
     </button>
   );

@@ -99,6 +99,8 @@ flowchart TD
     O -.-> N
 ```
 
+Sets are found three ways: top-level sets from the depth-2 file read, nested sets that Figma's set list names (by id), and sets deep inside page frames, found by reading every non-documentation frame breadth-first and reading again where Figma cut a frame off at the depth limit (Blade keeps its sets six levels down). Internal pages (`_…`), deprecation pages and sets named DEPRECATED / DO NOT USE / Old are left out unless an override names them.
+
 Discovery also classifies every top-level frame as documentation, example, page text or other. Low-confidence classifications go to `.ds-sync/discovery.md` under "Needs a person", which the Claude Skill walks through with the user.
 
 ### 3.2 The IR
@@ -148,6 +150,8 @@ classDiagram
 Details that matter:
 
 - Every value keeps its **bound variable id**, so a colour bound to a Figma variable becomes a token, not a hex value.
+- Instances are flagged as **icons** when their component is named "Icon/…" or is a small square standalone component made only of shapes (design systems that name icons `search`, `arrow-right`). Icons are exported as SVG.
+- True/False variant properties become **boolean props**; `isDisabled` (or `disabled`) becomes the disabled state.
 - Repeated sibling layers with the same name get distinct paths (`field`, `field#2`). Repeated component instances keep one path and render as copies.
 - Linear gradients become CSS `linear-gradient`. Dashed strokes keep Figma's dash pattern. `paintBox` records how far shadows paint outside the frame (used by the visual check).
 - Each set has a content `hash`, so unchanged sets are skipped when diffing versions.
@@ -356,6 +360,7 @@ The token lives in `.env` (`FIGMA_TOKEN=…`), which `init` adds to `.gitignore`
 - Behaviour exists only for the archetypes above; other interactive components are visuals only and say so.
 - Figma does not specify accessible names for icon-only controls; names taken from layer names are flagged for confirmation.
 - The generated folders are owned by ds-sync. Updating code that people edit by hand (a three-way merge) is not built.
-- Only one Figma design system has been tested ("Design system AI"). A second, unfamiliar file is the next validation step.
-- The package is not published to npm yet; the workflow builds the engine from this repository.
+- Two design systems have been tested: "Design system AI" and Blade (108 components). Behaviour templates match the first file's naming best; Blade's checkbox, radio, button and accordion sets are generated as visuals.
+- The package is ready but not published to npm yet (`release.yml` publishes on a version tag); the sync workflow builds the engine from this repository until then.
+- The deep discovery scan is slow on very large files (Blade: about 25 minutes uncached) because of Figma's rate limit.
 - Visual differences that remain are font rendering and sub-pixel snapping; they are reported, not hidden.

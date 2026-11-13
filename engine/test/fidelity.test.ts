@@ -51,6 +51,23 @@ describe('fidelity fixes found by the visual check', () => {
   });
 
   it('turns text that changes with a variant property into a lookup', () => {
-    expect(tsx).toContain('({"right":"Save changes"} as Record<string, string>)[position] ?? "Confirm"');
+    expect(tsx).toContain('({"right":"Save changes"} as Record<string, string>)[String(position)] ?? "Confirm"');
+  });
+
+  it('turns True/False variant properties into booleans, and isDisabled into the disabled state', () => {
+    const node2: FigmaNode = {
+      id: '4:1', name: 'Chip', type: 'COMPONENT_SET',
+      componentPropertyDefinitions: { isSelected: { type: 'VARIANT', defaultValue: 'False', variantOptions: ['False', 'True'] }, isDisabled: { type: 'VARIANT', defaultValue: 'False', variantOptions: ['False', 'True'] } },
+      children: ['isSelected=False, isDisabled=False', 'isSelected=True, isDisabled=False', 'isSelected=False, isDisabled=True'].map((n, i) => ({ id: `4:${i + 2}`, name: n, type: 'COMPONENT', absoluteBoundingBox: box(40, 20), fills: [{ type: 'SOLID', color: { r: i / 3, g: 0, b: 0, a: 1 } }], children: [] }) as FigmaNode),
+    };
+    const set2 = buildComponentSet({ target: { id: 'c2', archetype: 'generic', figma: { page: 'p', componentSet: { id: '4:1', name: 'Chip' } } }, set: node2, docFrames: [], componentNames: {}, resolve: () => undefined });
+    const chip = genericTemplate({ fileKey: 'F', version: '1', sets: { main: set2 }, resolver, icons: new Map() }, 'Chip', { title: 'C', instance: () => undefined });
+    const code = chip.files.find((f) => f.path.endsWith('Chip.tsx'))!.content;
+    expect(code).toContain('isSelected?: boolean;');
+    expect(code).toContain('isSelected = false');
+    expect(code).toContain("data-is-selected={isSelected ? 'true' : 'false'}");
+    expect(code).toContain('disabled?: boolean;');
+    expect(code).not.toContain('isDisabled');
+    expect(chip.files.find((f) => f.path.endsWith('.module.css'))!.content).toContain('[data-disabled]');
   });
 });

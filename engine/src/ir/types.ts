@@ -66,6 +66,8 @@ export interface IRPart {
   text?: string;
   /** Main component name for instances (e.g. an icon). */
   instanceOf?: string;
+  /** An icon: an "Icon/…" component, or a small square standalone component made only of shapes. */
+  icon?: boolean;
   /** Main component node id for instances. */
   instanceComponentId?: string;
   /** Component properties bound to this layer (names without the #id suffix). */

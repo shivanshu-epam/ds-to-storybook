@@ -107,15 +107,15 @@ export function Dialog({ type = 'confirmation', size = 'small', state = 'open', 
           <>
             <span className={styles.bodyContent}>{bodyContent}</span>
             <div className={styles.formField}>
-              <span className={styles.fieldLabel}>{(({"full-screen":"Project name"} as Record<string, string>)[type] ?? "Full name")}</span>
+              <span className={styles.fieldLabel}>{(({"full-screen":"Project name"} as Record<string, string>)[String(type)] ?? "Full name")}</span>
               <div className={styles.fieldInput}>
-                <span className={styles.fieldPlaceholder}>{(({"full-screen":"Marketing website redesign"} as Record<string, string>)[type] ?? "Jordan Lee")}</span>
+                <span className={styles.fieldPlaceholder}>{(({"full-screen":"Marketing website redesign"} as Record<string, string>)[String(type)] ?? "Jordan Lee")}</span>
               </div>
             </div>
             <div className={styles.formField2}>
-              <span className={styles.fieldLabel2}>{(({"full-screen":"Workspace"} as Record<string, string>)[type] ?? "Email address")}</span>
+              <span className={styles.fieldLabel2}>{(({"full-screen":"Workspace"} as Record<string, string>)[String(type)] ?? "Email address")}</span>
               <div className={styles.fieldInput2}>
-                <span className={styles.fieldPlaceholder2}>{(({"full-screen":"Select a workspace"} as Record<string, string>)[type] ?? "jordan@company.com")}</span>
+                <span className={styles.fieldPlaceholder2}>{(({"full-screen":"Select a workspace"} as Record<string, string>)[String(type)] ?? "jordan@company.com")}</span>
               </div>
             </div>
             <div className={styles.errorBanner}>
@@ -134,7 +134,7 @@ export function Dialog({ type = 'confirmation', size = 'small', state = 'open', 
             {hasSecondaryAction && (
               <span className={styles.secondaryButton}><Button variant="secondary" size="md" children="Cancel" /></span>
             )}
-            <span className={styles.primaryButton}><Button size="md" children={(state === "loading" ? "Loading…" : (({"alert":"Got it","form":"Save changes","full-screen":"Create project","side-drawer":"Save"} as Record<string, string>)[type] ?? "Confirm"))} /></span>
+            <span className={styles.primaryButton}><Button size="md" children={(String(state) === "loading" ? "Loading…" : (({"alert":"Got it","form":"Save changes","full-screen":"Create project","side-drawer":"Save"} as Record<string, string>)[String(type)] ?? "Confirm"))} /></span>
           </>
         )}
       </div>

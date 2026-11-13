@@ -12,9 +12,9 @@ const meta = {
   component: 'ds-input',
   args: { appearance: "outlined", size: "sm", state: "default", disabled: false, required: true, showLeadingIcon: true, showTrailingIcon: false, clearable: false, showCharacterCount: false, label: "Label", placeholder: "Placeholder text", helperText: "We'll never share this.", characterCount: "0/100" },
   argTypes: {
-    appearance: { control: 'inline-radio', options: ["outlined","filled","borderless","inline"], description: "Figma: Type" },
-    size: { control: 'inline-radio', options: ["sm","md","lg"], description: "Figma: Size" },
-    state: { control: 'inline-radio', options: ["default","error"], description: "Figma: State" },
+    appearance: { control: 'inline-radio', options: ["outlined", "filled", "borderless", "inline"], description: "Figma: Type" },
+    size: { control: 'inline-radio', options: ["sm", "md", "lg"], description: "Figma: Size" },
+    state: { control: 'inline-radio', options: ["default", "error"], description: "Figma: State" },
   },
   render: (args) => html`<ds-input appearance=${args.appearance} size=${args.size} state=${args.state} ?disabled=${args.disabled} ?required=${args.required} ?show-leading-icon=${args.showLeadingIcon} ?show-trailing-icon=${args.showTrailingIcon} ?clearable=${args.clearable} ?show-character-count=${args.showCharacterCount} label=${args.label} placeholder=${args.placeholder} helper-text=${args.helperText} character-count=${args.characterCount}></ds-input>`,
   parameters: {

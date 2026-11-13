@@ -15,7 +15,7 @@ export class DsRadioGroup extends LitElement {
     name: { type: String },
     value: { type: String, reflect: true },
     state: { type: String, reflect: true, attribute: "state" },
-    horizontal: { type: String, reflect: true, attribute: "horizontal" },
+    horizontal: { type: Boolean, reflect: true, attribute: "horizontal" },
     disabled: { type: Boolean, reflect: true },
     forceState: { type: String, attribute: 'data-force-state' },
   };
@@ -29,7 +29,7 @@ export class DsRadioGroup extends LitElement {
   /** Figma: State */
   declare state: "enabled" | "read-only" | "invalid" | "warning";
   /** Figma: Horizontal */
-  declare horizontal: "false" | "true";
+  declare horizontal: boolean;
   /** Disables every radio inside */
   declare disabled: boolean;
   /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */
@@ -45,7 +45,7 @@ export class DsRadioGroup extends LitElement {
     this.name = undefined;
     this.value = undefined;
     this.state = "enabled";
-    this.horizontal = "false";
+    this.horizontal = false;
     this.disabled = false;
     this.addEventListener('ds-radio-register', (event) => {
       event.stopPropagation();
@@ -101,7 +101,7 @@ export class DsRadioGroup extends LitElement {
   }
 
   override render() {
-    return html`<div class="root" part="root" role="radiogroup" aria-labelledby="label" aria-invalid=${this.state === 'invalid' ? 'true' : nothing} aria-readonly=${this.state === 'read-only' ? 'true' : nothing} aria-disabled=${this.disabled ? 'true' : nothing} data-state=${this.state} data-horizontal=${this.horizontal} ?data-disabled=${this.disabled} data-force-state=${this.forceState ?? nothing}>
+    return html`<div class="root" part="root" role="radiogroup" aria-labelledby="label" aria-invalid=${this.state === 'invalid' ? 'true' : nothing} aria-readonly=${this.state === 'read-only' ? 'true' : nothing} aria-disabled=${this.disabled ? 'true' : nothing} data-state=${this.state} data-horizontal=${this.horizontal ? 'true' : 'false'} ?data-disabled=${this.disabled} data-force-state=${this.forceState ?? nothing}>
         <span class="groupLabel" id="label">${this.label ?? "Delivery speed"}</span>
         <div class="items"><slot>
           <span class="radioField"><ds-radio-field></ds-radio-field></span>

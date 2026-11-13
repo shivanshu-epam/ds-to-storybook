@@ -64,13 +64,18 @@ Each phase ends with something usable. The team is assumed to be 1 frontend engi
 - [x] Classify frames as documentation, example, page text or other by rules and content profile. Low-confidence results are listed for a person to confirm. (AI classification is not used yet; the Claude Skill asks the person instead.)
 - [x] Generic template: any component set becomes a styled component with its variant, boolean and text props, icons, and nested components with their overrides, plus matrix and axis stories. Its behaviour is marked "not specified".
 - [x] Choose the template by rules (names and layer structure), with overrides in config.
-- [ ] Run against a second, unseen Figma design system. Only "Design system AI" has been tested so far.
-- **Done when:** a second, unseen Figma design system generates a Storybook in which every component set has stories, and the report lists every gap.
+- [x] **Second, unseen design system: Blade** (Razorpay's design system, community copy; 2026-11-13). Installed from the packed npm tarball in an empty folder, as a new team would.
+  - Discovery first found 11 of Blade's component sets: Blade keeps each set six levels inside a page frame, beyond the depth-2 read and Figma's set list. Discovery now reads non-documentation frames breadth-first, again where Figma cut them off at the depth limit (up to four rounds): **108 sets on 43 pages**. Internal pages (`_…`), deprecation pages and sets named DEPRECATED / DO NOT USE / Old are left out. Cost on Blade: 4,744 frames, about 25 minutes the first time (Figma's rate limit), seconds when cached.
+  - Extraction now fetches deeply nested sets by id. The same scan also found 6 sets in the first design system that had always been missed (Dropdown, DropdownMenu, DropdownTrigger, Form, InputControl, InputField).
+  - Generalisations Blade forced: True/False variant properties are booleans (`isChecked?: boolean`), and `isDisabled` is the disabled state; icons are recognised by shape (a small square standalone component made of shapes), not only by an "Icon/" name; each repeated instance keeps its own toggle; hidden copies are skipped; icons inside shape groups render; input properties that clash with native attributes (`value`) are renamed; dialog behaviour only for sets named Dialog/Modal/Drawer.
+  - Result: **108 components in both outputs, both typecheck**. Story tests: 257 of 405 pass; all 148 failures are colour contrast in Blade's design (mostly helper text `#768ea7` on white, 3.38:1). No render or interaction failures. Visual sample (10 components, 268 variants): Badge 35/36 and Indicator 30/30 match; Checkbox, Switch, Spinner and Tag differ (focus rings drawn as separate components, icons swapped through instance properties). Tokens stay raw: Blade's variables need the plugin export.
+  - Not yet for Blade: behaviour templates for its naming (Checkbox/CheckboxBase/CheckboxGroup, a 600-variant Button, AccordionItem with isExpanded), and remembering set locations so CI does not repeat the deep scan.
+- **Done when:** a second, unseen Figma design system generates a Storybook in which every component set has stories, and the report lists every gap. **Met with Blade** (behaviour coverage for its naming is the next improvement).
 
 ### Phase B: a tool anyone can run (about 2 weeks). Fixes G4 and G7.
 
 - [x] `ds-sync init`: Figma link, token check, variables check, stack detection, config, `.gitignore` entries.
-- [x] Installable package (`npm pack` / `npm link`, compiled to JavaScript). Tested from a clean folder: init, then generate, then `npm install`, then 78 of 79 tests pass. **Not yet published to npm.**
+- [x] Installable package (`npm pack` / `npm link`, compiled to JavaScript). Tested from a clean folder: init, then generate, then `npm install`, then 78 of 79 tests pass. **Ready to publish as `ds-sync` (MIT)**: metadata, licence, npm-facing README, `npm pack` checked (44 files, 134 kB, no sources or secrets), and `.github/workflows/release.yml` publishes on a `v*` tag with provenance (npm trusted publishing or an `NPM_TOKEN` secret). The first publish needs the owner's npm account.
 - [x] **Claude Skill** `skills/figma-to-storybook`: runs the CLI, asks the review questions, records the answers as overrides, and explains failures and gaps.
 - [x] GitHub Action template (`ds-sync init --ci`): regenerates weekly or on demand, runs the tests, opens a pull request. The same steps were dry-run locally from fresh GitHub clones: identical output, typecheck passes, 78/79 tests. It is installed in this repo as `.github/workflows/ds-sync.yml` and **ran successfully on GitHub** (run 43244288117): generate, then test, with no pull request because Figma had not changed. The first runs surfaced, and drove fixes for, a missing secret check, lockfile noise and transient Figma 500 errors.
 - [x] Figma plugin `plugin/` that exports variables for non-Enterprise plans. Its export logic was run against the real file through the Figma Plugin API: it matches the existing export and finds 12 more collections. **The Download/Copy UI has not been clicked in Figma.**
@@ -149,7 +154,7 @@ Hosted control plane, multiple design systems and repos, role-based access, audi
 ## 6. Decisions needed
 
 1. ~~Which tech stacks first?~~ Answered: support any stack. Web Components (any framework) plus native React.
-2. **Which second Figma design system** do we test Phase A against?
+2. ~~Which second Figma design system?~~ Answered: Blade (community copy).
 3. **Where does the tool run?** As an npm package plus a GitHub Action (recommended first), a hosted service, or both.
 4. **Which AI model or provider is allowed** for the judgement steps, and is a no-AI mode required?
 5. **Is the repo public or private?** It is currently public and contains Figma documentation text and tokens.

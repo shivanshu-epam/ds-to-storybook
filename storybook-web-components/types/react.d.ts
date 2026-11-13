@@ -24,6 +24,12 @@ import type { DsDivider } from '../src/index';
 import type { DsDatePicker } from '../src/index';
 import type { DsSwitch } from '../src/index';
 import type { DsInput } from '../src/index';
+import type { DsDropdownTrigger } from '../src/index';
+import type { DsDropdownMenu } from '../src/index';
+import type { DsDropdown } from '../src/index';
+import type { DsInputControl } from '../src/index';
+import type { DsInputField } from '../src/index';
+import type { DsForm } from '../src/index';
 
 type El<T, P> = React.DetailedHTMLProps<React.HTMLAttributes<T>, T> & P;
 
@@ -48,11 +54,17 @@ declare module 'react' {
       'ds-dialog': El<DsDialog, { open?: boolean; modal?: boolean; type?: "confirmation" | "alert" | "form" | "full-screen" | "side-drawer"; size?: "small" | "medium" | "large" | "full"; state?: "open" | "loading" | "error"; hasCloseButton?: boolean; hasSecondaryAction?: boolean; hasSubtitle?: boolean; scrollableContent?: boolean; titleValue?: string; subtitle?: string; bodyContent?: string }>;
       'ds-radio-control': El<DsRadioControl, { checked?: boolean; name?: string | undefined; value?: string; accessibleLabel?: string | undefined; state?: "enabled" | "skeleton" | "read-only" | "invalid" | "warning"; disabled?: boolean }>;
       'ds-radio-field': El<DsRadioField, { label?: string | undefined; name?: string | undefined; value?: string; checked?: boolean; state?: "enabled" | "invalid" | "warning" | "read-only" | "skeleton"; position?: "left" | "right"; disabled?: boolean }>;
-      'ds-radio-group': El<DsRadioGroup, { label?: string | undefined; name?: string | undefined; value?: string | undefined; state?: "enabled" | "read-only" | "invalid" | "warning"; horizontal?: "false" | "true"; disabled?: boolean }>;
+      'ds-radio-group': El<DsRadioGroup, { label?: string | undefined; name?: string | undefined; value?: string | undefined; state?: "enabled" | "read-only" | "invalid" | "warning"; horizontal?: boolean; disabled?: boolean }>;
       'ds-divider': El<DsDivider, { orientation?: "horizontal" | "vertical"; styleVariant?: "solid" | "dotted" | "dash"; size?: "sm" | "md"; color?: "light" | "dark" | "subtle" | "transparent" | "danger" | "success" | "neutral" | "warning" | "info"; state?: "default" | "selected"; disabled?: boolean }>;
       'ds-date-picker': El<DsDatePicker, { type?: "single" | "range" | "date-time"; state?: "default" | "filled" | "read-only" | "error"; disabled?: boolean; showCalendar?: boolean }>;
       'ds-switch': El<DsSwitch, { checked?: boolean; accessibleLabel?: string | undefined; name?: string | undefined; value?: string; interaction?: "default" | "loading"; size?: "medium" | "small"; disabled?: boolean; showInnerContent?: boolean }>;
       'ds-input': El<DsInput, { value?: string; type?: string; name?: string | undefined; maxlength?: number | undefined; autocomplete?: string | undefined; invalid?: boolean; appearance?: "outlined" | "filled" | "borderless" | "inline"; size?: "sm" | "md" | "lg"; state?: "default" | "error"; disabled?: boolean; required?: boolean; showLeadingIcon?: boolean; showTrailingIcon?: boolean; clearable?: boolean; showCharacterCount?: boolean; label?: string; placeholder?: string; helperText?: string; characterCount?: string }>;
+      'ds-dropdown-trigger': El<DsDropdownTrigger, { size?: "small" | "medium" | "large"; state?: "default" | "error" | "read-only"; expanded?: boolean; disabled?: boolean; clearable?: boolean }>;
+      'ds-dropdown-menu': El<DsDropdownMenu, { state?: "default" | "loading" | "empty"; showSearch?: boolean; grouped?: boolean }>;
+      'ds-dropdown': El<DsDropdown, { size?: "small" | "medium" | "large"; state?: "collapsed" | "expanded" }>;
+      'ds-input-control': El<DsInputControl, { state?: "default" | "filled" | "read-only" | "error" | "success" | "state9"; disabled?: boolean }>;
+      'ds-input-field': El<DsInputField, { state?: "default" | "invalid" | "success" | "read-only"; disabled?: boolean; required?: boolean; helperMessage?: boolean; labelText?: string; valueText?: string; helperText?: string; errorText?: string; successText?: string }>;
+      'ds-form': El<DsForm, { state?: "default" | "submitting" | "success" | "error"; disabled?: boolean }>;
     }
   }
 }

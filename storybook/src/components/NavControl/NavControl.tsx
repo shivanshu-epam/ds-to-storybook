@@ -18,7 +18,7 @@ export interface NavControlProps extends Omit<HTMLAttributes<HTMLDivElement>, 'c
 export function NavControl({ direction = 'prev', disabled = false, className, ...rest }: NavControlProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-direction={direction} data-disabled={disabled ? '' : undefined} aria-disabled={disabled || undefined} {...rest}>
-      <span className={styles.icon} aria-hidden="true"><Icon name={(({"next":"navChevronRight20"} as Record<string, IconName>)[direction] ?? "navChevronLeft20")} /></span>
+      <span className={styles.icon} aria-hidden="true"><Icon name={(({"next":"navChevronRight20"} as Record<string, IconName>)[String(direction)] ?? "navChevronLeft20")} /></span>
     </div>
   );
 }

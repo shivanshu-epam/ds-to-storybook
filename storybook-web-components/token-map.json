@@ -1,7 +1,7 @@
 {
   "note": "How each Figma value became CSS. \"bound\": bound to a variable in Figma and matched to a token by value (the Variables REST API is Enterprise-only, so variable ids cannot be read directly). \"raw-in-figma\": not bound in Figma, kept as a raw value. \"no-matching-token\": bound in Figma, but no token has that value.",
   "counts": {
-    "bound": 258,
+    "bound": 262,
     "rawInFigma": 10,
     "noMatchingToken": 0
   },
@@ -3663,6 +3663,60 @@
       ],
       "variableId": "VariableID:826:24",
       "token": "--interactive-fg-readonly",
+      "reason": "bound"
+    },
+    {
+      "value": "#f9fafb",
+      "hint": [
+        "bg",
+        "surface",
+        "small",
+        "read",
+        "only",
+        "false"
+      ],
+      "variableId": "VariableID:11:75",
+      "token": "--surface-bg-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#e5e7eb",
+      "hint": [
+        "border",
+        "focus",
+        "small",
+        "read",
+        "only",
+        "false"
+      ],
+      "variableId": "VariableID:11:76",
+      "token": "--border-interactive-disabled",
+      "reason": "bound"
+    },
+    {
+      "value": "#4b5563",
+      "hint": [
+        "fg",
+        "text",
+        "small",
+        "read",
+        "only",
+        "false"
+      ],
+      "variableId": "VariableID:11:77",
+      "token": "--interactive-fg-readonly",
+      "reason": "bound"
+    },
+    {
+      "value": "24px",
+      "hint": [
+        "stack",
+        "gap",
+        "space",
+        "default"
+      ],
+      "variableId": "VariableID:14:16",
+      "token": "--space-stack-lg",
       "reason": "bound"
     }
   ]

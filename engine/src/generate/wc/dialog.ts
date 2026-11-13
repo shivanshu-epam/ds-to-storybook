@@ -4,7 +4,7 @@
  * composed "open-change" events. Visuals and CSS are the React output's.
  */
 import { docTabs, leadSentence, pascal, type GeneratedFile, type TemplateContext } from '../templates/common.ts';
-import { isIcon, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
+import { axisControl, axisData, axisDefault, axisType, isIcon, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRPart } from '../../ir/types.ts';
 import { attrFor, classFor, figmaDocsMdx, header, mdx, tagFor, usage, wcProp, wcText, type WcOptions, type WcResult } from './components.ts';
 
@@ -74,11 +74,11 @@ export function wcDialog(ctx: TemplateContext, name: string, core: GenericCore, 
   const props: Prop[] = [
     { prop: 'open', type: 'boolean', init: 'false', decl: '{ type: Boolean, reflect: true }', doc: 'Open' },
     { prop: 'modal', type: 'boolean', init: 'true', decl: "{ type: Boolean, converter: { fromAttribute: (value: string | null) => value !== 'false' } }", doc: 'Modal (default): focus stays inside, the page behind is inert, and a backdrop shows. modal="false" for an in-page dialog' },
-    ...enumAxes.map((a) => ({ prop: a.prop, type: a.options.map(js).join(' | '), init: js(a.defaultValue), decl: `{ type: String, reflect: true, attribute: ${js(attrFor(a.prop))} }`, doc: `Figma: ${a.figma}` })),
+    ...enumAxes.map((a) => ({ prop: a.prop, type: axisType(a, js), init: axisDefault(a, js), decl: `{ type: ${a.boolean ? 'Boolean' : 'String'}, reflect: true, attribute: ${js(attrFor(a.prop))} }`, doc: `Figma: ${a.figma}` })),
     ...booleans.map((b) => ({ prop: b.prop, type: 'boolean', init: String(String(b.p.default) === 'true'), decl: `{ type: Boolean, attribute: ${js(attrFor(b.prop))} }`, doc: `Figma: ${b.p.name}` })),
     ...texts.map((t) => ({ prop: t.prop, type: 'string', init: js(String(t.p.default)), decl: `{ type: String, attribute: ${js(attrFor(t.prop))} }`, doc: `Figma: ${t.p.name}` })),
   ];
-  const dataAttrs = enumAxes.map((a) => `data-${a.attr}=\${this.${a.prop}}`);
+  const dataAttrs = enumAxes.map((a) => `data-${a.attr}=\${${axisData(a, `this.${a.prop}`)}}`);
   const aria = [
     ...(d.alertValue && typeProp ? [`role=\${this.${typeProp} === '${d.alertValue}' ? 'alertdialog' : nothing}`] : []),
     ...(d.title ? ['aria-labelledby="title"'] : []),
@@ -168,7 +168,7 @@ declare global {
     const v = a.values.find((x) => x.figma === figma);
     if (!v || v.role === 'pseudo') return {};
     if (v.role === 'disabled') return { disabled: true };
-    return a.options.length > 1 ? { [wcProp(a.prop)]: v.value } : {};
+    return a.options.length > 1 ? { [wcProp(a.prop)]: a.boolean ? v.value === 'true' : v.value } : {};
   };
   const titleText = String(core.texts.find((t) => d.title && core.layers.find((l) => l.role === d.title)?.part.refs?.characters === t.p.name)?.p.default ?? '');
   const shadow = `within(canvasElement.querySelector('${tag}')!.shadowRoot as unknown as HTMLElement)`;
@@ -275,7 +275,7 @@ const meta = {
   component: '${tag}',
   args: { ${storyProps.map((p) => `${p.prop}: ${p.init}`).join(', ')} },
   argTypes: {
-${enumAxes.map((a) => `    ${a.prop}: { control: '${a.options.length > 5 ? 'select' : 'inline-radio'}', options: ${js(a.options)}, description: ${js(`Figma: ${a.figma}`)} },`).join('\n')}
+${enumAxes.map((a) => `    ${a.prop}: ${axisControl(a, js)},`).join('\n')}
   },
   parameters: { figma: { fileKey: ${js(ctx.fileKey)}, nodeId: ${js(set.nodeId)} }, generator: 'dialog' },
 } satisfies Meta;

@@ -149,10 +149,11 @@ export async function runInit(opts: InitOptions): Promise<void> {
       opts.log('No package.json here: the Storybook will be generated as a standalone project.');
     }
     const suggested = suggestTargets(stack);
-    opts.log(`Suggested output: ${suggested.join(' + ')} (${targetReason(stack)})`);
+    if (!opts.target) opts.log(`Suggested output: ${suggested.join(' + ')} (${targetReason(stack)})`);
     const chosen = (opts.target ?? (await ask('Output: react, web-components or both?', suggested.length > 1 ? 'both' : suggested[0]))).trim().toLowerCase();
     const targets = chosen === 'both' ? (['react', 'web-components'] as const) : chosen === 'react' ? (['react'] as const) : chosen === 'web-components' || chosen === 'wc' ? (['web-components'] as const) : undefined;
     if (!targets) throw new Error(`Unknown output "${chosen}". Use react, web-components or both.`);
+    if (opts.target) opts.log(`Output: ${targets.join(' + ')} (--target ${chosen}; for this project ds-sync would suggest ${suggested.join(' + ')})`);
 
     // 6. Output folder
     const dir = opts.dir ?? (await ask('Folder for the generated Storybook:', 'storybook'));
@@ -185,7 +186,7 @@ export async function runInit(opts: InitOptions): Promise<void> {
       opts.log('Wrote .github/workflows/ds-sync.yml (add a FIGMA_TOKEN repository secret).');
     }
 
-    opts.log(`Next: npx ds-sync discover   (review what was found)\n      npx ds-sync generate   (writes ${dir}/)\n      cd ${dir} && npm install && npm run storybook`);
+    opts.log(`Next: npx ds-sync discover   (review what was found)\n      npx ds-sync generate   (writes ${targets.length > 1 ? `${dir}/ and ${dir}-web-components/` : `${dir}/`})\n      cd ${dir} && npm install && npm run storybook`);
   } finally {
     rl?.close();
   }

@@ -9,12 +9,12 @@ import './ds-radio-group';
 const meta = {
   title: "Components/Radio/RadioGroup",
   component: 'ds-radio-group',
-  args: { label: undefined, state: "enabled", horizontal: "false", disabled: false },
+  args: { label: undefined, state: "enabled", horizontal: false, disabled: false },
   argTypes: {
-    state: { control: 'inline-radio', options: ["enabled","read-only","invalid","warning"], description: "Figma: State" },
-    horizontal: { control: 'inline-radio', options: ["false","true"], description: "Figma: Horizontal" },
+    state: { control: 'inline-radio', options: ["enabled", "read-only", "invalid", "warning"], description: "Figma: State" },
+    horizontal: { control: 'boolean', description: "Figma: Horizontal" },
   },
-  render: (args) => html`<ds-radio-group label=${args.label ?? nothing} state=${args.state ?? nothing} horizontal=${args.horizontal ?? nothing} ?disabled=${args.disabled}></ds-radio-group>`,
+  render: (args) => html`<ds-radio-group label=${args.label ?? nothing} state=${args.state ?? nothing} ?horizontal=${args.horizontal} ?disabled=${args.disabled}></ds-radio-group>`,
   parameters: { figma: { fileKey: "I983NcgqSiY14YkpJbwjG8", nodeId: "529:749" }, generator: 'radio' },
 } satisfies Meta;
 
@@ -46,14 +46,14 @@ export const StateAndHorizontal: Story = {
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("State by Horizontal", ["Enabled","Read-Only","Invalid","Warning"], ["false","true"], (r, c) => {
-      if (r === "Enabled" && c === "false") return html`<ds-radio-group label=${args.label ?? nothing} state="enabled" horizontal="false" ?disabled=${args.disabled}></ds-radio-group>`;
-      if (r === "Enabled" && c === "true") return html`<ds-radio-group label=${args.label ?? nothing} state="enabled" horizontal="true" ?disabled=${args.disabled}></ds-radio-group>`;
-      if (r === "Read-Only" && c === "false") return html`<ds-radio-group label=${args.label ?? nothing} state="read-only" horizontal="false" ?disabled=${args.disabled}></ds-radio-group>`;
-      if (r === "Read-Only" && c === "true") return html`<ds-radio-group label=${args.label ?? nothing} state="read-only" horizontal="true" ?disabled=${args.disabled}></ds-radio-group>`;
-      if (r === "Invalid" && c === "false") return html`<ds-radio-group label=${args.label ?? nothing} state="invalid" horizontal="false" ?disabled=${args.disabled}></ds-radio-group>`;
-      if (r === "Invalid" && c === "true") return html`<ds-radio-group label=${args.label ?? nothing} state="invalid" horizontal="true" ?disabled=${args.disabled}></ds-radio-group>`;
-      if (r === "Warning" && c === "false") return html`<ds-radio-group label=${args.label ?? nothing} state="warning" horizontal="false" ?disabled=${args.disabled}></ds-radio-group>`;
-      if (r === "Warning" && c === "true") return html`<ds-radio-group label=${args.label ?? nothing} state="warning" horizontal="true" ?disabled=${args.disabled}></ds-radio-group>`;
+      if (r === "Enabled" && c === "false") return html`<ds-radio-group label=${args.label ?? nothing} state="enabled" ?horizontal=${false} ?disabled=${args.disabled}></ds-radio-group>`;
+      if (r === "Enabled" && c === "true") return html`<ds-radio-group label=${args.label ?? nothing} state="enabled" ?horizontal=${true} ?disabled=${args.disabled}></ds-radio-group>`;
+      if (r === "Read-Only" && c === "false") return html`<ds-radio-group label=${args.label ?? nothing} state="read-only" ?horizontal=${false} ?disabled=${args.disabled}></ds-radio-group>`;
+      if (r === "Read-Only" && c === "true") return html`<ds-radio-group label=${args.label ?? nothing} state="read-only" ?horizontal=${true} ?disabled=${args.disabled}></ds-radio-group>`;
+      if (r === "Invalid" && c === "false") return html`<ds-radio-group label=${args.label ?? nothing} state="invalid" ?horizontal=${false} ?disabled=${args.disabled}></ds-radio-group>`;
+      if (r === "Invalid" && c === "true") return html`<ds-radio-group label=${args.label ?? nothing} state="invalid" ?horizontal=${true} ?disabled=${args.disabled}></ds-radio-group>`;
+      if (r === "Warning" && c === "false") return html`<ds-radio-group label=${args.label ?? nothing} state="warning" ?horizontal=${false} ?disabled=${args.disabled}></ds-radio-group>`;
+      if (r === "Warning" && c === "true") return html`<ds-radio-group label=${args.label ?? nothing} state="warning" ?horizontal=${true} ?disabled=${args.disabled}></ds-radio-group>`;
       return html``;
     }),
 };

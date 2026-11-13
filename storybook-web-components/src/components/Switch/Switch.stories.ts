@@ -13,8 +13,8 @@ const meta = {
   argTypes: {
     checked: { control: 'boolean', description: "On or off. Figma: Value" },
     accessibleLabel: { control: 'text', description: 'Accessible name (Figma has no label)' },
-    interaction: { control: 'inline-radio', options: ["default","loading"], description: "Figma: Interaction" },
-    size: { control: 'inline-radio', options: ["medium","small"], description: "Figma: Size" },
+    interaction: { control: 'inline-radio', options: ["default", "loading"], description: "Figma: Interaction" },
+    size: { control: 'inline-radio', options: ["medium", "small"], description: "Figma: Size" },
     disabled: { control: 'boolean', description: 'Figma: State=Disabled' },
     showInnerContent: { control: 'boolean', description: "Figma: Show Inner Content" },
   },

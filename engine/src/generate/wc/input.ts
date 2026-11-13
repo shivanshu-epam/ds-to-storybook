@@ -4,7 +4,7 @@
  * value, required validity and a composed "change" event. Visuals and CSS are the React output's.
  */
 import { docTabs, leadSentence, pascal, type GeneratedFile, type TemplateContext } from '../templates/common.ts';
-import { isIcon, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
+import { axisControl, axisData, axisDefault, axisType, isIcon, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRPart } from '../../ir/types.ts';
 import { attrFor, classFor, figmaDocsMdx, header, mdx, tagFor, usage, wcProp, wcText, type WcOptions, type WcResult } from './components.ts';
 
@@ -81,12 +81,12 @@ ${indent}  @input=\${this.onInput} @change=\${this.onChange} />`;
     { prop: 'maxlength', type: 'number | undefined', init: 'undefined', decl: '{ type: Number }', doc: 'Maximum length; also makes the character count live' },
     { prop: 'autocomplete', type: 'string | undefined', init: 'undefined', decl: '{ type: String }', doc: 'Native autocomplete hint' },
     { prop: 'invalid', type: 'boolean', init: 'false', decl: '{ type: Boolean }', doc: 'Marks the input invalid (aria-invalid) without changing its look' },
-    ...enumAxes.map((a) => ({ prop: a.prop, type: a.options.map(js).join(' | '), init: js(a.defaultValue), decl: `{ type: String, reflect: true, attribute: ${js(attrFor(a.prop))} }`, doc: `Figma: ${a.figma}${ip.renamed && a.prop === 'appearance' ? ' (Figma "Type"; "type" is the native input type)' : ''}` })),
+    ...enumAxes.map((a) => ({ prop: a.prop, type: axisType(a, js), init: axisDefault(a, js), decl: `{ type: ${a.boolean ? 'Boolean' : 'String'}, reflect: true, attribute: ${js(attrFor(a.prop))} }`, doc: `Figma: ${a.figma}${ip.renamed && a.prop === 'appearance' ? ' (Figma "Type"; "type" is the native input type)' : ''}` })),
     { prop: 'disabled', type: 'boolean', init: 'false', decl: '{ type: Boolean, reflect: true }', doc: 'Figma: State=Disabled' },
     ...booleans.map((b) => ({ prop: b.prop, type: 'boolean', init: String(String(b.p.default) === 'true'), decl: `{ type: Boolean, attribute: ${js(attrFor(b.prop))} }`, doc: `Figma: ${b.p.name}` })),
     ...texts.map((t) => ({ prop: t.prop, type: 'string', init: js(String(t.p.default)), decl: `{ type: String, attribute: ${js(attrFor(t.prop))} }`, doc: `Figma: ${t.p.name}` })),
   ];
-  const dataAttrs = [...enumAxes.map((a) => `data-${a.attr === 'appearance' ? 'type' : a.attr}=\${this.${a.prop}}`), '?data-disabled=${this.disabled}', '?data-invalid=${this.isInvalid}', 'data-force-state=${this.forceState ?? nothing}'];
+  const dataAttrs = [...enumAxes.map((a) => `data-${a.attr === 'appearance' ? 'type' : a.attr}=\${${axisData(a, `this.${a.prop}`)}}`), '?data-disabled=${this.disabled}', '?data-invalid=${this.isInvalid}', 'data-force-state=${this.forceState ?? nothing}'];
 
   const component = `${header(js(set.name), 'input template')}// Visuals come from Figma. Behaviour: a native <input> with its <label> and description, form-associated.
 import { LitElement, html, nothing, unsafeCSS } from 'lit';
@@ -187,7 +187,7 @@ declare global {
     if (!v) return {};
     if (v.role === 'pseudo') return { _force: { force: v.state! } };
     if (v.role === 'disabled') return { disabled: true };
-    return a.options.length > 1 ? { [wcProp(a.prop)]: v.value } : {};
+    return a.options.length > 1 ? { [wcProp(a.prop)]: a.boolean ? v.value === 'true' : v.value } : {};
   };
   const labelText = String(core.texts.find((t) => t.prop === ip.props.label)?.p.default ?? '');
   const helperText = String(core.texts.find((t) => t.prop === ip.props.helper)?.p.default ?? '');
@@ -291,7 +291,7 @@ const meta = {
   component: '${tag}',
   args: { ${storyProps.map((p) => `${p.prop}: ${p.init}`).join(', ')} },
   argTypes: {
-${enumAxes.map((a) => `    ${a.prop}: { control: '${a.options.length > 5 ? 'select' : 'inline-radio'}', options: ${js(a.options)}, description: ${js(`Figma: ${a.figma}`)} },`).join('\n')}
+${enumAxes.map((a) => `    ${a.prop}: ${axisControl(a, js)},`).join('\n')}
   },
   render: (args) => ${el()},
   parameters: { figma: { fileKey: ${js(ctx.fileKey)}, nodeId: ${js(set.nodeId)} }, generator: 'input' },

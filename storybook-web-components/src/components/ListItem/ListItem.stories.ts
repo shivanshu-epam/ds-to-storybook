@@ -11,9 +11,9 @@ const meta = {
   component: 'ds-list-item',
   args: { type: "default", state: "default", size: "sm", disabled: false, hasLeadingControl: false, hasTrailingControl: false },
   argTypes: {
-    type: { control: 'inline-radio', options: ["default","menu","file","setting"], description: "Figma: Type" },
-    state: { control: 'inline-radio', options: ["default","selected","activated","dragged","skeleton"], description: "Figma: State" },
-    size: { control: 'inline-radio', options: ["sm","md","lg"], description: "Figma: Size" },
+    type: { control: 'inline-radio', options: ["default", "menu", "file", "setting"], description: "Figma: Type" },
+    state: { control: 'inline-radio', options: ["default", "selected", "activated", "dragged", "skeleton"], description: "Figma: State" },
+    size: { control: 'inline-radio', options: ["sm", "md", "lg"], description: "Figma: Size" },
     disabled: { control: 'boolean', description: 'Figma: State=Disabled' },
     hasLeadingControl: { control: 'boolean', description: "Figma: has-leading-control" },
     hasTrailingControl: { control: 'boolean', description: "Figma: has-trailing-control" },

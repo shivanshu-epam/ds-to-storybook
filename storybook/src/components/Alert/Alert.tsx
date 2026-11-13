@@ -24,9 +24,9 @@ export function Alert({ sentiment = 'neutral', size = 'sm', state = 'default', c
         <div className={styles.visualContainer}>
           <span className={styles.leadingIcon} aria-hidden="true"><Icon name="statusInfo16" /></span>
           <div className={styles.contentContainer}>
-            <span className={styles.headline}>{(({"danger":"Sync failed","info":"Update available","success":"Payment received","warning":"Storage almost full"} as Record<string, string>)[sentiment] ?? "Draft saved")}</span>
-            <span className={styles.supportingText}>{(({"danger":"Check your connection and retry.","info":"Version 4.2 is ready to install.","success":"Invoice #4021 marked as paid.","warning":"92% of your quota is in use."} as Record<string, string>)[sentiment] ?? "Your changes are stored locally.")}</span>
-            <span className={styles.actionButton}><Button variant="ghost" children={(({"neutral":"Undo","info":"Update now","success":"View receipt","warning":"Manage storage"} as Record<string, string>)[sentiment] ?? "Retry")} /></span>
+            <span className={styles.headline}>{(({"danger":"Sync failed","info":"Update available","success":"Payment received","warning":"Storage almost full"} as Record<string, string>)[String(sentiment)] ?? "Draft saved")}</span>
+            <span className={styles.supportingText}>{(({"danger":"Check your connection and retry.","info":"Version 4.2 is ready to install.","success":"Invoice #4021 marked as paid.","warning":"92% of your quota is in use."} as Record<string, string>)[String(sentiment)] ?? "Your changes are stored locally.")}</span>
+            <span className={styles.actionButton}><Button variant="ghost" children={(({"neutral":"Undo","info":"Update now","success":"View receipt","warning":"Manage storage"} as Record<string, string>)[String(sentiment)] ?? "Retry")} /></span>
           </div>
           <span className={styles.closeButton}><Button variant="ghost" leadingIcon={<Icon name="actionClose16" />} aria-label="Close" /></span>
         </div>

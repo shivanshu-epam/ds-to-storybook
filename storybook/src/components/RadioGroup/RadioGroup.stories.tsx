@@ -10,7 +10,7 @@ const meta = {
   component: RadioGroup,
   argTypes: {
     state: { control: 'inline-radio', options: ['enabled', 'read-only', 'invalid', 'warning'], description: 'Figma: State' },
-    horizontal: { control: 'inline-radio', options: ['false', 'true'], description: 'Figma: Horizontal' },
+    horizontal: { control: 'boolean', description: 'Figma: Horizontal' },
     'data-force-state': { table: { disable: true } },
   },
   parameters: { figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '529:749' }, generator: 'radio' },
@@ -43,7 +43,7 @@ export const StateAndHorizontal: Story = {
   parameters: { controls: { disable: true } },
   render: (args) => {
     const rows: Record<string, Partial<RadioGroupProps>> = { 'Enabled': { state: 'enabled' }, 'Read-Only': { state: 'read-only' }, 'Invalid': { state: 'invalid' }, 'Warning': { state: 'warning' } };
-    const columns: Record<string, Partial<RadioGroupProps>> = { 'false': { horizontal: 'false' }, 'true': { horizontal: 'true' } };
+    const columns: Record<string, Partial<RadioGroupProps>> = { 'false': { horizontal: false }, 'true': { horizontal: true } };
     return (
       <Matrix
         label="State by Horizontal"
@@ -62,14 +62,14 @@ export const FigmaVariants: Story = {
   render: (args) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
       {[
-        { id: '529:489', name: 'State=Enabled, Horizontal=false', width: 280, props: { state: 'enabled', horizontal: 'false' } as Partial<RadioGroupProps> },
-        { id: '529:516', name: 'State=Enabled, Horizontal=true', width: 960, props: { state: 'enabled', horizontal: 'true' } as Partial<RadioGroupProps> },
-        { id: '529:543', name: 'State=Read-Only, Horizontal=false', width: 280, props: { state: 'read-only', horizontal: 'false' } as Partial<RadioGroupProps> },
-        { id: '529:576', name: 'State=Read-Only, Horizontal=true', width: 960, props: { state: 'read-only', horizontal: 'true' } as Partial<RadioGroupProps> },
-        { id: '529:609', name: 'State=Invalid, Horizontal=false', width: 280, props: { state: 'invalid', horizontal: 'false' } as Partial<RadioGroupProps> },
-        { id: '529:644', name: 'State=Invalid, Horizontal=true', width: 1141, props: { state: 'invalid', horizontal: 'true' } as Partial<RadioGroupProps> },
-        { id: '529:679', name: 'State=Warning, Horizontal=false', width: 280, props: { state: 'warning', horizontal: 'false' } as Partial<RadioGroupProps> },
-        { id: '529:714', name: 'State=Warning, Horizontal=true', width: 1178, props: { state: 'warning', horizontal: 'true' } as Partial<RadioGroupProps> },
+        { id: '529:489', name: 'State=Enabled, Horizontal=false', width: 280, props: { state: 'enabled', horizontal: false } as Partial<RadioGroupProps> },
+        { id: '529:516', name: 'State=Enabled, Horizontal=true', width: 960, props: { state: 'enabled', horizontal: true } as Partial<RadioGroupProps> },
+        { id: '529:543', name: 'State=Read-Only, Horizontal=false', width: 280, props: { state: 'read-only', horizontal: false } as Partial<RadioGroupProps> },
+        { id: '529:576', name: 'State=Read-Only, Horizontal=true', width: 960, props: { state: 'read-only', horizontal: true } as Partial<RadioGroupProps> },
+        { id: '529:609', name: 'State=Invalid, Horizontal=false', width: 280, props: { state: 'invalid', horizontal: false } as Partial<RadioGroupProps> },
+        { id: '529:644', name: 'State=Invalid, Horizontal=true', width: 1141, props: { state: 'invalid', horizontal: true } as Partial<RadioGroupProps> },
+        { id: '529:679', name: 'State=Warning, Horizontal=false', width: 280, props: { state: 'warning', horizontal: false } as Partial<RadioGroupProps> },
+        { id: '529:714', name: 'State=Warning, Horizontal=true', width: 1178, props: { state: 'warning', horizontal: true } as Partial<RadioGroupProps> },
       ].map((v) => (
         <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
           <RadioGroup {...args} {...v.props} />

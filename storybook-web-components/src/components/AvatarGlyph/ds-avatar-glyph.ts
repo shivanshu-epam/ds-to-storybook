@@ -32,7 +32,7 @@ export class DsAvatarGlyph extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-type=${this.type} data-color=${this.color} data-size=${this.size} data-force-state=${this.forceState ?? nothing}>
-        <span class="initials">${(({"2":"MK","3":"RS","4":"TL","5":"PV"} as Record<string, string>)[this.color] ?? "AJ")}</span>
+        <span class="initials">${(({"2":"MK","3":"RS","4":"TL","5":"PV"} as Record<string, string>)[String(this.color)] ?? "AJ")}</span>
         <span class="icon" aria-hidden="true">${icon("userProfile20")}</span>
       </div>`;
   }

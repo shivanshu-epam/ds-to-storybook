@@ -13,9 +13,9 @@ const meta = {
   component: 'ds-dialog',
   args: { type: "confirmation", size: "small", state: "open", hasCloseButton: true, hasSecondaryAction: true, hasSubtitle: false, scrollableContent: false, titleValue: "Dialog title", subtitle: "Supporting context text", bodyContent: "Dialog body copy goes here." },
   argTypes: {
-    type: { control: 'inline-radio', options: ["confirmation","alert","form","full-screen","side-drawer"], description: "Figma: Type" },
-    size: { control: 'inline-radio', options: ["small","medium","large","full"], description: "Figma: Size" },
-    state: { control: 'inline-radio', options: ["open","loading","error"], description: "Figma: State" },
+    type: { control: 'inline-radio', options: ["confirmation", "alert", "form", "full-screen", "side-drawer"], description: "Figma: Type" },
+    size: { control: 'inline-radio', options: ["small", "medium", "large", "full"], description: "Figma: Size" },
+    state: { control: 'inline-radio', options: ["open", "loading", "error"], description: "Figma: State" },
   },
   parameters: {
     // Known design issues (ds-sync.config.json overrides.knownIssues), accepted only in these Figma modes:

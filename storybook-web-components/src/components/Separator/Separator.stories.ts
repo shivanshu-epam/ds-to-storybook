@@ -10,7 +10,7 @@ const meta = {
   component: 'ds-separator',
   args: { type: "slash" },
   argTypes: {
-    type: { control: 'inline-radio', options: ["slash","chevron"], description: "Figma: Type" },
+    type: { control: 'inline-radio', options: ["slash", "chevron"], description: "Figma: Type" },
   },
   render: (args) => html`<ds-separator type=${args.type}></ds-separator>`,
   parameters: { figma: { fileKey: "I983NcgqSiY14YkpJbwjG8", nodeId: "224:1467" }, generator: 'generic' },

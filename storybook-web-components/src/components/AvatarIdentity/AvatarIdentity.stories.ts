@@ -11,7 +11,7 @@ const meta = {
   component: 'ds-avatar-identity',
   args: { state: "default", disabled: false, hasName: true, hasEmail: false, hasTrailingIcon: false, name: "Alex Johnson", email: "alex.johnson@acme.com" },
   argTypes: {
-    state: { control: 'inline-radio', options: ["default","selected"], description: "Figma: State" },
+    state: { control: 'inline-radio', options: ["default", "selected"], description: "Figma: State" },
     disabled: { control: 'boolean', description: 'Figma: State=Disabled' },
     hasName: { control: 'boolean', description: "Figma: Has name" },
     hasEmail: { control: 'boolean', description: "Figma: Has email" },

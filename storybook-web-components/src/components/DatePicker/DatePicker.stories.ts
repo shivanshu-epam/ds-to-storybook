@@ -11,8 +11,8 @@ const meta = {
   component: 'ds-date-picker',
   args: { type: "single", state: "default", disabled: false, showCalendar: false },
   argTypes: {
-    type: { control: 'inline-radio', options: ["single","range","date-time"], description: "Figma: Type" },
-    state: { control: 'inline-radio', options: ["default","filled","read-only","error"], description: "Figma: State" },
+    type: { control: 'inline-radio', options: ["single", "range", "date-time"], description: "Figma: Type" },
+    state: { control: 'inline-radio', options: ["default", "filled", "read-only", "error"], description: "Figma: State" },
     disabled: { control: 'boolean', description: 'Figma: State=Disabled' },
     showCalendar: { control: 'boolean', description: "Figma: Show Calendar" },
   },

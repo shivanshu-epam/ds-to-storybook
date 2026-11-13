@@ -115,7 +115,7 @@ function nodeDeclarations(role: RoleDef, found: Found, variant: IRVariant, r: To
     const lh = s.text?.lineHeightPx;
     if (lh && s.height !== undefined && s.sizingV !== 'FIXED' && s.height > lh && s.height < lh * 2) out['min-height'] = px(s.height);
     if (s.textAlign) out['text-align'] = ({ CENTER: 'center', RIGHT: 'right', JUSTIFIED: 'justify' } as Record<string, string>)[s.textAlign] ?? 'left';
-  } else if (type === 'INSTANCE' && found.part?.instanceOf && /^icon\//i.test(found.part.instanceOf)) {
+  } else if (type === 'INSTANCE' && found.part?.instanceOf && (found.part.icon || /^icons?\//i.test(found.part.instanceOf))) {
     Object.assign(out, declarations({ ...role, kind: 'icon' }, found, variant, r));
   } else if (role.layoutOnly) {
     // The nested component draws its own fill, border, radius and padding.
@@ -143,13 +143,13 @@ function nodeDeclarations(role: RoleDef, found: Found, variant: IRVariant, r: To
   if (s.sizingH === 'FILL' && inFlow) {
     if (parentRow) out.flex = '1 1 0';
     else out['align-self'] = 'stretch';
-  } else if (fixedW && s.width !== undefined && !(type === 'INSTANCE' && found.part?.instanceOf && !/^icon\//i.test(found.part.instanceOf))) {
+  } else if (fixedW && s.width !== undefined && !(type === 'INSTANCE' && found.part?.instanceOf && !(found.part.icon || /^icons?\//i.test(found.part.instanceOf)))) {
     out.width = px(s.width);
   }
   if (s.sizingV === 'FILL' && inFlow) {
     if (!parentRow) out.flex = '1 1 0';
     else out['align-self'] = 'stretch';
-  } else if (fixedH && s.height !== undefined && type !== 'TEXT' && !(type === 'INSTANCE' && found.part?.instanceOf && !/^icon\//i.test(found.part.instanceOf))) {
+  } else if (fixedH && s.height !== undefined && type !== 'TEXT' && !(type === 'INSTANCE' && found.part?.instanceOf && !(found.part.icon || /^icons?\//i.test(found.part.instanceOf)))) {
     out.height = px(s.height);
   }
   if (inFlow) out['flex-shrink'] = s.sizingH === 'FIXED' && parentRow ? '0' : out['flex-shrink'] ?? '1';

@@ -11,8 +11,8 @@ const meta = {
   component: 'ds-radio-field',
   args: { label: undefined, checked: false, state: "enabled", position: "left", disabled: false },
   argTypes: {
-    state: { control: 'inline-radio', options: ["enabled","invalid","warning","read-only","skeleton"], description: "Figma: State" },
-    position: { control: 'inline-radio', options: ["left","right"], description: "Figma: Position" },
+    state: { control: 'inline-radio', options: ["enabled", "invalid", "warning", "read-only", "skeleton"], description: "Figma: State" },
+    position: { control: 'inline-radio', options: ["left", "right"], description: "Figma: Position" },
   },
   render: (args) => html`<ds-radio-field label=${args.label ?? nothing} ?checked=${args.checked} state=${args.state ?? nothing} position=${args.position ?? nothing} ?disabled=${args.disabled}></ds-radio-field>`,
   parameters: { figma: { fileKey: "I983NcgqSiY14YkpJbwjG8", nodeId: "522:125" }, generator: 'radio' },

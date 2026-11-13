@@ -24,12 +24,12 @@ export interface RadioGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 'c
   /** Figma: State. Default enabled. */
   state?: 'enabled' | 'read-only' | 'invalid' | 'warning';
   /** Figma: Horizontal. Default false. */
-  horizontal?: 'false' | 'true';
+  horizontal?: boolean;
   /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */
   'data-force-state'?: string;
 }
 
-export function RadioGroup({ state = 'enabled', horizontal = 'false', disabled = false, label, name, value, defaultValue, onValueChange, children, className, ...rest }: RadioGroupProps) {
+export function RadioGroup({ state = 'enabled', horizontal = false, disabled = false, label, name, value, defaultValue, onValueChange, children, className, ...rest }: RadioGroupProps) {
   const id = useId();
   const labelId = `${id}-label`;
   const [inner, setInner] = useState(defaultValue);
@@ -43,16 +43,18 @@ export function RadioGroup({ state = 'enabled', horizontal = 'false', disabled =
       aria-disabled={disabled || undefined}
       className={[styles.root, className].filter(Boolean).join(' ')}
       data-state={state}
-      data-horizontal={horizontal}
+      data-horizontal={horizontal ? 'true' : 'false'}
       {...rest}
     >
       <span className={styles.groupLabel} id={labelId}>{label ?? "Delivery speed"}</span>
       <div className={styles.items}>
         {children ?? (
           <>
-            <span className={styles.radioField}><RadioField /></span>
-            <span className={styles.radioField}><RadioField /></span>
-            <span className={styles.radioField}><RadioField /></span>
+            <>
+              <span className={styles.radioField}><RadioField /></span>
+              <span className={styles.radioField}><RadioField /></span>
+              <span className={styles.radioField}><RadioField /></span>
+            </>
           </>
         )}
       </div>

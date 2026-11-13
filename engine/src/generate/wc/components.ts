@@ -8,7 +8,7 @@ import { docTabs, kebab, leadSentence, pascal } from '../templates/common.ts';
 import type { AccordionCore } from '../templates/accordion.ts';
 import type { ActionCore } from '../templates/action.ts';
 import type { CheckboxCore } from '../templates/checkbox.ts';
-import { isIcon, lookupExpr, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
+import { axisControl, axisData, axisDefault, axisType, isIcon, lookupExpr, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRComponentSet, IRPart } from '../../ir/types.ts';
 import { wcRadio } from './radio.ts';
 import { wcInput } from './input.ts';
@@ -153,15 +153,23 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
           .join(' ');
         el = `<span ${c}><${ntag}${props ? ' ' + props : ''}>${nested.text !== undefined ? `\${${wcText(l, js(nested.text))}}` : ''}</${ntag}></span>`;
         // Repeated instances: one element each (the React output does the same).
+        // Each copy keeps its own boolean.
+        const own = boolFor(p.refs?.visible);
+        if (own && l.copies?.length) el = `\${this.${own} ? html\`${el}\` : nothing}`;
         for (const copy of l.copies ?? []) {
           const n = instance(copy);
           if (!n) continue;
           const cp = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? (n.kind === 'switch' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`) : x.prop === 'defaultChecked' ? '?checked=${true}' : `.${wcProp(x.prop)}=\${${js(x.value)}}`)).join(' ');
-          el += `\n${indent}<span ${c}><${ntag}${cp ? ' ' + cp : ''}>${n.text !== undefined ? `\${${js(n.text)}}` : ''}</${ntag}></span>`;
+          const one = `<span ${c}><${ntag}${cp ? ' ' + cp : ''}>${n.text !== undefined ? `\${${wcText(l, js(n.text))}}` : ''}</${ntag}></span>`;
+          const b = boolFor(copy.refs?.visible);
+          el += `\n${indent}${b ? `\${this.${b} ? html\`${one}\` : nothing}` : one}`;
         }
+        if (l.copies?.length) return `${indent}${el}`;
       } else {
         el = `<span ${c} aria-hidden="true"></span>`;
       }
+    } else if (SHAPES.has(p.type) && children(l.path).some((k) => k.part.type === 'INSTANCE')) {
+      el = `<span ${c}>\n${children(l.path).map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</span>`;
     } else if (SHAPES.has(p.type)) {
       el = `<span ${c} aria-hidden="true"></span>`;
     } else {
@@ -183,14 +191,14 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
       { prop: 'name', type: 'string | undefined', init: 'undefined', decl: '{ type: String, reflect: true }' },
       { prop: 'value', type: 'string', init: "'on'", decl: '{ type: String }' },
     ] : []),
-    ...enumAxes.map((a) => ({ prop: a.prop, type: a.options.map(js).join(' | '), init: js(a.defaultValue), decl: `{ type: String, reflect: true, attribute: ${js(attrFor(a.prop))} }` })),
+    ...enumAxes.map((a) => ({ prop: a.prop, type: axisType(a, js), init: axisDefault(a, js), decl: `{ type: ${a.boolean ? 'Boolean' : 'String'}, reflect: true, attribute: ${js(attrFor(a.prop))} }` })),
     ...(hasDisabled ? [{ prop: 'disabled', type: 'boolean', init: 'false', decl: '{ type: Boolean, reflect: true }' }] : []),
     ...booleans.map((b) => ({ prop: b.prop, type: 'boolean', init: String(String(b.p.default) === 'true'), decl: `{ type: Boolean, attribute: ${js(attrFor(b.prop))} }` })),
     ...texts.map((t) => ({ prop: t.prop, type: 'string', init: js(String(t.p.default)), decl: `{ type: String, attribute: ${js(attrFor(t.prop))} }` })),
   ];
   const dataAttrs = [
     ...(sw ? [`data-${sw.axis.attr}=\${this.checked ? ${js(sw.on)} : ${js(sw.off)}}`] : []),
-    ...enumAxes.map((a) => `data-${a.attr}=\${this.${a.prop}}`),
+    ...enumAxes.map((a) => `data-${a.attr}=\${${axisData(a, `this.${a.prop}`)}}`),
     ...(hasDisabled ? ['?data-disabled=${this.disabled}', sw ? '?disabled=${this.disabled}' : "aria-disabled=${this.disabled ? 'true' : nothing}"] : []),
     ...(busyProp ? [`aria-busy=\${this.${busyProp} === 'loading' ? 'true' : nothing}`] : []),
     'data-force-state=${this.forceState ?? nothing}',
@@ -260,7 +268,7 @@ declare global {
     ...booleans.map((b) => [b.prop, `args.${b.prop}`] as [string, Bind]),
     ...texts.map((t) => [t.prop, `args.${t.prop}`] as [string, Bind]),
   ]);
-  const isBool = (prop: string) => prop === 'disabled' || prop === 'checked' || booleans.some((b) => b.prop === prop);
+  const isBool = (prop: string) => prop === 'disabled' || prop === 'checked' || booleans.some((b) => b.prop === prop) || enumAxes.some((a) => a.boolean && a.prop === prop);
   const el = (over: Record<string, Bind> = {}) => {
     const m = baseBinds();
     let force: string | undefined;
@@ -284,7 +292,7 @@ declare global {
     if (v.role === 'pseudo') return { _force: { force: v.state! } };
     if (v.role === 'disabled') return { disabled: true };
     if (a === sw?.axis) return { checked: v.value === sw.on };
-    return a.options.length > 1 ? { [wcProp(a.prop)]: v.value } : {};
+    return a.options.length > 1 ? { [wcProp(a.prop)]: a.boolean ? v.value === 'true' : v.value } : {};
   };
   const find = sw ? `const host = canvasElement.querySelector('${tag}')!;
     const control = within(shadowOf(canvasElement, '${tag}') as unknown as HTMLElement).getByRole('switch', { name: ${js(sw.label)} });
@@ -387,11 +395,11 @@ ${layoutImports.length ? `import { ${layoutImports.join(', ')} } from '../../sto
 const meta = {
   title: ${js(core.title)},
   component: '${tag}',
-  args: { ${[...(sw ? ['checked: false', `accessibleLabel: ${js(sw.label)}`] : []), ...enumAxes.map((a) => `${a.prop}: ${js(a.defaultValue)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`)].join(', ')} },
+  args: { ${[...(sw ? ['checked: false', `accessibleLabel: ${js(sw.label)}`] : []), ...enumAxes.map((a) => `${a.prop}: ${axisDefault(a, js)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`)].join(', ')} },
   argTypes: {
 ${[
     ...(sw ? [`    checked: { control: 'boolean', description: ${js(`On or off. Figma: ${sw.axis.figma}`)} },`, `    accessibleLabel: { control: 'text', description: 'Accessible name (Figma has no label)' },`] : []),
-    ...enumAxes.map((a) => `    ${a.prop}: { control: '${a.options.length > 5 ? 'select' : 'inline-radio'}', options: ${js(a.options)}, description: ${js(`Figma: ${a.figma}`)} },`),
+    ...enumAxes.map((a) => `    ${a.prop}: ${axisControl(a, js)},`),
     ...(hasDisabled ? [`    disabled: { control: 'boolean', description: 'Figma: State=Disabled' },`] : []),
     ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${js(`Figma: ${b.p.name}`)} },`),
     ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${js(`Figma: ${t.p.name}`)} },`),

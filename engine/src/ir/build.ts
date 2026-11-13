@@ -126,6 +126,21 @@ export function styleOf(node: FigmaNode, resolve: Resolver, parent?: FigmaNode):
 
 const round = (n: number) => Math.round(n * 100) / 100;
 
+/**
+ * Is this instance an icon? Named "Icon/…", or (design systems that name icons "search", "arrow-right") a standalone
+ * component (not a variant: no "=" in its name) that is square, at most 48px, and made only of shapes.
+ */
+export function isIconNode(node: FigmaNode, componentNames: Record<string, string>): boolean {
+  if (node.type !== 'INSTANCE' || !node.componentId) return false;
+  const name = componentNames[node.componentId] ?? '';
+  if (/^icons?\//i.test(name)) return true;
+  if (!name || name.includes('=')) return false;
+  const box = node.absoluteBoundingBox;
+  if (!box || box.width > 48 || box.height > 48 || Math.abs(box.width - box.height) > 1) return false;
+  const shapesOnly = (n: FigmaNode): boolean => (n.children ?? []).every((c) => c.type !== 'TEXT' && c.type !== 'INSTANCE' ? shapesOnly(c) : c.type === 'INSTANCE' ? isIconNode(c, componentNames) || shapesOnly(c) : false);
+  return shapesOnly(node);
+}
+
 function collectParts(node: FigmaNode, resolve: Resolver, prefix: string, out: IRPart[], componentNames: Record<string, string>, hiddenAncestor = false): void {
   const seen = new Map<string, number>();
   for (const child of node.children ?? []) {
@@ -146,6 +161,7 @@ function collectParts(node: FigmaNode, resolve: Resolver, prefix: string, out: I
     if (child.type === 'INSTANCE' && child.componentId) {
       const instanceOf = componentNames[child.componentId];
       if (instanceOf) part.instanceOf = instanceOf;
+      if (isIconNode(child, componentNames)) part.icon = true;
       part.instanceComponentId = child.componentId;
       const inner = firstSolidFill(child, resolve);
       if (inner) part.innerColor = inner;
@@ -154,7 +170,7 @@ function collectParts(node: FigmaNode, resolve: Resolver, prefix: string, out: I
       const props = Object.entries(child.componentProperties ?? {}).filter(([, v]) => v.type === 'BOOLEAN' || v.type === 'TEXT');
       if (props.length) part.instanceProps = Object.fromEntries(props.map(([k, v]) => [stripPropertyId(k), v.value]));
       const icons = (child.children ?? [])
-        .filter((c) => c.type === 'INSTANCE' && c.visible !== false && c.componentId && /^icons?\//i.test(componentNames[c.componentId] ?? ''))
+        .filter((c) => c.type === 'INSTANCE' && c.visible !== false && c.componentId && isIconNode(c, componentNames))
         .map((c) => ({ layer: c.name, name: componentNames[c.componentId!]!, componentId: c.componentId! }));
       if (icons.length) part.innerIcons = icons;
     }

@@ -1,0 +1,389 @@
+{
+  "component": "DropdownTrigger",
+  "description": "A dropdown is a select control: a trigger field that opens a menu of options.",
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "sets": [
+      {
+        "name": "DropdownTrigger",
+        "nodeId": "396:1799"
+      }
+    ]
+  },
+  "mapping": [
+    {
+      "prop": "size",
+      "figma": "Size (variant)"
+    },
+    {
+      "prop": "state",
+      "figma": "State (variant)",
+      "note": "States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Disabled → disabled, Error → state=\"error\", Read-only → state=\"read-only\""
+    },
+    {
+      "prop": "expanded",
+      "figma": "Expanded (variant)"
+    },
+    {
+      "prop": "clearable",
+      "figma": "Clearable (boolean)"
+    }
+  ],
+  "notes": [
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "The Figma set has 21 of 36 possible variant combinations; other combinations use the nearest defined styles.",
+    "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified."
+  ],
+  "tabs": [
+    {
+      "title": "Usage",
+      "nodeId": "1345:600",
+      "sections": [
+        {
+          "heading": "Dropdown",
+          "level": 3,
+          "paragraphs": [
+            "A dropdown is a select control: a trigger field that opens a menu of options."
+          ]
+        },
+        {
+          "heading": "Overview",
+          "level": 3,
+          "paragraphs": [
+            "Dropdown is built from three components: DropdownTrigger (the field), DropdownMenu (the option list, made of List item instances) and Dropdown (the two combined, collapsed or expanded)."
+          ]
+        },
+        {
+          "heading": "Components",
+          "level": 4,
+          "paragraphs": [
+            "DropdownTrigger",
+            "The field showing the selected value or placeholder.",
+            "DropdownMenu",
+            "The option list.",
+            "Dropdown",
+            "Trigger and menu together."
+          ]
+        },
+        {
+          "heading": "Patterns",
+          "level": 4,
+          "paragraphs": [
+            "Multi-select",
+            "Grouped",
+            "Searchable",
+            "Options under a group label (Grouped).",
+            "Search row at the top of the menu (Show Search).",
+            "Clearable",
+            "Disabled",
+            "Error",
+            "A clear icon in the trigger (Clearable).",
+            "These are example compositions on the page, built from the trigger and menu — not variants of Dropdown."
+          ]
+        },
+        {
+          "heading": "Formatting",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Anatomy",
+          "level": 4,
+          "paragraphs": [
+            "1",
+            "2",
+            "4",
+            "3",
+            "•   ① Value — the selected option, or placeholder text.",
+            "•   ② Chevron — points down when closed and rotates 180° when open.",
+            "•   ③ Menu — the option-list surface.",
+            "•   ④ Option — a List item instance.",
+            "Not shown: the clear icon (Clearable), the search row (Show Search) and the group label (Grouped)."
+          ]
+        },
+        {
+          "heading": "Sizes",
+          "level": 4,
+          "paragraphs": [
+            "Small · 32px",
+            "Medium · 40px",
+            "Large · 48px",
+            "The trigger is 320px wide at every size; the menu opens below it at the same width."
+          ]
+        },
+        {
+          "heading": "Content",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "Main elements",
+          "level": 4,
+          "paragraphs": [
+            "Value and placeholder",
+            "•   Shows the selected option, or placeholder text (\"Select an option\") when nothing is selected.",
+            "Menu messages",
+            "•   Loading — \"Loading options…\" with a loading icon.",
+            "•   Empty — \"No results found\"."
+          ]
+        },
+        {
+          "heading": "Behaviors",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "States",
+          "level": 4,
+          "paragraphs": [
+            "•   Trigger — Default, Hover, Focused, Disabled, Error and Read-only (no chevron).",
+            "•   Expanded — the trigger takes the focus border and the chevron rotates 180°.",
+            "•   Menu — Default, Loading and Empty.",
+            "See the Style tab for how each state looks."
+          ]
+        },
+        {
+          "heading": "Related",
+          "level": 3,
+          "paragraphs": [
+            "•   List item — each menu option is a List item instance."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Style",
+      "nodeId": "1345:1013",
+      "sections": [
+        {
+          "heading": "Dropdown",
+          "level": 3,
+          "paragraphs": [
+            "A dropdown is a select control: a trigger field that opens a menu of options."
+          ]
+        },
+        {
+          "heading": "Color",
+          "level": 3,
+          "paragraphs": [
+            "Swatches are bound to the live tokens.",
+            "Trigger state",
+            "Fill",
+            "Border",
+            "Value text",
+            "Default",
+            "surface/bg/elevated",
+            "border/interactive/default",
+            "text/placeholder",
+            "Hover",
+            "surface/bg/elevated",
+            "border/interactive/hover",
+            "text/placeholder",
+            "Focused",
+            "surface/bg/elevated",
+            "border/interactive/focus",
+            "text/placeholder",
+            "Disabled",
+            "surface/bg/subtle",
+            "border/interactive/disabled",
+            "text/disabled",
+            "Error",
+            "surface/bg/elevated",
+            "border/interactive/error",
+            "text/placeholder",
+            "Read-only",
+            "interactive/bg/readonly",
+            "interactive/border/readonly",
+            "interactive/fg/readonly",
+            "The chevron uses icon/color/default from the icons collection; Read-only has no chevron."
+          ]
+        },
+        {
+          "heading": "Menu",
+          "level": 4,
+          "paragraphs": [
+            "Element",
+            "Token",
+            "Surface",
+            "surface/bg/elevated",
+            "Border",
+            "border/default",
+            "Group label, loading and empty text",
+            "text/secondary"
+          ]
+        },
+        {
+          "heading": "Typography",
+          "level": 3,
+          "paragraphs": [
+            "Element",
+            "Token",
+            "Rendered size",
+            "Trigger value",
+            "typography/size/md (primitive)",
+            "14px",
+            "Group label",
+            "—",
+            "11px"
+          ]
+        },
+        {
+          "heading": "Structure",
+          "level": 3,
+          "paragraphs": [
+            "Property",
+            "Value",
+            "Trigger height",
+            "size/control/sm · md · lg — 32 / 40 / 48",
+            "Trigger width",
+            "320",
+            "Trigger padding",
+            "space/inset/sm · 8",
+            "Trigger radius",
+            "radius/control · 6",
+            "Chevron",
+            "Icon/nav/chevron-down/16",
+            "Menu radius",
+            "radius/surface · 8",
+            "Menu elevation",
+            "Drop shadow"
+          ]
+        },
+        {
+          "heading": "Variants & states",
+          "level": 3,
+          "paragraphs": []
+        },
+        {
+          "heading": "DropdownTrigger — 21 variants",
+          "level": 4,
+          "paragraphs": [
+            "Size (3) × State (6) collapsed, plus one Expanded variant per size.",
+            "State \\ Size",
+            "Small",
+            "Medium",
+            "Large",
+            "Default",
+            "Hover",
+            "Focused",
+            "Disabled",
+            "Error",
+            "Read-only"
+          ]
+        },
+        {
+          "heading": "DropdownMenu — 3 variants",
+          "level": 4,
+          "paragraphs": [
+            "Loading",
+            "Empty",
+            "Default"
+          ]
+        },
+        {
+          "heading": "Dropdown — 6 variants",
+          "level": 4,
+          "paragraphs": [
+            "State \\ Size",
+            "Small",
+            "Medium",
+            "Large",
+            "Collapsed",
+            "Expanded"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Accessibility",
+      "nodeId": "1345:1570",
+      "sections": [
+        {
+          "heading": "Dropdown",
+          "level": 3,
+          "paragraphs": [
+            "A dropdown is a select control: a trigger field that opens a menu of options."
+          ]
+        },
+        {
+          "heading": "What the design system provides",
+          "level": 3,
+          "paragraphs": [
+            "•   A Focused state with a focus border on the trigger.",
+            "•   Disabled, Error and Read-only trigger states.",
+            "•   Loading and Empty menu states with text messages.",
+            "•   Trigger heights of 32, 40 and 48px — all above the 24×24px AA target minimum (WCAG 2.5.8)."
+          ]
+        },
+        {
+          "heading": "Development considerations",
+          "level": 3,
+          "paragraphs": [
+            "•   Placeholder text must not replace a visible label (WCAG rules SEM-002) — pair the dropdown with a label.",
+            "•   In the Error state, give a text error message, not just a red border — and set aria-invalid.",
+            "•   Disabled dropdowns must not receive keyboard focus.",
+            "•   The dropdown must be fully operable by keyboard."
+          ]
+        },
+        {
+          "heading": "Design recommendations",
+          "level": 3,
+          "paragraphs": [
+            "Automated contrast check — WCAG 2.x relative luminance (sRGB), for every theme combination. Minimums: 4.5:1 for value and placeholder text, 3:1 for disabled text, borders and the chevron. Note: project-a / light is measured against the current surface/bg/default, which resolves to blue because of the gray/50 token.",
+            "Element",
+            "project-a / light",
+            "project-a / dark",
+            "project-b / light",
+            "project-b / dark",
+            "Placeholder · text/placeholder",
+            "4.83:1",
+            "3.67:1",
+            "4.83:1",
+            "3.67:1",
+            "Read-only value",
+            "7.23:1",
+            "6.99:1",
+            "7.23:1",
+            "6.99:1",
+            "Disabled value",
+            "4.39:1",
+            "3.67:1",
+            "4.39:1",
+            "3.67:1",
+            "Border · Default",
+            "4.63:1",
+            "4.16:1",
+            "4.63:1",
+            "4.16:1",
+            "Border · Focused / Expanded",
+            "6.02:1",
+            "6.75:1",
+            "3.14:1",
+            "9.07:1",
+            "Border · Error",
+            "5.49:1",
+            "7.28:1",
+            "5.49:1",
+            "7.28:1",
+            "Border · Disabled / Read-only",
+            "1.18:1",
+            "1.37:1",
+            "1.18:1",
+            "1.37:1",
+            "Chevron",
+            "7.56:1",
+            "6.99:1",
+            "7.56:1",
+            "6.99:1",
+            "Menu surface vs page",
+            "1.05:1",
+            "1.13:1",
+            "1.05:1",
+            "1.13:1",
+            "The menu surface relies on its border and drop shadow to separate from the page."
+          ]
+        }
+      ]
+    }
+  ]
+}

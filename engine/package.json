@@ -1,9 +1,29 @@
 {
   "name": "ds-sync",
   "version": "0.1.0",
-  "private": true,
   "description": "Generate and sync a tested Storybook from a Figma design system.",
-  "license": "UNLICENSED",
+  "keywords": [
+    "figma",
+    "storybook",
+    "design-system",
+    "design-tokens",
+    "web-components",
+    "react",
+    "lit",
+    "codegen",
+    "accessibility",
+    "visual-regression"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/shivanshu-epam/ds-to-storybook#readme",
+  "bugs": {
+    "url": "https://github.com/shivanshu-epam/ds-to-storybook/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shivanshu-epam/ds-to-storybook.git",
+    "directory": "engine"
+  },
   "type": "module",
   "bin": {
     "ds-sync": "dist/cli.js"
@@ -12,15 +32,14 @@
     "dist",
     "archetypes",
     "templates",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=22"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/shivanshu-epam/ds-to-storybook.git",
-    "directory": "engine"
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.build.json && chmod +x dist/cli.js",

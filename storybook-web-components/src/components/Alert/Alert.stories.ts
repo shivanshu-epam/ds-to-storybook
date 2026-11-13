@@ -11,9 +11,9 @@ const meta = {
   component: 'ds-alert',
   args: { sentiment: "neutral", size: "sm", state: "default" },
   argTypes: {
-    sentiment: { control: 'inline-radio', options: ["danger","neutral","info","success","warning"], description: "Figma: Sentiment" },
-    size: { control: 'inline-radio', options: ["md","sm"], description: "Figma: Size" },
-    state: { control: 'inline-radio', options: ["with-action-close","default","with-action","with-close"], description: "Figma: State" },
+    sentiment: { control: 'inline-radio', options: ["danger", "neutral", "info", "success", "warning"], description: "Figma: Sentiment" },
+    size: { control: 'inline-radio', options: ["md", "sm"], description: "Figma: Size" },
+    state: { control: 'inline-radio', options: ["with-action-close", "default", "with-action", "with-close"], description: "Figma: State" },
   },
   render: (args) => html`<ds-alert sentiment=${args.sentiment} size=${args.size} state=${args.state}></ds-alert>`,
   parameters: {

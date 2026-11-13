@@ -37,9 +37,9 @@ export class DsAlert extends LitElement {
           <div class="visualContainer">
             <span class="leadingIcon" aria-hidden="true">${icon("statusInfo16")}</span>
             <div class="contentContainer">
-              <span class="headline">${(({"danger":"Sync failed","info":"Update available","success":"Payment received","warning":"Storage almost full"} as Record<string, string>)[this.sentiment] ?? "Draft saved")}</span>
-              <span class="supportingText">${(({"danger":"Check your connection and retry.","info":"Version 4.2 is ready to install.","success":"Invoice #4021 marked as paid.","warning":"92% of your quota is in use."} as Record<string, string>)[this.sentiment] ?? "Your changes are stored locally.")}</span>
-              <span class="actionButton"><ds-button .variant=${"ghost"}>${(({"neutral":"Undo","info":"Update now","success":"View receipt","warning":"Manage storage"} as Record<string, string>)[this.sentiment] ?? "Retry")}</ds-button></span>
+              <span class="headline">${(({"danger":"Sync failed","info":"Update available","success":"Payment received","warning":"Storage almost full"} as Record<string, string>)[String(this.sentiment)] ?? "Draft saved")}</span>
+              <span class="supportingText">${(({"danger":"Check your connection and retry.","info":"Version 4.2 is ready to install.","success":"Invoice #4021 marked as paid.","warning":"92% of your quota is in use."} as Record<string, string>)[String(this.sentiment)] ?? "Your changes are stored locally.")}</span>
+              <span class="actionButton"><ds-button .variant=${"ghost"}>${(({"neutral":"Undo","info":"Update now","success":"View receipt","warning":"Manage storage"} as Record<string, string>)[String(this.sentiment)] ?? "Retry")}</ds-button></span>
             </div>
             <span class="closeButton"><ds-button .variant=${"ghost"} .leadingIcon=${"actionClose16"} .label=${"Close"}></ds-button></span>
           </div>

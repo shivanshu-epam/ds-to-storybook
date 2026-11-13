@@ -10,7 +10,7 @@ const meta = {
   component: 'ds-nav-control',
   args: { direction: "prev", disabled: false },
   argTypes: {
-    direction: { control: 'inline-radio', options: ["prev","next"], description: "Figma: Direction" },
+    direction: { control: 'inline-radio', options: ["prev", "next"], description: "Figma: Direction" },
     disabled: { control: 'boolean', description: 'Figma: State=Disabled' },
   },
   render: (args) => html`<ds-nav-control direction=${args.direction} ?disabled=${args.disabled}></ds-nav-control>`,
