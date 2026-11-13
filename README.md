@@ -34,7 +34,7 @@ Prefer a guided run? Use the **Claude Skill** in [`skills/figma-to-storybook`](s
 | [`skills/figma-to-storybook/`](skills/figma-to-storybook/) | **Claude Skill** that drives the CLI and handles the judgement calls. |
 | [`plugin/`](plugin/) | **Figma plugin** that exports variables, for teams not on a Figma Enterprise plan. |
 | [`engine/templates/github-workflow.yml`](engine/templates/github-workflow.yml) | **GitHub Action** (`ds-sync init --ci`) that regenerates weekly or on demand and opens a pull request when the design changed. |
-| [`storybook/`](storybook/) | **Example output, React**: generated from the "Design system AI" Figma file. 21 components. Every story is also tested in each Figma mode (light and dark theme, two brands): all 246 pass. Contrast issues in the design (dark theme, second brand, and the Input placeholder) are accepted per mode as known issues, listed in `ds-sync.config.json` and [PLAN.md](PLAN.md). |
+| [`storybook/`](storybook/) | **Example output, React**: generated from the "Design system AI" Figma file. 21 components. Every story is also tested in each Figma mode (light and dark theme, two brands): all 252 pass. Contrast issues in the design (dark theme, second brand, and the Input placeholder) are accepted per mode as known issues, listed in `ds-sync.config.json` and [PLAN.md](PLAN.md). |
 | [`storybook-web-components/`](storybook-web-components/) | **Example output, Web Components** from the same file: the same 21 components as `<ds-…>` custom elements that work in React, Vue, Angular, Svelte or plain HTML. Same CSS, same test results. |
 | [`PLAN.md`](PLAN.md) | Roadmap, status and open decisions. |
 
@@ -55,6 +55,6 @@ The tool follows the pattern multi-framework design systems use (Adobe Spectrum,
 1. **Discover.** It finds every component set on every page, including nested ones. It classifies frames as documentation, examples or other, and lists anything unclear for a person to confirm.
 2. **Extract.** It reads the Figma REST API into a normalized model: variants, properties, layout, tokens, icons and doc text.
 3. **Tokens.** Figma variables become CSS custom properties. Modes (light/dark, brands) become attributes.
-4. **Components.** Archetype templates (button, checkbox, accordion, switch, radio) add tested WAI-ARIA behaviour. Every other component is rendered by the generic template from its Figma layers, and its docs say that its behaviour isn't specified yet.
+4. **Components.** Archetype templates (button, checkbox, accordion, switch, radio, input) add tested WAI-ARIA behaviour. Every other component is rendered by the generic template from its Figma layers, and its docs say that its behaviour isn't specified yet.
 5. **Stories and docs.** It writes variant × state matrices, axis stories, play tests and MDX pages with the Figma documentation text.
 6. **Report.** `GENERATION-REPORT.md` records every assumption and gap; `token-map.json` records every token decision.

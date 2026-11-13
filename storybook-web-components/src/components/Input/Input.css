@@ -2,6 +2,13 @@
 .root { box-sizing: border-box; position: relative; }
 .labelRow, .label, .requiredIndicator, .container, .leadingIcon, .value, .clearIcon, .trailingIcon, .statusIcon, .footerRow, .helperText, .counterText { box-sizing: border-box; position: relative; margin: 0; min-width: 0; }
 
+/* Native input in place of the Figma text layer: reset, then the Figma text styles below apply. */
+:where(.value) { appearance: none; border: 0; margin: 0; padding: 0; background: none; outline: none; font: inherit; min-width: 0; flex: 1 1 auto; width: auto; }
+.root .value:not(:placeholder-shown) { color: var(--text-primary); }
+.value::placeholder { color: inherit; opacity: 1; }
+.value:disabled { cursor: not-allowed; }
+:where(.clearIcon) { appearance: none; border: 0; padding: 0; margin: 0; background: none; color: inherit; cursor: pointer; }
+
 .root {
   background: transparent;
   box-shadow: none;
@@ -426,7 +433,7 @@
   box-shadow: inset 0 0 0 1px var(--border-interactive-hover);
 }
 
-.root:where([data-type="outlined"]:is(:focus-visible, [data-force-state~="focus"])) .container {
+.root:where([data-type="outlined"]:is(:focus-within, [data-force-state~="focus"])) .container {
   box-shadow: inset 0 0 0 3px var(--border-interactive-focus);
 }
 
@@ -434,7 +441,7 @@
   box-shadow: inset 0 0 0 1px var(--border-interactive-error);
 }
 
-.root:where([data-type="filled"]:is(:focus-visible, [data-force-state~="focus"])) .container {
+.root:where([data-type="filled"]:is(:focus-within, [data-force-state~="focus"])) .container {
   box-shadow: inset 0 0 0 3px var(--border-interactive-focus);
 }
 
@@ -446,7 +453,7 @@
   box-shadow: inset 0 0 0 1px var(--border-default);
 }
 
-.root:where([data-type="borderless"]:is(:focus-visible, [data-force-state~="focus"])) .container {
+.root:where([data-type="borderless"]:is(:focus-within, [data-force-state~="focus"])) .container {
   box-shadow: inset 0 0 0 3px var(--border-interactive-focus);
 }
 
@@ -458,7 +465,7 @@
   box-shadow: inset 0 0 0 1px var(--border-interactive-hover);
 }
 
-.root:where([data-type="inline"]:is(:focus-visible, [data-force-state~="focus"])) .container {
+.root:where([data-type="inline"]:is(:focus-within, [data-force-state~="focus"])) .container {
   box-shadow: inset 0 0 0 3px var(--border-interactive-focus);
 }
 

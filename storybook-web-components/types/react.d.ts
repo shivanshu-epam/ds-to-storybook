@@ -52,7 +52,7 @@ declare module 'react' {
       'ds-divider': El<DsDivider, { orientation?: "horizontal" | "vertical"; styleVariant?: "solid" | "dotted" | "dash"; size?: "sm" | "md"; color?: "light" | "dark" | "subtle" | "transparent" | "danger" | "success" | "neutral" | "warning" | "info"; state?: "default" | "selected"; disabled?: boolean }>;
       'ds-date-picker': El<DsDatePicker, { type?: "single" | "range" | "date-time"; state?: "default" | "filled" | "read-only" | "error"; disabled?: boolean; showCalendar?: boolean }>;
       'ds-switch': El<DsSwitch, { checked?: boolean; accessibleLabel?: string | undefined; name?: string | undefined; value?: string; interaction?: "default" | "loading"; size?: "medium" | "small"; disabled?: boolean; showInnerContent?: boolean }>;
-      'ds-input': El<DsInput, { type?: "outlined" | "filled" | "borderless" | "inline"; size?: "sm" | "md" | "lg"; state?: "default" | "error"; disabled?: boolean; required?: boolean; showLeadingIcon?: boolean; showTrailingIcon?: boolean; clearable?: boolean; showCharacterCount?: boolean; label?: string; placeholder?: string; helperText?: string; characterCount?: string }>;
+      'ds-input': El<DsInput, { value?: string; type?: string; name?: string | undefined; maxlength?: number | undefined; autocomplete?: string | undefined; invalid?: boolean; appearance?: "outlined" | "filled" | "borderless" | "inline"; size?: "sm" | "md" | "lg"; state?: "default" | "error"; disabled?: boolean; required?: boolean; showLeadingIcon?: boolean; showTrailingIcon?: boolean; clearable?: boolean; showCharacterCount?: boolean; label?: string; placeholder?: string; helperText?: string; characterCount?: string }>;
     }
   }
 }

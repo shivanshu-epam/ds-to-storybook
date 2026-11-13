@@ -27,9 +27,9 @@ The full product strategy (market research, architecture options, security, KPIs
 | Drift report against an existing repo (Scenario 5) | Done, React only | `engine/src/code`, `engine/src/diff`, `engine/src/report` |
 | **Storybook generation from Figma (Scenario 2)** | **Done for every component set (21 components)** | `engine/src/generate` → `storybook/` |
 | Tokens: Figma variables to CSS, light/dark and brand modes | Done | `storybook/src/tokens/tokens.css` |
-| Generated components: 7 with behaviour templates (Button, Checkbox, Accordion, Switch, RadioControl, RadioField, RadioGroup), 14 generic; stories, MDX docs, 42 icons | Done; 81/82 story tests pass (1 real design contrast issue) | `storybook/src/components` |
+| Generated components: 8 with behaviour templates (Button, Checkbox, Accordion, Switch, RadioControl, RadioField, RadioGroup, Input), 13 generic; stories, MDX docs, 42 icons | Done; 252/252 story tests pass across all Figma modes (1 real design contrast issue) | `storybook/src/components` |
 | Discovery, `init`, installable CLI, Claude Skill, GitHub workflow, Figma plugin | Done (Phases A and B) | `engine/`, `skills/`, `plugin/` |
-| Engine tests | 45/45 pass | `engine/test` |
+| Engine tests | 48/48 pass | `engine/test` |
 
 **Figma file:** "Design system AI" (`I983NcgqSiY14YkpJbwjG8`). The variables come from `engine/inputs/figma-variables.json`, because the Variables REST API is Enterprise-only.
 
@@ -102,7 +102,13 @@ Decision: support every stack through **layers**, as multi-framework design syst
   - Web Components: native radios cannot group across shadow roots, so the group collects its radios from a composed event and does the grouping itself (one selected, arrow keys, one Tab stop).
   - Repeated instances (the three example items in the Figma group) now render once each instead of being merged into one.
   - Both examples pass 81/82; play tests cover click, label click, disabled, and arrow-key selection.
-- [ ] Archetypes: input, select/dropdown, dialog, tabs, tooltip, toast, slider, table. Input next.
+- [x] **Input** (2026-11-13): any set named input/text field with a Placeholder text property. Layers are found by the Figma properties bound to them:
+  - the placeholder text layer becomes a native `<input>` (placeholder from Figma; typed text uses the `text/primary` token, since Figma only draws the placeholder);
+  - the Label layer becomes its `<label>`, the helper text its description (`aria-describedby`), the Required layer sets `required`, a Clearable icon becomes a "Clear" button, and the character count is live when `maxLength` is set;
+  - State=Error sets `aria-invalid`; the Figma Type axis is `appearance`, so `type` stays the native input type;
+  - the Web Component is form-associated (value, required validity) with the input and label in one shadow root.
+  - Note: axe does not check `::placeholder` contrast, so the Input placeholder issue accepted in `knownIssues` is no longer measured by the tests. It is still a design issue.
+- [ ] Archetypes: select/dropdown, dialog, tabs, tooltip, toast, slider, table. Dialog next.
 - [x] **Tests in every Figma mode** (2026-11-13): every story runs once with the default modes and once per other mode (here theme=dark and project=project-b), as separate Vitest projects, so axe checks contrast in each theme. `npx vitest run --project "storybook (theme: dark)"` runs one mode.
   - Result, identical in React and Web Components: 200 of 246 pass. All 46 failures are colour contrast in the design tokens, not generator bugs:
     - default modes: 1 (Input placeholder, 4.39:1, known);
@@ -142,4 +148,4 @@ Hosted control plane, multiple design systems and repos, role-based access, audi
    - run the GitHub workflow once;
    - decide on npm publishing (name, scope, public or private registry).
 2. ~~Phase C~~ done: Web Components for any stack, React kept.
-3. Phase D: behaviour templates for the components now on the generic template (switch and radio done; input and dialog next), and dark-mode test runs.
+3. Phase D: behaviour templates for the components now on the generic template (switch, radio and input done; dialog next), and dark-mode test runs.

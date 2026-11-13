@@ -61,7 +61,7 @@ export interface GenerateConfig {
 
 export interface PlannedComponent {
   name: string;
-  template: 'action' | 'checkbox' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'generic';
+  template: 'action' | 'checkbox' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'generic';
   sets: Record<string, string>;
   /** Storybook title; default Components/<name>. */
   title?: string;

@@ -150,7 +150,23 @@ export interface RadioBehavior {
   control?: string;
 }
 
-export type Behavior = 'switch' | 'radio' | 'radio-field' | 'radio-group';
+/** Text input pack: which Figma layers become the native <input>, its <label>, its description and its controls. */
+export interface InputLayers {
+  value: string;
+  label?: string;
+  helper?: string;
+  counter?: string;
+  required?: string;
+  clear?: string;
+  /** Props bound to those layers (Figma text and boolean properties). */
+  props: { placeholder: string; label?: string; helper?: string; counter?: string; required?: string };
+  /** Token for typed text (Figma only draws the placeholder). */
+  valueColor: string;
+  /** Figma Type axis renamed so it does not clash with the input's type attribute. */
+  renamed?: { from: string; to: string };
+}
+
+export type Behavior = 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input';
 
 export function switchAxis(axes: AxisInfo[]): { axis: AxisInfo; on: string; off: string } | undefined {
   for (const a of axes) {
@@ -183,6 +199,8 @@ export interface GenericCore {
   behavior?: SwitchBehavior;
   /** Set for templates "radio", "radio-field" and "radio-group". */
   radio?: RadioBehavior;
+  /** Set for template "input": the roles of the layers that become the native input, its label, message and so on. */
+  input?: InputLayers;
   /** Layer roles the radio packs render specially. */
   radioLayers?: { control?: string; row?: string; label?: string; items?: string; groupLabel?: string; controlComponent?: string; fieldComponent?: string; forwardStates?: string[] };
 }
@@ -191,7 +209,7 @@ export interface GenericCore {
 export interface RegistryEntry {
   component: string;
   importPath: string;
-  kind: 'action' | 'generic' | 'switch' | 'radio' | 'radio-field' | 'radio-group';
+  kind: 'action' | 'generic' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input';
   set: IRComponentSet;
 }
 
@@ -251,7 +269,7 @@ export function instanceRef(entry: RegistryEntry, part: IRPart, icons: Map<strin
   const plan = propPlan(entry.set);
   const variant = entry.set.variants.find((v) => v.nodeId === part.instanceComponentId);
   const sw = entry.kind === 'switch' || entry.kind === 'radio' ? switchAxis(plan.axes) : undefined;
-  const props = variant ? variantProps(plan.axes.filter((a) => a !== sw?.axis), variant.values) : [];
+  const props = (variant ? variantProps(plan.axes.filter((a) => a !== sw?.axis), variant.values) : []).map((x) => (entry.kind === 'input' && x.prop === 'type' ? { ...x, prop: 'appearance' } : x));
   const over = part.instanceProps ?? {};
   const notes: string[] = [];
   if (sw && variant) {
@@ -337,6 +355,9 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   if (!set) throw new Error(`${name}: the generic template needs a "main" component set`);
   const dir = `src/components/${name}`;
   const axes = analyzeAxes(set);
+  // A text input already has a "type" attribute (text, email, password): the Figma Type axis becomes "appearance".
+  const renamedType = opts.behavior === 'input' ? axes.find((a) => a.prop === 'type') : undefined;
+  if (renamedType) renamedType.prop = 'appearance';
   const defaults: Record<string, string> = Object.fromEntries(set.properties.filter((p) => p.type === 'VARIANT').map((p) => [p.name, String(p.default)]));
   const defaultVariant = set.variants.find((v) => Object.entries(defaults).every(([k, x]) => v.values[k] === x)) ?? set.variants[0];
   if (!defaultVariant) throw new Error(`${name}: component set has no variants`);
@@ -402,7 +423,7 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
       };
     }),
   ];
-  const focusNative = radio?.kind === 'control' ? ':has(> .input:focus-visible)' : radio ? ':focus-within' : ':focus-visible';
+  const focusNative = radio?.kind === 'control' ? ':has(> .input:focus-visible)' : radio || opts.behavior === 'input' ? ':focus-within' : ':focus-visible';
   const model: StyleModel = {
     axes: axes.filter((a) => a.kind === 'variant' && a !== radio?.axis).map<VariantAxis>((a) => ({ figma: a.figma, attr: a.attr, values: Object.fromEntries(a.values.map((v) => [v.figma, v.value])) })),
     stateAxes: axes.filter((a) => a.kind === 'state').map<StateAxis>((a) => ({
@@ -429,6 +450,34 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   const forwardState = Boolean(stateProp && controlAxes.find((a) => a.prop === 'state')?.options.some((o) => stateProp.options.includes(o) && o !== stateProp.defaultValue));
   const controlStates = controlAxes.find((a) => a.prop === 'state')?.options ?? [];
 
+  // Input pack: layers found by the Figma properties bound to them.
+  const textBound = (re: RegExp) => { const t = texts.find((x) => re.test(x.p.name)); return t ? { t, l: all.find((l) => l.part.type === 'TEXT' && l.part.refs?.characters === t.p.name) } : undefined; };
+  const visBound = (re: RegExp) => { const b = booleans.find((x) => re.test(x.p.name)); return b ? { b, l: all.find((l) => l.part.refs?.visible === b.p.name) } : undefined; };
+  const ph = opts.behavior === 'input' ? textBound(/placeholder/i) : undefined;
+  if (opts.behavior === 'input' && !ph?.l) gaps.push('Input template: no text layer bound to a Placeholder property, so no native input was generated.');
+  const lab = ph?.l ? textBound(/^label$/i) : undefined;
+  const help = ph?.l ? textBound(/helper|hint|description/i) : undefined;
+  const count = ph?.l ? textBound(/count/i) : undefined;
+  const req = ph?.l ? visBound(/required/i) : undefined;
+  const clr = ph?.l ? visBound(/clear/i) : undefined;
+  const input: InputLayers | undefined = ph?.l ? {
+    value: ph.l.role,
+    ...(lab?.l ? { label: lab.l.role } : {}),
+    ...(help?.l ? { helper: help.l.role } : {}),
+    ...(count?.l ? { counter: count.l.role } : {}),
+    ...(req?.l ? { required: req.l.role } : {}),
+    ...(clr?.l && clr.l.part.type === 'INSTANCE' ? { clear: clr.l.role } : {}),
+    props: { placeholder: ph.t.prop, ...(lab ? { label: lab.t.prop } : {}), ...(help ? { helper: help.t.prop } : {}), ...(count ? { counter: count.t.prop } : {}), ...(req ? { required: req.b.prop } : {}) },
+    valueColor: ctx.resolver.byName(/^text\/(primary|default)$/) ?? 'inherit',
+    ...(renamedType ? { renamed: { from: 'type', to: 'appearance' } } : {}),
+  } : undefined;
+  const inputRole = (l: LayerInfo) => (input ? (Object.entries(input).find(([k, v]) => typeof v === 'string' && v === l.role && k !== 'valueColor')?.[0]) : undefined);
+  if (input) {
+    assumptions.push(`A native <input> replaces the Figma "${ph!.l!.part.name}" text layer; ${input.label ? 'the label layer is its <label>, ' : ''}${input.helper ? 'the helper text describes it (aria-describedby), ' : ''}and typed text uses ${input.valueColor} (Figma only draws the placeholder).`);
+    if (renamedType) assumptions.push('The Figma Type axis is the "appearance" prop, so "type" stays the native input type (text, email, password...).');
+    if (input.clear) gaps.push(`The clear control's accessible name "Clear" comes from its Figma layer name "${clr!.l!.part.name}"; confirm the wording.`);
+  }
+
   // JSX
   const imports = new Set<string>();
   let usesIcon = false;
@@ -437,7 +486,34 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
     const p = l.part;
     const cls = `className={styles.${l.role}}`;
     let el: string;
-    if (p.type === 'TEXT' && (l === labelLayer || l === groupLabelLayer)) {
+    const ir = inputRole(l);
+    if (ir === 'value') {
+      el = `<input
+${indent}  ref={ref}
+${indent}  id={inputId}
+${indent}  className={styles.${l.role}}
+${indent}  placeholder={${input!.props.placeholder}}
+${indent}  disabled={disabled}
+${input!.props.required ? `${indent}  required={${input!.props.required}}\n` : ''}${indent}  aria-invalid={invalid || undefined}
+${indent}  aria-describedby={describedBy}
+${indent}  onChange={(event) => {
+${indent}    setLength(event.target.value.length);
+${indent}    onChange?.(event);
+${indent}  }}
+${indent}  {...rest}
+${indent}/>`;
+    } else if (ir === 'label') {
+      el = `<label className={styles.${l.role}} htmlFor={inputId}>{${input!.props.label}}</label>`;
+    } else if (ir === 'helper') {
+      el = `<span className={styles.${l.role}} id={helperId}>{${input!.props.helper}}</span>`;
+    } else if (ir === 'counter') {
+      el = `<span className={styles.${l.role}}>{maxLength !== undefined ? \`\${length}/\${maxLength}\` : ${input!.props.counter}}</span>`;
+    } else if (ir === 'required') {
+      el = `<span className={styles.${l.role}} aria-hidden="true">{${JSON.stringify(p.text ?? '*')}}</span>`;
+    } else if (ir === 'clear' && p.instanceOf && ctx.icons.get(p.instanceOf)) {
+      usesIcon = true;
+      el = `<button type="button" className={styles.${l.role}} aria-label="Clear" disabled={disabled} onClick={clear}><Icon name="${ctx.icons.get(p.instanceOf)!.name}" /></button>`;
+    } else if (p.type === 'TEXT' && (l === labelLayer || l === groupLabelLayer)) {
       el = `<span ${cls}${l === groupLabelLayer ? ' id={labelId}' : ''}>{label ?? ${JSON.stringify(p.text ?? '')}}</span>`;
     } else if (p.type === 'TEXT') {
       const t = textFor(p.refs?.characters);
@@ -515,7 +591,7 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
     ...(sw?.busy ? ['aria-busy={busy || undefined}'] : []),
   ];
 
-  const radioTsx = radio ? radioComponent() : undefined;
+  const radioTsx = radio ? radioComponent() : input ? inputComponent() : undefined;
   const tsx = radioTsx ?? (sw ? `// Generated by ds-sync (switch template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 // Visuals come from Figma. Behaviour: WAI-ARIA switch pattern (native button, role="switch", aria-checked).
 import { useState, type ButtonHTMLAttributes${texts.length ? ', type ReactNode' : ''} } from 'react';
@@ -566,6 +642,54 @@ ${body}
   );
 }
 `);
+
+  function inputComponent(): string {
+    const ip = input!;
+    const set = ctx.sets.main!;
+    const errorValue = stateProp?.options.find((o) => /^(error|invalid)$/.test(o));
+    const own = [...propAxes.map((a) => a.prop), 'disabled', ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop)];
+    const lines = [
+      ...propAxes.map((a) => `  /** Figma: ${a.figma}. Default ${a.defaultValue}.${a === renamedType ? ' (Figma "Type"; "type" is the native input type.)' : ''}${a === stateProp && errorValue ? ` "${errorValue}" also sets aria-invalid.` : ''} */\n  ${a.prop}?: ${a.options.map(q).join(' | ')};`),
+      '  /** Figma: State=Disabled. */\n  disabled?: boolean;',
+      ...booleans.map((b) => `  /** Figma: ${b.p.name} (boolean). Default ${b.p.default}.${b.prop === ip.props.required ? ' Also sets the native required attribute.' : ''} */\n  ${b.prop}?: boolean;`),
+      ...texts.map((t) => `  /** Figma: ${t.p.name} (text).${t.prop === ip.props.counter ? ' Shown when maxLength is not set; with maxLength the count is live.' : ''} */\n  ${t.prop}?: ${t.prop === ip.props.placeholder || t.prop === ip.props.counter ? 'string' : 'ReactNode'};`),
+      '  /** Marks the input invalid (aria-invalid) without changing its look. */\n  invalid?: boolean;',
+      ...(ip.clear ? ['  /** Called after the clear button empties the input. */\n  onClear?: () => void;'] : []),
+      `  /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */\n  'data-force-state'?: string;`,
+    ];
+    const destructure = [...propAxes.map((a) => `${a.prop} = ${q(a.defaultValue)}`), 'disabled = false', ...booleans.map((b) => `${b.prop} = ${String(b.p.default) === 'true'}`), ...texts.map((t) => `${t.prop} = ${q(String(t.p.default))}`), 'invalid: invalidProp', ...(ip.clear ? ['onClear'] : []), 'id', 'className', 'style', 'value', 'defaultValue', 'maxLength', 'onChange', "'aria-describedby': ariaDescribedBy", "'data-force-state': forceState", '...rest'];
+    return `// Generated by ds-sync (input template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
+// Visuals come from Figma. Behaviour: a native <input> with its <label>, description and validity.
+import { useId, useRef, useState, type InputHTMLAttributes, type ReactNode } from 'react';
+
+${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
+
+export interface ${name}Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'children'${own.map((x) => ` | '${x}'`).join('')}> {
+${lines.join('\n')}
+}
+
+export function ${name}({ ${destructure.join(', ')} }: ${name}Props) {
+  const autoId = useId();
+  const inputId = id ?? autoId;
+  const helperId = ${ip.helper ? '`${inputId}-helper`' : 'undefined'};
+  const describedBy = [helperId, ariaDescribedBy].filter(Boolean).join(' ') || undefined;
+  const invalid = Boolean(invalidProp)${errorValue ? ` || ${stateProp!.prop} === '${errorValue}'` : ''};
+  const ref = useRef<HTMLInputElement>(null);
+  const [length, setLength] = useState(String(value ?? defaultValue ?? '').length);
+${ip.clear ? `  const clear = () => {
+    if (ref.current && value === undefined) ref.current.value = '';
+    setLength(0);
+    onClear?.();
+    ref.current?.focus();
+  };
+` : ''}  return (
+    <div className={[styles.root, className].filter(Boolean).join(' ')} style={style} ${[...propAxes.map((a) => `data-${a.attr}={${a.prop}}`), "data-disabled={disabled ? '' : undefined}", "data-invalid={invalid ? '' : undefined}", 'data-force-state={forceState}'].join(' ')}>
+${body.replace(/\{\.\.\.rest\}/, '{...rest}\n' + '          value={value}\n          defaultValue={defaultValue}\n          maxLength={maxLength}')}
+    </div>
+  );
+}
+`;
+  }
 
   function radioComponent(): string {
     const r = radio!;
@@ -732,7 +856,13 @@ ${figmaFocus ? '' : `.root:focus-visible, .root[data-force-state~="focus"] { out
 /* Native radio input over the Figma visuals: it takes the clicks, the focus and the checked state. */
 .input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; z-index: 1; }
 .input:disabled { cursor: not-allowed; }
-` : ''}${radio?.kind === 'field' && labelLayer ? `
+` : ''}${input ? `
+/* Native input in place of the Figma text layer: reset, then the Figma text styles below apply. */
+:where(.${input.value}) { appearance: none; border: 0; margin: 0; padding: 0; background: none; outline: none; font: inherit; min-width: 0; flex: 1 1 auto; width: auto; }
+.root .${input.value}:not(:placeholder-shown) { color: ${input.valueColor}; }
+.${input.value}::placeholder { color: inherit; opacity: 1; }
+.${input.value}:disabled { cursor: not-allowed; }
+${input.clear ? `:where(.${input.clear}) { appearance: none; border: 0; padding: 0; margin: 0; background: none; color: inherit; cursor: pointer; }\n` : ''}` : ''}${radio?.kind === 'field' && labelLayer ? `
 .root:not([data-disabled]) label { cursor: pointer; }
 ` : ''}
 ${styles.css}`;
@@ -769,7 +899,42 @@ export const Default: Story = {
     await expect(control).toHaveAttribute('aria-checked', 'false');
     await expect(args.onCheckedChange).toHaveBeenLastCalledWith(false);
   },
-};` : radio ? radioDefault() : `${defaultDoc}\nexport const Default: Story = {};`];
+};` : radio ? radioDefault() : input ? inputDefault() : `${defaultDoc}\nexport const Default: Story = {};`];
+  function inputDefault(): string {
+    const ip = input!;
+    const labelText = String(texts.find((t) => t.prop === ip.props.label)?.p.default ?? '');
+    const errorValue = stateProp?.options.find((o) => /^(error|invalid)$/.test(o));
+    return `${defaultDoc}
+export const Default: Story = {
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const field = ${ip.label ? `canvas.getByLabelText(${q(labelText)}${ip.props.required ? ', { exact: false }' : ''})` : "canvas.getByRole('textbox')"};
+    await userEvent.type(field, 'Hello');
+    await expect(field).toHaveValue('Hello');
+    await expect(args.onChange).toHaveBeenCalled();${ip.helper ? `
+    await expect(field).toHaveAccessibleDescription(${q(String(texts.find((t) => t.prop === ip.props.helper)?.p.default ?? ''))});` : ''}
+  },
+};${errorValue ? `
+
+/** Figma State=${stateProp!.values.find((v) => v.value === errorValue)?.figma}: the input is marked invalid. */
+export const Invalid: Story = {
+  args: { ${stateProp!.prop}: ${q(errorValue)} },
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByRole('textbox')).toHaveAttribute('aria-invalid', 'true');
+  },
+};` : ''}${ip.clear ? `
+
+/** The clear button empties the input and keeps focus in it. */
+export const Clear: Story = {
+  args: { ${booleans.find((b) => /clear/i.test(b.p.name))!.prop}: true, defaultValue: 'Hello' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: 'Clear' }));
+    await expect(canvas.getByRole('textbox')).toHaveValue('');
+    await expect(canvas.getByRole('textbox')).toHaveFocus();
+  },
+};` : ''}`;
+  }
   function radioDefault(): string {
     const r = radio!;
     if (r.kind === 'control') return `${defaultDoc}
@@ -909,19 +1074,19 @@ ${booleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.defa
     ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${q(`Figma: ${t.p.name}`)} },`),
     `    'data-force-state': { table: { disable: true } },`,
   ];
-  const storiesFile = `// Generated by ds-sync (${sw ? 'switch' : radio ? 'radio' : 'generic'} template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
+  const storiesFile = `// Generated by ds-sync (${sw ? 'switch' : radio ? 'radio' : input ? 'input' : 'generic'} template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 import type { Meta, StoryObj } from '@storybook/react-vite';
-${sw || radio?.kind === 'control' || radio?.kind === 'field' ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : radio ? "import { expect, userEvent, within } from 'storybook/test';\n" : ''}
+${sw || radio?.kind === 'control' || radio?.kind === 'field' || input ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : radio ? "import { expect, userEvent, within } from 'storybook/test';\n" : ''}
 import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { ${name}, type ${name}Props } from './${name}';
 
 const meta = {
   title: ${q(opts.title)},
   component: ${name},
-${sw ? `  args: { 'aria-label': ${q(sw.label)}, onCheckedChange: fn() },\n` : radio?.kind === 'control' ? `  args: { 'aria-label': ${q(radio.label)}, onChange: fn() },\n` : radio?.kind === 'field' ? '  args: { onChange: fn() },\n' : ''}  argTypes: {
+${sw ? `  args: { 'aria-label': ${q(sw.label)}, onCheckedChange: fn() },\n` : radio?.kind === 'control' ? `  args: { 'aria-label': ${q(radio.label)}, onChange: fn() },\n` : radio?.kind === 'field' || input ? '  args: { onChange: fn() },\n' : ''}  argTypes: {
 ${argTypes.join('\n')}
   },
-  parameters: { figma: { fileKey: ${q(ctx.fileKey)}, nodeId: ${q(set.nodeId)} }, generator: ${q(sw ? 'switch' : radio ? 'radio' : 'generic')} },
+  parameters: { figma: { fileKey: ${q(ctx.fileKey)}, nodeId: ${q(set.nodeId)} }, generator: ${q(sw ? 'switch' : radio ? 'radio' : input ? 'input' : 'generic')} },
 } satisfies Meta<typeof ${name}>;
 
 export default meta;
@@ -937,6 +1102,7 @@ ${stories.join('\n\n')}
   });
 
   const mapping: ComponentReport['props'] = [
+    ...(input ? [{ prop: 'value / defaultValue / onChange / type / name / maxLength / ...', figma: `${ph!.l!.part.name} (text layer)`, note: 'Native input attributes; the Figma placeholder text is the placeholder.' }, { prop: 'invalid', figma: '—', note: 'aria-invalid without changing the look.' }] : []),
     ...(radio?.kind === 'field' ? [{ prop: 'label', figma: `${labelLayer?.part.name ?? 'text'} (text layer)`, note: 'Rendered in the <label>.' }, { prop: 'name / value / checked / defaultChecked / onChange', figma: '—', note: 'Passed to the radio input.' }] : []),
     ...(radio?.kind === 'group' ? [{ prop: 'label', figma: `${groupLabelLayer?.part.name ?? 'text'} (text layer)`, note: 'Names the radiogroup.' }, { prop: 'name / value / defaultValue / onValueChange', figma: '—', note: 'Shared by the radios inside.' }, { prop: 'children', figma: `${itemsLayer?.part.name ?? 'items'} (layer)`, note: 'Default: the Figma example items.' }] : []),
     ...axes.map((a) => a === radio?.axis
@@ -949,7 +1115,7 @@ ${stories.join('\n\n')}
     ...swaps.map((s) => ({ prop: '—', figma: `${s.name} (instance swap)`, note: 'Not exposed yet.' })),
   ];
   const uniqueGaps = [...new Set(gaps)];
-  const core: GenericCore = { set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
+  const core: GenericCore = { set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
   const files = [
     { path: `${dir}/${name}.tsx`, content: tsx },
     { path: `${dir}/${name}.module.css`, content: css },

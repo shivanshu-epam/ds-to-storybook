@@ -34,7 +34,7 @@ export interface DiscoveredFrame {
 export interface Proposal {
   /** Generated component name (PascalCase). */
   name: string;
-  template: 'action' | 'checkbox' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'generic';
+  template: 'action' | 'checkbox' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'generic';
   /** Template role -> component set id. */
   sets: Record<string, string>;
   page: string;
@@ -190,6 +190,10 @@ function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides
         template = 'accordion';
         reason = 'Accordion item with _header and _panel layers: disclosure archetype (WAI-ARIA accordion).';
         confidence = 0.9;
+      } else if (/input|text ?field|text ?box/i.test(s.name) && p.some((x) => /placeholder/i.test(x))) {
+        template = 'input';
+        reason = 'Text input with a Placeholder property: input archetype (native <input> with label and description).';
+        confidence = 0.85;
       } else if (/switch|toggle/i.test(s.name) && hasOnOffAxis(nodes.get(s.id))) {
         template = 'switch';
         reason = 'Switch or toggle with an on/off variant axis: switch archetype (WAI-ARIA switch).';
@@ -298,7 +302,7 @@ export function targetsFromDiscovery(d: Discovery): ComponentTarget[] {
     const p = d.proposals.find((x) => Object.values(x.sets).includes(s.id));
     return {
       id: `auto.${s.id}`,
-      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' ? 'selection.binary' : p?.template === 'accordion' ? 'disclosure' : p?.template === 'switch' ? 'switch' : p?.template?.startsWith('radio') ? 'radio' : 'generic',
+      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' ? 'selection.binary' : p?.template === 'accordion' ? 'disclosure' : p?.template === 'switch' ? 'switch' : p?.template?.startsWith('radio') ? 'radio' : p?.template === 'input' ? 'input' : 'generic',
       figma: { page: s.page, componentSet: { id: s.id, name: s.name }, docFrames: p?.docFrames ?? [] },
     };
   });

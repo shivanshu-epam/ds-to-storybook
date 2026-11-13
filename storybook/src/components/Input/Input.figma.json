@@ -12,7 +12,17 @@
   },
   "mapping": [
     {
-      "prop": "type",
+      "prop": "value / defaultValue / onChange / type / name / maxLength / ...",
+      "figma": "value (text layer)",
+      "note": "Native input attributes; the Figma placeholder text is the placeholder."
+    },
+    {
+      "prop": "invalid",
+      "figma": "—",
+      "note": "aria-invalid without changing the look."
+    },
+    {
+      "prop": "appearance",
       "figma": "Type (variant)"
     },
     {
@@ -73,8 +83,11 @@
   ],
   "notes": [
     "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "A native <input> replaces the Figma \"value\" text layer; the label layer is its <label>, the helper text describes it (aria-describedby), and typed text uses var(--text-primary) (Figma only draws the placeholder).",
+    "The Figma Type axis is the \"appearance\" prop, so \"type\" stays the native input type (text, email, password...).",
     "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified.",
-    "Instance swap properties not exposed as props (default instance rendered): Leading icon, Trailing icon."
+    "Instance swap properties not exposed as props (default instance rendered): Leading icon, Trailing icon.",
+    "The clear control's accessible name \"Clear\" comes from its Figma layer name \"clear-icon\"; confirm the wording."
   ],
   "tabs": [
     {

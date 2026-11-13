@@ -1,0 +1,9 @@
+# Text input. Behaviour source: native <input> with HTML labelling (WAI-ARIA: textbox).
+id: input
+pattern: html/input
+role: textbox
+element: native input; the Figma placeholder text layer is replaced, its label layer is the <label>
+requiredStates: [default, hover, focus, disabled, invalid]
+keyboard:
+  - { key: Tab, action: focus the input (then the clear button, if shown) }
+requiredDocs: [usage, accessibility]

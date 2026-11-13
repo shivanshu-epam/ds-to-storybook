@@ -2039,7 +2039,9 @@ Figma: Input (836:4005)
 
 | Figma | Prop | Note |
 | --- | --- | --- |
-| Type (variant) | `type` |  |
+| value (text layer) | `value / defaultValue / onChange / type / name / maxLength / ...` | Native input attributes; the Figma placeholder text is the placeholder. |
+| — | `invalid` | aria-invalid without changing the look. |
+| Type (variant) | `appearance` |  |
 | Size (variant) | `size` |  |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Focus → :focus (CSS), Disabled → disabled, Error → state="error" |
 | Required (boolean) | `required` |  |
@@ -2057,11 +2059,14 @@ Figma: Input (836:4005)
 **Not from Figma (archetype defaults or decisions):**
 
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
+- A native <input> replaces the Figma "value" text layer; the label layer is its <label>, the helper text describes it (aria-describedby), and typed text uses var(--text-primary) (Figma only draws the placeholder).
+- The Figma Type axis is the "appearance" prop, so "type" stays the native input type (text, email, password...).
 - A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state="focus") until behaviour is specified.
 
 **Gaps:**
 
 - Instance swap properties not exposed as props (default instance rendered): Leading icon, Trailing icon.
+- The clear control's accessible name "Clear" comes from its Figma layer name "clear-icon"; confirm the wording.
 - Known design issue in default (accessibility checks report instead of failing there): Placeholder #6b7280 on Filled background #f3f4f6 is 4.39:1 (needs 4.5:1)
 - Known design issue in project=project-b (accessibility checks report instead of failing there): Placeholder #6b7280 on #f3f4f6 is 4.39:1 (also in the default modes)
 - Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: grey #6b7280 text on #111827 / #030712 is 3.66–4.16:1
