@@ -9,6 +9,16 @@ import { discover, discoveryMarkdown, targetsFromDiscovery, type Discovery } fro
 import { generateStorybook, type PlannedComponent } from './generate/index.ts';
 import { runInit } from './init.ts';
 import { runVisual, verdict } from './visual/visual.ts';
+import { changeImages, changesMarkdown, diffIR, type ChangeSet } from './changes/changes.ts';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
+
+const writeBinary = (path: string, data: Buffer) => {
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, data);
+};
+import type { FigmaIR } from './ir/types.ts';
+import { existsSync as exists, readFileSync } from 'node:fs';
 import { extractIR } from './ir/extract.ts';
 import { loadIR, paths, stepAnalyze, stepExtract, stepReport, stepSpecs } from './pipeline.ts';
 import { loadDotEnv, writeJson, writeText } from './util/core.ts';
@@ -27,6 +37,8 @@ Commands:
   discover  Find every component set and classify frames → out/discovery.md
   generate  Build a fresh Storybook project from Figma (auto-discovers components
             unless "generate.components" is set in the config)
+  status    Is Figma newer than the generated output? (one API call; for CI)
+  changes   What changed in Figma since a version → out/changes.md (+ .json); generate writes it too
   visual    Compare every Figma variant with the generated Storybook, pixel by pixel
             → out/visual/report.html (needs a running React Storybook: --url)
 
@@ -34,6 +46,7 @@ Options:
   --config <file>   Config file (default: ds-sync.config.json)
   --out <dir>       Working directory for reports and cache (default: .ds-sync)
   --figma-version <id>  Read this Figma version instead of the latest (discover, generate)
+  changes: --since <version> (default: the version of the generated output)  --figma-version <to>
   visual: --url <storybook url> (default http://localhost:6006)  --dir <React Storybook folder>  --only <A,B>
   init:  --figma <link>  --target react|web-components|both  --dir <folder>  --variables <file>  --ci  --yes
   --refresh         Ignore the Figma response cache
@@ -62,6 +75,34 @@ async function runDiscovery(client: FigmaClient): Promise<Discovery> {
   return d;
 }
 
+/** The Figma version the generated output was built from (its GENERATION-REPORT.md), if any. */
+function generatedVersion(config: ReturnType<typeof loadConfig>): string | undefined {
+  const g = config.generate;
+  const dirs = g?.targets?.length ? g.targets.map((t) => t.outDir) : g ? [g.outDir] : [];
+  for (const d of dirs) {
+    const f = join(config.baseDir, d, 'GENERATION-REPORT.md');
+    const m = exists(f) ? /version (\d+)/.exec(readFileSync(f, 'utf8')) : null;
+    if (m) return m[1];
+  }
+  return undefined;
+}
+
+/** Diffs the Figma file at an earlier version against an IR already read at the new one; writes changes.md and .json. */
+async function writeChanges(client: FigmaClient, config: ReturnType<typeof loadConfig>, since: string, after: FigmaIR, names: Record<string, string>): Promise<ChangeSet> {
+  CTX.log(`Changes: reading Figma version ${since} to compare`);
+  const quiet = () => {};
+  const old = await discover(client, CTX.fileKey, CTX.overrides, quiet, since);
+  const before = await extractIR(client, { ...config, components: targetsFromDiscovery(old) }, quiet, since);
+  const changes = diffIR(before, after, names);
+  const imagesDir = join(CTX.out, 'changes');
+  const shown = await changeImages(client, changes, imagesDir, (path, data) => (typeof data === 'string' ? writeText(path, data) : writeBinary(path, data)));
+  if (shown) CTX.log(`Changes: before/after Figma renders of ${shown} variant(s) → ${join(imagesDir, 'changes.html')}`);
+  writeJson(join(CTX.out, 'changes.json'), changes);
+  writeText(join(CTX.out, 'changes.md'), changesMarkdown(changes));
+  CTX.log(`Changes → ${join(CTX.out, 'changes.md')}: ${changes.components.length ? changes.components.map((c) => `${c.component} (${c.kinds.join(', ')})`).join('; ') : 'no component changes'}`);
+  return changes;
+}
+
 async function main() {
   const { values, positionals } = parseArgs({
     allowPositionals: true,
@@ -74,6 +115,7 @@ async function main() {
       dir: { type: 'string' },
       url: { type: 'string' },
       only: { type: 'string' },
+      since: { type: 'string' },
       variables: { type: 'string' },
       yes: { type: 'boolean', default: false },
       ci: { type: 'boolean', default: false },
@@ -130,7 +172,20 @@ async function main() {
       // For CI: the generated folders, in GitHub Actions output format.
       const g = config.generate;
       const dirs = g?.targets?.length ? g.targets.map((t) => t.outDir) : g ? [g.outDir] : [];
-      process.stdout.write(`dirs=${dirs.join(' ')}\npaths<<EOF\n${dirs.map((d) => `${d}/**`).join('\n')}\nEOF\n`);
+      const react = g?.targets?.find((t) => t.target === 'react')?.outDir ?? (g && (g.target ?? 'react') === 'react' ? g.outDir : '');
+      const changesFile = join(p.out, 'changes.json');
+      const labels = exists(changesFile) ? (JSON.parse(readFileSync(changesFile, 'utf8')) as ChangeSet).labels : [];
+      const summary = join(p.out, 'changes.md');
+      process.stdout.write(`dirs=${dirs.join(' ')}\nreact_dir=${react}\nlabels=${labels.join(',')}\nsummary=${exists(summary) ? summary : ''}\npaths<<EOF\n${dirs.map((d) => `${d}/**`).join('\n')}\nEOF\n`);
+      break;
+    }
+    case 'status': {
+      // For CI: one cheap call (no document tree) to see whether Figma moved since the last generation.
+      const latest = (await new FigmaClient({ token: process.env.FIGMA_TOKEN ?? '', cacheDir: CTX.cache, refresh: true }).file(CTX.fileKey, 1)).version;
+      const generated = generatedVersion(config) ?? '';
+      const changed = latest !== generated;
+      log(changed ? `Figma version ${latest}; generated from ${generated || 'nothing yet'}: regenerate.` : `Figma is still at version ${latest}, the generated version: nothing to do.`);
+      process.stdout.write(`figma_version=${latest}\ngenerated_version=${generated}\nchanged=${changed}\n`);
       break;
     }
     case 'discover': {
@@ -162,9 +217,25 @@ async function main() {
       } else {
         ir = values.refresh ? await stepExtract(config, p, { refresh: true, log }) : loadIR(p);
       }
+      const previous = generatedVersion(config);
       const res = await generateStorybook(config, config.generate, ir, client, log, plan);
+      if (previous && previous !== ir.version && plan) {
+        const names = Object.fromEntries(plan.flatMap((c) => Object.values(c.sets).map((id) => [id.replace(/^auto\./, ''), c.name])));
+        await writeChanges(client, config, previous, ir, names);
+      }
       log(`Tokens: ${res.tokenCounts.bound} bound, ${res.tokenCounts.rawInFigma} raw in Figma, ${res.tokenCounts.noMatchingToken} unmatched`);
       log(`Storybook project: ${res.files.length} files → ${res.outDir}`);
+      break;
+    }
+    case 'changes': {
+      const since = values.since ?? generatedVersion(config);
+      if (!since) throw new Error('No --since version, and no generated output to read it from.');
+      const client = figmaClient();
+      const d = await runDiscovery(client);
+      const after = await extractIR(client, { ...config, components: targetsFromDiscovery(d) }, log, CTX.version);
+      const names = Object.fromEntries(d.proposals.flatMap((x) => Object.values(x.sets).map((id) => [id, x.name])));
+      if (since === after.version) log(`Figma is still at version ${since}: nothing changed.`);
+      await writeChanges(client, config, since, after, names);
       break;
     }
     case 'visual': {

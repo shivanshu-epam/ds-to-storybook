@@ -80,8 +80,8 @@ With the React Storybook running, `ds-sync visual` compares every Figma variant 
 
 ## 5. Keep it in sync
 
-- After a Figma change, run `ds-sync generate` again and review the diff before committing.
-- To automate it, run `ds-sync init --ci` (or answer yes during init). That adds `.github/workflows/ds-sync.yml`, which regenerates weekly or on demand and opens a pull request only when the design changed (a new Figma version with no design change is skipped). The repository needs a `FIGMA_TOKEN` secret.
+- After a Figma change, run `ds-sync generate` again. It writes `.ds-sync/changes.md` (what changed in Figma, per component) and `.ds-sync/changes/changes.html` (Figma's before/after renders): summarise those for the user before they review the code diff.
+- To automate it, run `ds-sync init --ci` (or answer yes during init). That adds `.github/workflows/ds-sync.yml`. Every weekday it checks Figma's version (one API call) and stops if nothing moved; otherwise it regenerates, tests, compares with Figma, and opens a pull request only when the design changed, with the change summary as its description and labels by kind. The repository needs a `FIGMA_TOKEN` secret.
 
 ## Rules
 

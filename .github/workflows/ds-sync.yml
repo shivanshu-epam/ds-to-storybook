@@ -1,11 +1,14 @@
-# ds-sync: regenerate the Storybook from Figma and open a pull request with the changes.
+# ds-sync: keep the generated Storybook in step with Figma.
+# Every weekday it asks Figma for the file's version (one cheap call) and stops if nothing moved. When Figma
+# changed, it regenerates, tests the Storybooks, compares them with Figma's renders, and opens a pull request
+# whose description lists what changed in Figma, labelled by kind of change, with before/after renders attached.
 # Needs a repository secret FIGMA_TOKEN (Figma personal access token, scope file_content:read).
 name: ds-sync
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+    - cron: '0 6 * * 1-5' # weekdays 06:00 UTC; runs where Figma did not change stop after one API call
 
 permissions:
   contents: write
@@ -42,17 +45,31 @@ jobs:
             exit 1
           fi
 
-      - name: Generate Storybook from Figma
+      - name: Check Figma for a new version
+        id: status
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+        run: |
+          node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" status >> "$GITHUB_OUTPUT"
+          if grep -q '^changed=false' "$GITHUB_OUTPUT"; then
+            echo "::notice title=ds-sync::Figma has not changed since the last generation."
+          fi
+
+      - name: Generate Storybook from Figma
+        if: steps.status.outputs.changed == 'true'
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+        # Also writes .ds-sync/changes.md (what changed in Figma) and before/after renders in .ds-sync/changes/.
         run: node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" generate
 
       - name: Find the output folders
         id: out
+        if: steps.status.outputs.changed == 'true'
         run: node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" outputs >> "$GITHUB_OUTPUT"
 
       - name: Check for design changes
         id: changes
+        if: steps.status.outputs.changed == 'true'
         run: |
           dirs="${{ steps.out.outputs.dirs }}"
           git add -A -- $dirs
@@ -85,16 +102,54 @@ jobs:
           done
           exit $status
 
+      # Every Figma variant against the built React Storybook, pixel by pixel (report in the run's artifacts).
+      - name: Compare with Figma
+        id: visual
+        if: steps.changes.outputs.changed == 'true' && steps.out.outputs.react_dir != ''
+        continue-on-error: true
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+        run: |
+          dir="${{ steps.out.outputs.react_dir }}"
+          (cd "$dir" && npm run build-storybook -- --quiet)
+          python3 -m http.server 6006 --directory "$dir/storybook-static" > /dev/null 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://localhost:6006/iframe.html > /dev/null && break; sleep 1; done
+          node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" visual --url http://localhost:6006 --dir "$dir" | tee "$RUNNER_TEMP/visual.txt"
+          echo "summary=$(grep '^· Visual:' "$RUNNER_TEMP/visual.txt" | sed 's/^· Visual: //')" >> "$GITHUB_OUTPUT"
+
+      - name: Keep the change images and visual report
+        if: steps.changes.outputs.changed == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: ds-sync-review
+          path: |
+            .ds-sync/changes/
+            .ds-sync/visual/
+            .ds-sync/changes.md
+          if-no-files-found: ignore
+
+      - name: Write the pull request description
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          {
+            if [ -n "${{ steps.out.outputs.summary }}" ]; then cat "${{ steps.out.outputs.summary }}"; else echo "Regenerated from Figma by ds-sync."; fi
+            echo
+            echo "## Checks"
+            echo
+            echo "- Story tests (every Figma mode): **${{ steps.test.outcome }}**"
+            if [ -n "${{ steps.visual.outputs.summary }}" ]; then echo "- Visual check against Figma: ${{ steps.visual.outputs.summary }}"; fi
+            echo "- Before/after Figma renders of the changed variants and the visual report: the \`ds-sync-review\` artifact of [this workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
+          } > "$RUNNER_TEMP/pr-body.md"
+
       - name: Open a pull request
         if: steps.changes.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           branch: ds-sync/figma-update
           commit-message: 'ds-sync: update Storybook from Figma'
           title: 'ds-sync: update Storybook from Figma'
-          body: |
-            Regenerated from Figma by ds-sync.
-            Story tests: **${{ steps.test.outcome }}**. See GENERATION-REPORT.md for what changed and what Figma does not specify.
+          body-path: ${{ runner.temp }}/pr-body.md
+          labels: ${{ steps.out.outputs.labels }}
           delete-branch: true
           # Only the generated Storybook belongs in this pull request.
           add-paths: ${{ steps.out.outputs.paths }}

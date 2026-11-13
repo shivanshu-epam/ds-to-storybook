@@ -18,6 +18,8 @@ npm ci && npm run build && npm link     # until published: puts ds-sync on your 
 | `ds-sync discover` | Finds every component set, classifies frames and proposes templates. Writes `.ds-sync/discovery.md` with the items that need a person. |
 | `ds-sync generate [--figma-version <id>]` | Discover, then extract, then generate one project per target (`react`, `web-components`). `--figma-version` pins a Figma version. |
 | `ds-sync visual [--url http://localhost:6006] [--dir storybook] [--only A,B]` | Compares every Figma variant (Figma's PNG render, from the generated version) with the running React Storybook, pixel by pixel. Writes `.ds-sync/visual/report.html` and `summary.json`. |
+| `ds-sync status` | Is Figma newer than the generated output? One API call; prints `figma_version`, `generated_version`, `changed` (for CI). |
+| `ds-sync changes [--since <version>]` | What changed in Figma since a version (default: the generated one): per component API, variants, values and docs → `.ds-sync/changes.md` / `.json`, plus Figma before/after renders of the changed variants (`.ds-sync/changes/changes.html`). `generate` writes it too when the output came from an older version. |
 | `ds-sync outputs` | Lists the generated folders in GitHub Actions output format (used by the workflow). |
 | `ds-sync run` | Drift report for an existing repo (needs `repo` and hand-mapped `components` in the config). Writes `.ds-sync/report.html`. |
 | `extract`, `spec`, `analyze`, `report` | The drift report steps, one at a time. |
@@ -37,13 +39,14 @@ Config reference: [`../skills/figma-to-storybook/reference/config.md`](../skills
 | `src/generate` | Tokens (CSS, DTCG JSON, TS), style compiler, icons, React project scaffold, templates (`action`, `checkbox`, `accordion`, `switch`, `radio`, `radio-field`, `radio-group`, `input`, `dialog`, `generic`) |
 | `src/generate/wc` | Web Components target: Lit renderers that reuse each template's model (`radio.ts`: the radio family; `input.ts`: text input; `dialog.ts`: dialog), and the project scaffold |
 | `archetypes/` | Behaviour packs (required states, keyboard) |
+| `src/changes` | Figma version diff (what changed, labels) and before/after renders |
 | `src/visual` | Visual check: Figma renders vs Storybook screenshots (Playwright from the generated project), pixelmatch |
 | `templates/github-workflow.yml` | CI template used by `init --ci` |
 
 ## Develop
 
 ```bash
-npm test              # 61 tests, against recorded Figma fixtures (no token needed)
+npm test              # 64 tests, against recorded Figma fixtures (no token needed)
 npm run typecheck
 npm run ds-sync -- generate   # run from source with tsx
 ```

@@ -29,7 +29,7 @@ The full product strategy (market research, architecture options, security, KPIs
 | Tokens: Figma variables to CSS, light/dark and brand modes | Done | `storybook/src/tokens/tokens.css` |
 | Generated components: 9 with behaviour templates (Button, Checkbox, Accordion, Switch, RadioControl, RadioField, RadioGroup, Input, Dialog), 12 generic; stories, MDX docs, 42 icons | Done; 258/258 story tests pass across all Figma modes (1 real design contrast issue) | `storybook/src/components` |
 | Discovery, `init`, installable CLI, Claude Skill, GitHub workflow, Figma plugin | Done (Phases A and B) | `engine/`, `skills/`, `plugin/` |
-| Engine tests | 61/61 pass | `engine/test` |
+| Engine tests | 64/64 pass | `engine/test` |
 
 **Figma file:** "Design system AI" (`I983NcgqSiY14YkpJbwjG8`). The variables come from `engine/inputs/figma-variables.json`, because the Variables REST API is Enterprise-only.
 
@@ -132,11 +132,14 @@ Decision: support every stack through **layers**, as multi-framework design syst
 
 ### Phase E: keep it in sync (about 4 weeks). Fixes G6.
 
-- [ ] Figma webhook (library publish) or polling, then re-extract only what changed.
-- [ ] Three-way diff (last accepted spec, new Figma, current code), then the smallest change set.
+- [x] **Polling** (2026-11-13): the workflow runs every weekday and first asks Figma for the file version (\`ds-sync status\`, one API call). If it did not move, the run stops there. (A Figma webhook would need a hosted receiver; polling needs nothing.)
+- [x] **What changed in Figma** (2026-11-13): \`ds-sync changes\` (and \`generate\`, when the output came from an older version) reads Figma at the generated version and at the new one and lists, per component: properties and options added, removed or with a new default; variants added or removed; colour, stroke, radius, padding, gap, size, font, text and icon changes (grouped: "3 of 90 variants"); documentation frames added, removed or edited. Written to \`.ds-sync/changes.md\`, used as the pull request description, with labels by kind (\`component-api\`, \`components\`, \`styles\`, \`content\`, \`docs\`). Tried on real history: September → November finds the removed Checkbox Skeleton state (3 variants) and a removed "Specs" docs frame on every component.
+- [x] **Before/after renders**: Figma's own renders of the changed variants at both versions, side by side (\`.ds-sync/changes/changes.html\`, up to 40 variants), attached to the workflow run with the visual report.
+- [x] **Visual check in CI**: the workflow builds the React Storybook, serves it, runs \`ds-sync visual\`, puts the counts in the pull request and the report in the run's artifacts.
+- [ ] Three-way diff against code people edited by hand (only relevant once teams edit generated code; today the generated folders are owned by ds-sync).
 - [x] **Proven end to end (2026-11-12):** a one-variant colour and radius edit in Figma became [pull request #1](https://github.com/shivanshu-epam/ds-to-storybook/pull/1) through the GitHub workflow: 4 files, including a 5-line CSS override for exactly that variant.
 - [x] No pull request for a new Figma version with no design change: the workflow ignores lines that only record the version, then skips the tests and the pull request.
-- [ ] Open a pull request per change type (tokens / styles / API / stories) with before/after images.
+- [x] One pull request per Figma update, labelled by change type, with the change summary and before/after renders. (Separate pull requests per type were not worth the extra review overhead: labels give the same triage.)
 - [ ] Update existing repos (Scenario 1), not just new ones.
 
 ### Phase F: enterprise (later)
