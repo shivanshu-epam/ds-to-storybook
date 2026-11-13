@@ -26,8 +26,11 @@ jobs:
 
       # Until ds-sync is published to npm, build it from its repository.
       - name: Install ds-sync
+        id: engine
         run: |
-          git clone --depth 1 https://github.com/shivanshu-epam/ds-to-storybook.git "$RUNNER_TEMP/ds-sync"
+          git clone --filter=blob:none https://github.com/shivanshu-epam/ds-to-storybook.git "$RUNNER_TEMP/ds-sync"
+          # The last change to the engine itself (not docs or examples): a new engine may generate different code.
+          echo "sha=$(git -C "$RUNNER_TEMP/ds-sync" log -1 --format=%h -- engine)" >> "$GITHUB_OUTPUT"
           cd "$RUNNER_TEMP/ds-sync/engine" && npm ci && npm run build
 
       - name: Check the FIGMA_TOKEN secret
@@ -55,8 +58,30 @@ jobs:
             echo "::notice title=ds-sync::Figma has not changed since the last generation."
           fi
 
-      - name: Generate Storybook from Figma
+      # A Figma version already found to change nothing (with this engine and config) is not regenerated again.
+      - name: Was this Figma version already checked?
+        id: checked
         if: steps.status.outputs.changed == 'true'
+        uses: actions/cache/restore@v5
+        with:
+          path: .ds-sync/checked
+          key: ds-sync-checked-${{ steps.status.outputs.figma_version }}-${{ steps.engine.outputs.sha }}-${{ hashFiles('ds-sync.config.json') }}
+          lookup-only: true
+
+      - name: Decide
+        id: go
+        run: |
+          if [ "${{ steps.status.outputs.changed }}" != "true" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          elif [ "${{ steps.checked.outputs.cache-hit }}" = "true" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=ds-sync::Figma version ${{ steps.status.outputs.figma_version }} was already checked: it changes nothing in the generated code."
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate Storybook from Figma
+        if: steps.go.outputs.run == 'true'
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
         # Also writes .ds-sync/changes.md (what changed in Figma) and before/after renders in .ds-sync/changes/.
@@ -64,12 +89,12 @@ jobs:
 
       - name: Find the output folders
         id: out
-        if: steps.status.outputs.changed == 'true'
+        if: steps.go.outputs.run == 'true'
         run: node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" outputs >> "$GITHUB_OUTPUT"
 
       - name: Check for design changes
         id: changes
-        if: steps.status.outputs.changed == 'true'
+        if: steps.go.outputs.run == 'true'
         run: |
           dirs="${{ steps.out.outputs.dirs }}"
           git add -A -- $dirs
@@ -155,3 +180,15 @@ jobs:
           delete-branch: true
           # Only the generated Storybook belongs in this pull request.
           add-paths: ${{ steps.out.outputs.paths }}
+
+      # Remember a version-only Figma update, so the next runs stop after the version check.
+      - name: Remember this Figma version
+        if: steps.changes.outputs.changed == 'false'
+        run: mkdir -p .ds-sync/checked && echo "${{ steps.status.outputs.figma_version }}" > .ds-sync/checked/version
+
+      - name: Save the checked version
+        if: steps.changes.outputs.changed == 'false'
+        uses: actions/cache/save@v5
+        with:
+          path: .ds-sync/checked
+          key: ds-sync-checked-${{ steps.status.outputs.figma_version }}-${{ steps.engine.outputs.sha }}-${{ hashFiles('ds-sync.config.json') }}
