@@ -1,5 +1,6 @@
 /** Scenario 2: Figma design system -> a fresh, tested Storybook project. */
 import { composition, docsPage, isBuildingBlock, polishStories, templateSections } from './docs.ts';
+import { activeDecisions, decidedSetDescription, decisionsReport, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel, type DecisionsFile } from '../decisions/decisions.ts';
 import { fontsReport, httpFontSource, planFonts, usedFonts, type FontOverride, type FontPlan } from './fonts.ts';
 import { existsSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -13,7 +14,7 @@ import { projectFiles } from './project.ts';
 import { accordionTemplate } from './templates/accordion.ts';
 import { actionTemplate } from './templates/action.ts';
 import { checkboxTemplate } from './templates/checkbox.ts';
-import { genericTemplate, instanceRef, type RegistryEntry } from './templates/generic.ts';
+import { genericTemplate, instanceRef, propPlan, type RegistryEntry } from './templates/generic.ts';
 import type { Overrides } from '../discover/discover.ts';
 import type { ComponentReport, GeneratedFile, TemplateContext, TemplateResult } from './templates/common.ts';
 import { exportFromRest, loadTokens, setFontStacks, TokenResolver, tokensCss, tokensDtcg, tokensTs } from './tokens.ts';
@@ -44,6 +45,11 @@ export interface GenerateConfig {
    * Map a family to your own package ({ package, family?, imports? }) or to false; false for the whole setting skips the lookup.
    */
   fonts?: Record<string, FontOverride> | false;
+  /**
+   * Interpretation decisions (code names and descriptions for Figma properties), see docs/HYBRID.md.
+   * file defaults to ds-sync.decisions.json next to the config; apply defaults to "accepted".
+   */
+  decisions?: { file?: string; apply?: ApplyLevel };
   /** Output directory for the default target, relative to the config file. */
   outDir: string;
   /** Default output target (react: React + TypeScript + CSS Modules; web-components: Lit, works in any framework). */
@@ -132,6 +138,18 @@ function visualManifest(ir: FigmaIR, results: { c: PlannedComponent; result: Tem
 /** Generated folders are replaced; files are only written under them, so the target stays clean between runs. */
 const OWNED = ['src', '.storybook', 'types'];
 
+/** Descriptions by code prop, and the component description, from the applied decisions. */
+function decisionDocs(sets: IRComponentSet[]): { descriptions?: Record<string, string>; decidedDescription?: string } {
+  const descriptions: Record<string, string> = {};
+  for (const set of sets) {
+    const plan = propPlan(set);
+    for (const a of plan.axes) if (a.description) descriptions[a.prop] = a.description;
+    for (const b of [...plan.booleans, ...plan.texts]) if (b.description) descriptions[b.prop] = b.description;
+  }
+  const decided = sets.map((s) => decidedSetDescription(s)).find(Boolean);
+  return { ...(Object.keys(descriptions).length ? { descriptions } : {}), ...(decided ? { decidedDescription: decided } : {}) };
+}
+
 export async function generateStorybook(config: LoadedConfig, gen: GenerateConfig, ir: FigmaIR, renderer: FigmaRenderer, log: (m: string) => void, plan: PlannedComponent[] = gen.components ?? []) {
   let source: { variables?: Record<string, unknown[]> } = { variables: {} };
   if (gen.variablesExport) {
@@ -152,6 +170,21 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   const modeAttributes = { ...autoModes, ...(gen.modeAttributes ?? {}) };
 
   const setsById = new Map(ir.components.map((c) => [c.targetId, c]));
+  // Decisions: validated against this IR; entries with errors are left out and reported, never half-applied.
+  const decisionsFile = loadDecisions(resolve(config.baseDir, gen.decisions?.file ?? DECISIONS_FILE));
+  const decisionLevel: ApplyLevel = gen.decisions?.apply ?? 'accepted';
+  const decisionProblems = decisionsFile ? validateDecisions(decisionsFile, ir) : [];
+  if (decisionsFile) {
+    const usable: DecisionsFile = JSON.parse(JSON.stringify(decisionsFile)) as DecisionsFile;
+    for (const pr of decisionProblems.filter((x) => x.severity === 'error')) {
+      if (pr.prop) delete usable.sets[pr.set]?.props?.[pr.prop];
+      else delete usable.sets[pr.set];
+    }
+    setActiveDecisions(activeDecisions(usable, decisionLevel));
+    for (const pr of decisionProblems) log(`Decisions ${pr.severity}: ${pr.set}${pr.prop ? ` › ${pr.prop}` : ''}: ${pr.message}`);
+    const active = activeDecisions(usable, decisionLevel);
+    log(`Decisions: ${Object.keys(decisionsFile.sets).length} set(s) in ${gen.decisions?.file ?? DECISIONS_FILE}; applying ${decisionLevel} → ${active.size} set(s)`);
+  } else setActiveDecisions(new Map());
   const usedTargets = plan.flatMap((c) => Object.values(c.sets));
   const missing = usedTargets.filter((t) => !setsById.has(t));
   if (missing.length) throw new Error(`Component sets missing from the IR: ${missing.join(', ')}. Run "extract" first.`);
@@ -261,6 +294,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
         usedIn: results.filter((x) => (compositions.get(x.c.name) ?? []).some((r) => r.component === c.name)).map((x) => ({ name: x.c.name, title: titleOf(x.c) })),
         knownIssues: issue ? knownIssueNotes(issue) : [], modes: modeNames, packageName,
         ...(visual[c.name] ? { visual: visual[c.name] } : {}),
+        ...decisionDocs(Object.values(ctx.sets)),
       });
     }
   };
@@ -292,7 +326,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   const shared: GeneratedFile[] = [
     ...tokenFiles,
     { path: 'token-map.json', content: JSON.stringify(tokenMap, null, 2) + '\n' },
-    { path: 'GENERATION-REPORT.md', content: report(ir, reports, tokenMap.counts, icons, fonts) },
+    { path: 'GENERATION-REPORT.md', content: report(ir, reports, tokenMap.counts, icons, fonts, decisionsReport(decisionsFile, decisionLevel, decisionProblems)) },
   ];
 
   const targets: TargetConfig[] = gen.targets?.length ? gen.targets : [{ target: gen.target ?? 'react', outDir: gen.outDir, ...(gen.packageName ? { packageName: gen.packageName } : {}) }];
@@ -358,7 +392,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   return { outDir: written[0]!.outDir, targets: written, files: written.flatMap((w) => w.files), reports, tokenCounts: tokenMap.counts };
 }
 
-function report(ir: FigmaIR, reports: ComponentReport[], counts: Record<string, number>, icons: IconAsset[], fonts: FontPlan[] = []): string {
+function report(ir: FigmaIR, reports: ComponentReport[], counts: Record<string, number>, icons: IconAsset[], fonts: FontPlan[] = [], decisionLines: string[] = []): string {
   const lines = [
     '# Generation report',
     '',
@@ -377,6 +411,7 @@ function report(ir: FigmaIR, reports: ComponentReport[], counts: Record<string, 
     ...icons.map((i) => `- \`${i.name}\` from ${i.figmaName} (${i.nodeId})`),
     '',
     ...fontsReport(fonts),
+    ...decisionLines,
   ];
   const nested = reports.filter((r) => r.nested);
   if (nested.length) {

@@ -22,6 +22,10 @@ import { existsSync as exists, readFileSync } from 'node:fs';
 import { extractIR } from './ir/extract.ts';
 import { loadIR, paths, stepAnalyze, stepExtract, stepReport, stepSpecs } from './pipeline.ts';
 import { loadDotEnv, writeJson, writeText } from './util/core.ts';
+import { activeDecisions, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel } from './decisions/decisions.ts';
+import { buildReview, writeReview } from './review/review.ts';
+import { claudeAvailable, interpret } from './ai/interpret.ts';
+import { evalMarkdown, evaluate } from './eval/eval.ts';
 
 const USAGE = `ds-sync — generate and sync a tested Storybook from a Figma design system
 
@@ -41,6 +45,13 @@ Commands:
   changes   What changed in Figma since a version → out/changes.md (+ .json); generate writes it too
   visual    Compare every Figma variant with the generated Storybook, pixel by pixel
             → out/visual/report.html (needs a running React Storybook: --url)
+  review    Write the interpretation work list: one evidence file per component → out/review/
+            (from the last generate; no Figma calls)
+  interpret Answer the open review files with Claude (headless claude -p + the ds-sync plugin)
+            → proposals in ds-sync.decisions.json (optional; needs Claude Code)
+  decisions validate | accept | reject: check ds-sync.decisions.json against Figma, or change
+            the status of entries (--only A,B; --by <name>). Accepting is a person's call.
+  eval      Compare the generated API with a reference library: --reference <components folder>
 
 Options:
   --config <file>   Config file (default: ds-sync.config.json)
@@ -48,6 +59,8 @@ Options:
   --figma-version <id>  Read this Figma version instead of the latest (discover, generate)
   changes: --since <version> (default: the version of the generated output)  --figma-version <to>
   visual: --url <storybook url> (default http://localhost:6006)  --dir <React Storybook folder>  --only <A,B>
+  generate, eval: --decisions accepted|proposed|none (default accepted)
+  interpret: --only <A,B>  --all  --building-blocks  --concurrency <n>  --model <id>  --budget <usd per call>
   init:  --figma <link>  --target react|web-components|both  --dir <folder>  --variables <file>  --ci  --yes
   --refresh         Ignore the Figma response cache
   --help            Show this help
@@ -103,6 +116,14 @@ async function writeChanges(client: FigmaClient, config: ReturnType<typeof loadC
   return changes;
 }
 
+/** IR and discovery saved by the last generate (auto mode). */
+function lastRun(out: string): { ir: FigmaIR; discovery: Discovery } {
+  const irFile = join(out, 'figma-ir.auto.json');
+  const dFile = join(out, 'discovery.json');
+  if (!exists(irFile) || !exists(dFile)) throw new Error(`No saved Figma data in ${out}. Run "ds-sync generate" first.`);
+  return { ir: JSON.parse(readFileSync(irFile, 'utf8')) as FigmaIR, discovery: JSON.parse(readFileSync(dFile, 'utf8')) as Discovery };
+}
+
 async function main() {
   const { values, positionals } = parseArgs({
     allowPositionals: true,
@@ -117,6 +138,14 @@ async function main() {
       only: { type: 'string' },
       since: { type: 'string' },
       variables: { type: 'string' },
+      decisions: { type: 'string' },
+      reference: { type: 'string' },
+      all: { type: 'boolean', default: false },
+      'building-blocks': { type: 'boolean', default: false },
+      concurrency: { type: 'string' },
+      model: { type: 'string' },
+      budget: { type: 'string' },
+      by: { type: 'string' },
       yes: { type: 'boolean', default: false },
       ci: { type: 'boolean', default: false },
       refresh: { type: 'boolean', default: false },
@@ -194,8 +223,72 @@ async function main() {
       for (const r of d.review) log(`review: ${r.item}: ${r.question}`);
       break;
     }
+    case 'review': {
+      const { ir, discovery } = lastRun(p.out);
+      const decisionsPath = resolve(config.baseDir, config.generate?.decisions?.file ?? DECISIONS_FILE);
+      const index = writeReview(p.out, buildReview(ir, discovery), loadDecisions(decisionsPath));
+      const open = index.filter((x) => !x.decided);
+      log(`Review: ${index.length} component(s), ${open.length} without a current decision (${open.filter((x) => !x.buildingBlock).length} public) → ${join(p.out, 'review')}`);
+      break;
+    }
+    case 'interpret': {
+      const { ir } = lastRun(p.out);
+      if (!exists(join(p.out, 'review', 'index.json'))) throw new Error('No review files. Run "ds-sync review" first.');
+      if (!(await claudeAvailable())) throw new Error('Claude Code (the "claude" command) is not available. Install it, or answer the review files in a Claude Code session or by hand.');
+      const decisionsPath = resolve(config.baseDir, config.generate?.decisions?.file ?? DECISIONS_FILE);
+      const res = await interpret({
+        reviewDir: join(p.out, 'review'), decisionsPath, ir, cwd: config.baseDir, log,
+        ...(values.only ? { only: values.only.split(',').map((x) => x.trim()) } : {}),
+        all: values.all!, includeBuildingBlocks: values['building-blocks']!,
+        ...(values.concurrency ? { concurrency: Number(values.concurrency) } : {}),
+        ...(values.model ? { model: values.model } : {}),
+        ...(values.budget ? { budget: Number(values.budget) } : {}),
+        ...(process.env.DS_SYNC_CLAUDE_ARGS ? { extraArgs: process.env.DS_SYNC_CLAUDE_ARGS.split(/\s+/).filter(Boolean) } : {}),
+      });
+      log(`Interpret: ${res.done.length} answered, ${res.failed.length} failed, about $${res.costUsd.toFixed(2)} → ${decisionsPath} (proposed; accept with "ds-sync decisions accept")`);
+      if (res.failed.length) process.exitCode = 1;
+      break;
+    }
+    case 'decisions': {
+      const action = positionals[1] ?? 'validate';
+      const decisionsPath = resolve(config.baseDir, config.generate?.decisions?.file ?? DECISIONS_FILE);
+      const file = loadDecisions(decisionsPath);
+      if (!file) throw new Error(`${decisionsPath} not found.`);
+      if (action === 'validate') {
+        const ir = exists(join(p.out, 'figma-ir.auto.json')) ? lastRun(p.out).ir : undefined;
+        const problems = validateDecisions(file, ir);
+        for (const pr of problems) log(`${pr.severity}: ${pr.set}${pr.prop ? ` › ${pr.prop}` : ''}: ${pr.message}`);
+        log(`Decisions: ${Object.keys(file.sets).length} set(s), ${problems.filter((x) => x.severity === 'error').length} error(s), ${problems.filter((x) => x.severity === 'warning').length} warning(s)${ir ? '' : ' (no IR: names not checked against Figma)'}`);
+        if (problems.some((x) => x.severity === 'error')) process.exitCode = 1;
+      } else if (action === 'accept' || action === 'reject') {
+        if (!values.only) throw new Error('Name the sets: --only "<Figma set>,<Figma set>" (or --only all).');
+        const names = values.only === 'all' ? Object.keys(file.sets).filter((n) => file.sets[n]!.status === 'proposed') : values.only.split(',').map((x) => x.trim());
+        for (const n of names) {
+          const d = file.sets[n];
+          if (!d) { log(`Not in the file: ${n}`); continue; }
+          d.status = action === 'accept' ? 'accepted' : 'rejected';
+          if (values.by) d.by = `${d.by ? `${d.by}; ` : ''}${action}ed by ${values.by}`;
+        }
+        writeText(decisionsPath, JSON.stringify(file, null, 2) + '\n');
+        log(`Decisions: ${names.length} set(s) ${action}ed.`);
+      } else throw new Error(`Unknown decisions action "${action}" (validate, accept, reject).`);
+      break;
+    }
+    case 'eval': {
+      if (!values.reference) throw new Error('--reference <folder with one subfolder per component> is required.');
+      const { ir, discovery } = lastRun(p.out);
+      const level = (values.decisions ?? 'accepted') as ApplyLevel;
+      const decisionsPath = resolve(config.baseDir, config.generate?.decisions?.file ?? DECISIONS_FILE);
+      setActiveDecisions(activeDecisions(loadDecisions(decisionsPath), level));
+      const res = evaluate(ir, discovery, resolve(values.reference));
+      const file = join(p.out, `eval-${level}.md`);
+      writeText(file, evalMarkdown(res, `decisions: ${level}`));
+      log(`Eval (${level}): ${res.rows.length} component(s), ${res.matched}/${res.reference} reference props matched (${res.reference ? Math.round((100 * res.matched) / res.reference) : 0}%) → ${file}`);
+      break;
+    }
     case 'generate': {
       if (!config.generate) throw new Error('No "generate" section in the config.');
+      if (values.decisions) config.generate.decisions = { ...config.generate.decisions, apply: values.decisions as ApplyLevel };
       const client = figmaClient();
       const auto = config.generate.mode === 'auto' || !config.generate.components?.length;
       let ir;

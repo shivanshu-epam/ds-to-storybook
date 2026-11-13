@@ -8,7 +8,7 @@ import { docTabs, kebab, leadSentence, pascal } from '../templates/common.ts';
 import type { AccordionCore } from '../templates/accordion.ts';
 import type { ActionCore } from '../templates/action.ts';
 import type { CheckboxCore } from '../templates/checkbox.ts';
-import { axisControl, axisData, axisDefault, axisType, isIcon, lookupExpr, SHAPES, type GenericCore, type InstanceProp, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
+import { axisControl, axisData, figmaNote, axisDefault, axisType, isIcon, lookupExpr, SHAPES, type GenericCore, type InstanceProp, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRComponentSet, IRPart } from '../../ir/types.ts';
 import { wcRadio } from './radio.ts';
 import { wcInput } from './input.ts';
@@ -414,8 +414,8 @@ ${[
     ...(sw ? [`    checked: { control: 'boolean', description: ${js(`On or off. Figma: ${sw.axis.figma}`)} },`, `    accessibleLabel: { control: 'text', description: 'Accessible name (Figma has no label)' },`] : []),
     ...enumAxes.map((a) => `    ${a.prop}: ${axisControl(a, js)},`),
     ...(hasDisabled ? [`    disabled: { control: 'boolean', description: 'Figma: State=Disabled' },`] : []),
-    ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${js(`Figma: ${b.p.name}`)} },`),
-    ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${js(`Figma: ${t.p.name}`)} },`),
+    ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${js(figmaNote(b.p.name, b.description))} },`),
+    ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${js(figmaNote(t.p.name, t.description))} },`),
     ...exposed.map((e) => `    ${e.prop}: ${e.axis ? axisControl({ ...e.axis, figma: `${e.exposed!.name} › ${e.axis.figma}` }, js) : `{ control: '${e.type === 'boolean' ? 'boolean' : 'text'}', description: ${js(`Figma: ${e.exposed!.name} › ${e.figma}`)} }`},`),
   ].join('\n')}
   },

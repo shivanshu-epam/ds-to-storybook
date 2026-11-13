@@ -125,6 +125,10 @@ export interface DocsInput {
   modes: string[];
   packageName: string;
   visual?: { match: number; total: number; worst: number };
+  /** Plain-language descriptions by code prop, from applied decisions. */
+  descriptions?: Record<string, string>;
+  /** Component description from an applied decision, used when Figma has none. */
+  decidedDescription?: string;
 }
 
 const GROUPS = ['Appearance', 'Content', 'State', 'Behaviour', 'Composition'] as const;
@@ -141,7 +145,9 @@ const list = (items: string[]) => `<ul>${items.map((i) => `<li>{${js(i)}}</li>`)
 
 export function docsPage(d: DocsInput): string {
   const sets = d.sets;
-  const description = sets.map((s) => s.description).find((x) => x?.trim()) ?? leadSentence(sets.flatMap((s) => s.docFrames));
+  const figmaDescription = sets.map((s) => s.description).find((x) => x?.trim()) ?? leadSentence(sets.flatMap((s) => s.docFrames));
+  const description = figmaDescription || d.decidedDescription;
+  const fromDecision = !figmaDescription && Boolean(d.decidedDescription);
   const sections = templateSections(d.templateMdx);
   const out: string[] = [];
   const header = d.framework === 'react'
@@ -158,6 +164,7 @@ import * as Stories from './${d.name}.stories';`;
   // Overview
   out.push('## Overview', '');
   out.push(description ? p(description) : `<p><strong>No description in Figma.</strong> Add one to the component set's description in Figma; it appears here on the next sync.</p>`);
+  if (fromDecision) out.push('<p><small>Description from ds-sync.decisions.json (Figma has none).</small></p>');
   if (d.buildingBlock) {
     out.push(`<p>{${js(`Building block${d.usedIn.length ? ` of ${d.usedIn.map((u) => u.name).join(', ')}` : ''}: Figma marks it as internal (its name starts with "_" or "." or ends with "Base"), so it is not listed in the sidebar. Use the parent component unless you are composing your own.`)}}</p>`);
     if (d.usedIn.length) out.push(`<p>Used in: ${d.usedIn.map((u) => `<a href=${js(docsLink(u.title))} target="_top">{${js(u.name)}}</a>`).join(', ')}</p>`);
@@ -181,7 +188,7 @@ import * as Stories from './${d.name}.stories';`;
       const gr = rows.filter((m) => groupOf(m) === g);
       if (!gr.length) continue;
       out.push(`### ${g}`, '', `<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody>${gr
-        .map((m) => `<tr><td>{${js(m.prop === '—' ? m.figma.replace(/ \(.*\)$/, '') : plainLabel(m.prop))}}</td><td>${m.prop === '—' ? '—' : `<code>{${js(m.prop)}}</code>`}</td><td>{${js(m.figma)}}</td><td>{${js(m.note ?? '')}}</td></tr>`)
+        .map((m) => `<tr><td>{${js(m.prop === '—' ? m.figma.replace(/ \(.*\)$/, '') : plainLabel(m.prop))}}</td><td>${m.prop === '—' ? '—' : `<code>{${js(m.prop)}}</code>`}</td><td>{${js(m.figma)}}</td><td>{${js([d.descriptions?.[m.prop], m.note].filter(Boolean).join(' '))}}</td></tr>`)
         .join('')}</tbody></table>`, '');
     }
     out.push('### Try it', '', '<Controls of={Stories.Default} />', '');

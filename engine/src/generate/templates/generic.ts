@@ -7,6 +7,7 @@
  * - Icons are the exported Figma SVGs; instances of other generated components render those components.
  * - Behaviour (keyboard, focus, ARIA roles) is NOT inferred: the report and docs say so.
  */
+import { decidedDescription, decidedName } from '../../decisions/decisions.ts';
 import type { IRComponentSet, IRPart, IRProperty, IRVariant } from '../../ir/types.ts';
 import { generateStyles, type Found, type RoleDef, type StateAxis, type StyleModel, type VariantAxis } from '../styles.ts';
 import type { IconAsset } from '../icons.ts';
@@ -18,6 +19,8 @@ const PSEUDO: { test: RegExp; state: string; native: string }[] = [
   { test: /^(focus|focused|focus-visible)$/i, state: 'focus', native: ':focus-visible' },
 ];
 const RESERVED = new Set(['children', 'className', 'style', 'key', 'ref', 'id']);
+/** "<decided description> Figma: <name>", or "Figma: <name>" when there is no decision. */
+export const figmaNote = (figma: string, description?: string) => (description ? `${description.replace(/\s*$/, '')} Figma: ${figma}` : `Figma: ${figma}`);
 
 export const camel = (s: string) => {
   const c = pascal(s);
@@ -42,6 +45,8 @@ export interface AxisInfo {
   defaultValue: string;
   /** A True/False variant property: a boolean prop (values "true" / "false" in data attributes and CSS). */
   boolean?: boolean;
+  /** Plain-language description from an applied decision (ds-sync.decisions.json). */
+  description?: string;
 }
 
 /** How an axis appears in code: True/False axes are booleans, the rest string unions. quote() quotes a string. */
@@ -52,7 +57,7 @@ export const axisLiteral = (a: AxisInfo, value: string, quote: (s: string) => st
 export const axisData = (a: AxisInfo, ref: string) => (a.boolean ? `${ref} ? 'true' : 'false'` : ref);
 /** Storybook control for an axis. */
 export const axisControl = (a: AxisInfo, quote: (s: string) => string) =>
-  a.boolean ? `{ control: 'boolean', description: ${quote(`Figma: ${a.figma}`)} }` : `{ control: '${a.options.length > 5 ? 'select' : 'inline-radio'}', options: [${a.options.map(quote).join(', ')}], description: ${quote(`Figma: ${a.figma}`)} }`;
+  a.boolean ? `{ control: 'boolean', description: ${quote(figmaNote(a.figma, a.description))} }` : `{ control: '${a.options.length > 5 ? 'select' : 'inline-radio'}', options: [${a.options.map(quote).join(', ')}], description: ${quote(figmaNote(a.figma, a.description))} }`;
 
 export function analyzeAxes(set: IRComponentSet): AxisInfo[] {
   const used = new Set<string>();
@@ -63,13 +68,14 @@ export function analyzeAxes(set: IRComponentSet): AxisInfo[] {
       const isBool = opts.length === 2 && opts.every((o) => /^(true|false)$/i.test(o));
       // isDisabled=True/False is the disabled state, like State=Disabled.
       if (isBool && /^(is[ _-]?)?disabled$/i.test(p.name)) {
-        let prop = camel(p.name);
+        let prop = decidedName(set, p.name) ?? camel(p.name);
         if (RESERVED.has(prop) || used.has(prop)) prop = `${prop}Variant`;
         used.add(prop);
         return {
           figma: p.name, prop, attr: kebab(p.name), kind: 'state' as const,
           values: opts.map((o) => (/^true$/i.test(o) ? { figma: o, value: 'disabled', role: 'disabled' as const } : { figma: o, value: 'false', role: 'base' as const })),
           options: ['false'], defaultValue: 'false',
+          ...(decidedDescription(set, p.name) ? { description: decidedDescription(set, p.name)! } : {}),
         };
       }
       const isState = !isBool && opts.some((o) => PSEUDO.some((x) => x.test.test(o)) || /^disabled$/i.test(o));
@@ -80,7 +86,7 @@ export function analyzeAxes(set: IRComponentSet): AxisInfo[] {
         if (isState && /^disabled$/i.test(o)) return { figma: o, value: 'disabled', role: 'disabled' };
         return { figma: o, value: kebab(o), role: 'enum' };
       });
-      let prop = camel(p.name);
+      let prop = decidedName(set, p.name) ?? camel(p.name);
       if (RESERVED.has(prop) || used.has(prop)) prop = `${prop}Variant`;
       used.add(prop);
       return {
@@ -92,6 +98,7 @@ export function analyzeAxes(set: IRComponentSet): AxisInfo[] {
         options: values.filter((v) => v.role === 'base' || v.role === 'enum').map((v) => v.value),
         defaultValue: kebab(String(p.default)),
         ...(isBool ? { boolean: true } : {}),
+        ...(decidedDescription(set, p.name) ? { description: decidedDescription(set, p.name)! } : {}),
       };
     });
 }
@@ -120,8 +127,8 @@ function variantObject(a: AxisInfo, figma: string): string {
 
 export interface PropPlan {
   axes: AxisInfo[];
-  booleans: { p: IRProperty; prop: string }[];
-  texts: { p: IRProperty; prop: string }[];
+  booleans: { p: IRProperty; prop: string; description?: string }[];
+  texts: { p: IRProperty; prop: string; description?: string }[];
   swaps: IRProperty[];
   hasDisabled: boolean;
 }
@@ -131,15 +138,15 @@ export function propPlan(set: IRComponentSet): PropPlan {
   const axes = analyzeAxes(set);
   const used = new Set(axes.map((a) => a.prop));
   const name = (p: IRProperty) => {
-    let n = camel(p.name);
+    let n = decidedName(set, p.name) ?? camel(p.name);
     if (RESERVED.has(n) || used.has(n)) n = `${n}${p.type === 'TEXT' ? 'Text' : 'Prop'}`;
     used.add(n);
     return n;
   };
   return {
     axes,
-    booleans: set.properties.filter((p) => p.type === 'BOOLEAN').map((p) => ({ p, prop: name(p) })),
-    texts: set.properties.filter((p) => p.type === 'TEXT').map((p) => ({ p, prop: name(p) })),
+    booleans: set.properties.filter((p) => p.type === 'BOOLEAN').map((p) => ({ p, prop: name(p), ...(decidedDescription(set, p.name) ? { description: decidedDescription(set, p.name)! } : {}) })),
+    texts: set.properties.filter((p) => p.type === 'TEXT').map((p) => ({ p, prop: name(p), ...(decidedDescription(set, p.name) ? { description: decidedDescription(set, p.name)! } : {}) })),
     swaps: set.properties.filter((p) => p.type === 'INSTANCE_SWAP'),
     hasDisabled: axes.some((a) => a.values.some((v) => v.role === 'disabled')),
   };
@@ -235,8 +242,8 @@ export interface GenericCore {
   css: string;
   layers: LayerInfo[];
   axes: AxisInfo[];
-  booleans: { p: IRProperty; prop: string }[];
-  texts: { p: IRProperty; prop: string }[];
+  booleans: { p: IRProperty; prop: string; description?: string }[];
+  texts: { p: IRProperty; prop: string; description?: string }[];
   hasDisabled: boolean;
   defaults: Record<string, string>;
   assumptions: string[];
@@ -974,10 +981,10 @@ ${indent}/>`;
       '  /** Initial state when uncontrolled. Default false. */\n  defaultChecked?: boolean;',
       '  /** Called with the new state when the user toggles the switch. */\n  onCheckedChange?: (checked: boolean) => void;',
     ] : []),
-    ...propAxes.map((a) => `  /** Figma: ${a.figma}. Default ${a.defaultValue}.${a === sw?.busy ? ' "loading" sets aria-busy and blocks toggling.' : ''} */\n  ${a.prop}?: ${axisType(a, q)};`),
+    ...propAxes.map((a) => `  /** ${a.description ? `${a.description} ` : ''}Figma: ${a.figma}. Default ${a.defaultValue}.${a === sw?.busy ? ' "loading" sets aria-busy and blocks toggling.' : ''} */\n  ${a.prop}?: ${axisType(a, q)};`),
     ...(hasDisabled ? ['  /** Figma: State=Disabled. */\n  disabled?: boolean;'] : []),
-    ...booleans.map((b) => `  /** Figma: ${b.p.name} (boolean). Default ${b.p.default}. */\n  ${b.prop}?: boolean;`),
-    ...texts.map((t) => `  /** Figma: ${t.p.name} (text). */\n  ${t.prop}?: ReactNode;`),
+    ...booleans.map((b) => `  /** ${b.description ? `${b.description} ` : ''}Figma: ${b.p.name} (boolean). Default ${b.p.default}. */\n  ${b.prop}?: boolean;`),
+    ...texts.map((t) => `  /** ${t.description ? `${t.description} ` : ''}Figma: ${t.p.name} (text). */\n  ${t.prop}?: ReactNode;`),
     ...exposedProps.map((e) => `  /** Figma: ${e.exposed!.name} › ${e.figma} (exposed nested instance). Default ${String(e.default)}. */\n  ${e.prop}?: ${e.tsType(q)};`),
     `  /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */\n  'data-force-state'?: string;`,
   ];
@@ -1644,8 +1651,8 @@ ${booleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.defa
     ...(sw ? [`    checked: { control: 'boolean', description: ${q(`On or off (controlled). Figma: ${sw.axis.figma}`)} },`, `    defaultChecked: { control: 'boolean' },`] : []),
     ...propAxes.map((a) => `    ${a.prop}: ${axisControl(a, q)},`),
     ...(hasDisabled ? [`    disabled: { control: 'boolean', description: 'Figma: State=Disabled' },`] : []),
-    ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${q(`Figma: ${b.p.name}`)} },`),
-    ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${q(`Figma: ${t.p.name}`)} },`),
+    ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${q(figmaNote(b.p.name, b.description))} },`),
+    ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${q(figmaNote(t.p.name, t.description))} },`),
     ...exposedProps.map((e) => `    ${e.prop}: ${e.axis ? axisControl({ ...e.axis, figma: `${e.exposed!.name} › ${e.axis.figma}` }, q) : `{ control: '${e.type === 'boolean' ? 'boolean' : 'text'}', description: ${q(`Figma: ${e.exposed!.name} › ${e.figma}`)} }`},`),
     `    'data-force-state': { table: { disable: true } },`,
   ];

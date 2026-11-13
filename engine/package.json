@@ -33,7 +33,9 @@
     "archetypes",
     "templates",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "claude-plugin",
+    "schemas"
   ],
   "engines": {
     "node": ">=22"
