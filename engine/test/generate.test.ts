@@ -160,3 +160,16 @@ describe('mode test runs', () => {
     expect(config).toContain('(defaults, theme=dark, project=project-b)');
   });
 });
+
+describe('known issues per mode', () => {
+  const stories = "import type { Meta, StoryObj } from '@storybook/react-vite';\n\nconst meta = {\n  parameters: { figma: {} },\n};\n";
+  it('accepts an issue only in the listed modes', async () => {
+    const { acceptKnownIssue, parseModeKey } = await import('../src/generate/index.ts');
+    expect(parseModeKey('theme=dark project=b')).toEqual({ theme: 'dark', project: 'b' });
+    expect(parseModeKey('default')).toEqual({});
+    const out = acceptKnownIssue(stories, { 'theme=dark': 'low contrast' });
+    expect(out).toContain("import { inModes } from '../../storybook/modes';");
+    expect(out).toContain(`a11y: { test: inModes({"theme":"dark"}) ? 'todo' : 'error' },\n    figma: {}`);
+    expect(acceptKnownIssue(stories, 'always')).toContain("a11y: { test: 'todo' },");
+  });
+});

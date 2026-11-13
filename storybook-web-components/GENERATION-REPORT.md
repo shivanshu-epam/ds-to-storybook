@@ -79,6 +79,10 @@ Figma: Button (102:122)
 - Figma strokes are rendered as box-shadow so they do not change layout (inside, outside and centre alignment kept).
 - Icon-only buttons are not generated: Figma "Show label" off needs an accessible-name decision (aria-label).
 
+**Gaps:**
+
+- Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B orange #e46b00 with white text is 3.28:1 (needs 4.5:1); Brand B orange #e46b00 on light grey #f9fafb is 3.13:1 (needs 4.5:1)
+
 <details><summary>Which Figma axes each style depends on</summary>
 
 - `root.background`: Variant, State
@@ -131,6 +135,8 @@ Figma: ListItem (520:3110)
 - Instance swap properties not exposed as props (default instance rendered): leading-control, trailing-control.
 - Layer "_interaction-wrapper/_visual-container/_content-container/leading-control" is an instance of "Size=Md, Type=Unselected, State=Enabled", which is not generated here; rendered as an empty box.
 - Layer "_interaction-wrapper/_visual-container/_content-container/trailing-control" is an instance of "Size=Md, Type=Unselected, State=Enabled", which is not generated here; rendered as an empty box.
+- Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B: #ab5910 on #ffd0a7 is 3.55:1
+- Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: #9ca3af on #374151 is 4.05:1
 
 <details><summary>Which Figma axes each style depends on</summary>
 
@@ -296,6 +302,10 @@ Figma: CheckboxControl (178:1224), CheckboxField (190:1205), CheckboxGroup (192:
 - Figma Type=Error-* (no message) became an `invalid` prop; State=Invalid (with message) became `error`.
 - CheckboxGroup passes readOnly and disabled to its checkboxes through React context.
 
+**Gaps:**
+
+- Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: grey #6b7280 text on #030712 is 4.16:1
+
 <details><summary>Which Figma axes each style depends on</summary>
 
 - `control.root.background`: none (same in every variant)
@@ -451,6 +461,10 @@ Figma: Badge (211:1961)
 
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
 
+**Gaps:**
+
+- Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: text #111827 on badge colours (#374151, #1e40af, #c81e1e, #15803d) is 1.72–3.53:1
+
 <details><summary>Which Figma axes each style depends on</summary>
 
 - `root.align-items`: Type
@@ -506,6 +520,10 @@ Figma: BreadcrumbItem (224:1461)
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
 - The Figma set has 8 of 12 possible variant combinations; other combinations use the nearest defined styles.
 - A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state="focus") until behaviour is specified.
+
+**Gaps:**
+
+- Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B orange #e46b00 on light grey #f9fafb is 3.13:1 (needs 4.5:1)
 
 <details><summary>Which Figma axes each style depends on</summary>
 
@@ -748,6 +766,11 @@ Figma: AvatarIdentity (274:1803)
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
 - A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state="focus") until behaviour is specified.
 
+**Gaps:**
+
+- Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B: white #f9fafb on orange #e46b00 is 3.13:1
+- Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: text #111827 on #6366f1 is 3.97:1
+
 <details><summary>Which Figma axes each style depends on</summary>
 
 - `root.align-items`: none (same in every variant)
@@ -824,6 +847,8 @@ Figma: AvatarGlyph (276:1716)
 **Gaps:**
 
 - Instance swap properties not exposed as props (default instance rendered): Icon.
+- Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B: white #f9fafb on orange #e46b00 is 3.13:1
+- Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: text #111827 on avatar colours (#1e40af, #b91c1c, #15803d, #b45309) is 2.03–3.53:1
 
 <details><summary>Which Figma axes each style depends on</summary>
 
@@ -875,6 +900,7 @@ Figma: Alert (516:2837)
 **Gaps:**
 
 - Icon-only Button "_interaction-wrapper/_visual-container/close-button" is named "Close" from its Figma layer name; confirm the wording.
+- Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B orange #e46b00 text on #f3f4f6 is 2.98:1 (needs 4.5:1)
 
 <details><summary>Which Figma axes each style depends on</summary>
 
@@ -991,6 +1017,8 @@ Figma: Dialog (348:627)
 
 - Layer "_divider-top" is a line shape; approximated with its fill and size (no vector path).
 - Layer "_divider-bottom" is a line shape; approximated with its fill and size (no vector path).
+- Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B orange #e46b00 with white text is 3.28:1 (needs 4.5:1)
+- Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: grey #6b7280 text on #111827 is 3.66:1
 
 <details><summary>Which Figma axes each style depends on</summary>
 
@@ -1467,6 +1495,10 @@ Figma: Date Picker (660:4998)
 
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
 - A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state="focus") until behaviour is specified.
+
+**Gaps:**
+
+- Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: grey #6b7280 text on #030712 is 4.16:1
 
 <details><summary>Which Figma axes each style depends on</summary>
 
@@ -2030,6 +2062,8 @@ Figma: Input (836:4005)
 **Gaps:**
 
 - Instance swap properties not exposed as props (default instance rendered): Leading icon, Trailing icon.
+- Known design issue in project=project-b (accessibility checks report instead of failing there): Placeholder #6b7280 on #f3f4f6 is 4.39:1 (also in the default modes)
+- Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: grey #6b7280 text on #111827 / #030712 is 3.66–4.16:1
 
 <details><summary>Which Figma axes each style depends on</summary>
 

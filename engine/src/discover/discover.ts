@@ -66,7 +66,12 @@ export interface Overrides {
    * Accepted design issues, by component name, e.g. {"Input": "Placeholder contrast 4.39:1 on Filled; fix in Figma"}.
    * Their accessibility checks are reported as warnings (todo) instead of failing, and the reason is shown in the docs.
    */
-  knownIssues?: Record<string, string>;
+  /**
+   * Accepted design issues by component: their axe checks report instead of failing.
+   * A string applies to every Figma mode. An object applies per mode: keys like "theme=dark"
+   * (several as "theme=dark project=project-b"), or "default" for the default modes.
+   */
+  knownIssues?: Record<string, string | Record<string, string>>;
 }
 
 const REVIEW_THRESHOLD = 0.7;

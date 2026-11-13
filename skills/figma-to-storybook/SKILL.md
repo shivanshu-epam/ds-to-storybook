@@ -71,7 +71,7 @@ Story tests run once per Figma mode: the default modes as project `storybook`, t
 
 For each failing test, read the error and say which kind it is:
 
-- **Design issue:** usually axe colour contrast, or a missing accessible name in Figma. Fixing it belongs in Figma. Accepting it for now needs the user's explicit OK. Then record `knownIssues: { "<Component>": "<what and why>" }`, which reports the story's axe check as a warning instead of failing it.
+- **Design issue:** usually axe colour contrast, or a missing accessible name in Figma. Fixing it belongs in Figma. Accepting it for now needs the user's explicit OK. Then record it in `knownIssues`: `{ "<Component>": "<what and why>" }` for every mode, or per mode, `{ "<Component>": { "theme=dark": "<what and why>" } }` (use `default` for the default modes). Axe then reports instead of failing, only in those modes.
 - **Generator issue:** for example a TypeScript error or a broken render. Report it with the output. Do not patch the generated files.
 
 Summarise `GENERATION-REPORT.md`: what came from Figma, what came from archetype defaults, and the gaps. Offer to start Storybook (`npm run storybook`, port 6006).

@@ -29,7 +29,7 @@ The full product strategy (market research, architecture options, security, KPIs
 | Tokens: Figma variables to CSS, light/dark and brand modes | Done | `storybook/src/tokens/tokens.css` |
 | Generated components: 7 with behaviour templates (Button, Checkbox, Accordion, Switch, RadioControl, RadioField, RadioGroup), 14 generic; stories, MDX docs, 42 icons | Done; 81/82 story tests pass (1 real design contrast issue) | `storybook/src/components` |
 | Discovery, `init`, installable CLI, Claude Skill, GitHub workflow, Figma plugin | Done (Phases A and B) | `engine/`, `skills/`, `plugin/` |
-| Engine tests | 44/44 pass | `engine/test` |
+| Engine tests | 45/45 pass | `engine/test` |
 
 **Figma file:** "Design system AI" (`I983NcgqSiY14YkpJbwjG8`). The variables come from `engine/inputs/figma-variables.json`, because the Variables REST API is Enterprise-only.
 
@@ -108,7 +108,8 @@ Decision: support every stack through **layers**, as multi-framework design syst
     - default modes: 1 (Input placeholder, 4.39:1, known);
     - brand B (project-b): 22, because orange `#e46b00` with white text is 3.28:1 and on light grey 2.98–3.13:1 (Button, Dialog, Avatar, Breadcrumb, Alert, ListItem, Input);
     - dark theme: 23, because dark text `#111827` sits on mid-tone avatar and badge colours (1.72–3.97:1) and grey `#6b7280` text on dark surfaces is 3.66–4.16:1 (Badge, Avatar, Checkbox, DatePicker, Dialog, Input, ListItem).
-  - Open decision: fix these tokens in Figma, or accept them for now with `knownIssues`.
+  - **Accepted for now (2026-11-13)**, per mode: `overrides.knownIssues` in `ds-sync.config.json` lists each component, mode and measured contrast. In those modes axe reports instead of failing; every other mode stays strict. Result: 245 of 246 pass in both outputs. The remaining failure is the Input placeholder in the default modes (4.39:1), which is still open.
+  - To do in Figma: a darker brand B orange, and lighter or darker text for dark-theme badges, avatars and grey helper text. Remove each entry from `knownIssues` once its tokens are fixed.
 - [ ] Visual comparison against Figma renders: element positions, computed styles, then a perceptual score.
 - [ ] Resolve the open decisions in G8 with the design system team.
 

@@ -41,7 +41,7 @@
 | `overrides.skipPages` | Pages to ignore. Pages named QA, test, archive, playground and similar are skipped automatically. |
 | `overrides.frames` | Correct a frame's classification: `documentation`, `example`, `page-text` or `other`. Documentation frames become the docs page. |
 | `overrides.sets` | By set name or id: `exclude`, `name` (component name) or `template` (`action`, `checkbox`, `accordion`, `switch`, `radio`, `radio-field`, `radio-group`, `generic`). |
-| `overrides.knownIssues` | Accepted design issues by component. Their axe checks report as warnings, not failures, and the reason appears in the generation report. Use only with the team's agreement. |
+| `overrides.knownIssues` | Accepted design issues by component: a reason string (every mode), or an object of mode → reason, for example `{ "theme=dark": "...", "project=project-b": "..." }` (`default` = the default modes). In those modes the axe checks report instead of failing; the reason appears in the stories file and the generation report. Use only with the team's agreement. |
 
 ## Drift report (existing code)
 

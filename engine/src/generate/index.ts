@@ -73,6 +73,30 @@ const SPECIALISED: Record<'action' | 'checkbox' | 'accordion', (ctx: TemplateCon
   accordion: accordionTemplate,
 };
 
+/** "theme=dark project=b" -> { theme: 'dark', project: 'b' }; "default" -> {} (the default modes). */
+export function parseModeKey(key: string): Record<string, string> {
+  if (/^(default|defaults)$/i.test(key.trim())) return {};
+  return Object.fromEntries(key.trim().split(/\s+/).map((pair) => pair.split('=') as [string, string]));
+}
+
+/** Adds the accepted issue to a stories file: axe reports instead of failing, in every mode or only in the listed ones. */
+export function acceptKnownIssue(stories: string, issue: string | Record<string, string>): string {
+  const clean = (t: string) => t.replace(/\*\//g, '').replace(/\n/g, ' ');
+  if (typeof issue === 'string') {
+    return stories.replace(/parameters: \{ ?/, `parameters: {\n    // Known design issue (ds-sync.config.json overrides.knownIssues): ${clean(issue)}\n    a11y: { test: 'todo' },\n    `);
+  }
+  const lines = Object.entries(issue).map(([mode, why]) => `    //   ${mode}: ${clean(why)}`);
+  const modes = Object.keys(issue).map((k) => JSON.stringify(parseModeKey(k))).join(', ');
+  const withImport = stories.replace(/^(import [^\n]*'storybook\/test';|import [^\n]*from 'lit';|import type \{ Meta, StoryObj \} from '@storybook\/react-vite';)\n/m, `$1\nimport { inModes } from '../../storybook/modes';\n`);
+  return withImport.replace(/parameters: \{ ?/, `parameters: {\n    // Known design issues (ds-sync.config.json overrides.knownIssues), accepted only in these Figma modes:\n${lines.join('\n')}\n    a11y: { test: inModes(${modes}) ? 'todo' : 'error' },\n    `);
+}
+
+function knownIssueNotes(issue: string | Record<string, string>): string[] {
+  return typeof issue === 'string'
+    ? [`Known design issue (accessibility checks report instead of failing): ${issue}`]
+    : Object.entries(issue).map(([mode, why]) => `Known design issue in ${mode} (accessibility checks report instead of failing there): ${why}`);
+}
+
 /** Generated folders are replaced; files are only written under them, so the target stays clean between runs. */
 const OWNED = ['src', '.storybook', 'types'];
 
@@ -135,11 +159,9 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
       : SPECIALISED[c.template](ctx, c.name);
     const issue = gen.overrides?.knownIssues?.[c.name];
     if (issue) {
-      // Accepted design issue: axe still runs and reports, but does not fail the story tests.
-      for (const f of result.files) {
-        if (f.path.endsWith('.stories.tsx')) f.content = f.content.replace('parameters: {', `parameters: {\n    // Known design issue (ds-sync.config.json overrides.knownIssues): ${issue.replace(/\*\//g, '')}\n    a11y: { test: 'todo' },`);
-      }
-      result.report.gaps.push(`Known design issue (accessibility checks set to todo): ${issue}`);
+      // Accepted design issue: axe still runs and reports, but does not fail the story tests (in the listed modes).
+      for (const f of result.files) if (f.path.endsWith('.stories.tsx')) f.content = acceptKnownIssue(f.content, issue);
+      result.report.gaps.push(...knownIssueNotes(issue));
     }
     files.push(...result.files);
     reports.push(result.report);
@@ -204,11 +226,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
         else if (c.template === 'checkbox') r = wcCheckbox(ctx, c.name, result.core as CheckboxCore, o);
         else r = wcAccordion(ctx, c.name, result.core as AccordionCore, o);
         const issue = gen.overrides?.knownIssues?.[c.name];
-        if (issue) {
-          for (const f of r.files) {
-            if (f.path.endsWith('.stories.ts')) f.content = f.content.replace('parameters: {', `parameters: {\n    // Known design issue (ds-sync.config.json overrides.knownIssues): ${issue.replace(/\*\//g, '')}\n    a11y: { test: 'todo' },`);
-          }
-        }
+        if (issue) for (const f of r.files) if (f.path.endsWith('.stories.ts')) f.content = acceptKnownIssue(f.content, issue);
         wc.push({ name: c.name, r });
         outFiles.push(...r.files);
       }
