@@ -27,7 +27,7 @@ The full product strategy (market research, architecture options, security, KPIs
 | Drift report against an existing repo (Scenario 5) | Done, React only | `engine/src/code`, `engine/src/diff`, `engine/src/report` |
 | **Storybook generation from Figma (Scenario 2)** | **Done for every component set (21 components)** | `engine/src/generate` → `storybook/` |
 | Tokens: Figma variables to CSS, light/dark and brand modes | Done | `storybook/src/tokens/tokens.css` |
-| Generated components: 9 with behaviour templates (Button, Checkbox, Accordion, Switch, RadioControl, RadioField, RadioGroup, Input, Dialog), 12 generic; stories, MDX docs, 42 icons | Done; 306/306 story tests pass across all Figma modes (27 components) (1 real design contrast issue) | `storybook/src/components` |
+| Generated components: 9 with behaviour templates (Button, Checkbox, Accordion, Switch, RadioControl, RadioField, RadioGroup, Input, Dialog), 18 generic; stories, MDX docs, 42 icons | Done; 306/306 story tests pass across all Figma modes (27 components; design contrast issues accepted per mode) | `storybook/src/components` |
 | Discovery, `init`, installable CLI, Claude Skill, GitHub workflow, Figma plugin | Done (Phases A and B) | `engine/`, `skills/`, `plugin/` |
 | Engine tests | 64/64 pass | `engine/test` |
 
