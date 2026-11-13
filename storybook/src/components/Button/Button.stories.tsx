@@ -100,6 +100,556 @@ export const Disabled: Story = {
   },
 };
 
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      <div data-figma-variant='102:2' title='Variant=Primary, Size=Sm, State=Default, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='default' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='102:4' title='Variant=Primary, Size=Sm, State=Hover, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='default' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:6' title='Variant=Primary, Size=Sm, State=Pressed, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='default' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:8' title='Variant=Primary, Size=Sm, State=Focused, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='default' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:10' title='Variant=Primary, Size=Sm, State=Disabled, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='default' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:12' title='Variant=Primary, Size=Md, State=Default, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='default' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='102:14' title='Variant=Primary, Size=Md, State=Hover, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='default' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:16' title='Variant=Primary, Size=Md, State=Pressed, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='default' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:18' title='Variant=Primary, Size=Md, State=Focused, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='default' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:20' title='Variant=Primary, Size=Md, State=Disabled, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='default' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:22' title='Variant=Primary, Size=Lg, State=Default, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='default' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='102:24' title='Variant=Primary, Size=Lg, State=Hover, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='default' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:26' title='Variant=Primary, Size=Lg, State=Pressed, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='default' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:28' title='Variant=Primary, Size=Lg, State=Focused, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='default' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:30' title='Variant=Primary, Size=Lg, State=Disabled, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='default' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:32' title='Variant=Secondary, Size=Sm, State=Default, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='default' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='102:34' title='Variant=Secondary, Size=Sm, State=Hover, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='default' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:36' title='Variant=Secondary, Size=Sm, State=Pressed, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='default' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:38' title='Variant=Secondary, Size=Sm, State=Focused, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='default' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:40' title='Variant=Secondary, Size=Sm, State=Disabled, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='default' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:42' title='Variant=Secondary, Size=Md, State=Default, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='default' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='102:44' title='Variant=Secondary, Size=Md, State=Hover, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='default' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:46' title='Variant=Secondary, Size=Md, State=Pressed, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='default' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:48' title='Variant=Secondary, Size=Md, State=Focused, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='default' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:50' title='Variant=Secondary, Size=Md, State=Disabled, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='default' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:52' title='Variant=Secondary, Size=Lg, State=Default, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='default' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='102:54' title='Variant=Secondary, Size=Lg, State=Hover, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='default' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:56' title='Variant=Secondary, Size=Lg, State=Pressed, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='default' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:58' title='Variant=Secondary, Size=Lg, State=Focused, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='default' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:60' title='Variant=Secondary, Size=Lg, State=Disabled, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='default' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:62' title='Variant=Ghost, Size=Sm, State=Default, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='default' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='102:64' title='Variant=Ghost, Size=Sm, State=Hover, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='default' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:66' title='Variant=Ghost, Size=Sm, State=Pressed, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='default' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:68' title='Variant=Ghost, Size=Sm, State=Focused, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='default' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:70' title='Variant=Ghost, Size=Sm, State=Disabled, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='default' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:72' title='Variant=Ghost, Size=Md, State=Default, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='default' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='102:74' title='Variant=Ghost, Size=Md, State=Hover, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='default' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:76' title='Variant=Ghost, Size=Md, State=Pressed, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='default' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:78' title='Variant=Ghost, Size=Md, State=Focused, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='default' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:80' title='Variant=Ghost, Size=Md, State=Disabled, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='default' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:82' title='Variant=Ghost, Size=Lg, State=Default, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='default' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='102:84' title='Variant=Ghost, Size=Lg, State=Hover, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='default' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:86' title='Variant=Ghost, Size=Lg, State=Pressed, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='default' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:88' title='Variant=Ghost, Size=Lg, State=Focused, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='default' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:90' title='Variant=Ghost, Size=Lg, State=Disabled, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='default' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:92' title='Variant=Danger, Size=Sm, State=Default, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='default' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='102:94' title='Variant=Danger, Size=Sm, State=Hover, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='default' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:96' title='Variant=Danger, Size=Sm, State=Pressed, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='default' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:98' title='Variant=Danger, Size=Sm, State=Focused, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='default' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:100' title='Variant=Danger, Size=Sm, State=Disabled, Radius=Default' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='default' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:102' title='Variant=Danger, Size=Md, State=Default, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='default' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='102:104' title='Variant=Danger, Size=Md, State=Hover, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='default' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:106' title='Variant=Danger, Size=Md, State=Pressed, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='default' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:108' title='Variant=Danger, Size=Md, State=Focused, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='default' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:110' title='Variant=Danger, Size=Md, State=Disabled, Radius=Default' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='default' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:112' title='Variant=Danger, Size=Lg, State=Default, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='default' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='102:114' title='Variant=Danger, Size=Lg, State=Hover, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='default' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:116' title='Variant=Danger, Size=Lg, State=Pressed, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='default' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:118' title='Variant=Danger, Size=Lg, State=Focused, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='default' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='102:120' title='Variant=Danger, Size=Lg, State=Disabled, Radius=Default' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='default' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:2' title='Variant=Primary, Size=Sm, State=Default, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='rounded' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:6' title='Variant=Primary, Size=Sm, State=Default, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='none' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:10' title='Variant=Primary, Size=Sm, State=Hover, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='rounded' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:14' title='Variant=Primary, Size=Sm, State=Hover, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='none' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:18' title='Variant=Primary, Size=Sm, State=Pressed, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='rounded' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:22' title='Variant=Primary, Size=Sm, State=Pressed, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='none' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:26' title='Variant=Primary, Size=Sm, State=Focused, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='rounded' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:30' title='Variant=Primary, Size=Sm, State=Focused, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='none' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:34' title='Variant=Primary, Size=Sm, State=Disabled, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='rounded' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:38' title='Variant=Primary, Size=Sm, State=Disabled, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='primary' size='sm' radius='none' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:42' title='Variant=Primary, Size=Md, State=Default, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='rounded' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:46' title='Variant=Primary, Size=Md, State=Default, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='none' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:50' title='Variant=Primary, Size=Md, State=Hover, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='rounded' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:54' title='Variant=Primary, Size=Md, State=Hover, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='none' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:58' title='Variant=Primary, Size=Md, State=Pressed, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='rounded' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:62' title='Variant=Primary, Size=Md, State=Pressed, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='none' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:66' title='Variant=Primary, Size=Md, State=Focused, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='rounded' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:70' title='Variant=Primary, Size=Md, State=Focused, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='none' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:74' title='Variant=Primary, Size=Md, State=Disabled, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='rounded' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:78' title='Variant=Primary, Size=Md, State=Disabled, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='primary' size='md' radius='none' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:82' title='Variant=Primary, Size=Lg, State=Default, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='rounded' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:86' title='Variant=Primary, Size=Lg, State=Default, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='none' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:90' title='Variant=Primary, Size=Lg, State=Hover, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='rounded' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:94' title='Variant=Primary, Size=Lg, State=Hover, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='none' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:98' title='Variant=Primary, Size=Lg, State=Pressed, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='rounded' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:102' title='Variant=Primary, Size=Lg, State=Pressed, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='none' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:106' title='Variant=Primary, Size=Lg, State=Focused, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='rounded' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:110' title='Variant=Primary, Size=Lg, State=Focused, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='none' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:114' title='Variant=Primary, Size=Lg, State=Disabled, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='rounded' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:118' title='Variant=Primary, Size=Lg, State=Disabled, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='primary' size='lg' radius='none' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:122' title='Variant=Secondary, Size=Sm, State=Default, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='rounded' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:126' title='Variant=Secondary, Size=Sm, State=Default, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='none' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:130' title='Variant=Secondary, Size=Sm, State=Hover, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='rounded' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:134' title='Variant=Secondary, Size=Sm, State=Hover, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='none' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:138' title='Variant=Secondary, Size=Sm, State=Pressed, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='rounded' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:142' title='Variant=Secondary, Size=Sm, State=Pressed, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='none' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:146' title='Variant=Secondary, Size=Sm, State=Focused, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='rounded' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:150' title='Variant=Secondary, Size=Sm, State=Focused, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='none' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:154' title='Variant=Secondary, Size=Sm, State=Disabled, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='rounded' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:158' title='Variant=Secondary, Size=Sm, State=Disabled, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='secondary' size='sm' radius='none' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:162' title='Variant=Secondary, Size=Md, State=Default, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='rounded' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:166' title='Variant=Secondary, Size=Md, State=Default, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='none' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:170' title='Variant=Secondary, Size=Md, State=Hover, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='rounded' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:174' title='Variant=Secondary, Size=Md, State=Hover, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='none' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:178' title='Variant=Secondary, Size=Md, State=Pressed, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='rounded' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:182' title='Variant=Secondary, Size=Md, State=Pressed, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='none' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:186' title='Variant=Secondary, Size=Md, State=Focused, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='rounded' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:190' title='Variant=Secondary, Size=Md, State=Focused, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='none' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:194' title='Variant=Secondary, Size=Md, State=Disabled, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='rounded' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:198' title='Variant=Secondary, Size=Md, State=Disabled, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='secondary' size='md' radius='none' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:202' title='Variant=Secondary, Size=Lg, State=Default, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='rounded' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:206' title='Variant=Secondary, Size=Lg, State=Default, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='none' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:210' title='Variant=Secondary, Size=Lg, State=Hover, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='rounded' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:214' title='Variant=Secondary, Size=Lg, State=Hover, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='none' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:218' title='Variant=Secondary, Size=Lg, State=Pressed, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='rounded' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:222' title='Variant=Secondary, Size=Lg, State=Pressed, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='none' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:226' title='Variant=Secondary, Size=Lg, State=Focused, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='rounded' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:230' title='Variant=Secondary, Size=Lg, State=Focused, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='none' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:234' title='Variant=Secondary, Size=Lg, State=Disabled, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='rounded' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:238' title='Variant=Secondary, Size=Lg, State=Disabled, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='secondary' size='lg' radius='none' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:242' title='Variant=Ghost, Size=Sm, State=Default, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='rounded' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:246' title='Variant=Ghost, Size=Sm, State=Default, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='none' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:250' title='Variant=Ghost, Size=Sm, State=Hover, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='rounded' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:254' title='Variant=Ghost, Size=Sm, State=Hover, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='none' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:258' title='Variant=Ghost, Size=Sm, State=Pressed, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='rounded' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:262' title='Variant=Ghost, Size=Sm, State=Pressed, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='none' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:266' title='Variant=Ghost, Size=Sm, State=Focused, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='rounded' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:270' title='Variant=Ghost, Size=Sm, State=Focused, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='none' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:274' title='Variant=Ghost, Size=Sm, State=Disabled, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='rounded' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:278' title='Variant=Ghost, Size=Sm, State=Disabled, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='ghost' size='sm' radius='none' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:282' title='Variant=Ghost, Size=Md, State=Default, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='rounded' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:286' title='Variant=Ghost, Size=Md, State=Default, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='none' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:290' title='Variant=Ghost, Size=Md, State=Hover, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='rounded' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:294' title='Variant=Ghost, Size=Md, State=Hover, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='none' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:298' title='Variant=Ghost, Size=Md, State=Pressed, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='rounded' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:302' title='Variant=Ghost, Size=Md, State=Pressed, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='none' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:306' title='Variant=Ghost, Size=Md, State=Focused, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='rounded' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:310' title='Variant=Ghost, Size=Md, State=Focused, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='none' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:314' title='Variant=Ghost, Size=Md, State=Disabled, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='rounded' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:318' title='Variant=Ghost, Size=Md, State=Disabled, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='ghost' size='md' radius='none' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:322' title='Variant=Ghost, Size=Lg, State=Default, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='rounded' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:326' title='Variant=Ghost, Size=Lg, State=Default, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='none' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:330' title='Variant=Ghost, Size=Lg, State=Hover, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='rounded' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:334' title='Variant=Ghost, Size=Lg, State=Hover, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='none' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:338' title='Variant=Ghost, Size=Lg, State=Pressed, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='rounded' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:342' title='Variant=Ghost, Size=Lg, State=Pressed, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='none' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:346' title='Variant=Ghost, Size=Lg, State=Focused, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='rounded' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:350' title='Variant=Ghost, Size=Lg, State=Focused, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='none' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:354' title='Variant=Ghost, Size=Lg, State=Disabled, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='rounded' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:358' title='Variant=Ghost, Size=Lg, State=Disabled, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='ghost' size='lg' radius='none' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:362' title='Variant=Danger, Size=Sm, State=Default, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='rounded' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:366' title='Variant=Danger, Size=Sm, State=Default, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='none' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:370' title='Variant=Danger, Size=Sm, State=Hover, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='rounded' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:374' title='Variant=Danger, Size=Sm, State=Hover, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='none' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:378' title='Variant=Danger, Size=Sm, State=Pressed, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='rounded' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:382' title='Variant=Danger, Size=Sm, State=Pressed, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='none' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:386' title='Variant=Danger, Size=Sm, State=Focused, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='rounded' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:390' title='Variant=Danger, Size=Sm, State=Focused, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='none' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:394' title='Variant=Danger, Size=Sm, State=Disabled, Radius=Rounded' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='rounded' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:398' title='Variant=Danger, Size=Sm, State=Disabled, Radius=None' style={{ display: 'flex', width: 60 }}>
+        <Button variant='danger' size='sm' radius='none' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:402' title='Variant=Danger, Size=Md, State=Default, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='rounded' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:406' title='Variant=Danger, Size=Md, State=Default, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='none' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:410' title='Variant=Danger, Size=Md, State=Hover, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='rounded' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:414' title='Variant=Danger, Size=Md, State=Hover, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='none' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:418' title='Variant=Danger, Size=Md, State=Pressed, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='rounded' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:422' title='Variant=Danger, Size=Md, State=Pressed, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='none' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:426' title='Variant=Danger, Size=Md, State=Focused, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='rounded' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:430' title='Variant=Danger, Size=Md, State=Focused, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='none' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:434' title='Variant=Danger, Size=Md, State=Disabled, Radius=Rounded' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='rounded' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:438' title='Variant=Danger, Size=Md, State=Disabled, Radius=None' style={{ display: 'flex', width: 71 }}>
+        <Button variant='danger' size='md' radius='none' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:442' title='Variant=Danger, Size=Lg, State=Default, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='rounded' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:446' title='Variant=Danger, Size=Lg, State=Default, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='none' {...{}}>Button</Button>
+      </div>
+      <div data-figma-variant='118:450' title='Variant=Danger, Size=Lg, State=Hover, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='rounded' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:454' title='Variant=Danger, Size=Lg, State=Hover, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='none' {...{ 'data-force-state': 'hover' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:458' title='Variant=Danger, Size=Lg, State=Pressed, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='rounded' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:462' title='Variant=Danger, Size=Lg, State=Pressed, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='none' {...{ 'data-force-state': 'pressed' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:466' title='Variant=Danger, Size=Lg, State=Focused, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='rounded' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:470' title='Variant=Danger, Size=Lg, State=Focused, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='none' {...{ 'data-force-state': 'focus' }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:474' title='Variant=Danger, Size=Lg, State=Disabled, Radius=Rounded' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='rounded' {...{ disabled: true }}>Button</Button>
+      </div>
+      <div data-figma-variant='118:478' title='Variant=Danger, Size=Lg, State=Disabled, Radius=None' style={{ display: 'flex', width: 93 }}>
+        <Button variant='danger' size='lg' radius='none' {...{ disabled: true }}>Button</Button>
+      </div>
+    </div>
+  ),
+};
+
 /** WAI-ARIA button pattern: Tab focuses; Enter and Space activate. */
 export const Keyboard: Story = {
   play: async ({ canvas, args }) => {

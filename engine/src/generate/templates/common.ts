@@ -170,3 +170,33 @@ ${sections.map((s) => `## ${s.heading}\n\n${s.note ? `${s.note}\n\n` : ''}<Canva
 <FigmaDocs docs={docs} />
 `;
 }
+
+/** One Figma variant for "ds-sync visual" (the frame size, and Figma's painted area when it is bigger). */
+export interface FigmaVariantRef {
+  nodeId: string;
+  name: string;
+  width: number;
+  height: number;
+  paintBox?: [number, number, number, number];
+}
+
+export function visualVariants(sets: IRComponentSet[]): FigmaVariantRef[] {
+  return sets.flatMap((set) => set.variants.map((v) => ({ nodeId: v.nodeId, name: v.name, width: Math.round(v.style.width ?? 0), height: Math.round(v.style.height ?? 0), ...(v.style.paintBox ? { paintBox: v.style.paintBox } : {}) })));
+}
+
+/**
+ * "Figma Variants" story: every Figma variant once, at its Figma width, each rendered by the given JSX.
+ * Used by "ds-sync visual"; excluded from the story tests.
+ */
+export function figmaVariantsStory(cells: { variant: IRVariant; jsx: string }[]): string {
+  return `/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+${cells.map(({ variant: v, jsx }) => `      <div data-figma-variant=${q(v.nodeId)} title=${q(v.name)} style={{ display: 'flex', width: ${Math.round(v.style.width ?? 0)} }}>\n        ${jsx}\n      </div>`).join('\n')}
+    </div>
+  ),
+};`;
+}

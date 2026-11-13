@@ -4,7 +4,7 @@
  */
 import type { IRComponentSet } from '../../ir/types.ts';
 import { generateStyles, type RoleDef, type StateAxis, type StyleModel } from '../styles.ts';
-import { axisDefault, axisOptions, docsJson, forced, kebab, mdxPage, partAt, q, sampleText, type ComponentReport, type TemplateContext, type TemplateResult } from './common.ts';
+import { axisDefault, axisOptions, docsJson, figmaVariantsStory, forced, kebab, mdxPage, partAt, q, sampleText, visualVariants, type ComponentReport, type FigmaVariantRef, type TemplateContext, type TemplateResult } from './common.ts';
 
 const part = (test: RegExp, extra: Partial<RoleDef> & Pick<RoleDef, 'role' | 'kind'>): RoleDef => ({
   ...extra,
@@ -25,6 +25,7 @@ export interface AccordionCore {
   body: string;
   width: number;
   mapping: ComponentReport['props'];
+  visual: FigmaVariantRef[];
 }
 
 export function accordionTemplate(ctx: TemplateContext, name: string): TemplateResult {
@@ -321,7 +322,13 @@ export const Keyboard: Story = {
   const files = [
     { path: `${dir}/${name}.tsx`, content: tsx },
     { path: `${dir}/${name}.module.css`, content: css },
-    { path: `${dir}/${name}.stories.tsx`, content: stories },
+    { path: `${dir}/${name}.stories.tsx`, content: `${stories}\n${figmaVariantsStory(set.variants.map((v) => {
+      const st = (v.values[stateAxisName] ?? '').toLowerCase();
+      const open = /expanded|open/.test(st);
+      const force = /hover/.test(st) ? ' data-force-state="hover"' : /focus/.test(st) ? ' data-force-state="focus"' : /disabled/.test(st) ? ' disabled' : '';
+      const variant = styleAxis ? ` variant=${q(kebab(v.values[styleAxis.name] ?? defaultVariant!))}` : '';
+      return { variant: v, jsx: `<${name}${variant} defaultValue={${open ? "['v']" : '[]'}}><${item} value="v" title={TITLE}${force}>{BODY}</${item}></${name}>` };
+    }))}\n` },
     {
       path: `${dir}/${name}.mdx`,
       content: mdxPage(name, name, [
@@ -343,6 +350,7 @@ export const Keyboard: Story = {
     body,
     width,
     mapping,
+    visual: visualVariants([set]),
   };
   return {
     core,

@@ -4,6 +4,1254 @@
   "version": "2420200599083390279",
   "components": [
     {
+      "name": "Button",
+      "story": "components-button--figma-variants",
+      "variants": [
+        {
+          "nodeId": "102:2",
+          "name": "Variant=Primary, Size=Sm, State=Default, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:4",
+          "name": "Variant=Primary, Size=Sm, State=Hover, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:6",
+          "name": "Variant=Primary, Size=Sm, State=Pressed, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:8",
+          "name": "Variant=Primary, Size=Sm, State=Focused, Radius=Default",
+          "width": 60,
+          "height": 32,
+          "paintBox": [
+            3,
+            0,
+            66,
+            35
+          ]
+        },
+        {
+          "nodeId": "102:10",
+          "name": "Variant=Primary, Size=Sm, State=Disabled, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:12",
+          "name": "Variant=Primary, Size=Md, State=Default, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:14",
+          "name": "Variant=Primary, Size=Md, State=Hover, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:16",
+          "name": "Variant=Primary, Size=Md, State=Pressed, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:18",
+          "name": "Variant=Primary, Size=Md, State=Focused, Radius=Default",
+          "width": 71,
+          "height": 40,
+          "paintBox": [
+            3,
+            0,
+            77,
+            43
+          ]
+        },
+        {
+          "nodeId": "102:20",
+          "name": "Variant=Primary, Size=Md, State=Disabled, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:22",
+          "name": "Variant=Primary, Size=Lg, State=Default, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:24",
+          "name": "Variant=Primary, Size=Lg, State=Hover, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:26",
+          "name": "Variant=Primary, Size=Lg, State=Pressed, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:28",
+          "name": "Variant=Primary, Size=Lg, State=Focused, Radius=Default",
+          "width": 93,
+          "height": 48,
+          "paintBox": [
+            3,
+            3,
+            99,
+            54
+          ]
+        },
+        {
+          "nodeId": "102:30",
+          "name": "Variant=Primary, Size=Lg, State=Disabled, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:32",
+          "name": "Variant=Secondary, Size=Sm, State=Default, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:34",
+          "name": "Variant=Secondary, Size=Sm, State=Hover, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:36",
+          "name": "Variant=Secondary, Size=Sm, State=Pressed, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:38",
+          "name": "Variant=Secondary, Size=Sm, State=Focused, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:40",
+          "name": "Variant=Secondary, Size=Sm, State=Disabled, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:42",
+          "name": "Variant=Secondary, Size=Md, State=Default, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:44",
+          "name": "Variant=Secondary, Size=Md, State=Hover, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:46",
+          "name": "Variant=Secondary, Size=Md, State=Pressed, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:48",
+          "name": "Variant=Secondary, Size=Md, State=Focused, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:50",
+          "name": "Variant=Secondary, Size=Md, State=Disabled, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:52",
+          "name": "Variant=Secondary, Size=Lg, State=Default, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:54",
+          "name": "Variant=Secondary, Size=Lg, State=Hover, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:56",
+          "name": "Variant=Secondary, Size=Lg, State=Pressed, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:58",
+          "name": "Variant=Secondary, Size=Lg, State=Focused, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:60",
+          "name": "Variant=Secondary, Size=Lg, State=Disabled, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:62",
+          "name": "Variant=Ghost, Size=Sm, State=Default, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:64",
+          "name": "Variant=Ghost, Size=Sm, State=Hover, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:66",
+          "name": "Variant=Ghost, Size=Sm, State=Pressed, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:68",
+          "name": "Variant=Ghost, Size=Sm, State=Focused, Radius=Default",
+          "width": 60,
+          "height": 32,
+          "paintBox": [
+            3,
+            3,
+            66,
+            38
+          ]
+        },
+        {
+          "nodeId": "102:70",
+          "name": "Variant=Ghost, Size=Sm, State=Disabled, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:72",
+          "name": "Variant=Ghost, Size=Md, State=Default, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:74",
+          "name": "Variant=Ghost, Size=Md, State=Hover, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:76",
+          "name": "Variant=Ghost, Size=Md, State=Pressed, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:78",
+          "name": "Variant=Ghost, Size=Md, State=Focused, Radius=Default",
+          "width": 71,
+          "height": 40,
+          "paintBox": [
+            3,
+            3,
+            77,
+            46
+          ]
+        },
+        {
+          "nodeId": "102:80",
+          "name": "Variant=Ghost, Size=Md, State=Disabled, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:82",
+          "name": "Variant=Ghost, Size=Lg, State=Default, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:84",
+          "name": "Variant=Ghost, Size=Lg, State=Hover, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:86",
+          "name": "Variant=Ghost, Size=Lg, State=Pressed, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:88",
+          "name": "Variant=Ghost, Size=Lg, State=Focused, Radius=Default",
+          "width": 93,
+          "height": 48,
+          "paintBox": [
+            3,
+            3,
+            99,
+            54
+          ]
+        },
+        {
+          "nodeId": "102:90",
+          "name": "Variant=Ghost, Size=Lg, State=Disabled, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:92",
+          "name": "Variant=Danger, Size=Sm, State=Default, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:94",
+          "name": "Variant=Danger, Size=Sm, State=Hover, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:96",
+          "name": "Variant=Danger, Size=Sm, State=Pressed, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:98",
+          "name": "Variant=Danger, Size=Sm, State=Focused, Radius=Default",
+          "width": 60,
+          "height": 32,
+          "paintBox": [
+            3,
+            3,
+            66,
+            38
+          ]
+        },
+        {
+          "nodeId": "102:100",
+          "name": "Variant=Danger, Size=Sm, State=Disabled, Radius=Default",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "102:102",
+          "name": "Variant=Danger, Size=Md, State=Default, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:104",
+          "name": "Variant=Danger, Size=Md, State=Hover, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:106",
+          "name": "Variant=Danger, Size=Md, State=Pressed, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:108",
+          "name": "Variant=Danger, Size=Md, State=Focused, Radius=Default",
+          "width": 71,
+          "height": 40,
+          "paintBox": [
+            3,
+            3,
+            77,
+            46
+          ]
+        },
+        {
+          "nodeId": "102:110",
+          "name": "Variant=Danger, Size=Md, State=Disabled, Radius=Default",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "102:112",
+          "name": "Variant=Danger, Size=Lg, State=Default, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:114",
+          "name": "Variant=Danger, Size=Lg, State=Hover, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:116",
+          "name": "Variant=Danger, Size=Lg, State=Pressed, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "102:118",
+          "name": "Variant=Danger, Size=Lg, State=Focused, Radius=Default",
+          "width": 93,
+          "height": 48,
+          "paintBox": [
+            3,
+            3,
+            99,
+            54
+          ]
+        },
+        {
+          "nodeId": "102:120",
+          "name": "Variant=Danger, Size=Lg, State=Disabled, Radius=Default",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:2",
+          "name": "Variant=Primary, Size=Sm, State=Default, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:6",
+          "name": "Variant=Primary, Size=Sm, State=Default, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:10",
+          "name": "Variant=Primary, Size=Sm, State=Hover, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:14",
+          "name": "Variant=Primary, Size=Sm, State=Hover, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:18",
+          "name": "Variant=Primary, Size=Sm, State=Pressed, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:22",
+          "name": "Variant=Primary, Size=Sm, State=Pressed, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:26",
+          "name": "Variant=Primary, Size=Sm, State=Focused, Radius=Rounded",
+          "width": 60,
+          "height": 32,
+          "paintBox": [
+            3,
+            3,
+            66,
+            38
+          ]
+        },
+        {
+          "nodeId": "118:30",
+          "name": "Variant=Primary, Size=Sm, State=Focused, Radius=None",
+          "width": 60,
+          "height": 32,
+          "paintBox": [
+            3,
+            3,
+            66,
+            38
+          ]
+        },
+        {
+          "nodeId": "118:34",
+          "name": "Variant=Primary, Size=Sm, State=Disabled, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:38",
+          "name": "Variant=Primary, Size=Sm, State=Disabled, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:42",
+          "name": "Variant=Primary, Size=Md, State=Default, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:46",
+          "name": "Variant=Primary, Size=Md, State=Default, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:50",
+          "name": "Variant=Primary, Size=Md, State=Hover, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:54",
+          "name": "Variant=Primary, Size=Md, State=Hover, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:58",
+          "name": "Variant=Primary, Size=Md, State=Pressed, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:62",
+          "name": "Variant=Primary, Size=Md, State=Pressed, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:66",
+          "name": "Variant=Primary, Size=Md, State=Focused, Radius=Rounded",
+          "width": 71,
+          "height": 40,
+          "paintBox": [
+            3,
+            3,
+            77,
+            46
+          ]
+        },
+        {
+          "nodeId": "118:70",
+          "name": "Variant=Primary, Size=Md, State=Focused, Radius=None",
+          "width": 71,
+          "height": 40,
+          "paintBox": [
+            3,
+            3,
+            77,
+            46
+          ]
+        },
+        {
+          "nodeId": "118:74",
+          "name": "Variant=Primary, Size=Md, State=Disabled, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:78",
+          "name": "Variant=Primary, Size=Md, State=Disabled, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:82",
+          "name": "Variant=Primary, Size=Lg, State=Default, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:86",
+          "name": "Variant=Primary, Size=Lg, State=Default, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:90",
+          "name": "Variant=Primary, Size=Lg, State=Hover, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:94",
+          "name": "Variant=Primary, Size=Lg, State=Hover, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:98",
+          "name": "Variant=Primary, Size=Lg, State=Pressed, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:102",
+          "name": "Variant=Primary, Size=Lg, State=Pressed, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:106",
+          "name": "Variant=Primary, Size=Lg, State=Focused, Radius=Rounded",
+          "width": 93,
+          "height": 48,
+          "paintBox": [
+            3,
+            3,
+            99,
+            54
+          ]
+        },
+        {
+          "nodeId": "118:110",
+          "name": "Variant=Primary, Size=Lg, State=Focused, Radius=None",
+          "width": 93,
+          "height": 48,
+          "paintBox": [
+            3,
+            3,
+            99,
+            54
+          ]
+        },
+        {
+          "nodeId": "118:114",
+          "name": "Variant=Primary, Size=Lg, State=Disabled, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:118",
+          "name": "Variant=Primary, Size=Lg, State=Disabled, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:122",
+          "name": "Variant=Secondary, Size=Sm, State=Default, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:126",
+          "name": "Variant=Secondary, Size=Sm, State=Default, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:130",
+          "name": "Variant=Secondary, Size=Sm, State=Hover, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:134",
+          "name": "Variant=Secondary, Size=Sm, State=Hover, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:138",
+          "name": "Variant=Secondary, Size=Sm, State=Pressed, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:142",
+          "name": "Variant=Secondary, Size=Sm, State=Pressed, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:146",
+          "name": "Variant=Secondary, Size=Sm, State=Focused, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:150",
+          "name": "Variant=Secondary, Size=Sm, State=Focused, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:154",
+          "name": "Variant=Secondary, Size=Sm, State=Disabled, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:158",
+          "name": "Variant=Secondary, Size=Sm, State=Disabled, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:162",
+          "name": "Variant=Secondary, Size=Md, State=Default, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:166",
+          "name": "Variant=Secondary, Size=Md, State=Default, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:170",
+          "name": "Variant=Secondary, Size=Md, State=Hover, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:174",
+          "name": "Variant=Secondary, Size=Md, State=Hover, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:178",
+          "name": "Variant=Secondary, Size=Md, State=Pressed, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:182",
+          "name": "Variant=Secondary, Size=Md, State=Pressed, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:186",
+          "name": "Variant=Secondary, Size=Md, State=Focused, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:190",
+          "name": "Variant=Secondary, Size=Md, State=Focused, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:194",
+          "name": "Variant=Secondary, Size=Md, State=Disabled, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:198",
+          "name": "Variant=Secondary, Size=Md, State=Disabled, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:202",
+          "name": "Variant=Secondary, Size=Lg, State=Default, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:206",
+          "name": "Variant=Secondary, Size=Lg, State=Default, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:210",
+          "name": "Variant=Secondary, Size=Lg, State=Hover, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:214",
+          "name": "Variant=Secondary, Size=Lg, State=Hover, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:218",
+          "name": "Variant=Secondary, Size=Lg, State=Pressed, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:222",
+          "name": "Variant=Secondary, Size=Lg, State=Pressed, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:226",
+          "name": "Variant=Secondary, Size=Lg, State=Focused, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:230",
+          "name": "Variant=Secondary, Size=Lg, State=Focused, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:234",
+          "name": "Variant=Secondary, Size=Lg, State=Disabled, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:238",
+          "name": "Variant=Secondary, Size=Lg, State=Disabled, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:242",
+          "name": "Variant=Ghost, Size=Sm, State=Default, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:246",
+          "name": "Variant=Ghost, Size=Sm, State=Default, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:250",
+          "name": "Variant=Ghost, Size=Sm, State=Hover, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:254",
+          "name": "Variant=Ghost, Size=Sm, State=Hover, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:258",
+          "name": "Variant=Ghost, Size=Sm, State=Pressed, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:262",
+          "name": "Variant=Ghost, Size=Sm, State=Pressed, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:266",
+          "name": "Variant=Ghost, Size=Sm, State=Focused, Radius=Rounded",
+          "width": 60,
+          "height": 32,
+          "paintBox": [
+            3,
+            3,
+            66,
+            38
+          ]
+        },
+        {
+          "nodeId": "118:270",
+          "name": "Variant=Ghost, Size=Sm, State=Focused, Radius=None",
+          "width": 60,
+          "height": 32,
+          "paintBox": [
+            3,
+            3,
+            66,
+            38
+          ]
+        },
+        {
+          "nodeId": "118:274",
+          "name": "Variant=Ghost, Size=Sm, State=Disabled, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:278",
+          "name": "Variant=Ghost, Size=Sm, State=Disabled, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:282",
+          "name": "Variant=Ghost, Size=Md, State=Default, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:286",
+          "name": "Variant=Ghost, Size=Md, State=Default, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:290",
+          "name": "Variant=Ghost, Size=Md, State=Hover, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:294",
+          "name": "Variant=Ghost, Size=Md, State=Hover, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:298",
+          "name": "Variant=Ghost, Size=Md, State=Pressed, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:302",
+          "name": "Variant=Ghost, Size=Md, State=Pressed, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:306",
+          "name": "Variant=Ghost, Size=Md, State=Focused, Radius=Rounded",
+          "width": 71,
+          "height": 40,
+          "paintBox": [
+            3,
+            3,
+            77,
+            46
+          ]
+        },
+        {
+          "nodeId": "118:310",
+          "name": "Variant=Ghost, Size=Md, State=Focused, Radius=None",
+          "width": 71,
+          "height": 40,
+          "paintBox": [
+            3,
+            3,
+            77,
+            46
+          ]
+        },
+        {
+          "nodeId": "118:314",
+          "name": "Variant=Ghost, Size=Md, State=Disabled, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:318",
+          "name": "Variant=Ghost, Size=Md, State=Disabled, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:322",
+          "name": "Variant=Ghost, Size=Lg, State=Default, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:326",
+          "name": "Variant=Ghost, Size=Lg, State=Default, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:330",
+          "name": "Variant=Ghost, Size=Lg, State=Hover, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:334",
+          "name": "Variant=Ghost, Size=Lg, State=Hover, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:338",
+          "name": "Variant=Ghost, Size=Lg, State=Pressed, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:342",
+          "name": "Variant=Ghost, Size=Lg, State=Pressed, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:346",
+          "name": "Variant=Ghost, Size=Lg, State=Focused, Radius=Rounded",
+          "width": 93,
+          "height": 48,
+          "paintBox": [
+            3,
+            3,
+            99,
+            54
+          ]
+        },
+        {
+          "nodeId": "118:350",
+          "name": "Variant=Ghost, Size=Lg, State=Focused, Radius=None",
+          "width": 93,
+          "height": 48,
+          "paintBox": [
+            3,
+            3,
+            99,
+            54
+          ]
+        },
+        {
+          "nodeId": "118:354",
+          "name": "Variant=Ghost, Size=Lg, State=Disabled, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:358",
+          "name": "Variant=Ghost, Size=Lg, State=Disabled, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:362",
+          "name": "Variant=Danger, Size=Sm, State=Default, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:366",
+          "name": "Variant=Danger, Size=Sm, State=Default, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:370",
+          "name": "Variant=Danger, Size=Sm, State=Hover, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:374",
+          "name": "Variant=Danger, Size=Sm, State=Hover, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:378",
+          "name": "Variant=Danger, Size=Sm, State=Pressed, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:382",
+          "name": "Variant=Danger, Size=Sm, State=Pressed, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:386",
+          "name": "Variant=Danger, Size=Sm, State=Focused, Radius=Rounded",
+          "width": 60,
+          "height": 32,
+          "paintBox": [
+            3,
+            3,
+            66,
+            38
+          ]
+        },
+        {
+          "nodeId": "118:390",
+          "name": "Variant=Danger, Size=Sm, State=Focused, Radius=None",
+          "width": 60,
+          "height": 32,
+          "paintBox": [
+            3,
+            3,
+            66,
+            38
+          ]
+        },
+        {
+          "nodeId": "118:394",
+          "name": "Variant=Danger, Size=Sm, State=Disabled, Radius=Rounded",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:398",
+          "name": "Variant=Danger, Size=Sm, State=Disabled, Radius=None",
+          "width": 60,
+          "height": 32
+        },
+        {
+          "nodeId": "118:402",
+          "name": "Variant=Danger, Size=Md, State=Default, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:406",
+          "name": "Variant=Danger, Size=Md, State=Default, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:410",
+          "name": "Variant=Danger, Size=Md, State=Hover, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:414",
+          "name": "Variant=Danger, Size=Md, State=Hover, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:418",
+          "name": "Variant=Danger, Size=Md, State=Pressed, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:422",
+          "name": "Variant=Danger, Size=Md, State=Pressed, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:426",
+          "name": "Variant=Danger, Size=Md, State=Focused, Radius=Rounded",
+          "width": 71,
+          "height": 40,
+          "paintBox": [
+            3,
+            3,
+            77,
+            46
+          ]
+        },
+        {
+          "nodeId": "118:430",
+          "name": "Variant=Danger, Size=Md, State=Focused, Radius=None",
+          "width": 71,
+          "height": 40,
+          "paintBox": [
+            3,
+            3,
+            77,
+            46
+          ]
+        },
+        {
+          "nodeId": "118:434",
+          "name": "Variant=Danger, Size=Md, State=Disabled, Radius=Rounded",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:438",
+          "name": "Variant=Danger, Size=Md, State=Disabled, Radius=None",
+          "width": 71,
+          "height": 40
+        },
+        {
+          "nodeId": "118:442",
+          "name": "Variant=Danger, Size=Lg, State=Default, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:446",
+          "name": "Variant=Danger, Size=Lg, State=Default, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:450",
+          "name": "Variant=Danger, Size=Lg, State=Hover, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:454",
+          "name": "Variant=Danger, Size=Lg, State=Hover, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:458",
+          "name": "Variant=Danger, Size=Lg, State=Pressed, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:462",
+          "name": "Variant=Danger, Size=Lg, State=Pressed, Radius=None",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:466",
+          "name": "Variant=Danger, Size=Lg, State=Focused, Radius=Rounded",
+          "width": 93,
+          "height": 48,
+          "paintBox": [
+            3,
+            3,
+            99,
+            54
+          ]
+        },
+        {
+          "nodeId": "118:470",
+          "name": "Variant=Danger, Size=Lg, State=Focused, Radius=None",
+          "width": 93,
+          "height": 48,
+          "paintBox": [
+            3,
+            3,
+            99,
+            54
+          ]
+        },
+        {
+          "nodeId": "118:474",
+          "name": "Variant=Danger, Size=Lg, State=Disabled, Radius=Rounded",
+          "width": 93,
+          "height": 48
+        },
+        {
+          "nodeId": "118:478",
+          "name": "Variant=Danger, Size=Lg, State=Disabled, Radius=None",
+          "width": 93,
+          "height": 48
+        }
+      ]
+    },
+    {
       "name": "ListItem",
       "story": "components-listitem--figma-variants",
       "variants": [
@@ -654,6 +1902,816 @@
           "name": "Type=Setting, State=Skeleton, Size=Lg",
           "width": 360,
           "height": 65
+        }
+      ]
+    },
+    {
+      "name": "Checkbox",
+      "story": "components-checkbox--figma-variants",
+      "variants": [
+        {
+          "nodeId": "178:4",
+          "name": "Size=Sm, Type=Unselected, State=Enabled",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:7",
+          "name": "Size=Sm, Type=Unselected, State=Hovered",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:10",
+          "name": "Size=Sm, Type=Unselected, State=Focused",
+          "width": 16,
+          "height": 16,
+          "paintBox": [
+            5.5,
+            5.5,
+            27,
+            27
+          ]
+        },
+        {
+          "nodeId": "178:13",
+          "name": "Size=Sm, Type=Unselected, State=Disabled",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:16",
+          "name": "Size=Sm, Type=Selected, State=Enabled",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:929",
+          "name": "Size=Sm, Type=Selected, State=Hovered",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:934",
+          "name": "Size=Sm, Type=Selected, State=Focused",
+          "width": 16,
+          "height": 16,
+          "paintBox": [
+            5.5,
+            5.5,
+            27,
+            27
+          ]
+        },
+        {
+          "nodeId": "178:939",
+          "name": "Size=Sm, Type=Selected, State=Disabled",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:944",
+          "name": "Size=Sm, Type=Indeterminate, State=Enabled",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:949",
+          "name": "Size=Sm, Type=Indeterminate, State=Hovered",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:954",
+          "name": "Size=Sm, Type=Indeterminate, State=Focused",
+          "width": 16,
+          "height": 16,
+          "paintBox": [
+            5.5,
+            5.5,
+            27,
+            27
+          ]
+        },
+        {
+          "nodeId": "178:959",
+          "name": "Size=Sm, Type=Indeterminate, State=Disabled",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:964",
+          "name": "Size=Sm, Type=Error-Unselected, State=Enabled",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:967",
+          "name": "Size=Sm, Type=Error-Unselected, State=Hovered",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:970",
+          "name": "Size=Sm, Type=Error-Unselected, State=Focused",
+          "width": 16,
+          "height": 16,
+          "paintBox": [
+            5.5,
+            5.5,
+            27,
+            27
+          ]
+        },
+        {
+          "nodeId": "178:973",
+          "name": "Size=Sm, Type=Error-Unselected, State=Disabled",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:976",
+          "name": "Size=Sm, Type=Error-Selected, State=Enabled",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:981",
+          "name": "Size=Sm, Type=Error-Selected, State=Hovered",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:986",
+          "name": "Size=Sm, Type=Error-Selected, State=Focused",
+          "width": 16,
+          "height": 16,
+          "paintBox": [
+            5.5,
+            5.5,
+            27,
+            27
+          ]
+        },
+        {
+          "nodeId": "178:991",
+          "name": "Size=Sm, Type=Error-Selected, State=Disabled",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:996",
+          "name": "Size=Sm, Type=Error-Indeterminate, State=Enabled",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:1001",
+          "name": "Size=Sm, Type=Error-Indeterminate, State=Hovered",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:1006",
+          "name": "Size=Sm, Type=Error-Indeterminate, State=Focused",
+          "width": 16,
+          "height": 16,
+          "paintBox": [
+            5.5,
+            5.5,
+            27,
+            27
+          ]
+        },
+        {
+          "nodeId": "178:1011",
+          "name": "Size=Sm, Type=Error-Indeterminate, State=Disabled",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "178:1016",
+          "name": "Size=Md, Type=Unselected, State=Enabled",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1019",
+          "name": "Size=Md, Type=Unselected, State=Hovered",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1022",
+          "name": "Size=Md, Type=Unselected, State=Focused",
+          "width": 20,
+          "height": 20,
+          "paintBox": [
+            5.5,
+            5.5,
+            31,
+            31
+          ]
+        },
+        {
+          "nodeId": "178:1025",
+          "name": "Size=Md, Type=Unselected, State=Disabled",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1028",
+          "name": "Size=Md, Type=Selected, State=Enabled",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1033",
+          "name": "Size=Md, Type=Selected, State=Hovered",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1038",
+          "name": "Size=Md, Type=Selected, State=Focused",
+          "width": 20,
+          "height": 20,
+          "paintBox": [
+            5.5,
+            5.5,
+            31,
+            31
+          ]
+        },
+        {
+          "nodeId": "178:1043",
+          "name": "Size=Md, Type=Selected, State=Disabled",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1048",
+          "name": "Size=Md, Type=Indeterminate, State=Enabled",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1053",
+          "name": "Size=Md, Type=Indeterminate, State=Hovered",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1058",
+          "name": "Size=Md, Type=Indeterminate, State=Focused",
+          "width": 20,
+          "height": 20,
+          "paintBox": [
+            5.5,
+            5.5,
+            31,
+            31
+          ]
+        },
+        {
+          "nodeId": "178:1063",
+          "name": "Size=Md, Type=Indeterminate, State=Disabled",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1068",
+          "name": "Size=Md, Type=Error-Unselected, State=Enabled",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1071",
+          "name": "Size=Md, Type=Error-Unselected, State=Hovered",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1074",
+          "name": "Size=Md, Type=Error-Unselected, State=Focused",
+          "width": 20,
+          "height": 20,
+          "paintBox": [
+            5.5,
+            5.5,
+            31,
+            31
+          ]
+        },
+        {
+          "nodeId": "178:1077",
+          "name": "Size=Md, Type=Error-Unselected, State=Disabled",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1080",
+          "name": "Size=Md, Type=Error-Selected, State=Enabled",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1085",
+          "name": "Size=Md, Type=Error-Selected, State=Hovered",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1090",
+          "name": "Size=Md, Type=Error-Selected, State=Focused",
+          "width": 20,
+          "height": 20,
+          "paintBox": [
+            5.5,
+            5.5,
+            31,
+            31
+          ]
+        },
+        {
+          "nodeId": "178:1095",
+          "name": "Size=Md, Type=Error-Selected, State=Disabled",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1100",
+          "name": "Size=Md, Type=Error-Indeterminate, State=Enabled",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1105",
+          "name": "Size=Md, Type=Error-Indeterminate, State=Hovered",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1110",
+          "name": "Size=Md, Type=Error-Indeterminate, State=Focused",
+          "width": 20,
+          "height": 20,
+          "paintBox": [
+            5.5,
+            5.5,
+            31,
+            31
+          ]
+        },
+        {
+          "nodeId": "178:1115",
+          "name": "Size=Md, Type=Error-Indeterminate, State=Disabled",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "178:1120",
+          "name": "Size=Lg, Type=Unselected, State=Enabled",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1123",
+          "name": "Size=Lg, Type=Unselected, State=Hovered",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1126",
+          "name": "Size=Lg, Type=Unselected, State=Focused",
+          "width": 24,
+          "height": 24,
+          "paintBox": [
+            5.5,
+            5.5,
+            35,
+            35
+          ]
+        },
+        {
+          "nodeId": "178:1129",
+          "name": "Size=Lg, Type=Unselected, State=Disabled",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1132",
+          "name": "Size=Lg, Type=Selected, State=Enabled",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1137",
+          "name": "Size=Lg, Type=Selected, State=Hovered",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1142",
+          "name": "Size=Lg, Type=Selected, State=Focused",
+          "width": 24,
+          "height": 24,
+          "paintBox": [
+            5.5,
+            5.5,
+            35,
+            35
+          ]
+        },
+        {
+          "nodeId": "178:1147",
+          "name": "Size=Lg, Type=Selected, State=Disabled",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1152",
+          "name": "Size=Lg, Type=Indeterminate, State=Enabled",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1157",
+          "name": "Size=Lg, Type=Indeterminate, State=Hovered",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1162",
+          "name": "Size=Lg, Type=Indeterminate, State=Focused",
+          "width": 24,
+          "height": 24,
+          "paintBox": [
+            5.5,
+            5.5,
+            35,
+            35
+          ]
+        },
+        {
+          "nodeId": "178:1167",
+          "name": "Size=Lg, Type=Indeterminate, State=Disabled",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1172",
+          "name": "Size=Lg, Type=Error-Unselected, State=Enabled",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1175",
+          "name": "Size=Lg, Type=Error-Unselected, State=Hovered",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1178",
+          "name": "Size=Lg, Type=Error-Unselected, State=Focused",
+          "width": 24,
+          "height": 24,
+          "paintBox": [
+            5.5,
+            5.5,
+            35,
+            35
+          ]
+        },
+        {
+          "nodeId": "178:1181",
+          "name": "Size=Lg, Type=Error-Unselected, State=Disabled",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1184",
+          "name": "Size=Lg, Type=Error-Selected, State=Enabled",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1189",
+          "name": "Size=Lg, Type=Error-Selected, State=Hovered",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1194",
+          "name": "Size=Lg, Type=Error-Selected, State=Focused",
+          "width": 24,
+          "height": 24,
+          "paintBox": [
+            5.5,
+            5.5,
+            35,
+            35
+          ]
+        },
+        {
+          "nodeId": "178:1199",
+          "name": "Size=Lg, Type=Error-Selected, State=Disabled",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1204",
+          "name": "Size=Lg, Type=Error-Indeterminate, State=Enabled",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1209",
+          "name": "Size=Lg, Type=Error-Indeterminate, State=Hovered",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "178:1214",
+          "name": "Size=Lg, Type=Error-Indeterminate, State=Focused",
+          "width": 24,
+          "height": 24,
+          "paintBox": [
+            5.5,
+            5.5,
+            35,
+            35
+          ]
+        },
+        {
+          "nodeId": "178:1219",
+          "name": "Size=Lg, Type=Error-Indeterminate, State=Disabled",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "185:3",
+          "name": "Size=Sm, Type=Unselected, State=Pressed",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "185:6",
+          "name": "Size=Sm, Type=Selected, State=Pressed",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "185:11",
+          "name": "Size=Sm, Type=Indeterminate, State=Pressed",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "185:16",
+          "name": "Size=Sm, Type=Error-Unselected, State=Pressed",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "185:19",
+          "name": "Size=Sm, Type=Error-Selected, State=Pressed",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "185:24",
+          "name": "Size=Sm, Type=Error-Indeterminate, State=Pressed",
+          "width": 16,
+          "height": 16
+        },
+        {
+          "nodeId": "185:29",
+          "name": "Size=Md, Type=Unselected, State=Pressed",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "185:32",
+          "name": "Size=Md, Type=Selected, State=Pressed",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "185:37",
+          "name": "Size=Md, Type=Indeterminate, State=Pressed",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "185:42",
+          "name": "Size=Md, Type=Error-Unselected, State=Pressed",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "185:45",
+          "name": "Size=Md, Type=Error-Selected, State=Pressed",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "185:50",
+          "name": "Size=Md, Type=Error-Indeterminate, State=Pressed",
+          "width": 20,
+          "height": 20
+        },
+        {
+          "nodeId": "185:55",
+          "name": "Size=Lg, Type=Unselected, State=Pressed",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "185:58",
+          "name": "Size=Lg, Type=Selected, State=Pressed",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "185:63",
+          "name": "Size=Lg, Type=Indeterminate, State=Pressed",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "185:68",
+          "name": "Size=Lg, Type=Error-Unselected, State=Pressed",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "185:71",
+          "name": "Size=Lg, Type=Error-Selected, State=Pressed",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "185:76",
+          "name": "Size=Lg, Type=Error-Indeterminate, State=Pressed",
+          "width": 24,
+          "height": 24
+        },
+        {
+          "nodeId": "190:3",
+          "name": "Type=Unselected, State=Enabled",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "190:12",
+          "name": "Type=Unselected, State=Focus",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "190:21",
+          "name": "Type=Unselected, State=Invalid",
+          "width": 320,
+          "height": 74
+        },
+        {
+          "nodeId": "190:1004",
+          "name": "Type=Unselected, State=Warning",
+          "width": 320,
+          "height": 74
+        },
+        {
+          "nodeId": "190:1019",
+          "name": "Type=Unselected, State=Read-Only",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "190:1028",
+          "name": "Type=Unselected, State=Disabled",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "190:1041",
+          "name": "Type=Selected, State=Enabled",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "190:1052",
+          "name": "Type=Selected, State=Focus",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "190:1063",
+          "name": "Type=Selected, State=Invalid",
+          "width": 320,
+          "height": 74
+        },
+        {
+          "nodeId": "190:1080",
+          "name": "Type=Selected, State=Warning",
+          "width": 320,
+          "height": 74
+        },
+        {
+          "nodeId": "190:1097",
+          "name": "Type=Selected, State=Read-Only",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "190:1108",
+          "name": "Type=Selected, State=Disabled",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "190:1123",
+          "name": "Type=Indeterminate, State=Enabled",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "190:1134",
+          "name": "Type=Indeterminate, State=Focus",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "190:1145",
+          "name": "Type=Indeterminate, State=Invalid",
+          "width": 320,
+          "height": 74
+        },
+        {
+          "nodeId": "190:1162",
+          "name": "Type=Indeterminate, State=Warning",
+          "width": 320,
+          "height": 74
+        },
+        {
+          "nodeId": "190:1179",
+          "name": "Type=Indeterminate, State=Read-Only",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "190:1190",
+          "name": "Type=Indeterminate, State=Disabled",
+          "width": 320,
+          "height": 48
+        },
+        {
+          "nodeId": "192:3",
+          "name": "State=Enabled, Orientation=Vertical",
+          "width": 320,
+          "height": 128
+        },
+        {
+          "nodeId": "192:49",
+          "name": "State=Enabled, Orientation=Horizontal",
+          "width": 560,
+          "height": 48
+        },
+        {
+          "nodeId": "192:83",
+          "name": "State=Invalid, Orientation=Vertical",
+          "width": 320,
+          "height": 154
+        },
+        {
+          "nodeId": "192:1232",
+          "name": "State=Invalid, Orientation=Horizontal",
+          "width": 560,
+          "height": 74
+        },
+        {
+          "nodeId": "192:1272",
+          "name": "State=Warning, Orientation=Vertical",
+          "width": 320,
+          "height": 154
+        },
+        {
+          "nodeId": "192:1312",
+          "name": "State=Warning, Orientation=Horizontal",
+          "width": 560,
+          "height": 74
+        },
+        {
+          "nodeId": "192:1352",
+          "name": "State=Read-Only, Orientation=Vertical",
+          "width": 320,
+          "height": 128
+        },
+        {
+          "nodeId": "192:1386",
+          "name": "State=Read-Only, Orientation=Horizontal",
+          "width": 560,
+          "height": 48
         }
       ]
     },
@@ -1554,6 +3612,72 @@
           "name": "Type=Chevron",
           "width": 16,
           "height": 16
+        }
+      ]
+    },
+    {
+      "name": "Accordion",
+      "story": "components-accordion--figma-variants",
+      "variants": [
+        {
+          "nodeId": "236:1535",
+          "name": "Style=Bordered, State=Default",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1569",
+          "name": "Style=Bordered, State=Hover",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1603",
+          "name": "Style=Bordered, State=Focused",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1637",
+          "name": "Style=Bordered, State=Expanded",
+          "width": 360,
+          "height": 93
+        },
+        {
+          "nodeId": "236:1671",
+          "name": "Style=Bordered, State=Disabled",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1705",
+          "name": "Style=Borderless, State=Default",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1739",
+          "name": "Style=Borderless, State=Hover",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1773",
+          "name": "Style=Borderless, State=Focused",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1807",
+          "name": "Style=Borderless, State=Expanded",
+          "width": 360,
+          "height": 93
+        },
+        {
+          "nodeId": "236:1841",
+          "name": "Style=Borderless, State=Disabled",
+          "width": 360,
+          "height": 37
         }
       ]
     },
@@ -9406,9 +11530,5 @@
       ]
     }
   ],
-  "notCovered": [
-    "Button",
-    "Checkbox",
-    "Accordion"
-  ]
+  "notCovered": []
 }

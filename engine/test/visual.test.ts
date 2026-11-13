@@ -29,7 +29,7 @@ describe('visual check', () => {
     const r = { component: 'X', nodeId: '1', name: 'n', figmaSize: [10, 10] as [number, number], codeSize: [10, 10] as [number, number] };
     expect(verdict({ ...r, diff: 1 })).toBe('match');
     expect(verdict({ ...r, diff: 5 })).toBe('check');
-    expect(verdict({ ...r, diff: 1, codeSize: [12, 10] })).toBe('differs');
+    expect(verdict({ ...r, diff: 1, codeSize: [12, 10] })).toBe('check');
     expect(verdict({ ...r, diff: 30 })).toBe('differs');
   });
 });

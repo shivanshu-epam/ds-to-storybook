@@ -51,8 +51,12 @@ export interface VariantResult {
   error?: string;
 }
 
-/** Below 2% the renders match (anti-aliasing and font hinting); up to 10% worth a look; above, a real difference. */
-export const verdict = (r: VariantResult) => (r.error ? 'error' : r.diff <= 2 && sizeOk(r) ? 'match' : r.diff <= 10 && sizeOk(r) ? 'check' : 'differs');
+/**
+ * Below 2% and the same size (±1px), the renders match (anti-aliasing and font hinting). Up to 10%, or a size
+ * difference alone (a fixed-size Figma specimen frame around content that sizes itself), worth a look.
+ * Above 10% of the pixels, a real difference.
+ */
+export const verdict = (r: VariantResult) => (r.error ? 'error' : r.diff <= 2 && sizeOk(r) ? 'match' : r.diff <= 10 ? 'check' : 'differs');
 const sizeOk = (r: VariantResult) => Math.abs(r.figmaSize[0] - r.codeSize[0]) <= 1 && Math.abs(r.figmaSize[1] - r.codeSize[1]) <= 1;
 
 /** Draws a PNG on white at the top left of a w×h canvas. */
@@ -208,7 +212,7 @@ td img { max-width: 360px; background: #fff; border: 1px solid var(--line); } .n
 .badge { font-size: 12px; font-weight: 600; } .match .badge { color: var(--match); } .check .badge { color: var(--check); } .differs .badge, .error .badge { color: var(--differs); }
 </style></head><body>
 <h1>Visual check: Figma vs Storybook</h1>
-<p>Figma file <code>${esc(m.fileKey)}</code>, version ${esc(m.version)}. Each Figma variant rendered by Figma (left) and by the generated React Storybook (middle), compared pixel by pixel (right: differences in red). <b>match</b> ≤ 2% and same size; <b>check</b> ≤ 10%; <b>differs</b> above. Not covered yet: ${m.notCovered.map(esc).join(', ') || 'none'}.</p>
+<p>Figma file <code>${esc(m.fileKey)}</code>, version ${esc(m.version)}. Each Figma variant rendered by Figma (left) and by the generated React Storybook (middle), compared pixel by pixel (right: differences in red). <b>match</b> ≤ 2% and the same size (±1px); <b>check</b> ≤ 10% or a size difference only; <b>differs</b> above 10%. Not covered yet: ${m.notCovered.map(esc).join(', ') || 'none'}.</p>
 <div class="summary"><div><b>${results.length}</b> variants</div><div class="match"><b>${counts.match}</b> <span class="badge">match</span></div><div class="check"><b>${counts.check}</b> <span class="badge">check</span></div><div class="differs"><b>${counts.differs + counts.error}</b> <span class="badge">differ</span></div></div>
 ${byComponent.map((c) => `<details${c.worst > 10 ? ' open' : ''}><summary>${esc(c.name)}: ${c.matching}/${c.rs.length} match, worst ${c.worst}%</summary><div class="wrap"><table>${c.rs.map(row).join('')}</table></div></details>`).join('\n')}
 </body></html>

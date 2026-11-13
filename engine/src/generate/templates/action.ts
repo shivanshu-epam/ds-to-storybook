@@ -4,7 +4,7 @@
  */
 import type { IRComponentSet } from '../../ir/types.ts';
 import { generateStyles, type RoleDef, type StyleModel } from '../styles.ts';
-import { docsJson, forced, kebab, mdxPage, partAt, pascal, q, sampleText, type ComponentReport, type TemplateContext, type TemplateResult } from './common.ts';
+import { docsJson, figmaVariantsStory, forced, kebab, mdxPage, partAt, pascal, q, sampleText, visualVariants, type ComponentReport, type FigmaVariantRef, type TemplateContext, type TemplateResult } from './common.ts';
 
 const STATE_AXIS = /^(state|interaction)$/i;
 
@@ -18,6 +18,7 @@ export interface ActionCore {
   labelText: string;
   mapping: ComponentReport['props'];
   description: string;
+  visual: FigmaVariantRef[];
 }
 
 export function actionTemplate(ctx: TemplateContext, name: string): TemplateResult {
@@ -206,6 +207,19 @@ export const Disabled: Story = {
   },
 };`);
   }
+  // Every Figma variant once, for "ds-sync visual".
+  storyExports.push(figmaVariantsStory(set.variants.map((v) => {
+    const attrs = [
+      ...enumAxes.map((a) => `${axisProp(a.name)}=${q(value(v.values[a.name] ?? String(a.default)))}`),
+      ...(stateAxis ? [`{...${stateArgs(v.values[stateAxis.name] ?? '')}}`] : []),
+      ...slotBooleans.map((b, i) => {
+        const icon = iconNames[i] ? ctx.icons.get(iconNames[i]!)?.name : undefined;
+        return String(b.default) === 'true' && icon ? `${slotProp(b.name)}={<Icon name="${icon}" />}` : '';
+      }).filter(Boolean),
+    ];
+    const label = v.parts.find((p) => p.type === 'TEXT' && !p.hidden)?.text ?? labelText;
+    return { variant: v, jsx: `<${name} ${attrs.join(' ')}>${JSON.stringify(label).slice(1, -1).replace(/[{}<>]/g, (c) => `{'${c}'}`)}</${name}>` };
+  })));
   storyExports.push(`/** WAI-ARIA button pattern: Tab focuses; Enter and Space activate. */
 export const Keyboard: Story = {
   play: async ({ canvas, args }) => {
@@ -270,6 +284,7 @@ ${storyExports.join('\n\n')}
     labelText,
     mapping,
     description,
+    visual: visualVariants([set]),
   };
   return {
     core,

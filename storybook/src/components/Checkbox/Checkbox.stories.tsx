@@ -165,3 +165,361 @@ export const GroupStates: Story = {
     </Stack>
   ),
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      <div data-figma-variant='178:4' title='Size=Sm, Type=Unselected, State=Enabled' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:7' title='Size=Sm, Type=Unselected, State=Hovered' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:10' title='Size=Sm, Type=Unselected, State=Focused' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:13' title='Size=Sm, Type=Unselected, State=Disabled' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:16' title='Size=Sm, Type=Selected, State=Enabled' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:929' title='Size=Sm, Type=Selected, State=Hovered' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:934' title='Size=Sm, Type=Selected, State=Focused' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:939' title='Size=Sm, Type=Selected, State=Disabled' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:944' title='Size=Sm, Type=Indeterminate, State=Enabled' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:949' title='Size=Sm, Type=Indeterminate, State=Hovered' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:954' title='Size=Sm, Type=Indeterminate, State=Focused' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:959' title='Size=Sm, Type=Indeterminate, State=Disabled' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:964' title='Size=Sm, Type=Error-Unselected, State=Enabled' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:967' title='Size=Sm, Type=Error-Unselected, State=Hovered' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:970' title='Size=Sm, Type=Error-Unselected, State=Focused' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:973' title='Size=Sm, Type=Error-Unselected, State=Disabled' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:976' title='Size=Sm, Type=Error-Selected, State=Enabled' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:981' title='Size=Sm, Type=Error-Selected, State=Hovered' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:986' title='Size=Sm, Type=Error-Selected, State=Focused' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:991' title='Size=Sm, Type=Error-Selected, State=Disabled' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:996' title='Size=Sm, Type=Error-Indeterminate, State=Enabled' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:1001' title='Size=Sm, Type=Error-Indeterminate, State=Hovered' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:1006' title='Size=Sm, Type=Error-Indeterminate, State=Focused' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:1011' title='Size=Sm, Type=Error-Indeterminate, State=Disabled' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:1016' title='Size=Md, Type=Unselected, State=Enabled' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:1019' title='Size=Md, Type=Unselected, State=Hovered' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:1022' title='Size=Md, Type=Unselected, State=Focused' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:1025' title='Size=Md, Type=Unselected, State=Disabled' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:1028' title='Size=Md, Type=Selected, State=Enabled' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:1033' title='Size=Md, Type=Selected, State=Hovered' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:1038' title='Size=Md, Type=Selected, State=Focused' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:1043' title='Size=Md, Type=Selected, State=Disabled' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:1048' title='Size=Md, Type=Indeterminate, State=Enabled' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:1053' title='Size=Md, Type=Indeterminate, State=Hovered' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:1058' title='Size=Md, Type=Indeterminate, State=Focused' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:1063' title='Size=Md, Type=Indeterminate, State=Disabled' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:1068' title='Size=Md, Type=Error-Unselected, State=Enabled' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:1071' title='Size=Md, Type=Error-Unselected, State=Hovered' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:1074' title='Size=Md, Type=Error-Unselected, State=Focused' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:1077' title='Size=Md, Type=Error-Unselected, State=Disabled' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:1080' title='Size=Md, Type=Error-Selected, State=Enabled' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:1085' title='Size=Md, Type=Error-Selected, State=Hovered' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:1090' title='Size=Md, Type=Error-Selected, State=Focused' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:1095' title='Size=Md, Type=Error-Selected, State=Disabled' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:1100' title='Size=Md, Type=Error-Indeterminate, State=Enabled' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:1105' title='Size=Md, Type=Error-Indeterminate, State=Hovered' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:1110' title='Size=Md, Type=Error-Indeterminate, State=Focused' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:1115' title='Size=Md, Type=Error-Indeterminate, State=Disabled' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:1120' title='Size=Lg, Type=Unselected, State=Enabled' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:1123' title='Size=Lg, Type=Unselected, State=Hovered' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:1126' title='Size=Lg, Type=Unselected, State=Focused' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:1129' title='Size=Lg, Type=Unselected, State=Disabled' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:1132' title='Size=Lg, Type=Selected, State=Enabled' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:1137' title='Size=Lg, Type=Selected, State=Hovered' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:1142' title='Size=Lg, Type=Selected, State=Focused' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:1147' title='Size=Lg, Type=Selected, State=Disabled' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:1152' title='Size=Lg, Type=Indeterminate, State=Enabled' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:1157' title='Size=Lg, Type=Indeterminate, State=Hovered' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:1162' title='Size=Lg, Type=Indeterminate, State=Focused' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:1167' title='Size=Lg, Type=Indeterminate, State=Disabled' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:1172' title='Size=Lg, Type=Error-Unselected, State=Enabled' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:1175' title='Size=Lg, Type=Error-Unselected, State=Hovered' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:1178' title='Size=Lg, Type=Error-Unselected, State=Focused' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:1181' title='Size=Lg, Type=Error-Unselected, State=Disabled' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:1184' title='Size=Lg, Type=Error-Selected, State=Enabled' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:1189' title='Size=Lg, Type=Error-Selected, State=Hovered' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:1194' title='Size=Lg, Type=Error-Selected, State=Focused' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:1199' title='Size=Lg, Type=Error-Selected, State=Disabled' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='178:1204' title='Size=Lg, Type=Error-Indeterminate, State=Enabled' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='178:1209' title='Size=Lg, Type=Error-Indeterminate, State=Hovered' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Hovered']} />
+      </div>
+      <div data-figma-variant='178:1214' title='Size=Lg, Type=Error-Indeterminate, State=Focused' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Focused']} />
+      </div>
+      <div data-figma-variant='178:1219' title='Size=Lg, Type=Error-Indeterminate, State=Disabled' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='185:3' title='Size=Sm, Type=Unselected, State=Pressed' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:6' title='Size=Sm, Type=Selected, State=Pressed' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:11' title='Size=Sm, Type=Indeterminate, State=Pressed' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:16' title='Size=Sm, Type=Error-Unselected, State=Pressed' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:19' title='Size=Sm, Type=Error-Selected, State=Pressed' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:24' title='Size=Sm, Type=Error-Indeterminate, State=Pressed' style={{ display: 'flex', width: 16 }}>
+        <Checkbox size='sm' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:29' title='Size=Md, Type=Unselected, State=Pressed' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:32' title='Size=Md, Type=Selected, State=Pressed' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:37' title='Size=Md, Type=Indeterminate, State=Pressed' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:42' title='Size=Md, Type=Error-Unselected, State=Pressed' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:45' title='Size=Md, Type=Error-Selected, State=Pressed' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:50' title='Size=Md, Type=Error-Indeterminate, State=Pressed' style={{ display: 'flex', width: 20 }}>
+        <Checkbox size='md' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:55' title='Size=Lg, Type=Unselected, State=Pressed' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Unselected']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:58' title='Size=Lg, Type=Selected, State=Pressed' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Selected']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:63' title='Size=Lg, Type=Indeterminate, State=Pressed' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Indeterminate']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:68' title='Size=Lg, Type=Error-Unselected, State=Pressed' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Unselected']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:71' title='Size=Lg, Type=Error-Selected, State=Pressed' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Selected']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='185:76' title='Size=Lg, Type=Error-Indeterminate, State=Pressed' style={{ display: 'flex', width: 24 }}>
+        <Checkbox size='lg' aria-label="Checkbox" {...TYPE_ARGS['Error-Indeterminate']} {...STATE_ARGS['Pressed']} />
+      </div>
+      <div data-figma-variant='190:3' title='Type=Unselected, State=Enabled' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Unselected']} {...FIELD_STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='190:12' title='Type=Unselected, State=Focus' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Unselected']} {...FIELD_STATE_ARGS['Focus']} />
+      </div>
+      <div data-figma-variant='190:21' title='Type=Unselected, State=Invalid' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Unselected']} {...FIELD_STATE_ARGS['Invalid']} />
+      </div>
+      <div data-figma-variant='190:1004' title='Type=Unselected, State=Warning' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Unselected']} {...FIELD_STATE_ARGS['Warning']} />
+      </div>
+      <div data-figma-variant='190:1019' title='Type=Unselected, State=Read-Only' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Unselected']} {...FIELD_STATE_ARGS['Read-Only']} />
+      </div>
+      <div data-figma-variant='190:1028' title='Type=Unselected, State=Disabled' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Unselected']} {...FIELD_STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='190:1041' title='Type=Selected, State=Enabled' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Selected']} {...FIELD_STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='190:1052' title='Type=Selected, State=Focus' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Selected']} {...FIELD_STATE_ARGS['Focus']} />
+      </div>
+      <div data-figma-variant='190:1063' title='Type=Selected, State=Invalid' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Selected']} {...FIELD_STATE_ARGS['Invalid']} />
+      </div>
+      <div data-figma-variant='190:1080' title='Type=Selected, State=Warning' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Selected']} {...FIELD_STATE_ARGS['Warning']} />
+      </div>
+      <div data-figma-variant='190:1097' title='Type=Selected, State=Read-Only' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Selected']} {...FIELD_STATE_ARGS['Read-Only']} />
+      </div>
+      <div data-figma-variant='190:1108' title='Type=Selected, State=Disabled' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Selected']} {...FIELD_STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='190:1123' title='Type=Indeterminate, State=Enabled' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Indeterminate']} {...FIELD_STATE_ARGS['Enabled']} />
+      </div>
+      <div data-figma-variant='190:1134' title='Type=Indeterminate, State=Focus' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Indeterminate']} {...FIELD_STATE_ARGS['Focus']} />
+      </div>
+      <div data-figma-variant='190:1145' title='Type=Indeterminate, State=Invalid' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Indeterminate']} {...FIELD_STATE_ARGS['Invalid']} />
+      </div>
+      <div data-figma-variant='190:1162' title='Type=Indeterminate, State=Warning' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Indeterminate']} {...FIELD_STATE_ARGS['Warning']} />
+      </div>
+      <div data-figma-variant='190:1179' title='Type=Indeterminate, State=Read-Only' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Indeterminate']} {...FIELD_STATE_ARGS['Read-Only']} />
+      </div>
+      <div data-figma-variant='190:1190' title='Type=Indeterminate, State=Disabled' style={{ display: 'flex', width: 320 }}>
+        <Checkbox size='md' label='Checkbox label' heading='Label' {...TYPE_ARGS['Indeterminate']} {...FIELD_STATE_ARGS['Disabled']} />
+      </div>
+      <div data-figma-variant='192:3' title='State=Enabled, Orientation=Vertical' style={{ display: 'flex', width: 320 }}>
+        <CheckboxGroup legend='Group label' orientation='vertical'><Checkbox size='md' label='Option 1' defaultChecked /><Checkbox size='md' label='Option 2' /><Checkbox size='md' label='Option 3' indeterminate /></CheckboxGroup>
+      </div>
+      <div data-figma-variant='192:49' title='State=Enabled, Orientation=Horizontal' style={{ display: 'flex', width: 560 }}>
+        <CheckboxGroup legend='Group label' orientation='horizontal'><Checkbox size='md' label='Option 1' defaultChecked /><Checkbox size='md' label='Option 2' /><Checkbox size='md' label='Option 3' indeterminate /></CheckboxGroup>
+      </div>
+      <div data-figma-variant='192:83' title='State=Invalid, Orientation=Vertical' style={{ display: 'flex', width: 320 }}>
+        <CheckboxGroup legend='Group label' orientation='vertical' error='Please select at least one option'><Checkbox size='md' label='Option 1' defaultChecked /><Checkbox size='md' label='Option 2' /><Checkbox size='md' label='Option 3' indeterminate /></CheckboxGroup>
+      </div>
+      <div data-figma-variant='192:1232' title='State=Invalid, Orientation=Horizontal' style={{ display: 'flex', width: 560 }}>
+        <CheckboxGroup legend='Group label' orientation='horizontal' error='Please select at least one option'><Checkbox size='md' label='Option 1' defaultChecked /><Checkbox size='md' label='Option 2' /><Checkbox size='md' label='Option 3' indeterminate /></CheckboxGroup>
+      </div>
+      <div data-figma-variant='192:1272' title='State=Warning, Orientation=Vertical' style={{ display: 'flex', width: 320 }}>
+        <CheckboxGroup legend='Group label' orientation='vertical' warning='Some options may not apply'><Checkbox size='md' label='Option 1' defaultChecked /><Checkbox size='md' label='Option 2' /><Checkbox size='md' label='Option 3' indeterminate /></CheckboxGroup>
+      </div>
+      <div data-figma-variant='192:1312' title='State=Warning, Orientation=Horizontal' style={{ display: 'flex', width: 560 }}>
+        <CheckboxGroup legend='Group label' orientation='horizontal' warning='Some options may not apply'><Checkbox size='md' label='Option 1' defaultChecked /><Checkbox size='md' label='Option 2' /><Checkbox size='md' label='Option 3' indeterminate /></CheckboxGroup>
+      </div>
+      <div data-figma-variant='192:1352' title='State=Read-Only, Orientation=Vertical' style={{ display: 'flex', width: 320 }}>
+        <CheckboxGroup legend='Group label' orientation='vertical' readOnly><Checkbox size='md' label='Option 1' defaultChecked /><Checkbox size='md' label='Option 2' /><Checkbox size='md' label='Option 3' indeterminate /></CheckboxGroup>
+      </div>
+      <div data-figma-variant='192:1386' title='State=Read-Only, Orientation=Horizontal' style={{ display: 'flex', width: 560 }}>
+        <CheckboxGroup legend='Group label' orientation='horizontal' readOnly><Checkbox size='md' label='Option 1' defaultChecked /><Checkbox size='md' label='Option 2' /><Checkbox size='md' label='Option 3' indeterminate /></CheckboxGroup>
+      </div>
+    </div>
+  ),
+};

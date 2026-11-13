@@ -10,7 +10,7 @@
 .errorIcon, .warningIcon, .groupErrorIcon, .groupWarningIcon { display: inline-flex; flex: none; }
 .field[data-disabled] .row, .field[data-readonly] .row { cursor: default; }
 .group { border: 0; margin: 0; padding: 0; min-width: 0; display: flex; }
-.legend { padding: 0; }
+.legend { padding: 0; float: left; width: 100%; } /* floated: a legend then takes part in the group's flex layout and gap */
 .items { display: flex; }
 
 .control {

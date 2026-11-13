@@ -156,3 +156,43 @@ export const Keyboard: Story = {
     await expect(a).toHaveAttribute('aria-expanded', 'false');
   },
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: () => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      <div data-figma-variant='236:1535' title='Style=Bordered, State=Default' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' defaultValue={[]}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='236:1569' title='Style=Bordered, State=Hover' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="hover">{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='236:1603' title='Style=Bordered, State=Focused' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="focus">{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='236:1637' title='Style=Bordered, State=Expanded' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' defaultValue={['v']}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='236:1671' title='Style=Bordered, State=Disabled' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' defaultValue={[]}><AccordionItem value="v" title={TITLE} disabled>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='236:1705' title='Style=Borderless, State=Default' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' defaultValue={[]}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='236:1739' title='Style=Borderless, State=Hover' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="hover">{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='236:1773' title='Style=Borderless, State=Focused' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="focus">{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='236:1807' title='Style=Borderless, State=Expanded' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' defaultValue={['v']}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='236:1841' title='Style=Borderless, State=Disabled' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' defaultValue={[]}><AccordionItem value="v" title={TITLE} disabled>{BODY}</AccordionItem></Accordion>
+      </div>
+    </div>
+  ),
+};

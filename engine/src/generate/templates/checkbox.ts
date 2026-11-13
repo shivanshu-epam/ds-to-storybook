@@ -5,7 +5,7 @@
  */
 import type { IRComponentSet } from '../../ir/types.ts';
 import { generateStyles, type RoleDef, type StateAxis, type StyleModel } from '../styles.ts';
-import { axisDefault, axisOptions, docsJson, forced, kebab, mdxPage, partAt, q, sampleText, type ComponentReport, type TemplateContext, type TemplateResult } from './common.ts';
+import { axisDefault, axisOptions, docsJson, figmaVariantsStory, forced, kebab, mdxPage, partAt, q, sampleText, visualVariants, type ComponentReport, type FigmaVariantRef, type TemplateContext, type TemplateResult } from './common.ts';
 
 const part = (test: RegExp, extra: Partial<RoleDef> & Pick<RoleDef, 'role' | 'kind'>): RoleDef => ({
   ...extra,
@@ -129,6 +129,7 @@ export interface CheckboxCore {
   hasGroup: boolean;
   mapping: ComponentReport['props'];
   description: string;
+  visual: FigmaVariantRef[];
 }
 
 export function checkboxTemplate(ctx: TemplateContext, name: string): TemplateResult {
@@ -154,7 +155,7 @@ export function checkboxTemplate(ctx: TemplateContext, name: string): TemplateRe
 .errorIcon, .warningIcon, .groupErrorIcon, .groupWarningIcon { display: inline-flex; flex: none; }
 .field[data-disabled] .row, .field[data-readonly] .row { cursor: default; }
 .group { border: 0; margin: 0; padding: 0; min-width: 0; display: flex; }
-.legend { padding: 0; }
+.legend { padding: 0; float: left; width: 100%; } /* floated: a legend then takes part in the group's flex layout and gap */
 .items { display: flex; }
 
 ${parts.map((p) => p.css).join('\n')}`;
@@ -500,6 +501,25 @@ export const GroupStates: Story = {
 };
 ` : ''}`;
 
+  // Every Figma variant of the three sets once, for "ds-sync visual".
+  const groupStateProps = (st: string) => {
+    const k = st.toLowerCase();
+    return /invalid|error/.test(k) ? ` error=${q(groupError)}` : /warning/.test(k) ? ` warning=${q(groupWarning)}` : /read/.test(k) ? ' readOnly' : '';
+  };
+  const itemProps = (instanceName: string | undefined) => {
+    const t = /Type=([^,]+)/.exec(instanceName ?? '')?.[1] ?? '';
+    return /indeterminate/i.test(t) ? ' indeterminate' : /^selected$/i.test(t) ? ' defaultChecked' : '';
+  };
+  // Fields and groups in Figma show the checkbox size nested in the field (often not the control's default).
+  const fieldSize = kebab(/Size=([^,]+)/.exec(field.variants.map((v) => partAt(v, /_control$/)?.instanceOf).find(Boolean) ?? '')?.[1] ?? axisDefault(control, 'Size'));
+  const visualStory = figmaVariantsStory([
+    ...control.variants.map((v) => ({ variant: v, jsx: `<${name} size=${q(kebab(v.values.Size ?? defaultSize))} aria-label="Checkbox" {...TYPE_ARGS[${q(v.values.Type ?? '')}]} {...STATE_ARGS[${q(v.values.State ?? '')}]} />` })),
+    ...field.variants.map((v) => ({ variant: v, jsx: `<${name} size=${q(fieldSize)} label=${q(valueText)} heading=${q(headingText)} {...TYPE_ARGS[${q(v.values.Type ?? '')}]} {...FIELD_STATE_ARGS[${q(v.values.State ?? '')}]} />` })),
+    ...(group ? group.variants.map((v) => ({
+      variant: v,
+      jsx: `<${groupName} legend=${q(legendText)} orientation=${q(kebab(v.values.Orientation ?? axisDefault(group, 'Orientation')))}${groupStateProps(v.values.State ?? '')}>${v.parts.filter((p) => p.type === 'INSTANCE' && /_items\//.test(p.path)).map((p) => `<${name} size=${q(fieldSize)} label=${q(p.innerText ?? valueText)}${itemProps(p.instanceOf)} />`).join('')}</${groupName}>`,
+    })) : []),
+  ]);
   const mapping: ComponentReport['props'] = [
     { prop: 'size', figma: `${control.name} Size` },
     { prop: 'checked / defaultChecked', figma: `Type=Selected`, note: 'Native input attributes.' },
@@ -519,7 +539,9 @@ export const GroupStates: Story = {
   const files = [
     { path: `${dir}/${name}.tsx`, content: tsx },
     { path: `${dir}/${name}.module.css`, content: css },
-    { path: `${dir}/${name}.stories.tsx`, content: stories },
+    { path: `${dir}/${name}.stories.tsx`, content: `${stories}
+${visualStory}
+` },
     {
       path: `${dir}/${name}.mdx`,
       content: mdxPage(name, name, [
@@ -549,6 +571,7 @@ export const GroupStates: Story = {
     hasGroup: Boolean(group),
     mapping,
     description,
+    visual: visualVariants([control, field, ...(group ? [group] : [])]),
   };
   return {
     core,
