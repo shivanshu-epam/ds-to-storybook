@@ -28,9 +28,10 @@ const meta = {
   render: (args) => html`<ds-input type=${args.type} size=${args.size} state=${args.state} ?disabled=${args.disabled} ?required=${args.required} ?show-leading-icon=${args.showLeadingIcon} ?show-trailing-icon=${args.showTrailingIcon} ?clearable=${args.clearable} ?show-character-count=${args.showCharacterCount} label=${args.label} placeholder=${args.placeholder} helper-text=${args.helperText} character-count=${args.characterCount}></ds-input>`,
   parameters: {
     // Known design issues (ds-sync.config.json overrides.knownIssues), accepted only in these Figma modes:
+    //   default: Placeholder #6b7280 on Filled background #f3f4f6 is 4.39:1 (needs 4.5:1)
     //   project=project-b: Placeholder #6b7280 on #f3f4f6 is 4.39:1 (also in the default modes)
     //   theme=dark: Dark theme: grey #6b7280 text on #111827 / #030712 is 3.66–4.16:1
-    a11y: { test: inModes({"project":"project-b"}, {"theme":"dark"}) ? 'todo' : 'error' },
+    a11y: { test: inModes({}, {"project":"project-b"}, {"theme":"dark"}) ? 'todo' : 'error' },
     figma: { fileKey: "I983NcgqSiY14YkpJbwjG8", nodeId: "836:4005" }, generator: 'generic' },
 } satisfies Meta;
 

@@ -26,9 +26,10 @@ const meta = {
   },
   parameters: {
     // Known design issues (ds-sync.config.json overrides.knownIssues), accepted only in these Figma modes:
+    //   default: Placeholder #6b7280 on Filled background #f3f4f6 is 4.39:1 (needs 4.5:1)
     //   project=project-b: Placeholder #6b7280 on #f3f4f6 is 4.39:1 (also in the default modes)
     //   theme=dark: Dark theme: grey #6b7280 text on #111827 / #030712 is 3.66–4.16:1
-    a11y: { test: inModes({"project":"project-b"}, {"theme":"dark"}) ? 'todo' : 'error' },
+    a11y: { test: inModes({}, {"project":"project-b"}, {"theme":"dark"}) ? 'todo' : 'error' },
     figma: { fileKey: 'I983NcgqSiY14YkpJbwjG8', nodeId: '836:4005' }, generator: 'generic' },
 } satisfies Meta<typeof Input>;
 

@@ -2062,6 +2062,7 @@ Figma: Input (836:4005)
 **Gaps:**
 
 - Instance swap properties not exposed as props (default instance rendered): Leading icon, Trailing icon.
+- Known design issue in default (accessibility checks report instead of failing there): Placeholder #6b7280 on Filled background #f3f4f6 is 4.39:1 (needs 4.5:1)
 - Known design issue in project=project-b (accessibility checks report instead of failing there): Placeholder #6b7280 on #f3f4f6 is 4.39:1 (also in the default modes)
 - Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: grey #6b7280 text on #111827 / #030712 is 3.66–4.16:1
 

@@ -57,6 +57,7 @@
           "theme=dark": "Dark theme: grey #6b7280 text on #111827 is 3.66:1"
         },
         "Input": {
+          "default": "Placeholder #6b7280 on Filled background #f3f4f6 is 4.39:1 (needs 4.5:1)",
           "project=project-b": "Placeholder #6b7280 on #f3f4f6 is 4.39:1 (also in the default modes)",
           "theme=dark": "Dark theme: grey #6b7280 text on #111827 / #030712 is 3.66\u20134.16:1"
         },
