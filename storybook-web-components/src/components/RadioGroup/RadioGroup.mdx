@@ -22,30 +22,30 @@ This is a standard Web Component: it works in any framework, or none.
 
 ### HTML
 
-<Source language="html" code={"<script type=\"module\">\n  import 'figma-design-system-web-components';\n</script>\n<ds-radio-group state=\"enabled\"></ds-radio-group>"} dark />
+<Source language="html" code={"<script type=\"module\">\n  import 'figma-design-system-web-components';\n</script>\n<ds-radio-group label=\"Delivery speed\" name=\"choice\">\n  <ds-radio-field label=\"A\" value=\"a\"></ds-radio-field>\n  <ds-radio-field label=\"B\" value=\"b\"></ds-radio-field>\n</ds-radio-group>"} dark />
 
 ### React 19
 
-<Source language="tsx" code={"import 'figma-design-system-web-components';\n// Typings: add figma-design-system-web-components/types/react.d.ts to your tsconfig.\n<ds-radio-group state=\"enabled\"></ds-radio-group>"} dark />
+<Source language="tsx" code={"import 'figma-design-system-web-components';\n// Typings: add figma-design-system-web-components/types/react.d.ts to your tsconfig.\n<ds-radio-group label=\"Delivery speed\" name=\"choice\" onValue-change={handle}>\n  <ds-radio-field label=\"A\" value=\"a\"></ds-radio-field>\n  <ds-radio-field label=\"B\" value=\"b\"></ds-radio-field>\n</ds-radio-group>"} dark />
 
 ### Vue 3
 
-<Source language="html" code={"<!-- vite.config: vue({ template: { compilerOptions: { isCustomElement: (t) => t.startsWith('ds-') } } }) -->\n<ds-radio-group state=\"enabled\"></ds-radio-group>"} dark />
+<Source language="html" code={"<!-- vite.config: vue({ template: { compilerOptions: { isCustomElement: (t) => t.startsWith('ds-') } } }) -->\n<ds-radio-group label=\"Delivery speed\" name=\"choice\" @value-change=\"handle\">\n  <ds-radio-field label=\"A\" value=\"a\"></ds-radio-field>\n  <ds-radio-field label=\"B\" value=\"b\"></ds-radio-field>\n</ds-radio-group>"} dark />
 
 ### Angular
 
-<Source language="html" code={"<!-- Component: schemas: [CUSTOM_ELEMENTS_SCHEMA]; main.ts: import 'figma-design-system-web-components'; -->\n<ds-radio-group state=\"enabled\"></ds-radio-group>"} dark />
+<Source language="html" code={"<!-- Component: schemas: [CUSTOM_ELEMENTS_SCHEMA]; main.ts: import 'figma-design-system-web-components'; -->\n<ds-radio-group label=\"Delivery speed\" name=\"choice\" (value-change)=\"handle($event)\">\n  <ds-radio-field label=\"A\" value=\"a\"></ds-radio-field>\n  <ds-radio-field label=\"B\" value=\"b\"></ds-radio-field>\n</ds-radio-group>"} dark />
 
 ### Svelte
 
-<Source language="html" code={"<script>import 'figma-design-system-web-components';</script>\n<ds-radio-group state=\"enabled\"></ds-radio-group>"} dark />
+<Source language="html" code={"<script>import 'figma-design-system-web-components';</script>\n<ds-radio-group label=\"Delivery speed\" name=\"choice\" on:value-change={handle}>\n  <ds-radio-field label=\"A\" value=\"a\"></ds-radio-field>\n  <ds-radio-field label=\"B\" value=\"b\"></ds-radio-field>\n</ds-radio-group>"} dark />
 
 ## Generation notes
 
-<ul><li>{"Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified."}</li></ul>
+<ul><li>{"role=\"radiogroup\" named by the group label. Radios inside share one name, so arrow keys move the selection (native radio behaviour); value and onValueChange control it."}</li></ul>
 ## Figma to code
 
-<table><thead><tr><th>Figma</th><th>Property / attribute</th><th>Note</th></tr></thead><tbody><tr><td>{"State (variant)"}</td><td><code>{"state / state"}</code></td><td>{""}</td></tr><tr><td>{"Horizontal (variant)"}</td><td><code>{"horizontal / horizontal"}</code></td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th>Figma</th><th>Property / attribute</th><th>Note</th></tr></thead><tbody><tr><td>{"group-label (text layer)"}</td><td><code>{"label / label"}</code></td><td>{"Names the radiogroup."}</td></tr><tr><td>{"—"}</td><td><code>{"name / value"}</code></td><td>{"Shared by the radios inside."}</td></tr><tr><td>{"_items (layer)"}</td><td><code>{"childrenValue / children-value"}</code></td><td>{"Default: the Figma example items."}</td></tr><tr><td>{"State (variant)"}</td><td><code>{"state / state"}</code></td><td>{""}</td></tr><tr><td>{"Horizontal (variant)"}</td><td><code>{"horizontal / horizontal"}</code></td><td>{""}</td></tr></tbody></table>
 
 <p>Source: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=529-749">{"RadioGroup"}</a>. The Figma version is recorded in GENERATION-REPORT.md.</p>
 

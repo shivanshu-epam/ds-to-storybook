@@ -61,7 +61,7 @@ export interface GenerateConfig {
 
 export interface PlannedComponent {
   name: string;
-  template: 'action' | 'checkbox' | 'accordion' | 'switch' | 'generic';
+  template: 'action' | 'checkbox' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'generic';
   sets: Record<string, string>;
   /** Storybook title; default Components/<name>. */
   title?: string;
@@ -107,7 +107,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   // Nested instances: a variant node id of a generated set -> the component that renders it.
   const registry = new Map<string, RegistryEntry>();
   for (const c of plan) {
-    if (c.template !== 'generic' && c.template !== 'action' && c.template !== 'switch') continue;
+    if (c.template === 'checkbox' || c.template === 'accordion') continue;
     const set = setsById.get(c.sets.main ?? '');
     if (!set) continue;
     const entry: RegistryEntry = { component: c.name, importPath: `../${c.name}/${c.name}`, kind: c.template, set };
@@ -120,10 +120,13 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   for (const c of plan) {
     const sets: Record<string, IRComponentSet> = Object.fromEntries(Object.entries(c.sets).map(([role, id]) => [role, setsById.get(id)!]));
     const ctx: TemplateContext = { fileKey: ir.fileKey, version: ir.version, sets, resolver, icons: iconMap };
-    const result = c.template === 'generic' || c.template === 'switch'
+    const radioControl = plan.find((x) => x.template === 'radio');
+    const radioSet = radioControl ? setsById.get(radioControl.sets.main ?? '') : undefined;
+    const result = c.template !== 'action' && c.template !== 'checkbox' && c.template !== 'accordion'
       ? genericTemplate(ctx, c.name, {
           title: c.title ?? `Components/${c.name}`,
-          ...(c.template === 'switch' ? { behavior: 'switch' as const } : {}),
+          ...(c.template !== 'generic' ? { behavior: c.template } : {}),
+          ...(radioControl && radioSet ? { related: { control: { name: radioControl.name, set: radioSet } } } : {}),
           instance: (part) => {
             const entry = part.instanceComponentId ? registry.get(part.instanceComponentId) : undefined;
             return entry ? instanceRef(entry, part, iconMap) : undefined;
@@ -192,7 +195,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
       const wc: { name: string; r: WcResult }[] = [];
       for (const { c, ctx, result } of results) {
         let r: WcResult;
-        if (c.template === 'generic' || c.template === 'switch') {
+        if (c.template !== 'action' && c.template !== 'checkbox' && c.template !== 'accordion') {
           r = wcGeneric(ctx, c.name, result.core as GenericCore, o, (part) => {
             const entry = part.instanceComponentId ? registry.get(part.instanceComponentId) : undefined;
             return entry ? instanceRef(entry, part, iconMap) : undefined;

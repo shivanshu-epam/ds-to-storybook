@@ -2,6 +2,8 @@
 .root { box-sizing: border-box; position: relative; }
 .radioRow, .radioControl, .value, .statusRow, .statusIcon, .errorText, .warningText { box-sizing: border-box; position: relative; margin: 0; min-width: 0; }
 
+.root:not([data-disabled]) label { cursor: pointer; }
+
 .root {
   background: transparent;
   box-shadow: none;

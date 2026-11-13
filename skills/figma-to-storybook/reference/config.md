@@ -40,7 +40,7 @@
 | `generate.modeAttributes` | Variable collection → HTML attribute that selects its modes. Default: collections with a dark mode use `data-theme`; others use `data-<collection>`. |
 | `overrides.skipPages` | Pages to ignore. Pages named QA, test, archive, playground and similar are skipped automatically. |
 | `overrides.frames` | Correct a frame's classification: `documentation`, `example`, `page-text` or `other`. Documentation frames become the docs page. |
-| `overrides.sets` | By set name or id: `exclude`, `name` (component name) or `template` (`action`, `checkbox`, `accordion`, `switch`, `generic`). |
+| `overrides.sets` | By set name or id: `exclude`, `name` (component name) or `template` (`action`, `checkbox`, `accordion`, `switch`, `radio`, `radio-field`, `radio-group`, `generic`). |
 | `overrides.knownIssues` | Accepted design issues by component. Their axe checks report as warnings, not failures, and the reason appears in the generation report. Use only with the team's agreement. |
 
 ## Drift report (existing code)

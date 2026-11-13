@@ -1,0 +1,12 @@
+# Radio control, field and group. Behaviour source: WAI-ARIA APG radio group pattern.
+id: radio
+pattern: wai-aria/radio
+role: radiogroup / radio
+element: native input type="radio" (React); native input per control plus a managing group (Web Components)
+requiredStates: [unselected, selected, focus, disabled, invalid]
+keyboard:
+  - { key: Tab, action: move focus into the group (one stop: the selected radio) }
+  - { key: Arrow Down / Right, action: select and focus the next radio }
+  - { key: Arrow Up / Left, action: select and focus the previous radio }
+  - { key: Space, action: select the focused radio }
+requiredDocs: [usage, accessibility]

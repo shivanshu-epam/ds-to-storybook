@@ -1202,11 +1202,11 @@ Figma: RadioControl (521:2681)
 | Figma | Prop | Note |
 | --- | --- | --- |
 | State (variant) | `state` | States: Enabled → default, Hovered → :hover (CSS), Focused → :focus (CSS), Pressed → :pressed (CSS), Disabled → disabled, Skeleton → state="skeleton", Read-Only → state="read-only", Invalid → state="invalid", Warning → state="warning" |
-| Selected (variant) | `selected` |  |
+| Selected (variant) | `checked / defaultChecked` | false → not checked, true → checked; styled with :checked. |
 
 **Not from Figma (archetype defaults or decisions):**
 
-- Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
+- Behaviour from the WAI-ARIA radio group pattern: a native radio input over the Figma visuals. Figma Selected=true is :checked.
 - The Figma set has 17 of 18 possible variant combinations; other combinations use the nearest defined styles.
 - A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state="focus") until behaviour is specified.
 
@@ -1238,7 +1238,7 @@ Figma: RadioControl (521:2681)
 - `outerCircle.position`: none (same in every variant)
 - `outerCircle.top`: none (same in every variant)
 - `outerCircle.width`: none (same in every variant)
-- `innerDot.background`: Selected, State
+- `innerDot.background`: State, Selected
 - `innerDot.border-radius`: Selected
 - `innerDot.box-shadow`: Selected
 - `innerDot.display`: Selected
@@ -1257,12 +1257,14 @@ Figma: RadioField (522:125)
 
 | Figma | Prop | Note |
 | --- | --- | --- |
+| value (text layer) | `label` | Rendered in the <label>. |
+| — | `name / value / checked / defaultChecked / onChange` | Passed to the radio input. |
 | State (variant) | `state` | States: Enabled → default, Focused → :focus (CSS), Invalid → state="invalid", Warning → state="warning", Read-Only → state="read-only", Disabled → disabled, Skeleton → state="skeleton" |
 | Position (variant) | `position` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
-- Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
+- The row holding the radio and its text is a <label>, so clicking the text selects the radio.
 - A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state="focus") until behaviour is specified.
 
 <details><summary>Which Figma axes each style depends on</summary>
@@ -1344,12 +1346,15 @@ Figma: RadioGroup (529:749)
 
 | Figma | Prop | Note |
 | --- | --- | --- |
+| group-label (text layer) | `label` | Names the radiogroup. |
+| — | `name / value / defaultValue / onValueChange` | Shared by the radios inside. |
+| _items (layer) | `children` | Default: the Figma example items. |
 | State (variant) | `state` |  |
 | Horizontal (variant) | `horizontal` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
-- Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
+- role="radiogroup" named by the group label. Radios inside share one name, so arrow keys move the selection (native radio behaviour); value and onValueChange control it.
 
 <details><summary>Which Figma axes each style depends on</summary>
 

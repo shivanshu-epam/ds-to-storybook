@@ -12,6 +12,16 @@
   },
   "mapping": [
     {
+      "prop": "label",
+      "figma": "value (text layer)",
+      "note": "Rendered in the <label>."
+    },
+    {
+      "prop": "name / value / checked / defaultChecked / onChange",
+      "figma": "—",
+      "note": "Passed to the radio input."
+    },
+    {
       "prop": "state",
       "figma": "State (variant)",
       "note": "States: Enabled → default, Focused → :focus (CSS), Invalid → state=\"invalid\", Warning → state=\"warning\", Read-Only → state=\"read-only\", Disabled → disabled, Skeleton → state=\"skeleton\""
@@ -22,7 +32,7 @@
     }
   ],
   "notes": [
-    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "The row holding the radio and its text is a <label>, so clicking the text selects the radio.",
     "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified."
   ],
   "tabs": [

@@ -34,7 +34,7 @@ export interface DiscoveredFrame {
 export interface Proposal {
   /** Generated component name (PascalCase). */
   name: string;
-  template: 'action' | 'checkbox' | 'accordion' | 'switch' | 'generic';
+  template: 'action' | 'checkbox' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'generic';
   /** Template role -> component set id. */
   sets: Record<string, string>;
   page: string;
@@ -157,6 +157,14 @@ function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides
         out.push({ name: pascalName(base), template: 'checkbox', sets, page, docFrames: [], confidence: 0.9, reason: 'Checkbox control, field and group sets with _box/_mark layers: checkbox archetype.' });
       }
     }
+    // Radio archetype: a control with a selected axis, plus optional field and group sets. Each stays its own component.
+    const radioOf = new Map<string, Proposal['template']>();
+    for (const [base, g] of groups) {
+      if (!/radio/i.test(base) || !g.control || !hasOnOffAxis(nodes.get(g.control.id))) continue;
+      radioOf.set(g.control.id, 'radio');
+      if (g.field) radioOf.set(g.field.id, 'radio-field');
+      if (g.group) radioOf.set(g.group.id, 'radio-group');
+    }
     for (const s of list) {
       if (claimed.has(s.id)) continue;
       const names = layerNames(s.id);
@@ -164,7 +172,12 @@ function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides
       let template: Proposal['template'] = 'generic';
       let reason = 'No archetype template matches; generic template renders the Figma layers (visuals only, behaviour not specified).';
       let confidence = 0.8;
-      if (/^button$/i.test(s.name) && p.includes('Variant') && p.some((x) => /^state$/i.test(x))) {
+      const radioTemplate = radioOf.get(s.id);
+      if (radioTemplate) {
+        template = radioTemplate;
+        reason = radioTemplate === 'radio' ? 'Radio control with a selected axis: radio archetype (native radio, WAI-ARIA radio group).' : radioTemplate === 'radio-field' ? 'Radio field: the row with the radio becomes its <label>.' : 'Radio group: role="radiogroup" with a shared name and value.';
+        confidence = 0.85;
+      } else if (/^button$/i.test(s.name) && p.includes('Variant') && p.some((x) => /^state$/i.test(x))) {
         template = 'action';
         reason = 'Named Button with Variant and State axes: action archetype (WAI-ARIA button).';
         confidence = 0.9;
@@ -280,7 +293,7 @@ export function targetsFromDiscovery(d: Discovery): ComponentTarget[] {
     const p = d.proposals.find((x) => Object.values(x.sets).includes(s.id));
     return {
       id: `auto.${s.id}`,
-      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' ? 'selection.binary' : p?.template === 'accordion' ? 'disclosure' : p?.template === 'switch' ? 'switch' : 'generic',
+      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' ? 'selection.binary' : p?.template === 'accordion' ? 'disclosure' : p?.template === 'switch' ? 'switch' : p?.template?.startsWith('radio') ? 'radio' : 'generic',
       figma: { page: s.page, componentSet: { id: s.id, name: s.name }, docFrames: p?.docFrames ?? [] },
     };
   });

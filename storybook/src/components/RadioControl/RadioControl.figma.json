@@ -17,12 +17,13 @@
       "note": "States: Enabled → default, Hovered → :hover (CSS), Focused → :focus (CSS), Pressed → :pressed (CSS), Disabled → disabled, Skeleton → state=\"skeleton\", Read-Only → state=\"read-only\", Invalid → state=\"invalid\", Warning → state=\"warning\""
     },
     {
-      "prop": "selected",
-      "figma": "Selected (variant)"
+      "prop": "checked / defaultChecked",
+      "figma": "Selected (variant)",
+      "note": "false → not checked, true → checked; styled with :checked."
     }
   ],
   "notes": [
-    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "Behaviour from the WAI-ARIA radio group pattern: a native radio input over the Figma visuals. Figma Selected=true is :checked.",
     "The Figma set has 17 of 18 possible variant combinations; other combinations use the nearest defined styles.",
     "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified."
   ],

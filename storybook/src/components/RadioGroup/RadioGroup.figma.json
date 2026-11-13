@@ -12,6 +12,21 @@
   },
   "mapping": [
     {
+      "prop": "label",
+      "figma": "group-label (text layer)",
+      "note": "Names the radiogroup."
+    },
+    {
+      "prop": "name / value / defaultValue / onValueChange",
+      "figma": "—",
+      "note": "Shared by the radios inside."
+    },
+    {
+      "prop": "children",
+      "figma": "_items (layer)",
+      "note": "Default: the Figma example items."
+    },
+    {
       "prop": "state",
       "figma": "State (variant)"
     },
@@ -21,7 +36,7 @@
     }
   ],
   "notes": [
-    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified."
+    "role=\"radiogroup\" named by the group label. Radios inside share one name, so arrow keys move the selection (native radio behaviour); value and onValueChange control it."
   ],
   "tabs": [
     {

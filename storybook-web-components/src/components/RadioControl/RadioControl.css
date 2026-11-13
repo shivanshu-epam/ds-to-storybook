@@ -2,6 +2,10 @@
 .root { box-sizing: border-box; position: relative; }
 .focusRing, .outerCircle, .innerDot { box-sizing: border-box; position: relative; margin: 0; min-width: 0; }
 
+/* Native radio input over the Figma visuals: it takes the clicks, the focus and the checked state. */
+.input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; z-index: 1; }
+.input:disabled { cursor: not-allowed; }
+
 .root {
   background: transparent;
   box-shadow: none;
@@ -34,31 +38,15 @@
   box-shadow: inset 0 0 0 1px var(--border-default);
 }
 
-.root:where([data-selected="true"]) .innerDot {
-  border-radius: 50%;
-  box-shadow: none;
-  display: block;
-  height: 10px;
-  left: 9px;
-  opacity: 1;
-  position: absolute;
-  top: 9px;
-  width: 10px;
-}
-
-.root:where([data-selected="false"]) .innerDot {
+.root .innerDot {
   display: none;
-}
-
-.root:where([data-selected="true"]) .innerDot {
-  background: var(--surface-bg-brand);
 }
 
 .root:where([data-disabled]) {
   opacity: 0.45;
 }
 
-.root:where(:is(:focus-visible, [data-force-state~="focus"])) .focusRing {
+.root:where(:is(:has(> .input:focus-visible), [data-force-state~="focus"])) .focusRing {
   background: transparent;
   border-radius: 50%;
   box-shadow: inset 0 0 0 2px var(--border-interactive-focus);
@@ -75,7 +63,7 @@
   box-shadow: inset 0 0 0 1px var(--border-interactive-hover);
 }
 
-.root:where(:is(:focus-visible, [data-force-state~="focus"])) .outerCircle {
+.root:where(:is(:has(> .input:focus-visible), [data-force-state~="focus"])) .outerCircle {
   box-shadow: inset 0 0 0 1px var(--border-interactive-focus);
 }
 
@@ -99,34 +87,54 @@
   box-shadow: inset 0 0 0 1px var(--border-warning);
 }
 
-.root:where([data-selected="true"][data-state="read-only"]) .outerCircle {
+.root:where(:has(> .input:checked)) .innerDot {
+  border-radius: 50%;
+  box-shadow: none;
+  display: block;
+  height: 10px;
+  left: 9px;
+  opacity: 1;
+  position: absolute;
+  top: 9px;
+  width: 10px;
+}
+
+.root:where(:has(> .input:checked)) .innerDot {
+  background: var(--surface-bg-brand);
+}
+
+.root:where([data-state="read-only"]:has(> .input:checked)) .outerCircle {
   background: transparent;
 }
 
-.root:where([data-selected="true"]:is(:hover:not([data-disabled]), [data-force-state~="hover"])) .innerDot {
+.root:where(:is(:hover:not([data-disabled]), [data-force-state~="hover"]):has(> .input:checked)) .innerDot {
   background: var(--interactive-bg-primary-hover);
 }
 
-.root:where([data-selected="true"]:is(:active:not([data-disabled]), [data-force-state~="pressed"])) .innerDot {
+.root:where(:is(:has(> .input:focus-visible), [data-force-state~="focus"]):has(> .input:checked)) .innerDot {
+  background: var(--surface-bg-brand);
+}
+
+.root:where(:is(:active:not([data-disabled]), [data-force-state~="pressed"]):has(> .input:checked)) .innerDot {
   background: var(--interactive-bg-primary-pressed);
 }
 
-.root:where([data-selected="true"][data-disabled]) .innerDot {
+.root:where([data-disabled]:has(> .input:checked)) .innerDot {
   background: var(--interactive-bg-primary-disabled);
 }
 
-.root:where([data-selected="true"][data-state="skeleton"]) .innerDot {
+.root:where([data-state="skeleton"]:has(> .input:checked)) .innerDot {
   background: var(--border-subtle);
 }
 
-.root:where([data-selected="true"][data-state="read-only"]) .innerDot {
+.root:where([data-state="read-only"]:has(> .input:checked)) .innerDot {
   background: var(--avatar-bg-icon);
 }
 
-.root:where([data-selected="true"][data-state="invalid"]) .innerDot {
+.root:where([data-state="invalid"]:has(> .input:checked)) .innerDot {
   background: var(--interactive-bg-danger-default);
 }
 
-.root:where([data-selected="true"][data-state="warning"]) .innerDot {
+.root:where([data-state="warning"]:has(> .input:checked)) .innerDot {
   background: var(--icon-warning);
 }
