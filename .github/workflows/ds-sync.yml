@@ -73,8 +73,9 @@ jobs:
         run: |
           dirs="${{ steps.out.outputs.dirs }}"
           git add -A -- $dirs
-          # Lines that only record the Figma version do not count: a new Figma version with no design change needs no pull request.
-          if git diff --cached --quiet -I 'version [0-9]+' -- $dirs; then
+          # Lines that only record the Figma version ("version 123" in reports, "version": "123" in JSON) do not count:
+          # a new Figma version with no design change needs no pull request.
+          if git diff --cached --quiet -I 'version"?:? "?[0-9]+' -- $dirs; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "::notice title=ds-sync::No design changes in Figma since the last generation (only the version number moved), so no pull request."
           else
@@ -88,7 +89,6 @@ jobs:
         if: steps.changes.outputs.changed == 'true'
         continue-on-error: true
         run: |
-          npx playwright install --with-deps chromium
           status=0
           for dir in ${{ steps.out.outputs.dirs }}; do
             echo "::group::$dir"
@@ -96,6 +96,8 @@ jobs:
               cd "$dir"
               # npm ci installs exactly from the lockfile and never rewrites it, so only Figma changes reach the pull request.
               if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
+              # The browser that matches this project's Playwright version (not whatever npx would fetch).
+              npx playwright install --with-deps chromium
               npm run typecheck && npm test
             ) || status=1
             echo "::endgroup::"
