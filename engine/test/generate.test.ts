@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { normalizeSvg, iconExportName } from '../src/generate/icons.ts';
 import { generateStyles, type StyleModel } from '../src/generate/styles.ts';
 import { docTabs } from '../src/generate/templates/common.ts';
+import { modeRuns, vitestConfig } from '../src/generate/project.ts';
 import { loadTokens, TokenResolver, tokensCss } from '../src/generate/tokens.ts';
 import type { IRVariant } from '../src/ir/types.ts';
 
@@ -144,5 +145,18 @@ describe('one odd variant', () => {
     const order = rules.map((r) => r.split(' {')[0]);
     expect(order.indexOf('.root:where([data-variant="danger"][data-size="md"])')).toBeGreaterThan(order.indexOf('.root:where([data-variant="danger"])'));
     expect(order.indexOf('.root:where([data-variant="danger"]:hover)')).toBeGreaterThan(order.indexOf('.root:where([data-variant="danger"][data-size="md"])'));
+  });
+});
+
+describe('mode test runs', () => {
+  const toolbars = [{ key: 'theme', modes: ['light', 'dark'] }, { key: 'project', modes: ['project-a', 'project-b'] }];
+  it('runs the defaults once, then every other mode once', () => {
+    expect(modeRuns(toolbars).map((r) => r.name)).toEqual(['storybook', 'storybook (theme: dark)', 'storybook (project: project-b)']);
+  });
+  it('passes the mode to the preview through VITE_DS_MODES', () => {
+    const config = vitestConfig(toolbars);
+    expect(config).toContain('run("storybook (theme: dark)", {"theme":"dark"}),');
+    expect(config).toContain("'import.meta.env.VITE_DS_MODES'");
+    expect(config).toContain('(defaults, theme=dark, project=project-b)');
   });
 });

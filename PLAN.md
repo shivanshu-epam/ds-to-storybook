@@ -29,7 +29,7 @@ The full product strategy (market research, architecture options, security, KPIs
 | Tokens: Figma variables to CSS, light/dark and brand modes | Done | `storybook/src/tokens/tokens.css` |
 | Generated components: 7 with behaviour templates (Button, Checkbox, Accordion, Switch, RadioControl, RadioField, RadioGroup), 14 generic; stories, MDX docs, 42 icons | Done; 81/82 story tests pass (1 real design contrast issue) | `storybook/src/components` |
 | Discovery, `init`, installable CLI, Claude Skill, GitHub workflow, Figma plugin | Done (Phases A and B) | `engine/`, `skills/`, `plugin/` |
-| Engine tests | 42/42 pass | `engine/test` |
+| Engine tests | 44/44 pass | `engine/test` |
 
 **Figma file:** "Design system AI" (`I983NcgqSiY14YkpJbwjG8`). The variables come from `engine/inputs/figma-variables.json`, because the Variables REST API is Enterprise-only.
 
@@ -103,7 +103,12 @@ Decision: support every stack through **layers**, as multi-framework design syst
   - Repeated instances (the three example items in the Figma group) now render once each instead of being merged into one.
   - Both examples pass 81/82; play tests cover click, label click, disabled, and arrow-key selection.
 - [ ] Archetypes: input, select/dropdown, dialog, tabs, tooltip, toast, slider, table. Input next.
-- [ ] Run the tests in every Figma mode (light, dark, brands).
+- [x] **Tests in every Figma mode** (2026-11-13): every story runs once with the default modes and once per other mode (here theme=dark and project=project-b), as separate Vitest projects, so axe checks contrast in each theme. `npx vitest run --project "storybook (theme: dark)"` runs one mode.
+  - Result, identical in React and Web Components: 200 of 246 pass. All 46 failures are colour contrast in the design tokens, not generator bugs:
+    - default modes: 1 (Input placeholder, 4.39:1, known);
+    - brand B (project-b): 22, because orange `#e46b00` with white text is 3.28:1 and on light grey 2.98–3.13:1 (Button, Dialog, Avatar, Breadcrumb, Alert, ListItem, Input);
+    - dark theme: 23, because dark text `#111827` sits on mid-tone avatar and badge colours (1.72–3.97:1) and grey `#6b7280` text on dark surfaces is 3.66–4.16:1 (Badge, Avatar, Checkbox, DatePicker, Dialog, Input, ListItem).
+  - Open decision: fix these tokens in Figma, or accept them for now with `knownIssues`.
 - [ ] Visual comparison against Figma renders: element positions, computed styles, then a perceptual score.
 - [ ] Resolve the open decisions in G8 with the design system team.
 

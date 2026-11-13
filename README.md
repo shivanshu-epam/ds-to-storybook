@@ -34,8 +34,8 @@ Prefer a guided run? Use the **Claude Skill** in [`skills/figma-to-storybook`](s
 | [`skills/figma-to-storybook/`](skills/figma-to-storybook/) | **Claude Skill** that drives the CLI and handles the judgement calls. |
 | [`plugin/`](plugin/) | **Figma plugin** that exports variables, for teams not on a Figma Enterprise plan. |
 | [`engine/templates/github-workflow.yml`](engine/templates/github-workflow.yml) | **GitHub Action** (`ds-sync init --ci`) that regenerates weekly or on demand and opens a pull request when the design changed. |
-| [`storybook/`](storybook/) | **Example output, React**: generated from the "Design system AI" Figma file. 21 components, 81 of 82 story tests pass (the failure is a real contrast issue in the design). |
-| [`storybook-web-components/`](storybook-web-components/) | **Example output, Web Components** from the same file: the same 21 components as `<ds-…>` custom elements that work in React, Vue, Angular, Svelte or plain HTML. Same CSS, same 81 of 82 tests. |
+| [`storybook/`](storybook/) | **Example output, React**: generated from the "Design system AI" Figma file. 21 components. Every story is also tested in each Figma mode (light and dark theme, two brands): 81 of 82 pass in the default modes, 200 of 246 across all modes. Every failure is a colour contrast issue in the design's tokens, listed in [PLAN.md](PLAN.md). |
+| [`storybook-web-components/`](storybook-web-components/) | **Example output, Web Components** from the same file: the same 21 components as `<ds-…>` custom elements that work in React, Vue, Angular, Svelte or plain HTML. Same CSS, same test results. |
 | [`PLAN.md`](PLAN.md) | Roadmap, status and open decisions. |
 
 ## Any tech stack

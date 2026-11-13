@@ -104,6 +104,9 @@ import type { Decorator, Preview } from '@storybook/react-vite';
 
 import '../src/styles/base.css';
 
+// Set by vitest.config.ts: the story tests run once per Figma mode.
+const TEST_MODES: Record<string, string> = JSON.parse(import.meta.env.VITE_DS_MODES ?? '{}');
+
 // Figma variable modes are applied as attributes on <html>, so every token resolves in the chosen mode.
 const withModes: Decorator = (Story, { globals }) => {
   useEffect(() => {
@@ -121,7 +124,7 @@ ${toolbars.map((t) => `    ${camel(t.key)}: {
       toolbar: { title: '${t.key}', icon: 'paintbrush', items: [${t.modes.map((m) => `'${m}'`).join(', ')}], dynamicTitle: true },
     },`).join('\n')}
   },
-  initialGlobals: { ${toolbars.map((t) => `${camel(t.key)}: '${t.modes[0]}'`).join(', ')} },
+  initialGlobals: { ${toolbars.map((t) => `${camel(t.key)}: TEST_MODES['${t.key}'] ?? '${t.modes[0]}'`).join(', ')} },
   parameters: {
     controls: { expanded: true },
     // Accessibility violations fail the story tests.
@@ -134,31 +137,7 @@ export default preview;
     },
     {
       path: 'vitest.config.ts',
-      content: `import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
-import { playwright } from '@vitest/browser-playwright';
-import { defineConfig } from 'vitest/config';
-
-const dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// Every story is a test: it must render, its play function must pass, and axe must find no violations.
-export default defineConfig({
-  test: {
-    projects: [
-      {
-        extends: true,
-        plugins: [storybookTest({ configDir: path.join(dirname, '.storybook') })],
-        test: {
-          name: 'storybook',
-          browser: { enabled: true, headless: true, provider: playwright({}), instances: [{ browser: 'chromium' }] },
-        },
-      },
-    ],
-  },
-});
-`,
+      content: vitestConfig(toolbars),
     },
     {
       path: 'src/styles/base.css',
@@ -342,4 +321,47 @@ export type { IconName } from './icons/icons';
 
 function camel(s: string): string {
   return s.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
+}
+
+/** One test run per Figma mode: the defaults, then each other mode once (other collections at their defaults). */
+export function modeRuns(toolbars: { key: string; modes: string[] }[]): { name: string; modes: Record<string, string> }[] {
+  return [
+    { name: 'storybook', modes: {} },
+    ...toolbars.flatMap((t) => t.modes.slice(1).map((m) => ({ name: `storybook (${t.key}: ${m})`, modes: { [t.key]: m } }))),
+  ];
+}
+
+/** vitest.config.ts with one browser project per mode run. The mode reaches the preview through VITE_DS_MODES. */
+export function vitestConfig(toolbars: { key: string; modes: string[] }[]): string {
+  const runs = modeRuns(toolbars);
+  return `import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
+import { playwright } from '@vitest/browser-playwright';
+import { defineConfig } from 'vitest/config';
+
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Every story is a test: it must render, its play function must pass, and axe must find no violations.
+// Stories run once per Figma mode (${runs.map((r) => Object.entries(r.modes).map(([k, v]) => `${k}=${v}`).join(' ') || 'defaults').join(', ')}), so contrast is checked in every theme.
+// Run one mode: npx vitest run --project "${runs[runs.length - 1]?.name ?? 'storybook'}"
+const run = (name: string, modes: Record<string, string>) => ({
+  extends: true,
+  plugins: [storybookTest({ configDir: path.join(dirname, '.storybook') })],
+  define: { 'import.meta.env.VITE_DS_MODES': JSON.stringify(JSON.stringify(modes)) },
+  test: {
+    name,
+    browser: { enabled: true, headless: true, provider: playwright({}), instances: [{ browser: 'chromium' as const }] },
+  },
+});
+
+export default defineConfig({
+  test: {
+    projects: [
+${runs.map((r) => `      run(${JSON.stringify(r.name)}, ${JSON.stringify(r.modes)}),`).join('\n')}
+    ],
+  },
+});
+`;
 }

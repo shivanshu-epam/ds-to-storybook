@@ -1,6 +1,7 @@
 /** Static files for a Web Components (Lit) Storybook project. Works in any framework. */
 import type { IconAsset } from '../icons.ts';
 import type { GeneratedFile } from '../templates/common.ts';
+import { vitestConfig } from '../project.ts';
 
 export const WC_VERSIONS = {
   lit: '3.3.1',
@@ -100,6 +101,9 @@ export default config;
 import '../src/styles/base.css';
 import '../src/index';
 
+// Set by vitest.config.ts: the story tests run once per Figma mode.
+const TEST_MODES: Record<string, string> = JSON.parse(import.meta.env.VITE_DS_MODES ?? '{}');
+
 // Figma variable modes are applied as attributes on <html>; tokens are CSS custom properties, which cross Shadow DOM.
 const withModes: Decorator = (story, { globals }) => {
   const html = document.documentElement;
@@ -115,7 +119,7 @@ ${toolbars.map((t) => `    ${camel(t.key)}: {
       toolbar: { title: '${t.key}', icon: 'paintbrush', items: [${t.modes.map((m) => `'${m}'`).join(', ')}], dynamicTitle: true },
     },`).join('\n')}
   },
-  initialGlobals: { ${toolbars.map((t) => `${camel(t.key)}: '${t.modes[0]}'`).join(', ')} },
+  initialGlobals: { ${toolbars.map((t) => `${camel(t.key)}: TEST_MODES['${t.key}'] ?? '${t.modes[0]}'`).join(', ')} },
   parameters: {
     controls: { expanded: true },
     // Accessibility violations fail the story tests (axe checks inside Shadow DOM).
@@ -128,31 +132,7 @@ export default preview;
     },
     {
       path: 'vitest.config.ts',
-      content: `import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
-import { playwright } from '@vitest/browser-playwright';
-import { defineConfig } from 'vitest/config';
-
-const dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// Every story is a test: it must render, its play function must pass, and axe must find no violations.
-export default defineConfig({
-  test: {
-    projects: [
-      {
-        extends: true,
-        plugins: [storybookTest({ configDir: path.join(dirname, '.storybook') })],
-        test: {
-          name: 'storybook',
-          browser: { enabled: true, headless: true, provider: playwright({}), instances: [{ browser: 'chromium' }] },
-        },
-      },
-    ],
-  },
-});
-`,
+      content: vitestConfig(toolbars),
     },
     {
       path: 'src/styles/base.css',

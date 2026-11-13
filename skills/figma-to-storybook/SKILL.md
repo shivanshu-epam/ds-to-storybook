@@ -67,6 +67,8 @@ Report to the user:
 - the token counts printed by `generate`;
 - the test result.
 
+Story tests run once per Figma mode: the default modes as project `storybook`, then each other mode as `storybook (<attribute>: <mode>)`, for example `storybook (theme: dark)`. Group failures by mode when you report them; a contrast failure in only one mode is a token problem in that mode.
+
 For each failing test, read the error and say which kind it is:
 
 - **Design issue:** usually axe colour contrast, or a missing accessible name in Figma. Fixing it belongs in Figma. Accepting it for now needs the user's explicit OK. Then record `knownIssues: { "<Component>": "<what and why>" }`, which reports the story's axe check as a warning instead of failing it.

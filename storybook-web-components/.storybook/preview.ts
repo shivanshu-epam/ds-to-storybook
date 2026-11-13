@@ -3,6 +3,9 @@ import type { Decorator, Preview } from '@storybook/web-components-vite';
 import '../src/styles/base.css';
 import '../src/index';
 
+// Set by vitest.config.ts: the story tests run once per Figma mode.
+const TEST_MODES: Record<string, string> = JSON.parse(import.meta.env.VITE_DS_MODES ?? '{}');
+
 // Figma variable modes are applied as attributes on <html>; tokens are CSS custom properties, which cross Shadow DOM.
 const withModes: Decorator = (story, { globals }) => {
   const html = document.documentElement;
@@ -23,7 +26,7 @@ const preview: Preview = {
       toolbar: { title: 'theme', icon: 'paintbrush', items: ['light', 'dark'], dynamicTitle: true },
     },
   },
-  initialGlobals: { project: 'project-a', theme: 'light' },
+  initialGlobals: { project: TEST_MODES['project'] ?? 'project-a', theme: TEST_MODES['theme'] ?? 'light' },
   parameters: {
     controls: { expanded: true },
     // Accessibility violations fail the story tests (axe checks inside Shadow DOM).
