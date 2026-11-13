@@ -248,7 +248,7 @@ flowchart LR
 - **Accepted design issues** (`overrides.knownIssues`) turn axe failures into reports, per component and optionally per mode (`"theme=dark": "reason"`). Every other mode stays strict.
 - Each component also has a hidden **Figma Variants** story: every Figma variant once, at its Figma width, for the visual check. It is excluded from the tests.
 
-Current example result: 258 of 258 story tests pass in both outputs across all modes.
+Current example result: 306 of 306 story tests pass in both outputs across all modes (27 components).
 
 ## 6. Visual check against Figma
 

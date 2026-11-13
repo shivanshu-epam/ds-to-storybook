@@ -2435,6 +2435,10 @@ Figma: DropdownTrigger (396:1799)
 - The Figma set has 21 of 36 possible variant combinations; other combinations use the nearest defined styles.
 - A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state="focus") until behaviour is specified.
 
+**Gaps:**
+
+- Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: grey #6b7280 text on #111827 is 3.66:1 (needs 4.5:1)
+
 <details><summary>Which Figma axes each style depends on</summary>
 
 - `root.align-items`: none (same in every variant)
@@ -2487,6 +2491,10 @@ Figma: DropdownMenu (400:1970)
 **Not from Figma (archetype defaults or decisions):**
 
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
+
+**Gaps:**
+
+- Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B: #ab5910 on #ffd0a7 is 3.55:1 (needs 4.5:1)
 
 <details><summary>Which Figma axes each style depends on</summary>
 
@@ -2602,6 +2610,11 @@ Figma: Dropdown (401:2471)
 
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
 
+**Gaps:**
+
+- Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B: #ab5910 on #ffd0a7 is 3.55:1 (needs 4.5:1)
+- Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: grey #6b7280 text on #111827 is 3.66:1 (needs 4.5:1)
+
 <details><summary>Which Figma axes each style depends on</summary>
 
 - `root.background`: none (same in every variant)
@@ -2634,6 +2647,10 @@ Figma: InputControl (427:2001)
 
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
 - A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state="focus") until behaviour is specified.
+
+**Gaps:**
+
+- Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: grey #6b7280 text on #111827 is 3.66:1 (needs 4.5:1)
 
 <details><summary>Which Figma axes each style depends on</summary>
 
@@ -2693,6 +2710,10 @@ Figma: InputField (428:2042)
 
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
 - A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state="focus") until behaviour is specified.
+
+**Gaps:**
+
+- Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: grey #6b7280 text on #111827 is 3.66:1 (needs 4.5:1)
 
 <details><summary>Which Figma axes each style depends on</summary>
 
@@ -2807,6 +2828,8 @@ Figma: Form (435:8)
 
 - Layer "_fields/_field-terms" is an instance of "Type=Unselected, State=Enabled", which is not generated here; rendered as an empty box.
 - Layer "_status-banner" is an instance of "Sentiment=Success, Size=Sm, Density=Compact", which is not generated here; rendered as an empty box.
+- Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B: white text on orange #e46b00 is 3.28:1 (needs 4.5:1)
+- Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: grey #6b7280 text on #111827 is 3.66:1 (needs 4.5:1)
 
 <details><summary>Which Figma axes each style depends on</summary>
 
