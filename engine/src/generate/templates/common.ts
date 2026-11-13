@@ -18,6 +18,16 @@ export interface ComponentReport {
   /** Figma items the template could not express. */
   gaps: string[];
   dependencies: Record<string, string[]>;
+  /** Nested consistency (fidelity measure 4): nested prop values in code vs Figma, per base-state parent variant. */
+  nested?: {
+    /** Nested component layers checked. */
+    layers: number;
+    checked: number;
+    matched: number;
+    /** Parent variants in a pseudo or disabled state: not compared (CSS carries those states). */
+    stateVariants: number;
+    mismatches: { layer: string; copy?: number; variant: string; prop: string; code: string; figma: string }[];
+  };
 }
 
 export interface TemplateContext {

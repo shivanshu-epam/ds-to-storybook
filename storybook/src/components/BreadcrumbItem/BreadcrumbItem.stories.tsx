@@ -25,14 +25,13 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Keep the type import used even when no lookup tables are generated.
-export type { BreadcrumbItemProps };
 
 /** Figma default variant: Type=Link, State=Default. */
 export const Default: Story = {};
 
 /** Figma Type × State. Pseudo states are forced with data-force-state. */
 export const TypeAndState: Story = {
+  name: "Type and state",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const rows: Record<string, Partial<BreadcrumbItemProps>> = { 'Link': { type: 'link' }, 'Current': { type: 'current' }, 'Collapse': { type: 'collapse' } };
@@ -50,6 +49,7 @@ export const TypeAndState: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Row>
@@ -61,7 +61,8 @@ export const Options: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: (args) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>

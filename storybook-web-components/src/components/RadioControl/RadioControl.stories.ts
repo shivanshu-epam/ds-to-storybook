@@ -22,6 +22,7 @@ export default meta;
 type Story = StoryObj<any>;
 
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvasElement }) => {
     const host = canvasElement.querySelector('ds-radio-control')!;
     const onChange = fn();
@@ -37,6 +38,8 @@ export const Default: Story = {
 
 /** Disabled: cannot be selected. */
 export const DisabledDoesNotSelect: Story = {
+  name: "Disabled does not select",
+  tags: ['!dev'],
   args: { disabled: true },
   play: async ({ canvasElement }) => {
     const radio = within(shadowOf(canvasElement, 'ds-radio-control') as unknown as HTMLElement).getByRole('radio', { name: "Radio" });
@@ -48,6 +51,7 @@ export const DisabledDoesNotSelect: Story = {
 
 /** Figma Selected × State. Pseudo states are forced with data-force-state. */
 export const SelectedAndState: Story = {
+  name: "Selected and state",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Selected by State", ["false","true"], ["Enabled","Hovered","Focused","Pressed","Disabled","Skeleton","Read-Only","Invalid","Warning"], (r, c) => {

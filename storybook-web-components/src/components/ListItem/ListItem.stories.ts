@@ -35,6 +35,7 @@ export const Default: Story = {};
 
 /** Figma Type × State. Pseudo states are forced with data-force-state. */
 export const TypeAndState: Story = {
+  name: "Type and state",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Type by State", ["Default","Menu","File","Setting"], ["Default","Hover","Pressed","Focused","Disabled","Selected","Activated","Dragged","Skeleton"], (r, c) => {
@@ -80,6 +81,7 @@ export const TypeAndState: Story = {
 
 /** Figma Size. */
 export const Size: Story = {
+  name: "Size",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Sm", html`<ds-list-item type=${args.type} state=${args.state} size="sm" ?disabled=${args.disabled} ?has-leading-control=${args.hasLeadingControl} ?has-trailing-control=${args.hasTrailingControl}></ds-list-item>`),
@@ -90,6 +92,7 @@ export const Size: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled('Default', html`<ds-list-item type=${args.type} state=${args.state} size=${args.size} ?disabled=${args.disabled} ?has-leading-control=${args.hasLeadingControl} ?has-trailing-control=${args.hasTrailingControl}></ds-list-item>`),

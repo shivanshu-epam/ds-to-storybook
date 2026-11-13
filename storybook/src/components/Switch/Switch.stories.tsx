@@ -6,7 +6,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { Switch, type SwitchProps } from './Switch';
 
 const meta = {
-  title: 'Components/Switch',
+  title: "Components/Switch",
   component: Switch,
   args: { 'aria-label': 'Switch', onCheckedChange: fn() },
   argTypes: {
@@ -24,11 +24,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Keep the type import used even when no lookup tables are generated.
-export type { SwitchProps };
 
 /** Figma default variant: Value=Off, Interaction=Default, Size=Medium. */
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvasElement, args }) => {
     const control = within(canvasElement).getByRole('switch', { name: 'Switch' });
     await expect(control).toHaveAttribute('aria-checked', 'false');
@@ -45,6 +44,8 @@ export const Default: Story = {
 
 /** Disabled: not focusable and does not toggle. */
 export const DisabledDoesNotToggle: Story = {
+  name: "Disabled does not toggle",
+  tags: ['!dev'],
   args: { disabled: true },
   play: async ({ canvasElement, args }) => {
     const control = within(canvasElement).getByRole('switch', { name: 'Switch' });
@@ -57,6 +58,8 @@ export const DisabledDoesNotToggle: Story = {
 
 /** Loading: aria-busy, and clicks do not toggle. */
 export const LoadingDoesNotToggle: Story = {
+  name: "Loading does not toggle",
+  tags: ['!dev'],
   args: { interaction: 'loading' },
   play: async ({ canvasElement, args }) => {
     const control = within(canvasElement).getByRole('switch', { name: 'Switch' });
@@ -69,6 +72,7 @@ export const LoadingDoesNotToggle: Story = {
 
 /** Figma Value × Interaction. Pseudo states are forced with data-force-state. */
 export const ValueAndInteraction: Story = {
+  name: "Value and interaction",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const rows: Record<string, Partial<SwitchProps>> = { 'Off': { checked: false }, 'On': { checked: true } };
@@ -86,6 +90,7 @@ export const ValueAndInteraction: Story = {
 
 /** Figma Size. */
 export const Size: Story = {
+  name: "Size",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const values: Record<string, Partial<SwitchProps>> = { 'Medium': { size: 'medium' }, 'Small': { size: 'small' } };
@@ -101,6 +106,7 @@ export const Size: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Row>
@@ -112,7 +118,8 @@ export const Options: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: (args) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>

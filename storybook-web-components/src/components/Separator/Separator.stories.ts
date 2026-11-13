@@ -24,6 +24,7 @@ export const Default: Story = {};
 
 /** Figma Type. */
 export const Type: Story = {
+  name: "Type",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Slash", html`<ds-separator type="slash"></ds-separator>`),

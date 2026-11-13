@@ -32,6 +32,7 @@ export const Default: Story = {};
 
 /** Figma Type × State. Pseudo states are forced with data-force-state. */
 export const TypeAndState: Story = {
+  name: "Type and state",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Type by State", ["Single","Range","DateTime"], ["Default","Hover","Focused","Filled","Disabled","Read-only","Error"], (r, c) => {
@@ -62,6 +63,7 @@ export const TypeAndState: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled('Default', html`<ds-date-picker type=${args.type} state=${args.state} ?disabled=${args.disabled} ?show-calendar=${args.showCalendar}></ds-date-picker>`),

@@ -30,6 +30,8 @@ export interface WcProjectOptions {
   icons: IconAsset[];
   colorTokens: { name: string; cssVar: string }[];
   page?: { background?: string; text?: string };
+  /** Font packages the Figma file needs (package -> version) and their CSS imports. */
+  fonts?: { deps: Record<string, string>; imports: string[] };
   /** Per tag: prop -> TS type, for the React JSX typings. */
   typings: { tag: string; className: string; props: { name: string; type: string }[] }[];
 }
@@ -39,7 +41,7 @@ const camel = (s: string) => s.replace(/-([a-z])/g, (_, c: string) => c.toUpperC
 
 export function wcProjectFiles(o: WcProjectOptions): GeneratedFile[] {
   const v = WC_VERSIONS;
-  const deps = { lit: v.lit, '@fontsource-variable/inter': v['@fontsource-variable/inter'] };
+  const deps = { ...{ lit: v.lit, '@fontsource-variable/inter': v['@fontsource-variable/inter'] }, ...(o.fonts?.deps ?? {}) };
   const devDeps = Object.fromEntries(Object.entries(v).filter(([k]) => !(k in deps)));
   const toolbars = Object.entries(o.modes)
     .filter(([c]) => o.modeAttributes[c])
@@ -137,7 +139,7 @@ export default preview;
     {
       path: 'src/styles/base.css',
       content: `@import '@fontsource-variable/inter';
-@import '../tokens/tokens.css';
+${(o.fonts?.imports ?? []).map((i) => `@import '${i}';\n`).join('')}@import '../tokens/tokens.css';
 
 body {
   margin: 0;

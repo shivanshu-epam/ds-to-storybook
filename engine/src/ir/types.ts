@@ -82,6 +82,30 @@ export interface IRPart {
   instanceProps?: Record<string, string | boolean>;
   /** Visible icon instances directly inside this instance (e.g. a nested button's leading icon). */
   innerIcons?: { layer: string; name: string; componentId: string }[];
+  /** Figma node id (vector shapes: their outline is exported as SVG). */
+  nodeId?: string;
+  /** Exported outline of a vector shape (set by generate): a data: URI, and whether it has one colour. */
+  shape?: { uri: string; mono: boolean };
+  /** Instance-swap property values set on this instance: property -> name of the swapped-in component. */
+  instanceSwaps?: Record<string, string>;
+  /** Figma "exposed nested instance": its properties are part of the containing component's API. */
+  exposed?: boolean;
+  /** Exposed nested instances inside this instance, with the configuration this instance gives them. */
+  exposedInstances?: IRExposedInstance[];
+}
+
+/** An exposed nested instance inside a placed instance (Accordion -> item -> Leading Item). */
+export interface IRExposedInstance {
+  /** Layer path inside the placed instance, built like IRPart.path. */
+  path: string;
+  name: string;
+  componentId: string;
+  instanceOf?: string;
+  hidden?: boolean;
+  /** Boolean and text property values. */
+  props?: Record<string, string | boolean>;
+  /** Instance-swap values: property -> component name. */
+  swaps?: Record<string, string>;
 }
 
 export interface IRVariant {

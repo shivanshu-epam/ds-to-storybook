@@ -29,6 +29,7 @@ export const Default: Story = {};
 
 /** Figma Orientation × State. Pseudo states are forced with data-force-state. */
 export const OrientationAndState: Story = {
+  name: "Orientation and state",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Orientation by State", ["Horizontal","Vertical"], ["Default","Hover","Focused","Selected","Disabled"], (r, c) => {
@@ -48,6 +49,7 @@ export const OrientationAndState: Story = {
 
 /** Figma Style. */
 export const Style: Story = {
+  name: "Style",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Solid", html`<ds-divider orientation=${args.orientation} style-variant="solid" size=${args.size} color=${args.color} state=${args.state} ?disabled=${args.disabled}></ds-divider>`),
@@ -58,6 +60,7 @@ export const Style: Story = {
 
 /** Figma Size. */
 export const Size: Story = {
+  name: "Size",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Sm", html`<ds-divider orientation=${args.orientation} style-variant=${args.styleVariant} size="sm" color=${args.color} state=${args.state} ?disabled=${args.disabled}></ds-divider>`),
@@ -67,6 +70,7 @@ export const Size: Story = {
 
 /** Figma Color. */
 export const Color: Story = {
+  name: "Color",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Light", html`<ds-divider orientation=${args.orientation} style-variant=${args.styleVariant} size=${args.size} color="light" state=${args.state} ?disabled=${args.disabled}></ds-divider>`),

@@ -6,7 +6,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { Badge, type BadgeProps } from './Badge';
 
 const meta = {
-  title: 'Components/Badge',
+  title: "Components/Badge",
   component: Badge,
   argTypes: {
     status: { control: 'inline-radio', options: ['success', 'warning', 'error', 'info', 'neutral'], description: 'Figma: Status' },
@@ -28,14 +28,13 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Keep the type import used even when no lookup tables are generated.
-export type { BadgeProps };
 
 /** Figma default variant: Status=Success, Style=Filled, Type=Text, Size=Sm. */
 export const Default: Story = {};
 
 /** Figma Status × Style. Pseudo states are forced with data-force-state. */
 export const StatusAndStyle: Story = {
+  name: "Status and style",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const rows: Record<string, Partial<BadgeProps>> = { 'Success': { status: 'success' }, 'Warning': { status: 'warning' }, 'Error': { status: 'error' }, 'Info': { status: 'info' }, 'Neutral': { status: 'neutral' } };
@@ -53,6 +52,7 @@ export const StatusAndStyle: Story = {
 
 /** Figma Type. */
 export const Type: Story = {
+  name: "Type",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const values: Record<string, Partial<BadgeProps>> = { 'Text': { type: 'text' }, 'Numeric': { type: 'numeric' }, 'Dot': { type: 'dot' } };
@@ -68,6 +68,7 @@ export const Type: Story = {
 
 /** Figma Size. */
 export const Size: Story = {
+  name: "Size",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const values: Record<string, Partial<BadgeProps>> = { 'Sm': { size: 'sm' }, 'Md': { size: 'md' }, 'Lg': { size: 'lg' } };
@@ -83,6 +84,7 @@ export const Size: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Row>
@@ -95,7 +97,8 @@ export const Options: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: (args) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>

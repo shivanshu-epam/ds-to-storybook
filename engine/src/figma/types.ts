@@ -37,6 +37,8 @@ export interface FigmaNode {
   componentPropertyDefinitions?: Record<string, ComponentPropertyDefinition>;
   componentProperties?: Record<string, { type: string; value: string | boolean }>;
   componentId?: string;
+  /** An instance inside a component whose properties Figma shows on the component's own panel ("expose nested instance"). */
+  isExposedInstance?: boolean;
   characters?: string;
   style?: { fontFamily?: string; fontSize?: number; fontWeight?: number; lineHeightPx?: number; letterSpacing?: number; textCase?: string; textDecoration?: string; textAlignHorizontal?: string };
   opacity?: number;

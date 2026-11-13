@@ -7,7 +7,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { Input, type InputProps } from './Input';
 
 const meta = {
-  title: 'Components/Input',
+  title: "Components/Input",
   component: Input,
   args: { onChange: fn() },
   argTypes: {
@@ -38,11 +38,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Keep the type import used even when no lookup tables are generated.
-export type { InputProps };
 
 /** Figma default variant: Type=Outlined, Size=Sm, State=Default. */
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     const field = canvas.getByLabelText('Label', { exact: false });
@@ -55,6 +54,8 @@ export const Default: Story = {
 
 /** Figma State=Error: the input is marked invalid. */
 export const Invalid: Story = {
+  name: "Invalid",
+  tags: ['!dev'],
   args: { state: 'error' },
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByRole('textbox')).toHaveAttribute('aria-invalid', 'true');
@@ -63,6 +64,8 @@ export const Invalid: Story = {
 
 /** The clear button empties the input and keeps focus in it. */
 export const Clear: Story = {
+  name: "Clear",
+  tags: ['!dev'],
   args: { clearable: true, defaultValue: 'Hello' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -74,6 +77,7 @@ export const Clear: Story = {
 
 /** Figma Type × State. Pseudo states are forced with data-force-state. */
 export const TypeAndState: Story = {
+  name: "Type and state",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const rows: Record<string, Partial<InputProps>> = { 'Outlined': { appearance: 'outlined' }, 'Filled': { appearance: 'filled' }, 'Borderless': { appearance: 'borderless' }, 'Inline': { appearance: 'inline' } };
@@ -91,6 +95,7 @@ export const TypeAndState: Story = {
 
 /** Figma Size. */
 export const Size: Story = {
+  name: "Size",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const values: Record<string, Partial<InputProps>> = { 'Sm': { size: 'sm' }, 'Md': { size: 'md' }, 'Lg': { size: 'lg' } };
@@ -106,6 +111,7 @@ export const Size: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Row>
@@ -121,7 +127,8 @@ export const Options: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: (args) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>

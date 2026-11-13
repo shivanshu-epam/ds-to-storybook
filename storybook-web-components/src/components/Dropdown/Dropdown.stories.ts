@@ -31,6 +31,7 @@ export const Default: Story = {};
 
 /** Figma Size × State. Pseudo states are forced with data-force-state. */
 export const SizeAndState: Story = {
+  name: "Size and state",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Size by State", ["Small","Medium","Large"], ["Collapsed","Expanded"], (r, c) => {

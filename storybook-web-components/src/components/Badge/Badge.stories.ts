@@ -35,6 +35,7 @@ export const Default: Story = {};
 
 /** Figma Status × Style. Pseudo states are forced with data-force-state. */
 export const StatusAndStyle: Story = {
+  name: "Status and style",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Status by Style", ["Success","Warning","Error","Info","Neutral"], ["Filled","Outlined","Subtle"], (r, c) => {
@@ -59,6 +60,7 @@ export const StatusAndStyle: Story = {
 
 /** Figma Type. */
 export const Type: Story = {
+  name: "Type",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Text", html`<ds-badge status=${args.status} style-variant=${args.styleVariant} type="text" size=${args.size} ?has-leading-icon=${args.hasLeadingIcon} ?is-dismissible=${args.isDismissible} label=${args.label}></ds-badge>`),
@@ -69,6 +71,7 @@ export const Type: Story = {
 
 /** Figma Size. */
 export const Size: Story = {
+  name: "Size",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Sm", html`<ds-badge status=${args.status} style-variant=${args.styleVariant} type=${args.type} size="sm" ?has-leading-icon=${args.hasLeadingIcon} ?is-dismissible=${args.isDismissible} label=${args.label}></ds-badge>`),
@@ -79,6 +82,7 @@ export const Size: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled('Default', html`<ds-badge status=${args.status} style-variant=${args.styleVariant} type=${args.type} size=${args.size} ?has-leading-icon=${args.hasLeadingIcon} ?is-dismissible=${args.isDismissible} label=${args.label}></ds-badge>`),

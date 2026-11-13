@@ -6,7 +6,7 @@
 import { docTabs, leadSentence, pascal, type GeneratedFile, type TemplateContext } from '../templates/common.ts';
 import { axisControl, axisData, axisDefault, axisType, isIcon, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRPart } from '../../ir/types.ts';
-import { attrFor, classFor, figmaDocsMdx, header, mdx, tagFor, usage, wcProp, wcText, type WcOptions, type WcResult } from './components.ts';
+import { attrFor, classFor, figmaDocsMdx, header, mdx, tagFor, usage, wcProp, wcVal, wcText, type WcOptions, type WcResult } from './components.ts';
 
 const js = (v: unknown) => JSON.stringify(v);
 
@@ -32,7 +32,7 @@ export function wcDialog(ctx: TemplateContext, name: string, core: GenericCore, 
     if (!n || n.component === name) return undefined;
     const ntag = tagOf(n.component);
     imports.add(`import '../${n.component}/${ntag}';`);
-    const attrs = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? `.label=\${${js(x.value)}}` : `.${wcProp(x.prop)}=\${${js(x.value)}}`));
+    const attrs = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? `.label=\${${js(x.value)}}` : `.${wcProp(x.prop)}=\${${wcVal(x)}}`));
     return `<span ${c}><${ntag}${attrs.length ? ' ' + attrs.join(' ') : ''}>${n.text !== undefined ? `\${${wcText(l, js(n.text))}}` : ''}</${ntag}></span>`;
   };
   const render = (l: LayerInfo, indent: string): string => {

@@ -31,6 +31,7 @@ export const Default: Story = {};
 
 /** Figma Sentiment × Size. Pseudo states are forced with data-force-state. */
 export const SentimentAndSize: Story = {
+  name: "Sentiment and size",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Sentiment by Size", ["Danger","Neutral","Info","Success","Warning"], ["Md","Sm"], (r, c) => {
@@ -50,6 +51,7 @@ export const SentimentAndSize: Story = {
 
 /** Figma State. */
 export const State: Story = {
+  name: "State",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("With Action + Close", html`<ds-alert sentiment=${args.sentiment} size=${args.size} state="with-action-close"></ds-alert>`),

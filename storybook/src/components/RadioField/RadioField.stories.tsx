@@ -21,11 +21,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Keep the type import used even when no lookup tables are generated.
-export type { RadioFieldProps };
 
 /** Figma default variant: State=Enabled, Position=Left. */
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     // The text is the radio's <label>: clicking it selects the radio.
@@ -37,6 +36,7 @@ export const Default: Story = {
 
 /** Figma Position × State. Pseudo states are forced with data-force-state. */
 export const PositionAndState: Story = {
+  name: "Position and state",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const rows: Record<string, Partial<RadioFieldProps>> = { 'Left': { position: 'left' }, 'Right': { position: 'right' } };
@@ -54,7 +54,8 @@ export const PositionAndState: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: (args) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>

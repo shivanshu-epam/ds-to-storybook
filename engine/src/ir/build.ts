@@ -1,7 +1,7 @@
 import type { ComponentTarget } from '../config.ts';
 import type { FigmaColor, FigmaNode, FigmaPaint, VariableAlias } from '../figma/types.ts';
 import { sha256, stripPropertyId } from '../util/core.ts';
-import type { FigmaIR, IRComponentSet, IRDocBlock, IRDocFrame, IRPart, IRProperty, IRStyle, IRValue, IRVariable, IRVariant } from './types.ts';
+import type { FigmaIR, IRComponentSet, IRDocBlock, IRDocFrame, IRExposedInstance, IRPart, IRProperty, IRStyle, IRValue, IRVariable, IRVariant } from './types.ts';
 
 export function toHex(c: FigmaColor, opacity = 1): string {
   const ch = (v: number) => Math.round(v * 255).toString(16).padStart(2, '0');
@@ -141,6 +141,9 @@ export function isIconNode(node: FigmaNode, componentNames: Record<string, strin
   return shapesOnly(node);
 }
 
+/** Shapes CSS cannot draw: their outline is exported from Figma as SVG. */
+const OUTLINED = new Set(['VECTOR', 'BOOLEAN_OPERATION', 'STAR', 'POLYGON', 'REGULAR_POLYGON']);
+
 function collectParts(node: FigmaNode, resolve: Resolver, prefix: string, out: IRPart[], componentNames: Record<string, string>, hiddenAncestor = false): void {
   const seen = new Map<string, number>();
   for (const child of node.children ?? []) {
@@ -158,6 +161,7 @@ function collectParts(node: FigmaNode, resolve: Resolver, prefix: string, out: I
     // Hidden layers are kept: they are usually optional parts toggled by a boolean property.
     if (child.visible === false || hiddenAncestor) part.hidden = true;
     if (child.type === 'TEXT' && child.characters !== undefined) part.text = child.characters;
+    if (OUTLINED.has(child.type)) part.nodeId = child.id;
     if (child.type === 'INSTANCE' && child.componentId) {
       const instanceOf = componentNames[child.componentId];
       if (instanceOf) part.instanceOf = instanceOf;
@@ -173,11 +177,48 @@ function collectParts(node: FigmaNode, resolve: Resolver, prefix: string, out: I
         .filter((c) => c.type === 'INSTANCE' && c.visible !== false && c.componentId && isIconNode(c, componentNames))
         .map((c) => ({ layer: c.name, name: componentNames[c.componentId!]!, componentId: c.componentId! }));
       if (icons.length) part.innerIcons = icons;
+      const swaps = swapValues(child, componentNames);
+      if (swaps) part.instanceSwaps = swaps;
+      if (child.isExposedInstance) part.exposed = true;
+      const exposed = exposedInside(child, '', componentNames, Boolean(part.hidden));
+      if (exposed.length) part.exposedInstances = exposed;
     }
     out.push(part);
     // Instances are leaves: their internals belong to the referenced component.
     if (child.type !== 'INSTANCE') collectParts(child, resolve, path, out, componentNames, Boolean(part.hidden));
   }
+}
+
+function simpleProps(node: FigmaNode): Record<string, string | boolean> | undefined {
+  const props = Object.entries(node.componentProperties ?? {}).filter(([, v]) => v.type === 'BOOLEAN' || v.type === 'TEXT');
+  return props.length ? Object.fromEntries(props.map(([k, v]) => [stripPropertyId(k), v.value])) : undefined;
+}
+
+function swapValues(node: FigmaNode, componentNames: Record<string, string>): Record<string, string> | undefined {
+  const swaps = Object.entries(node.componentProperties ?? {}).filter(([, v]) => v.type === 'INSTANCE_SWAP' && typeof v.value === 'string');
+  return swaps.length ? Object.fromEntries(swaps.map(([k, v]) => [stripPropertyId(k), componentNames[String(v.value)] ?? String(v.value)])) : undefined;
+}
+
+/** Exposed nested instances inside an instance (paths built like collectParts), not descending past one. */
+function exposedInside(node: FigmaNode, prefix: string, componentNames: Record<string, string>, hiddenAncestor: boolean): IRExposedInstance[] {
+  const out: IRExposedInstance[] = [];
+  const seen = new Map<string, number>();
+  for (const child of node.children ?? []) {
+    const n = (seen.get(child.name) ?? 0) + 1;
+    seen.set(child.name, n);
+    const name = n > 1 && child.type !== 'INSTANCE' ? `${child.name}#${n}` : child.name;
+    const path = prefix ? `${prefix}/${name}` : name;
+    const hidden = hiddenAncestor || child.visible === false;
+    if (child.type === 'INSTANCE' && child.isExposedInstance && child.componentId) {
+      const props = simpleProps(child);
+      const swaps = swapValues(child, componentNames);
+      const instanceOf = componentNames[child.componentId];
+      out.push({ path, name: child.name, componentId: child.componentId, ...(instanceOf ? { instanceOf } : {}), ...(hidden ? { hidden } : {}), ...(props ? { props } : {}), ...(swaps ? { swaps } : {}) });
+      continue;
+    }
+    out.push(...exposedInside(child, path, componentNames, hidden));
+  }
+  return out;
 }
 
 function firstText(node: FigmaNode): string | undefined {

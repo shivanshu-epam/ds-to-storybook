@@ -18,7 +18,7 @@ export interface DropdownProps extends Omit<HTMLAttributes<HTMLDivElement>, 'chi
 export function Dropdown({ size = 'small', state = 'collapsed', className, ...rest }: DropdownProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-size={size} data-state={state} {...rest}>
-      <span className={styles.trigger}><DropdownTrigger /></span>
+      <span className={styles.trigger}><DropdownTrigger size={size} expanded={(({ "expanded": true } as Record<string, boolean>)[String(state)] ?? false)} /></span>
       <span className={styles.menu}><DropdownMenu /></span>
     </div>
   );

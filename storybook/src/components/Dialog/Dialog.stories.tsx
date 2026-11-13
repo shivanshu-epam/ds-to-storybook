@@ -8,7 +8,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { Dialog, type DialogProps } from './Dialog';
 
 const meta = {
-  title: 'Components/Dialog',
+  title: "Components/Dialog",
   component: Dialog,
   // Variant stories show open, non-modal dialogs in the page.
   args: { open: true, modal: false, onOpenChange: fn() },
@@ -36,11 +36,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Keep the type import used even when no lookup tables are generated.
-export type { DialogProps };
 
 /** A modal dialog opened from a button. Escape closes it and focus returns to the button. */
 export const Default: Story = {
+  name: "Default",
   args: { open: undefined, modal: true },
   render: function Render(args) {
     const [open, setOpen] = useState(false);
@@ -74,6 +73,8 @@ export const Default: Story = {
 
 /** The close button closes it. */
 export const CloseButton: Story = {
+  name: "Close button",
+  tags: ['!dev'],
   args: { open: undefined, defaultOpen: true },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -86,6 +87,8 @@ export const CloseButton: Story = {
 
 /** Figma Type=Alert is an alertdialog. */
 export const AlertRole: Story = {
+  name: "Alert role",
+  tags: ['!dev'],
   args: { type: 'alert' },
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByRole('alertdialog')).toBeInTheDocument();
@@ -94,6 +97,7 @@ export const AlertRole: Story = {
 
 /** Figma Type × Size. Pseudo states are forced with data-force-state. */
 export const TypeAndSize: Story = {
+  name: "Type and size",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const rows: Record<string, Partial<DialogProps>> = { 'Confirmation': { type: 'confirmation' }, 'Alert': { type: 'alert' }, 'Form': { type: 'form' }, 'Full-screen': { type: 'full-screen' }, 'Side-drawer': { type: 'side-drawer' } };
@@ -111,6 +115,7 @@ export const TypeAndSize: Story = {
 
 /** Figma State. */
 export const State: Story = {
+  name: "State",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const values: Record<string, Partial<DialogProps>> = { 'Open': { state: 'open' }, 'Loading': { state: 'loading' }, 'Error': { state: 'error' } };
@@ -126,6 +131,7 @@ export const State: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Row>
@@ -140,7 +146,8 @@ export const Options: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: (args) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>

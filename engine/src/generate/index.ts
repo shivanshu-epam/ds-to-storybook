@@ -1,4 +1,6 @@
 /** Scenario 2: Figma design system -> a fresh, tested Storybook project. */
+import { composition, docsPage, isBuildingBlock, polishStories, templateSections } from './docs.ts';
+import { fontsReport, httpFontSource, planFonts, usedFonts, type FontOverride, type FontPlan } from './fonts.ts';
 import { existsSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
@@ -6,7 +8,7 @@ import type { LoadedConfig } from '../config.ts';
 import type { FigmaReader, FigmaRenderer } from '../figma/client.ts';
 import type { FigmaIR, IRComponentSet } from '../ir/types.ts';
 import { expandHome, readJson, writeText } from '../util/core.ts';
-import { exportIcons, iconRefs, type IconAsset } from './icons.ts';
+import { exportIcons, exportShapes, iconRefs, type IconAsset } from './icons.ts';
 import { projectFiles } from './project.ts';
 import { accordionTemplate } from './templates/accordion.ts';
 import { actionTemplate } from './templates/action.ts';
@@ -14,7 +16,7 @@ import { checkboxTemplate } from './templates/checkbox.ts';
 import { genericTemplate, instanceRef, type RegistryEntry } from './templates/generic.ts';
 import type { Overrides } from '../discover/discover.ts';
 import type { ComponentReport, GeneratedFile, TemplateContext, TemplateResult } from './templates/common.ts';
-import { exportFromRest, loadTokens, TokenResolver, tokensCss, tokensDtcg, tokensTs } from './tokens.ts';
+import { exportFromRest, loadTokens, setFontStacks, TokenResolver, tokensCss, tokensDtcg, tokensTs } from './tokens.ts';
 import { tagFor, wcAccordion, wcAction, wcCheckbox, wcGeneric, type WcResult } from './wc/components.ts';
 import { wcProjectFiles } from './wc/project.ts';
 import type { AccordionCore } from './templates/accordion.ts';
@@ -32,6 +34,16 @@ export interface TargetConfig {
 }
 
 export interface GenerateConfig {
+  /** Sidebar categories (STANDARD.md section 2): category -> component names. Unassigned components stay under Components. */
+  categories?: Record<string, string[]>;
+  /** Components Figma marks as building blocks ("_", "." or "Base") that are public anyway, and components to treat as internal. */
+  publicComponents?: string[];
+  internalComponents?: string[];
+  /**
+   * Fonts: by default each Figma family is loaded from its open-source npm package (Fontsource) when one exists.
+   * Map a family to your own package ({ package, family?, imports? }) or to false; false for the whole setting skips the lookup.
+   */
+  fonts?: Record<string, FontOverride> | false;
   /** Output directory for the default target, relative to the config file. */
   outDir: string;
   /** Default output target (react: React + TypeScript + CSS Modules; web-components: Lit, works in any framework). */
@@ -144,8 +156,18 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   const missing = usedTargets.filter((t) => !setsById.has(t));
   if (missing.length) throw new Error(`Component sets missing from the IR: ${missing.join(', ')}. Run "extract" first.`);
 
+  // Fonts: loaded from npm packages; system and missing families are reported.
+  const fonts = await planFonts(usedFonts(ir), gen.fonts === false ? undefined : httpFontSource(join(config.baseDir, '.ds-sync', 'fonts.json')), gen.fonts || {});
+  setFontStacks(Object.fromEntries(fonts.filter((f) => f.family !== 'Inter').map((f) => [f.family, f.stack])));
+  const fontPackages = fonts.filter((f) => f.package && f.package !== '@fontsource-variable/inter');
+  const fontDeps = Object.fromEntries(fontPackages.filter((f) => f.version).map((f) => [f.package!, f.version!]));
+  const fontImports = [...new Set(fontPackages.flatMap((f) => f.imports ?? []))];
+  for (const f of fonts.filter((x) => x.status === 'missing' || x.status === 'substitute')) log(`Font ${f.family}: ${f.status} (${f.note ?? ''})`);
+  log(`Fonts: ${fonts.filter((f) => f.status === 'package' || f.status === 'configured').length} loaded, ${fonts.filter((f) => f.status === 'substitute').length} substituted, ${fonts.filter((f) => f.status === 'system').length} system, ${fonts.filter((f) => f.status === 'missing').length} missing`);
+
   const icons: IconAsset[] = await exportIcons(renderer, ir, iconRefs(ir, usedTargets));
   log(`Icons: ${icons.length} exported as SVG`);
+  await exportShapes(renderer, ir, usedTargets, log);
   const iconMap = new Map(icons.map((i) => [i.figmaName, i]));
 
   // Nested instances: a variant node id of a generated set -> the component that renders it.
@@ -157,6 +179,15 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     const entry: RegistryEntry = { component: c.name, importPath: `../${c.name}/${c.name}`, kind: c.template, set };
     for (const v of set.variants) registry.set(v.nodeId, entry);
   }
+  const lookupEntry = (id: string) => registry.get(id);
+
+  // Sidebar: category titles from configuration, and building blocks (Figma's "_" / "." / "Base" convention, or configuration).
+  for (const c of plan) {
+    const cat = Object.entries(gen.categories ?? {}).find(([, names]) => names.includes(c.name))?.[0];
+    if (!c.title && cat) c.title = `Components/${cat}/${c.name}`;
+  }
+  const titleOf = (c: PlannedComponent) => c.title ?? `Components/${c.name}`;
+  const blockOf = (c: PlannedComponent) => !gen.publicComponents?.includes(c.name) && (Boolean(gen.internalComponents?.includes(c.name)) || isBuildingBlock(setsById.get(c.sets.main ?? '')?.name ?? c.name));
 
   const files: GeneratedFile[] = [];
   const reports: ComponentReport[] = [];
@@ -173,8 +204,9 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
           ...(radioControl && radioSet ? { related: { control: { name: radioControl.name, set: radioSet } } } : {}),
           instance: (part) => {
             const entry = part.instanceComponentId ? registry.get(part.instanceComponentId) : undefined;
-            return entry ? instanceRef(entry, part, iconMap) : undefined;
+            return entry ? instanceRef(entry, part, iconMap, lookupEntry) : undefined;
           },
+          lookup: lookupEntry,
         })
       : SPECIALISED[c.template](ctx, c.name);
     const issue = gen.overrides?.knownIssues?.[c.name];
@@ -188,6 +220,50 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     results.push({ c, ctx, result });
     log(`${c.name}: template ${c.template}`);
   }
+
+  // Documentation pass (STANDARD.md): story names, sidebar visibility, tiered docs page. Same for every target.
+  const byId = new Map<string, PlannedComponent>();
+  for (const c of plan) for (const v of setsById.get(c.sets.main ?? '')?.variants ?? []) byId.set(v.nodeId, c);
+  const componentOf = (id: string) => { const c = byId.get(id); return c ? { name: c.name, title: titleOf(c), buildingBlock: blockOf(c) } : undefined; };
+  const compositions = new Map(results.map(({ c, result }) => [c.name, composition(result.core as GenericCore | undefined, componentOf)]));
+  let visual: Record<string, { match: number; total: number; worst: number }> = {};
+  try {
+    const summary = readJson(join(config.baseDir, '.ds-sync', 'visual', 'summary.json')) as { version?: string; results?: { component: string; verdict: string; diff: number }[] };
+    if (summary.version === ir.version) for (const r of summary.results ?? []) {
+      const v = (visual[r.component] ??= { match: 0, total: 0, worst: 0 });
+      v.total++;
+      if (r.verdict === 'match') v.match++;
+      v.worst = Math.max(v.worst, r.diff);
+    }
+  } catch { visual = {}; }
+  const modeNames = [...new Set(Object.values(tokens.modes).flat())];
+  const applyDocs = (list: GeneratedFile[], framework: 'react' | 'wc', packageName: string) => {
+    for (const { c, ctx, result } of results) {
+      const dir = `src/components/${c.name}/`;
+      const page = list.find((f) => f.path.startsWith(dir) && f.path.endsWith('.mdx'));
+      const stories = list.find((f) => f.path.startsWith(dir) && /\.stories\.tsx?$/.test(f.path));
+      const block = blockOf(c);
+      const title = titleOf(c);
+      const sections = page ? templateSections(page.content) : [];
+      if (stories) {
+        stories.content = polishStories(stories.content.replace(`title: 'Components/${c.name}',`, `title: ${JSON.stringify(title)},`), { name: c.name, documented: new Set(sections.map((x) => x.story)), buildingBlock: block });
+      }
+      if (!page) continue;
+      const core = result.core as GenericCore | undefined;
+      const comp = compositions.get(c.name) ?? [];
+      const exposed = (core?.exposed ?? []).map((e) => ({ prop: e.prop, layer: e.exposed!.name, figma: e.figma, component: e.exposed!.entry.component }));
+      const issue = gen.overrides?.knownIssues?.[c.name];
+      page.content = docsPage({
+        name: c.name, title, framework,
+        tier: c.template === 'accordion' || comp.length || exposed.length ? 3 : c.template === 'generic' ? 1 : 2,
+        sets: Object.values(ctx.sets), fileKey: ir.fileKey, version: ir.version, report: result.report,
+        composition: comp, exposed, templateMdx: page.content, buildingBlock: block,
+        usedIn: results.filter((x) => (compositions.get(x.c.name) ?? []).some((r) => r.component === c.name)).map((x) => ({ name: x.c.name, title: titleOf(x.c) })),
+        knownIssues: issue ? knownIssueNotes(issue) : [], modes: modeNames, packageName,
+        ...(visual[c.name] ? { visual: visual[c.name] } : {}),
+      });
+    }
+  };
 
   const colorTokens = tokens.rows
     .filter((r) => r.collection === 'semantic.color')
@@ -216,7 +292,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   const shared: GeneratedFile[] = [
     ...tokenFiles,
     { path: 'token-map.json', content: JSON.stringify(tokenMap, null, 2) + '\n' },
-    { path: 'GENERATION-REPORT.md', content: report(ir, reports, tokenMap.counts, icons) },
+    { path: 'GENERATION-REPORT.md', content: report(ir, reports, tokenMap.counts, icons, fonts) },
   ];
 
   const targets: TargetConfig[] = gen.targets?.length ? gen.targets : [{ target: gen.target ?? 'react', outDir: gen.outDir, ...(gen.packageName ? { packageName: gen.packageName } : {}) }];
@@ -225,9 +301,10 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     const outFiles: GeneratedFile[] = [...shared];
     const packageName = t.packageName ?? gen.packageName ?? 'figma-storybook';
     if (t.target === 'react') {
+      applyDocs(files, 'react', packageName);
       outFiles.push(
         ...files,
-        ...projectFiles({ name: packageName, figma: { fileKey: ir.fileKey, fileName: ir.fileName, version: ir.version }, modes: tokens.modes, modeAttributes, components: plan.map((c) => c.name), icons, colorTokens, page }),
+        ...projectFiles({ name: packageName, figma: { fileKey: ir.fileKey, fileName: ir.fileName, version: ir.version }, modes: tokens.modes, modeAttributes, components: plan.map((c) => c.name), icons, colorTokens, page, fonts: { deps: fontDeps, imports: fontImports } }),
         { path: 'README.md', content: readme(ir, plan, 'react') },
         { path: 'visual-manifest.json', content: JSON.stringify(visualManifest(ir, results), null, 2) + '\n' },
       );
@@ -241,7 +318,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
         if (c.template !== 'action' && c.template !== 'checkbox' && c.template !== 'accordion') {
           r = wcGeneric(ctx, c.name, result.core as GenericCore, o, (part) => {
             const entry = part.instanceComponentId ? registry.get(part.instanceComponentId) : undefined;
-            return entry ? instanceRef(entry, part, iconMap) : undefined;
+            return entry ? instanceRef(entry, part, iconMap, lookupEntry) : undefined;
           }, tagOf);
         } else if (c.template === 'action') r = wcAction(ctx, c.name, result.core as ActionCore, o);
         else if (c.template === 'checkbox') r = wcCheckbox(ctx, c.name, result.core as CheckboxCore, o);
@@ -251,6 +328,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
         wc.push({ name: c.name, r });
         outFiles.push(...r.files);
       }
+      applyDocs(wc.flatMap((x) => x.r.files), 'wc', packageName);
       outFiles.push(
         ...wcProjectFiles({
           name: packageName,
@@ -261,6 +339,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
           icons,
           colorTokens,
           page,
+          fonts: { deps: fontDeps, imports: fontImports },
           typings: wc.flatMap((x) => x.r.typings),
         }),
         { path: 'README.md', content: readme(ir, plan, 'web-components', prefix) },
@@ -279,7 +358,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   return { outDir: written[0]!.outDir, targets: written, files: written.flatMap((w) => w.files), reports, tokenCounts: tokenMap.counts };
 }
 
-function report(ir: FigmaIR, reports: ComponentReport[], counts: Record<string, number>, icons: IconAsset[]): string {
+function report(ir: FigmaIR, reports: ComponentReport[], counts: Record<string, number>, icons: IconAsset[], fonts: FontPlan[] = []): string {
   const lines = [
     '# Generation report',
     '',
@@ -297,12 +376,34 @@ function report(ir: FigmaIR, reports: ComponentReport[], counts: Record<string, 
     '',
     ...icons.map((i) => `- \`${i.name}\` from ${i.figmaName} (${i.nodeId})`),
     '',
+    ...fontsReport(fonts),
   ];
+  const nested = reports.filter((r) => r.nested);
+  if (nested.length) {
+    const checked = nested.reduce((n, r) => n + r.nested!.checked, 0);
+    const matched = nested.reduce((n, r) => n + r.nested!.matched, 0);
+    lines.push(
+      '## Nested consistency',
+      '',
+      'For each nested component and each parent variant in its base state, the props the generated parent gives the nested component, compared with the Figma instance (its variant, booleans, texts and exposed nested instances).',
+      '',
+      `Overall: ${matched}/${checked} values match${checked ? ` (${Math.round((matched / checked) * 1000) / 10}%)` : ''}.`,
+      '',
+      '| Component | Nested layers | Match | Not compared (state variants) |',
+      '| --- | --- | --- | --- |',
+      ...nested.map((r) => `| ${r.name} | ${r.nested!.layers} | ${r.nested!.matched}/${r.nested!.checked} | ${r.nested!.stateVariants} |`),
+      '',
+    );
+  }
   for (const r of reports) {
     lines.push(`## ${r.name}`, '', `Figma: ${r.figmaSets.join(', ')}`, '', '| Figma | Prop | Note |', '| --- | --- | --- |');
     for (const p of r.props) lines.push(`| ${p.figma} | \`${p.prop}\` | ${p.note ?? ''} |`);
     lines.push('', '**Not from Figma (archetype defaults or decisions):**', '', ...r.assumptions.map((a) => `- ${a}`), '');
     if (r.gaps.length) lines.push('**Gaps:**', '', ...r.gaps.map((g) => `- ${g}`), '');
+    if (r.nested?.mismatches.length) {
+      lines.push('<details><summary>Nested values Figma sets that the generated props cannot express</summary>', '', '| Layer | Parent variant | Prop | Code | Figma |', '| --- | --- | --- | --- | --- |',
+        ...r.nested.mismatches.map((m) => `| ${m.layer}${m.copy ? ` (copy ${m.copy})` : ''} | ${m.variant} | \`${m.prop}\` | ${m.code} | ${m.figma} |`), '', '</details>', '');
+    }
     lines.push('<details><summary>Which Figma axes each style depends on</summary>', '', ...Object.entries(r.dependencies).map(([k, v]) => `- \`${k}\`: ${v.length ? v.join(', ') : 'none (same in every variant)'}`), '', '</details>', '');
   }
   return lines.join('\n');

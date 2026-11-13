@@ -36,6 +36,7 @@ export const Default: Story = {};
 
 /** Figma State. */
 export const State: Story = {
+  name: "State",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Default", html`<ds-avatar-identity state="default" ?disabled=${args.disabled} ?has-name=${args.hasName} ?has-email=${args.hasEmail} ?has-trailing-icon=${args.hasTrailingIcon} name=${args.name} email=${args.email}></ds-avatar-identity>`),
@@ -49,6 +50,7 @@ export const State: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled('Default', html`<ds-avatar-identity state=${args.state} ?disabled=${args.disabled} ?has-name=${args.hasName} ?has-email=${args.hasEmail} ?has-trailing-icon=${args.hasTrailingIcon} name=${args.name} email=${args.email}></ds-avatar-identity>`),

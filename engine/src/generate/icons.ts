@@ -56,3 +56,57 @@ export async function exportIcons(renderer: FigmaRenderer, ir: FigmaIR, refs: Ma
   }
   return out.sort((a, b) => a.name.localeCompare(b.name));
 }
+
+/** Colours an SVG paints with (fills and strokes, gradients as "url"). */
+export function svgColors(svg: string): Set<string> {
+  const out = new Set<string>();
+  for (const m of svg.matchAll(/(?:fill|stroke|stop-color)="([^"]+)"/g)) if (m[1] !== 'none') out.add(m[1]!.startsWith('url(') ? 'url' : m[1]!.toLowerCase());
+  return out;
+}
+
+/** SVG as a CSS data: URI. */
+export const svgUri = (svg: string) => `data:image/svg+xml,${encodeURIComponent(svg.replace(/<\?xml[^>]*>/g, '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/\s+/g, ' ').trim())}`;
+
+/**
+ * Exports the outline of every vector shape (vectors, boolean operations, stars, polygons) in the given sets that is not
+ * a group around icons, once per layer and size, and stores it on the parts (part.shape). Returns how many were exported.
+ */
+export async function exportShapes(renderer: FigmaRenderer, ir: FigmaIR, targetIds: string[], log: (m: string) => void): Promise<number> {
+  const keyOf = (setId: string, p: { path: string; style: { width?: number; height?: number } }) => `${setId}|${p.path}|${p.style.width ?? 0}x${p.style.height ?? 0}`;
+  const pick = new Map<string, string>();
+  const sets = ir.components.filter((c) => targetIds.includes(c.targetId));
+  for (const set of sets) for (const v of set.variants) for (const p of v.parts) {
+    if (!p.nodeId || v.parts.some((c) => c.parent === p.path && c.type === 'INSTANCE')) continue;
+    const k = keyOf(set.targetId, p);
+    if (!pick.has(k)) pick.set(k, p.nodeId);
+  }
+  if (!pick.size) return 0;
+  const ids = [...new Set(pick.values())];
+  const svgs = new Map<string, { uri: string; mono: boolean }>();
+  for (let i = 0; i < ids.length; i += 50) {
+    const chunk = ids.slice(i, i + 50);
+    try {
+      const { images } = await renderer.images(ir.fileKey, chunk, 'svg', ir.version);
+      for (const id of chunk) {
+        const url = images[id];
+        if (!url) continue;
+        const svg = await renderer.fetchText(url);
+        svgs.set(id, { uri: svgUri(svg), mono: svgColors(svg).size <= 1 });
+      }
+    } catch (e) {
+      log(`Shapes: export failed for ${chunk.length} layers (${(e as Error).message}); they stay approximated as boxes.`);
+    }
+  }
+  let applied = 0;
+  for (const set of sets) {
+    const byPath = new Map<string, { uri: string; mono: boolean }>();
+    for (const [k, id] of pick) if (k.startsWith(`${set.targetId}|`) && svgs.has(id)) byPath.set(k.split('|')[1]!, svgs.get(id)!);
+    for (const v of set.variants) for (const p of v.parts) {
+      if (!p.nodeId) continue;
+      const shape = svgs.get(pick.get(keyOf(set.targetId, p)) ?? '') ?? byPath.get(p.path);
+      if (shape) { p.shape = shape; applied++; }
+    }
+  }
+  log(`Shapes: ${svgs.size} vector outlines exported as SVG (${applied} layers)`);
+  return svgs.size;
+}

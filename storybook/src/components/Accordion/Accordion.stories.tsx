@@ -11,7 +11,7 @@ const BODY = 'Panel content goes here. This text explains the section in more de
 const t = (n: number) => `${TITLE} ${n}`;
 
 const meta = {
-  title: 'Components/Accordion',
+  title: "Components/Accordion",
   component: Accordion,
   args: { variant: 'bordered', expandMode: 'single', headingLevel: 3, children: null },
   argTypes: {
@@ -29,6 +29,7 @@ type Story = StoryObj<typeof meta>;
 
 /** Three items with the Figma sample copy. Clicking a header opens its panel. */
 export const Default: Story = {
+  name: "Default",
   render: (args) => (
     <Accordion {...args}>
       <AccordionItem value="one" title={t(1)}>{BODY}</AccordionItem>
@@ -47,6 +48,8 @@ export const Default: Story = {
 
 /** Single-expand: opening one item closes the other. */
 export const SingleExpand: Story = {
+  name: "Single expand",
+  tags: ['!dev'],
   args: { expandMode: 'single' },
   render: (args) => (
     <Accordion {...args}>
@@ -65,6 +68,7 @@ export const SingleExpand: Story = {
 
 /** Multiple-expand: items open independently. */
 export const MultipleExpand: Story = {
+  name: "Multiple expand",
   args: { expandMode: 'multiple' },
   render: SingleExpand.render,
   play: async ({ canvas }) => {
@@ -78,6 +82,7 @@ export const MultipleExpand: Story = {
 
 /** Figma Style: Bordered, Borderless. */
 export const Styles: Story = {
+  name: "Styles",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Stack>
@@ -99,6 +104,7 @@ export const Styles: Story = {
 
 /** Figma State axis. Pseudo states are forced with data-force-state. */
 export const States: Story = {
+  name: "States",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Stack>
@@ -133,6 +139,8 @@ export const States: Story = {
 
 /** WAI-ARIA accordion keyboard: Enter and Space toggle; ArrowDown, ArrowUp, Home and End move focus. */
 export const Keyboard: Story = {
+  name: "Keyboard",
+  tags: ['!dev'],
   render: (args) => (
     <Accordion {...args}>
       <AccordionItem value="one" title={t(1)}>{BODY}</AccordionItem>
@@ -159,7 +167,8 @@ export const Keyboard: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: () => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>

@@ -37,6 +37,7 @@ export const Default: Story = {};
 
 /** Figma State. */
 export const State: Story = {
+  name: "State",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Default", html`<ds-input-field state="default" ?disabled=${args.disabled} ?required=${args.required} ?helper-message=${args.helperMessage} label-text=${args.labelText} value-text=${args.valueText} helper-text=${args.helperText} error-text=${args.errorText} success-text=${args.successText}></ds-input-field>`),
@@ -50,6 +51,7 @@ export const State: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled('Default', html`<ds-input-field state=${args.state} ?disabled=${args.disabled} ?required=${args.required} ?helper-message=${args.helperMessage} label-text=${args.labelText} value-text=${args.valueText} helper-text=${args.helperText} error-text=${args.errorText} success-text=${args.successText}></ds-input-field>`),

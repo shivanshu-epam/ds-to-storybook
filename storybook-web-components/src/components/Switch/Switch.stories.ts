@@ -27,6 +27,7 @@ export default meta;
 type Story = StoryObj<any>;
 
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvasElement }) => {
     const host = canvasElement.querySelector('ds-switch')!;
     const control = within(shadowOf(canvasElement, 'ds-switch') as unknown as HTMLElement).getByRole('switch', { name: "Switch" });
@@ -47,6 +48,8 @@ export const Default: Story = {
 
 /** Disabled: not focusable and does not toggle. */
 export const DisabledDoesNotToggle: Story = {
+  name: "Disabled does not toggle",
+  tags: ['!dev'],
   args: { disabled: true },
   play: async ({ canvasElement }) => {
     const host = canvasElement.querySelector('ds-switch')!;
@@ -62,6 +65,8 @@ export const DisabledDoesNotToggle: Story = {
 
 /** Loading: aria-busy, and clicks do not toggle. */
 export const LoadingDoesNotToggle: Story = {
+  name: "Loading does not toggle",
+  tags: ['!dev'],
   args: { interaction: 'loading' },
   play: async ({ canvasElement }) => {
     const host = canvasElement.querySelector('ds-switch')!;
@@ -77,6 +82,7 @@ export const LoadingDoesNotToggle: Story = {
 
 /** Figma Value × Interaction. Pseudo states are forced with data-force-state. */
 export const ValueAndInteraction: Story = {
+  name: "Value and interaction",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Value by Interaction", ["Off","On"], ["Default","Disabled","Loading"], (r, c) => {
@@ -92,6 +98,7 @@ export const ValueAndInteraction: Story = {
 
 /** Figma Size. */
 export const Size: Story = {
+  name: "Size",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Medium", html`<ds-switch ?checked=${args.checked} accessible-label=${args.accessibleLabel} interaction=${args.interaction} size="medium" ?disabled=${args.disabled} ?show-inner-content=${args.showInnerContent}></ds-switch>`),
@@ -101,6 +108,7 @@ export const Size: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled('Default', html`<ds-switch ?checked=${args.checked} accessible-label=${args.accessibleLabel} interaction=${args.interaction} size=${args.size} ?disabled=${args.disabled} ?show-inner-content=${args.showInnerContent}></ds-switch>`),

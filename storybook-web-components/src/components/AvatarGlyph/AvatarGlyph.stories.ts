@@ -32,6 +32,7 @@ export const Default: Story = {};
 
 /** Figma Type × Color. Pseudo states are forced with data-force-state. */
 export const TypeAndColor: Story = {
+  name: "Type and color",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Type by Color", ["Text","Icon","Image"], ["1","2","3","4","5"], (r, c) => {
@@ -56,6 +57,7 @@ export const TypeAndColor: Story = {
 
 /** Figma Size. */
 export const Size: Story = {
+  name: "Size",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Sm", html`<ds-avatar-glyph type=${args.type} color=${args.color} size="sm"></ds-avatar-glyph>`),

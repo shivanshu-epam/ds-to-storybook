@@ -20,11 +20,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Keep the type import used even when no lookup tables are generated.
-export type { RadioControlProps };
 
 /** Figma default variant: State=Enabled, Selected=false. */
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvasElement, args }) => {
     const radio = within(canvasElement).getByRole('radio', { name: 'Radio' });
     await expect(radio).not.toBeChecked();
@@ -36,6 +35,8 @@ export const Default: Story = {
 
 /** Disabled: cannot be selected. */
 export const DisabledDoesNotSelect: Story = {
+  name: "Disabled does not select",
+  tags: ['!dev'],
   args: { disabled: true },
   play: async ({ canvasElement }) => {
     const radio = within(canvasElement).getByRole('radio', { name: 'Radio' });
@@ -47,6 +48,7 @@ export const DisabledDoesNotSelect: Story = {
 
 /** Figma Selected × State. Pseudo states are forced with data-force-state. */
 export const SelectedAndState: Story = {
+  name: "Selected and state",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const rows: Record<string, Partial<RadioControlProps>> = { 'false': {}, 'true': { defaultChecked: true } };
@@ -64,7 +66,8 @@ export const SelectedAndState: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: (args) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>

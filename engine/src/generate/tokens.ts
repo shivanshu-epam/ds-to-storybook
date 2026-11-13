@@ -64,8 +64,14 @@ const FONT_STACKS: Record<string, string> = {
   'JetBrains Mono': '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace',
 };
 
+/** Stacks for the fonts this generation loads (see fonts.ts); set before templates run. */
+let loaded: Record<string, string> = {};
+export function setFontStacks(stacks: Record<string, string>): void {
+  loaded = stacks;
+}
+
 export function fontStack(family: string): string {
-  return FONT_STACKS[family] ?? `"${family}", system-ui, sans-serif`;
+  return FONT_STACKS[family] ?? loaded[family] ?? `"${family}", system-ui, sans-serif`;
 }
 
 const cssName = (name: string, codeSyntax: unknown) =>

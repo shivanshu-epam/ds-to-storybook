@@ -29,7 +29,7 @@ export class DsDropdown extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-size=${this.size} data-state=${this.state} data-force-state=${this.forceState ?? nothing}>
-        <span class="trigger"><ds-dropdown-trigger></ds-dropdown-trigger></span>
+        <span class="trigger"><ds-dropdown-trigger .size=${this.size} .expanded=${(({ "expanded": true } as Record<string, boolean>)[String(this.state)] ?? false)}></ds-dropdown-trigger></span>
         <span class="menu"><ds-dropdown-menu></ds-dropdown-menu></span>
       </div>`;
   }

@@ -30,6 +30,7 @@ export const Default: Story = {};
 
 /** Figma State. */
 export const State: Story = {
+  name: "State",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Default", html`<ds-input-control state="default" ?disabled=${args.disabled}></ds-input-control>`),

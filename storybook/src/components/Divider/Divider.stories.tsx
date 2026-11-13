@@ -5,7 +5,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { Divider, type DividerProps } from './Divider';
 
 const meta = {
-  title: 'Components/Divider',
+  title: "Components/Divider",
   component: Divider,
   argTypes: {
     orientation: { control: 'inline-radio', options: ['horizontal', 'vertical'], description: 'Figma: Orientation' },
@@ -22,14 +22,13 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Keep the type import used even when no lookup tables are generated.
-export type { DividerProps };
 
 /** Figma default variant: Orientation=Horizontal, Style=Solid, Size=Sm, Color=Light, State=Default. */
 export const Default: Story = {};
 
 /** Figma Orientation × State. Pseudo states are forced with data-force-state. */
 export const OrientationAndState: Story = {
+  name: "Orientation and state",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const rows: Record<string, Partial<DividerProps>> = { 'Horizontal': { orientation: 'horizontal' }, 'Vertical': { orientation: 'vertical' } };
@@ -47,6 +46,7 @@ export const OrientationAndState: Story = {
 
 /** Figma Style. */
 export const Style: Story = {
+  name: "Style",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const values: Record<string, Partial<DividerProps>> = { 'Solid': { styleVariant: 'solid' }, 'Dotted': { styleVariant: 'dotted' }, 'Dash': { styleVariant: 'dash' } };
@@ -62,6 +62,7 @@ export const Style: Story = {
 
 /** Figma Size. */
 export const Size: Story = {
+  name: "Size",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const values: Record<string, Partial<DividerProps>> = { 'Sm': { size: 'sm' }, 'Md': { size: 'md' } };
@@ -77,6 +78,7 @@ export const Size: Story = {
 
 /** Figma Color. */
 export const Color: Story = {
+  name: "Color",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const values: Record<string, Partial<DividerProps>> = { 'Light': { color: 'light' }, 'Dark': { color: 'dark' }, 'Subtle': { color: 'subtle' }, 'Transparent': { color: 'transparent' }, 'Danger': { color: 'danger' }, 'Success': { color: 'success' }, 'Neutral': { color: 'neutral' }, 'Warning': { color: 'warning' }, 'Info': { color: 'info' } };
@@ -92,7 +94,8 @@ export const Color: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: (args) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>

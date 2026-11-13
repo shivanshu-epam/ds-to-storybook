@@ -23,6 +23,7 @@ export default meta;
 type Story = StoryObj<any>;
 
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvasElement }) => {
     const group = shadowOf(canvasElement, 'ds-radio-group');
     await expect(within(group as unknown as HTMLElement).getByRole('radiogroup', { name: "Delivery speed" })).toBeInTheDocument();
@@ -43,6 +44,7 @@ export const Default: Story = {
 
 /** Figma State × Horizontal. Pseudo states are forced with data-force-state. */
 export const StateAndHorizontal: Story = {
+  name: "State and horizontal",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("State by Horizontal", ["Enabled","Read-Only","Invalid","Warning"], ["false","true"], (r, c) => {

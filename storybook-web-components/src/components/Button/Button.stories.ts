@@ -8,7 +8,7 @@ import { labelled, matrix, row, shadowOf } from '../../storybook/layout';
 import './ds-button';
 
 const meta = {
-  title: 'Components/Button',
+  title: "Components/Button",
   component: 'ds-button',
   args: { variant: "primary", size: "sm", radius: "default", disabled: false, label: "Button", onClick: fn() },
   argTypes: {
@@ -32,6 +32,7 @@ type Story = StoryObj<any>;
 
 /** Figma default variant. Clicking calls the handler once. */
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvasElement, args }) => {
     const button = within(shadowOf(canvasElement, 'ds-button') as unknown as HTMLElement).getByRole('button', { name: "Button" });
     await userEvent.click(button);
@@ -41,6 +42,7 @@ export const Default: Story = {
 
 /** Figma Style grid: Variant × State. Pseudo states are forced with data-force-state. */
 export const VariantsAndStates: Story = {
+  name: "Variants and states",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Variant by State", ["Primary","Secondary","Ghost","Danger"], ["Default","Hover","Pressed","Focused","Disabled"], (r, c) => {
@@ -70,6 +72,7 @@ export const VariantsAndStates: Story = {
 
 /** Figma Size axis. */
 export const Size: Story = {
+  name: "Size",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Sm", html`<ds-button variant=${args.variant} size="sm" radius=${args.radius} ?disabled=${args.disabled} @click=${args.onClick}>${args.label}</ds-button>`),
@@ -80,6 +83,7 @@ export const Size: Story = {
 
 /** Figma Radius axis. */
 export const Radius: Story = {
+  name: "Radius",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Default", html`<ds-button variant=${args.variant} size=${args.size} radius="default" ?disabled=${args.disabled} @click=${args.onClick}>${args.label}</ds-button>`),
@@ -90,6 +94,7 @@ export const Radius: Story = {
 
 /** Figma boolean slots, with the Figma default icons. */
 export const WithIcons: Story = {
+  name: "With icons",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Has leading icon", html`<ds-button variant=${args.variant} size=${args.size} radius=${args.radius} ?disabled=${args.disabled} leading-icon="actionAdd16" @click=${args.onClick}>${args.label}</ds-button>`),
@@ -99,6 +104,8 @@ export const WithIcons: Story = {
 
 /** State=Disabled: clicks are ignored. */
 export const Disabled: Story = {
+  name: "Disabled",
+  tags: ['!dev'],
   args: { disabled: true },
   play: async ({ canvasElement, args }) => {
     const button = within(shadowOf(canvasElement, 'ds-button') as unknown as HTMLElement).getByRole('button');
@@ -110,6 +117,8 @@ export const Disabled: Story = {
 
 /** WAI-ARIA button pattern: focusable; Enter and Space activate. (Tab order inside Shadow DOM is not simulated by the test library, so focus is set directly.) */
 export const Keyboard: Story = {
+  name: "Keyboard",
+  tags: ['!dev'],
   play: async ({ canvasElement, args }) => {
     const root = shadowOf(canvasElement, 'ds-button');
     const button = within(root as unknown as HTMLElement).getByRole('button');

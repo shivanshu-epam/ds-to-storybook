@@ -25,6 +25,7 @@ export const Default: Story = {};
 
 /** Figma Direction × State. Pseudo states are forced with data-force-state. */
 export const DirectionAndState: Story = {
+  name: "Direction and state",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Direction by State", ["Prev","Next"], ["Default","Hover","Focused","Disabled"], (r, c) => {

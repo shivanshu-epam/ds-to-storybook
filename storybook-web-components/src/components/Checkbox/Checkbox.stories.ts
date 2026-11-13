@@ -8,7 +8,7 @@ import { labelled, matrix, row, shadowOf, stack } from '../../storybook/layout';
 import './ds-checkbox';
 
 const meta = {
-  title: 'Components/Checkbox',
+  title: "Components/Checkbox",
   component: 'ds-checkbox',
   args: { size: "sm", label: "Checkbox label", heading: "Label", onChange: fn() },
   argTypes: {
@@ -32,6 +32,7 @@ const input = (canvas: HTMLElement) => within(shadowOf(canvas, 'ds-checkbox') as
 
 /** Figma default. Clicking toggles. */
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvasElement, args }) => {
     const box = within(shadowOf(canvasElement, 'ds-checkbox') as unknown as HTMLElement).getByRole('checkbox', { name: "Checkbox label" });
     await expect(box).not.toBeChecked();
@@ -43,6 +44,7 @@ export const Default: Story = {
 
 /** Figma CheckboxField Type: Unselected, Selected, Indeterminate. */
 export const SelectionTypes: Story = {
+  name: "Selection types",
   parameters: { controls: { disable: true } },
   render: (args) => stack([
     html`<ds-checkbox size=${args.size} label="Unselected"></ds-checkbox>`,
@@ -58,6 +60,7 @@ export const SelectionTypes: Story = {
 
 /** Figma Style grid for CheckboxControl: Type × State. */
 export const ControlTypesAndStates: Story = {
+  name: "Control types and states",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("CheckboxControl Type by State", ["Unselected","Selected","Indeterminate","Error-Unselected","Error-Selected","Error-Indeterminate"], ["Enabled","Hovered","Focused","Disabled","Pressed"], (r, col) => {
@@ -97,6 +100,7 @@ export const ControlTypesAndStates: Story = {
 
 /** Figma CheckboxControl Size. */
 export const Sizes: Story = {
+  name: "Sizes",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Sm", html`<ds-checkbox size="sm" label=${args.label} ?checked=${true}></ds-checkbox>`),
@@ -107,6 +111,7 @@ export const Sizes: Story = {
 
 /** Figma CheckboxField State, with the Figma message copy. */
 export const FieldStates: Story = {
+  name: "Field states",
   parameters: { controls: { disable: true } },
   render: (args) => stack([
     labelled("Enabled", html`<ds-checkbox size=${args.size} label=${args.label} heading=${args.heading ?? ''} @change=${args.onChange}></ds-checkbox>`),
@@ -120,6 +125,8 @@ export const FieldStates: Story = {
 
 /** Read-only checkboxes keep their value. */
 export const ReadOnly: Story = {
+  name: "Read only",
+  tags: ['!dev'],
   render: (args) => html`<ds-checkbox size=${args.size} label=${args.label} heading=${args.heading ?? ''} ?readonly=${true} ?checked=${true} @change=${args.onChange}></ds-checkbox>`,
   play: async ({ canvasElement }) => {
     const box = input(canvasElement);
@@ -130,6 +137,8 @@ export const ReadOnly: Story = {
 
 /** WAI-ARIA checkbox pattern: focusable; Space toggles. (Focus is set directly: the test library does not simulate Tab inside Shadow DOM.) */
 export const Keyboard: Story = {
+  name: "Keyboard",
+  tags: ['!dev'],
   play: async ({ canvasElement }) => {
     const root = shadowOf(canvasElement, 'ds-checkbox');
     const box = within(root as unknown as HTMLElement).getByRole('checkbox');
@@ -142,6 +151,7 @@ export const Keyboard: Story = {
 
 /** Figma CheckboxGroup. */
 export const Group: Story = {
+  name: "Group",
   parameters: { controls: { disable: true } },
   render: (args) => html`<ds-checkbox-group legend="Group label">
     <ds-checkbox size=${args.size} label="Checkbox label" ?checked=${true}></ds-checkbox>
@@ -152,6 +162,7 @@ export const Group: Story = {
 
 /** Figma CheckboxGroup Orientation. */
 export const GroupOrientation: Story = {
+  name: "Group orientation",
   parameters: { controls: { disable: true } },
   render: (args) => stack([
     html`<ds-checkbox-group legend="Vertical" orientation="vertical"><ds-checkbox size=${args.size} label="Checkbox label" ?checked=${true}></ds-checkbox><ds-checkbox size=${args.size} label="Checkbox label"></ds-checkbox></ds-checkbox-group>`,
@@ -161,6 +172,7 @@ export const GroupOrientation: Story = {
 
 /** Figma CheckboxGroup State, with the Figma message copy. */
 export const GroupStates: Story = {
+  name: "Group states",
   parameters: { controls: { disable: true } },
   render: (args) => stack([
     html`<ds-checkbox-group legend="Enabled"><ds-checkbox size=${args.size} label="Checkbox label"></ds-checkbox></ds-checkbox-group>`,

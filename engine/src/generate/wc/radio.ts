@@ -11,7 +11,7 @@
 import { docTabs, leadSentence, pascal, type GeneratedFile, type TemplateContext } from '../templates/common.ts';
 import { axisControl, axisData, axisDefault, axisType, isIcon, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRPart } from '../../ir/types.ts';
-import { attrFor, classFor, figmaDocsMdx, header, mdx, tagFor, usage, wcProp, wcText, type WcOptions, type WcResult } from './components.ts';
+import { attrFor, classFor, figmaDocsMdx, header, mdx, tagFor, usage, wcProp, wcVal, wcText, type WcOptions, type WcResult } from './components.ts';
 
 const js = (v: unknown) => JSON.stringify(v);
 
@@ -46,7 +46,7 @@ export function wcRadio(ctx: TemplateContext, name: string, core: GenericCore, o
         if (!n || n.component === name) return undefined;
         const ntag = tagOf(n.component);
         imports.add(`import '../${n.component}/${ntag}';`);
-        const attrs = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'defaultChecked' ? '?checked=${true}' : `.${wcProp(x.prop)}=\${${js(x.value)}}`));
+        const attrs = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'defaultChecked' ? '?checked=${true}' : `.${wcProp(x.prop)}=\${${wcVal(x)}}`));
         if (l.role === rl.control) {
           const fwd = rl.forwardStates?.length && stateAxis ? ` state=\${(${js(rl.forwardStates)} as string[]).includes(this.${stateAxis.prop}) ? this.${stateAxis.prop} : 'enabled'}` : '';
           return `<span ${c}><${ntag} accessible-label=\${typeof this.label === 'string' ? this.label : ${js(copy)}} name=\${this.name ?? nothing} .value=\${this.value} ?checked=\${this.checked} ?disabled=\${this.disabled}${fwd}></${ntag}></span>`;

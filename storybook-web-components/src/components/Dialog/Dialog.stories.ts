@@ -31,6 +31,7 @@ type Story = StoryObj<any>;
 
 /** A modal dialog opened from a button. Escape closes it and focus returns to the button. */
 export const Default: Story = {
+  name: "Default",
   render: (args) => html`<button type="button" @click=${(event: Event) => ((event.target as HTMLElement).nextElementSibling as DsDialog).setOpen(true)}>Open dialog</button>
     <ds-dialog type=${args.type} size=${args.size} state=${args.state} ?has-close-button=${args.hasCloseButton} ?has-secondary-action=${args.hasSecondaryAction} ?has-subtitle=${args.hasSubtitle} ?scrollable-content=${args.scrollableContent} title-value=${args.titleValue} subtitle=${args.subtitle} body-content=${args.bodyContent}></ds-dialog>`,
   play: async ({ canvasElement }) => {
@@ -53,6 +54,8 @@ export const Default: Story = {
 
 /** The close button closes it. */
 export const CloseButton: Story = {
+  name: "Close button",
+  tags: ['!dev'],
   render: (args) => html`<ds-dialog open modal="false" type=${args.type} size=${args.size} state=${args.state} ?has-close-button=${args.hasCloseButton} ?has-secondary-action=${args.hasSecondaryAction} ?has-subtitle=${args.hasSubtitle} ?scrollable-content=${args.scrollableContent} title-value=${args.titleValue} subtitle=${args.subtitle} body-content=${args.bodyContent}></ds-dialog>`,
   play: async ({ canvasElement }) => {
     const host = canvasElement.querySelector('ds-dialog')!;
@@ -64,6 +67,8 @@ export const CloseButton: Story = {
 
 /** Figma Type=Alert is an alertdialog. */
 export const AlertRole: Story = {
+  name: "Alert role",
+  tags: ['!dev'],
   args: { type: 'alert' },
   render: (args) => html`<ds-dialog open modal="false" type=${args.type} size=${args.size} state=${args.state} ?has-close-button=${args.hasCloseButton} ?has-secondary-action=${args.hasSecondaryAction} ?has-subtitle=${args.hasSubtitle} ?scrollable-content=${args.scrollableContent} title-value=${args.titleValue} subtitle=${args.subtitle} body-content=${args.bodyContent}></ds-dialog>`,
   play: async ({ canvasElement }) => {
@@ -73,6 +78,7 @@ export const AlertRole: Story = {
 
 /** Figma Type × Size, as open in-page dialogs. */
 export const TypeAndSize: Story = {
+  name: "Type and size",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Type by Size", ["Confirmation","Alert","Form","Full-screen","Side-drawer"], ["Small","Medium","Large","Full"], (r, c) => {
@@ -102,6 +108,7 @@ export const TypeAndSize: Story = {
 
 /** Figma State. */
 export const State: Story = {
+  name: "State",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Open", html`<ds-dialog open modal="false" type=${args.type} size=${args.size} state="open" ?has-close-button=${args.hasCloseButton} ?has-secondary-action=${args.hasSecondaryAction} ?has-subtitle=${args.hasSubtitle} ?scrollable-content=${args.scrollableContent} title-value=${args.titleValue} subtitle=${args.subtitle} body-content=${args.bodyContent}></ds-dialog>`),
@@ -112,6 +119,7 @@ export const State: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled('Default', html`<ds-dialog open modal="false" type=${args.type} size=${args.size} state=${args.state} ?has-close-button=${args.hasCloseButton} ?has-secondary-action=${args.hasSecondaryAction} ?has-subtitle=${args.hasSubtitle} ?scrollable-content=${args.scrollableContent} title-value=${args.titleValue} subtitle=${args.subtitle} body-content=${args.bodyContent}></ds-dialog>`),

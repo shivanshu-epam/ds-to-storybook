@@ -33,6 +33,7 @@ export const Default: Story = {};
 
 /** Figma Size × State. Pseudo states are forced with data-force-state. */
 export const SizeAndState: Story = {
+  name: "Size and state",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Size by State", ["Small","Medium","Large"], ["Default","Hover","Focused","Disabled","Error","Read-only"], (r, c) => {
@@ -60,6 +61,7 @@ export const SizeAndState: Story = {
 
 /** Figma Expanded. */
 export const Expanded: Story = {
+  name: "Expanded",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("false", html`<ds-dropdown-trigger size=${args.size} state=${args.state} ?expanded=${false} ?disabled=${args.disabled} ?clearable=${args.clearable}></ds-dropdown-trigger>`),
@@ -69,6 +71,7 @@ export const Expanded: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled('Default', html`<ds-dropdown-trigger size=${args.size} state=${args.state} ?expanded=${args.expanded} ?disabled=${args.disabled} ?clearable=${args.clearable}></ds-dropdown-trigger>`),

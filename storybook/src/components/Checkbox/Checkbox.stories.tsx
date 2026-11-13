@@ -11,7 +11,7 @@ const STATE_ARGS: Record<string, Partial<CheckboxProps>> = { 'Enabled': {}, 'Hov
 const FIELD_STATE_ARGS: Record<string, Partial<CheckboxProps>> = { 'Enabled': {}, 'Focus': { 'data-force-state': 'focus' }, 'Invalid': { error: 'Error message goes here' }, 'Warning': { warning: 'Warning message goes here' }, 'Read-Only': { readOnly: true, defaultChecked: true }, 'Disabled': { disabled: true } };
 
 const meta = {
-  title: 'Components/Checkbox',
+  title: "Components/Checkbox",
   component: Checkbox,
   args: { size: 'sm', label: 'Checkbox label', heading: 'Label', onChange: fn() },
   argTypes: {
@@ -36,6 +36,7 @@ type Story = StoryObj<typeof meta>;
 
 /** Figma default: CheckboxField Type=Unselected, State=Enabled. Clicking toggles. */
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvas, args }) => {
     const box = canvas.getByRole('checkbox', { name: 'Checkbox label' });
     await expect(box).not.toBeChecked();
@@ -47,6 +48,7 @@ export const Default: Story = {
 
 /** Figma CheckboxField Type: Unselected, Selected, Indeterminate. */
 export const SelectionTypes: Story = {
+  name: "Selection types",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Stack>
@@ -63,6 +65,7 @@ export const SelectionTypes: Story = {
 
 /** Figma Style grid for CheckboxControl: Type × State. Pseudo states are forced with data-force-state. */
 export const ControlTypesAndStates: Story = {
+  name: "Control types and states",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Matrix
@@ -78,6 +81,7 @@ export const ControlTypesAndStates: Story = {
 
 /** Figma CheckboxControl Size. */
 export const Sizes: Story = {
+  name: "Sizes",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Row>
@@ -90,6 +94,7 @@ export const Sizes: Story = {
 
 /** Figma CheckboxField State, with the Figma message copy. */
 export const FieldStates: Story = {
+  name: "Field states",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Stack>
@@ -105,6 +110,8 @@ export const FieldStates: Story = {
 
 /** Read-only checkboxes keep their value. */
 export const ReadOnly: Story = {
+  name: "Read only",
+  tags: ['!dev'],
   args: { readOnly: true, defaultChecked: true },
   play: async ({ canvas }) => {
     const box = canvas.getByRole('checkbox');
@@ -115,6 +122,8 @@ export const ReadOnly: Story = {
 
 /** WAI-ARIA checkbox pattern: Tab focuses, Space toggles. */
 export const Keyboard: Story = {
+  name: "Keyboard",
+  tags: ['!dev'],
   play: async ({ canvas }) => {
     const box = canvas.getByRole('checkbox');
     await userEvent.tab();
@@ -126,6 +135,7 @@ export const Keyboard: Story = {
 
 /** Figma CheckboxGroup, Orientation=Vertical. */
 export const Group: Story = {
+  name: "Group",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <CheckboxGroup legend='Group label'>
@@ -138,6 +148,7 @@ export const Group: Story = {
 
 /** Figma CheckboxGroup Orientation. */
 export const GroupOrientation: Story = {
+  name: "Group orientation",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Stack>
@@ -155,6 +166,7 @@ export const GroupOrientation: Story = {
 
 /** Figma CheckboxGroup State, with the Figma message copy. */
 export const GroupStates: Story = {
+  name: "Group states",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Stack>
@@ -168,7 +180,8 @@ export const GroupStates: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: () => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>

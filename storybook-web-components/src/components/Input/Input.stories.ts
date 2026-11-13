@@ -31,6 +31,7 @@ export default meta;
 type Story = StoryObj<any>;
 
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvasElement }) => {
     const host = canvasElement.querySelector('ds-input')!;
     // The native "input" event is composed: it reaches listeners on the element.
@@ -47,6 +48,8 @@ export const Default: Story = {
 
 /** Figma State=Error: the input is marked invalid. */
 export const Invalid: Story = {
+  name: "Invalid",
+  tags: ['!dev'],
   args: { state: "error" },
   play: async ({ canvasElement }) => {
     await expect(within(shadowOf(canvasElement, 'ds-input') as unknown as HTMLElement).getByRole('textbox')).toHaveAttribute('aria-invalid', 'true');
@@ -55,6 +58,8 @@ export const Invalid: Story = {
 
 /** The clear button empties the input and keeps focus in it. */
 export const Clear: Story = {
+  name: "Clear",
+  tags: ['!dev'],
   args: { clearable: true },
   play: async ({ canvasElement }) => {
     const host = canvasElement.querySelector('ds-input')!;
@@ -70,6 +75,7 @@ export const Clear: Story = {
 
 /** Figma Type × State. Pseudo states are forced with data-force-state. */
 export const TypeAndState: Story = {
+  name: "Type and state",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Type by State", ["Outlined","Filled","Borderless","Inline"], ["Default","Hover","Focus","Disabled","Error"], (r, c) => {
@@ -99,6 +105,7 @@ export const TypeAndState: Story = {
 
 /** Figma Size. */
 export const Size: Story = {
+  name: "Size",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Sm", html`<ds-input appearance=${args.appearance} size="sm" state=${args.state} ?disabled=${args.disabled} ?required=${args.required} ?show-leading-icon=${args.showLeadingIcon} ?show-trailing-icon=${args.showTrailingIcon} ?clearable=${args.clearable} ?show-character-count=${args.showCharacterCount} label=${args.label} placeholder=${args.placeholder} helper-text=${args.helperText} character-count=${args.characterCount}></ds-input>`),
@@ -109,6 +116,7 @@ export const Size: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled('Default', html`<ds-input appearance=${args.appearance} size=${args.size} state=${args.state} ?disabled=${args.disabled} ?required=${args.required} ?show-leading-icon=${args.showLeadingIcon} ?show-trailing-icon=${args.showTrailingIcon} ?clearable=${args.clearable} ?show-character-count=${args.showCharacterCount} label=${args.label} placeholder=${args.placeholder} helper-text=${args.helperText} character-count=${args.characterCount}></ds-input>`),

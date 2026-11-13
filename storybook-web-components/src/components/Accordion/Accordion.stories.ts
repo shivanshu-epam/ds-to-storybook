@@ -13,7 +13,7 @@ const t = (n: number) => `${TITLE} ${n}`;
 const headers = (canvas: HTMLElement) => [...canvas.querySelectorAll('ds-accordion-item')].map((i) => within(i.shadowRoot as unknown as HTMLElement).getByRole('button'));
 
 const meta = {
-  title: 'Components/Accordion',
+  title: "Components/Accordion",
   component: 'ds-accordion',
   args: { variant: "bordered", expandMode: 'single', headingLevel: 3 },
   argTypes: {
@@ -32,6 +32,7 @@ type Story = StoryObj<any>;
 
 /** Three items with the Figma sample copy. Clicking a header opens its panel. */
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvasElement }) => {
     const [first] = headers(canvasElement);
     await expect(first).toHaveAttribute('aria-expanded', 'false');
@@ -42,6 +43,8 @@ export const Default: Story = {
 
 /** Single-expand: opening one item closes the other. */
 export const SingleExpand: Story = {
+  name: "Single expand",
+  tags: ['!dev'],
   args: { expandMode: 'single' },
   render: (args) => html`<ds-accordion variant=${args.variant} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="one" heading=${t(1)}>${BODY}</ds-accordion-item><ds-accordion-item value="two" heading=${t(2)}>${BODY}</ds-accordion-item></ds-accordion>`,
   play: async ({ canvasElement }) => {
@@ -55,6 +58,7 @@ export const SingleExpand: Story = {
 
 /** Multiple-expand: items open independently. */
 export const MultipleExpand: Story = {
+  name: "Multiple expand",
   args: { expandMode: 'multiple' },
   render: SingleExpand.render,
   play: async ({ canvasElement }) => {
@@ -68,6 +72,7 @@ export const MultipleExpand: Story = {
 
 /** Figma Style. */
 export const Styles: Story = {
+  name: "Styles",
   parameters: { controls: { disable: true } },
   render: (args) => stack([
     labelled("Bordered", html`<ds-accordion expand-mode=${args.expandMode} heading-level=${args.headingLevel} variant="bordered" .value=${['v0']}><ds-accordion-item value="v0" heading=${t(1)}>${BODY}</ds-accordion-item><ds-accordion-item value="w0" heading=${t(2)}>${BODY}</ds-accordion-item></ds-accordion>`),
@@ -77,6 +82,7 @@ export const Styles: Story = {
 
 /** Figma State axis. Pseudo states are forced with data-force-state. */
 export const States: Story = {
+  name: "States",
   parameters: { controls: { disable: true } },
   render: (args) => stack([
     labelled("Default", html`<ds-accordion variant=${args.variant} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="s0" heading=${t(1)}>${BODY}</ds-accordion-item></ds-accordion>`),
@@ -89,6 +95,8 @@ export const States: Story = {
 
 /** WAI-ARIA accordion keyboard: Enter and Space toggle; ArrowDown, ArrowUp, Home and End move focus. */
 export const Keyboard: Story = {
+  name: "Keyboard",
+  tags: ['!dev'],
   play: async ({ canvasElement }) => {
     const [a, b, c] = headers(canvasElement);
     a!.focus();

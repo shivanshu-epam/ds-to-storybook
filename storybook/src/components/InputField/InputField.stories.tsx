@@ -30,14 +30,13 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Keep the type import used even when no lookup tables are generated.
-export type { InputFieldProps };
 
 /** Figma default variant: State=Default. */
 export const Default: Story = {};
 
 /** Figma State. */
 export const State: Story = {
+  name: "State",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const values: Record<string, Partial<InputFieldProps>> = { 'Default': { state: 'default' }, 'Focused': { 'data-force-state': 'focus' }, 'Invalid': { state: 'invalid' }, 'Success': { state: 'success' }, 'Disabled': { disabled: true }, 'Read-only': { state: 'read-only' } };
@@ -53,6 +52,7 @@ export const State: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Row>
@@ -65,7 +65,8 @@ export const Options: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: (args) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>

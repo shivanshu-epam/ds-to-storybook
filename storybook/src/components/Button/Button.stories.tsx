@@ -11,7 +11,7 @@ const ROW_VALUES: Record<string, ButtonProps['variant']> = { 'Primary': 'primary
 const STATE_ARGS: Record<string, Partial<ButtonProps>> = { 'Default': {}, 'Hover': { 'data-force-state': 'hover' }, 'Pressed': { 'data-force-state': 'pressed' }, 'Focused': { 'data-force-state': 'focus' }, 'Disabled': { disabled: true } };
 
 const meta = {
-  title: 'Components/Button',
+  title: "Components/Button",
   component: Button,
   args: { variant: 'primary', size: 'sm', radius: 'default', children: 'Button', onClick: fn() },
   argTypes: {
@@ -35,6 +35,7 @@ type Story = StoryObj<typeof meta>;
 
 /** Figma default variant: Variant=Primary, Size=Sm, Radius=Default. */
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvas, args }) => {
     await userEvent.click(canvas.getByRole('button', { name: 'Button' }));
     await expect(args.onClick).toHaveBeenCalledTimes(1);
@@ -43,6 +44,7 @@ export const Default: Story = {
 
 /** Figma Style grid: Variant × State. Pseudo states are forced with data-force-state. */
 export const VariantsAndStates: Story = {
+  name: "Variants and states",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Matrix
@@ -56,6 +58,7 @@ export const VariantsAndStates: Story = {
 
 /** Figma Size axis. */
 export const Size: Story = {
+  name: "Size",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Row>
@@ -68,6 +71,7 @@ export const Size: Story = {
 
 /** Figma Radius axis. */
 export const Radius: Story = {
+  name: "Radius",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Row>
@@ -80,6 +84,7 @@ export const Radius: Story = {
 
 /** Figma boolean slots: Has leading icon, Has trailing icon. Icons are the Figma defaults. */
 export const WithIcons: Story = {
+  name: "With icons",
   parameters: { controls: { disable: true } },
   render: (args) => (
     <Row>
@@ -91,6 +96,8 @@ export const WithIcons: Story = {
 
 /** State=Disabled: clicks are ignored. */
 export const Disabled: Story = {
+  name: "Disabled",
+  tags: ['!dev'],
   args: { disabled: true },
   play: async ({ canvas, args }) => {
     const button = canvas.getByRole('button');
@@ -102,7 +109,8 @@ export const Disabled: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: () => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
@@ -652,6 +660,8 @@ export const FigmaVariants: Story = {
 
 /** WAI-ARIA button pattern: Tab focuses; Enter and Space activate. */
 export const Keyboard: Story = {
+  name: "Keyboard",
+  tags: ['!dev'],
   play: async ({ canvas, args }) => {
     const button = canvas.getByRole('button');
     await userEvent.tab();

@@ -139,6 +139,21 @@ It compares every Figma variant (Figma's own render) with the Storybook, pixel b
 
 **6.3 Read the report.** `GENERATION-REPORT.md` in the generated folder lists, per component, what came from Figma, what was assumed, and what Figma does not specify (for example the behaviour of components that have no behaviour template).
 
+**6.4 Fonts, sidebar and documentation** (optional settings under `generate` in `ds-sync.config.json`):
+
+```json
+"generate": {
+  "fonts": { "Acme Sans": { "package": "@acme/fonts", "imports": ["@acme/fonts/sans.css"] } },
+  "categories": { "Actions": ["Button", "Link"], "Forms": ["Checkbox", "Input"] },
+  "publicComponents": ["CheckboxBase"],
+  "internalComponents": ["ListItemRow"]
+}
+```
+
+- **Fonts.** Every font family the Figma file uses is loaded from its open-source npm package (Fontsource) when one exists, with the weights Figma uses. System fonts (SF Pro, Menlo) stay system fonts. A licensed font needs your own package under `fonts`. The "Fonts" table in `GENERATION-REPORT.md` lists how each family was loaded, and any it could not load; a family published under a slightly different name (for example "TASA Orbiter Display" loaded as "TASA Orbiter") is reported as a substitute to confirm.
+- **Sidebar.** Components go under `Components/<category>` when `categories` assigns one. Components Figma marks as building blocks (names starting with `_` or `.`, or ending in `Base`) are built and tested but not listed; their parent's docs page links to them under Composition. `publicComponents` and `internalComponents` override that.
+- **Docs pages** follow [the documentation standard](fidelity/STANDARD.md): Overview, Preview, Variants, Properties (grouped, with the Figma property each one comes from), States, Behaviour, Composition, Accessibility, Code and Design reference (Figma links, nested consistency, visual check). Test-only stories are kept out of the sidebar.
+
 ## 7. Keep it in sync (GitHub)
 
 1. Run `npx ds-sync init --ci` (or answer yes during init). It adds `.github/workflows/ds-sync.yml`.

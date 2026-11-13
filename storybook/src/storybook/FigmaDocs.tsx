@@ -11,8 +11,23 @@ interface Docs {
 
 const link = (fileKey: string, nodeId: string) => `https://www.figma.com/design/${fileKey}?node-id=${nodeId.replace(':', '-')}`;
 
+function Tab({ tab }: { tab: DocTab }) {
+  return (
+    <section>
+      <h2>{tab.title}</h2>
+      {tab.sections.map((s, i) => (
+        <div key={i}>
+          {s.heading && (s.level === 3 ? <h3>{s.heading}</h3> : <h4>{s.heading}</h4>)}
+          {s.paragraphs.map((p, k) => <p key={k} style={{ whiteSpace: 'pre-line' }}>{p}</p>)}
+        </div>
+      ))}
+    </section>
+  );
+}
+
 /** Renders the component's Figma documentation frames verbatim, plus the Figma-to-code mapping. */
-export function FigmaDocs({ docs }: { docs: Docs }) {
+export function FigmaDocs({ docs, only }: { docs: Docs; only?: 'tabs' }) {
+  if (only === 'tabs') return <div>{docs.tabs.map((tab) => <Tab key={tab.nodeId} tab={tab} />)}</div>;
   return (
     <div>
       {docs.notes && docs.notes.length > 0 && (
@@ -35,17 +50,7 @@ export function FigmaDocs({ docs }: { docs: Docs }) {
           <span key={s.nodeId}>{i > 0 ? ', ' : ''}<a href={link(docs.figma.fileKey, s.nodeId)}>{s.name}</a></span>
         ))}. Generated from the Figma version recorded in GENERATION-REPORT.md.
       </p>
-      {docs.tabs.map((tab) => (
-        <section key={tab.nodeId}>
-          <h2>{tab.title}</h2>
-          {tab.sections.map((s, i) => (
-            <div key={i}>
-              {s.heading && (s.level === 3 ? <h3>{s.heading}</h3> : <h4>{s.heading}</h4>)}
-              {s.paragraphs.map((p, k) => <p key={k} style={{ whiteSpace: 'pre-line' }}>{p}</p>)}
-            </div>
-          ))}
-        </section>
-      ))}
+      {docs.tabs.map((tab) => <Tab key={tab.nodeId} tab={tab} />)}
     </div>
   );
 }

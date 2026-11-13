@@ -23,6 +23,7 @@ export default meta;
 type Story = StoryObj<any>;
 
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvasElement }) => {
     const field = shadowOf(canvasElement, 'ds-radio-field');
     // The text is inside the <label>: clicking it selects the radio.
@@ -34,6 +35,7 @@ export const Default: Story = {
 
 /** Figma Position × State. Pseudo states are forced with data-force-state. */
 export const PositionAndState: Story = {
+  name: "Position and state",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Position by State", ["Left","Right"], ["Enabled","Focused","Invalid","Warning","Read-Only","Disabled","Skeleton"], (r, c) => {

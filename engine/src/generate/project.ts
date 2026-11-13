@@ -33,13 +33,15 @@ export interface ProjectOptions {
   colorTokens: { name: string; cssVar: string }[];
   /** Page background and text tokens, when the variables have them (so mode switches restyle the canvas). */
   page?: { background?: string; text?: string };
+  /** Font packages the Figma file needs (package -> version) and their CSS imports. */
+  fonts?: { deps: Record<string, string>; imports: string[] };
 }
 
 const j = (v: unknown) => JSON.stringify(v, null, 2) + '\n';
 
 export function projectFiles(o: ProjectOptions): GeneratedFile[] {
   const v = VERSIONS;
-  const deps = { react: v.react, 'react-dom': v['react-dom'], '@fontsource-variable/inter': v['@fontsource-variable/inter'] };
+  const deps = { ...{ react: v.react, 'react-dom': v['react-dom'], '@fontsource-variable/inter': v['@fontsource-variable/inter'] }, ...(o.fonts?.deps ?? {}) };
   const devDeps = Object.fromEntries(Object.entries(v).filter(([k]) => !(k in deps)));
   const toolbars = Object.entries(o.modes)
     .filter(([c]) => o.modeAttributes[c])
@@ -145,7 +147,7 @@ export default preview;
     {
       path: 'src/styles/base.css',
       content: `@import '@fontsource-variable/inter';
-@import '../tokens/tokens.css';
+${(o.fonts?.imports ?? []).map((i) => `@import '${i}';\n`).join('')}@import '../tokens/tokens.css';
 
 body {
   margin: 0;
@@ -259,8 +261,23 @@ interface Docs {
 
 const link = (fileKey: string, nodeId: string) => \`https://www.figma.com/design/\${fileKey}?node-id=\${nodeId.replace(':', '-')}\`;
 
+function Tab({ tab }: { tab: DocTab }) {
+  return (
+    <section>
+      <h2>{tab.title}</h2>
+      {tab.sections.map((s, i) => (
+        <div key={i}>
+          {s.heading && (s.level === 3 ? <h3>{s.heading}</h3> : <h4>{s.heading}</h4>)}
+          {s.paragraphs.map((p, k) => <p key={k} style={{ whiteSpace: 'pre-line' }}>{p}</p>)}
+        </div>
+      ))}
+    </section>
+  );
+}
+
 /** Renders the component's Figma documentation frames verbatim, plus the Figma-to-code mapping. */
-export function FigmaDocs({ docs }: { docs: Docs }) {
+export function FigmaDocs({ docs, only }: { docs: Docs; only?: 'tabs' }) {
+  if (only === 'tabs') return <div>{docs.tabs.map((tab) => <Tab key={tab.nodeId} tab={tab} />)}</div>;
   return (
     <div>
       {docs.notes && docs.notes.length > 0 && (
@@ -283,17 +300,7 @@ export function FigmaDocs({ docs }: { docs: Docs }) {
           <span key={s.nodeId}>{i > 0 ? ', ' : ''}<a href={link(docs.figma.fileKey, s.nodeId)}>{s.name}</a></span>
         ))}. Generated from the Figma version recorded in GENERATION-REPORT.md.
       </p>
-      {docs.tabs.map((tab) => (
-        <section key={tab.nodeId}>
-          <h2>{tab.title}</h2>
-          {tab.sections.map((s, i) => (
-            <div key={i}>
-              {s.heading && (s.level === 3 ? <h3>{s.heading}</h3> : <h4>{s.heading}</h4>)}
-              {s.paragraphs.map((p, k) => <p key={k} style={{ whiteSpace: 'pre-line' }}>{p}</p>)}
-            </div>
-          ))}
-        </section>
-      ))}
+      {docs.tabs.map((tab) => <Tab key={tab.nodeId} tab={tab} />)}
     </div>
   );
 }

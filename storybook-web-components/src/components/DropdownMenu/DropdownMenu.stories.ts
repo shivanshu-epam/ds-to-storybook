@@ -31,6 +31,7 @@ export const Default: Story = {};
 
 /** Figma State. */
 export const State: Story = {
+  name: "State",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Default", html`<ds-dropdown-menu state="default" ?show-search=${args.showSearch} ?grouped=${args.grouped}></ds-dropdown-menu>`),
@@ -41,6 +42,7 @@ export const State: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled('Default', html`<ds-dropdown-menu state=${args.state} ?show-search=${args.showSearch} ?grouped=${args.grouped}></ds-dropdown-menu>`),

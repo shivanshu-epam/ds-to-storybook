@@ -32,6 +32,7 @@ export const Default: Story = {};
 
 /** Figma Type × State. Pseudo states are forced with data-force-state. */
 export const TypeAndState: Story = {
+  name: "Type and state",
   parameters: { controls: { disable: true } },
   render: (args) =>
     matrix("Type by State", ["Link","Current","Collapse"], ["Default","Hover","Focused","Disabled"], (r, c) => {
@@ -53,6 +54,7 @@ export const TypeAndState: Story = {
 
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
+  name: "Optional parts",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled('Default', html`<ds-breadcrumb-item type=${args.type} ?disabled=${args.disabled} ?has-icon=${args.hasIcon} label=${args.label}></ds-breadcrumb-item>`),

@@ -8,7 +8,7 @@ import { docTabs, kebab, leadSentence, pascal } from '../templates/common.ts';
 import type { AccordionCore } from '../templates/accordion.ts';
 import type { ActionCore } from '../templates/action.ts';
 import type { CheckboxCore } from '../templates/checkbox.ts';
-import { axisControl, axisData, axisDefault, axisType, isIcon, lookupExpr, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
+import { axisControl, axisData, axisDefault, axisType, isIcon, lookupExpr, SHAPES, type GenericCore, type InstanceProp, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRComponentSet, IRPart } from '../../ir/types.ts';
 import { wcRadio } from './radio.ts';
 import { wcInput } from './input.ts';
@@ -39,6 +39,10 @@ export const wcText = (l: LayerInfo, plain: string) => (l.textByAxis ? lookupExp
 /** Properties every HTMLElement already has: a generated prop with one of these names gets a "Text"/"Value" suffix. */
 const ELEMENT_RESERVED = new Set(['title', 'hidden', 'id', 'slot', 'style', 'role', 'dir', 'lang', 'draggable', 'inert', 'popover', 'translate', 'spellcheck', 'tabIndex', 'className', 'children', 'part', 'nonce', 'autofocus', 'accessKey', 'enterKeyHint', 'inputMode', 'contentEditable']);
 export const wcProp = (prop: string) => (ELEMENT_RESERVED.has(prop) ? `${prop}Value` : prop);
+/** A parent prop as Lit code. */
+export const wcRef = (prop: string) => (prop === '$checked' ? 'this.checked' : `this.${wcProp(prop)}`);
+/** A nested instance prop value as Lit code: a literal, or the parent's lookup or pass-through. */
+export const wcVal = (x: InstanceProp) => (x.kind === 'expr' ? x.expr(wcRef) : JSON.stringify(x.value));
 
 // ---------------------------------------------------------------------------------------------
 // Docs (MDX). Figma text goes in as JSX string expressions, so no escaping problems.
@@ -110,7 +114,13 @@ export const header = (setNames: string, template: string) =>
 // ---------------------------------------------------------------------------------------------
 // Generic template -> Lit element
 
-export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore, o: WcOptions, instance: (part: IRPart) => InstanceRef | undefined, tagOf: (component: string) => string): WcResult {
+export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore, o: WcOptions, placed: (part: IRPart) => InstanceRef | undefined, tagOf: (component: string) => string): WcResult {
+  // Nested instances get the props the parent computes for them (constants, lookups, pass-throughs).
+  const instance = (part: IRPart): InstanceRef | undefined => {
+    const r = placed(part);
+    const m = core.nestedProps?.get(part);
+    return r && m ? { ...r, props: m } : r;
+  };
   if (core.radio) return wcRadio(ctx, name, core, o, instance, tagOf);
   if (core.input) return wcInput(ctx, name, core, o, instance, tagOf);
   if (core.dialog) return wcDialog(ctx, name, core, o, instance, tagOf);
@@ -149,7 +159,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
           .map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}`
             : x.prop === 'aria-label' ? (nested.kind === 'switch' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`)
             : x.prop === 'defaultChecked' ? '?checked=${true}'
-            : `.${wcProp(x.prop)}=\${${js(x.value)}}`))
+            : `.${wcProp(x.prop)}=\${${wcVal(x)}}`))
           .join(' ');
         el = `<span ${c}><${ntag}${props ? ' ' + props : ''}>${nested.text !== undefined ? `\${${wcText(l, js(nested.text))}}` : ''}</${ntag}></span>`;
         // Repeated instances: one element each (the React output does the same).
@@ -159,7 +169,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
         for (const copy of l.copies ?? []) {
           const n = instance(copy);
           if (!n) continue;
-          const cp = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? (n.kind === 'switch' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`) : x.prop === 'defaultChecked' ? '?checked=${true}' : `.${wcProp(x.prop)}=\${${js(x.value)}}`)).join(' ');
+          const cp = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? (n.kind === 'switch' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`) : x.prop === 'defaultChecked' ? '?checked=${true}' : `.${wcProp(x.prop)}=\${${wcVal(x)}}`)).join(' ');
           const one = `<span ${c}><${ntag}${cp ? ' ' + cp : ''}>${n.text !== undefined ? `\${${wcText(l, js(n.text))}}` : ''}</${ntag}></span>`;
           const b = boolFor(copy.refs?.visible);
           el += `\n${indent}${b ? `\${this.${b} ? html\`${one}\` : nothing}` : one}`;
@@ -182,8 +192,9 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
   };
   const body = children('').map((l) => render(l, '        ')).join('\n');
 
+  const exposed = (core.exposed ?? []).map((e) => ({ ...e, prop: wcProp(e.prop) }));
   const figmaOf = (prop: string) =>
-    [...enumAxes.map((a) => [a.prop, a.figma]), ...booleans.map((b) => [b.prop, b.p.name]), ...texts.map((t) => [t.prop, t.p.name]), ['disabled', 'State=Disabled']].find(([x]) => x === prop)?.[1] ?? prop;
+    [...enumAxes.map((a) => [a.prop, a.figma]), ...booleans.map((b) => [b.prop, b.p.name]), ...texts.map((t) => [t.prop, t.p.name]), ...exposed.map((e) => [e.prop, `${e.exposed!.name} › ${e.figma}`]), ['disabled', 'State=Disabled']].find(([x]) => x === prop)?.[1] ?? prop;
   const props = [
     ...(sw ? [
       { prop: 'checked', type: 'boolean', init: 'false', decl: '{ type: Boolean, reflect: true }' },
@@ -195,6 +206,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     ...(hasDisabled ? [{ prop: 'disabled', type: 'boolean', init: 'false', decl: '{ type: Boolean, reflect: true }' }] : []),
     ...booleans.map((b) => ({ prop: b.prop, type: 'boolean', init: String(String(b.p.default) === 'true'), decl: `{ type: Boolean, attribute: ${js(attrFor(b.prop))} }` })),
     ...texts.map((t) => ({ prop: t.prop, type: 'string', init: js(String(t.p.default)), decl: `{ type: String, attribute: ${js(attrFor(t.prop))} }` })),
+    ...exposed.map((e) => ({ prop: e.prop, type: e.axis ? axisType(e.axis, js) : e.type, init: (e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default)), decl: `{ type: ${e.type === 'boolean' ? 'Boolean' : 'String'}, attribute: ${js(attrFor(e.prop))} }` })),
   ];
   const dataAttrs = [
     ...(sw ? [`data-${sw.axis.attr}=\${this.checked ? ${js(sw.on)} : ${js(sw.off)}}`] : []),
@@ -267,8 +279,9 @@ declare global {
     ...(hasDisabled ? [['disabled', 'args.disabled'] as [string, Bind]] : []),
     ...booleans.map((b) => [b.prop, `args.${b.prop}`] as [string, Bind]),
     ...texts.map((t) => [t.prop, `args.${t.prop}`] as [string, Bind]),
+    ...exposed.map((e) => [e.prop, `args.${e.prop}`] as [string, Bind]),
   ]);
-  const isBool = (prop: string) => prop === 'disabled' || prop === 'checked' || booleans.some((b) => b.prop === prop) || enumAxes.some((a) => a.boolean && a.prop === prop);
+  const isBool = (prop: string) => prop === 'disabled' || prop === 'checked' || booleans.some((b) => b.prop === prop) || enumAxes.some((a) => a.boolean && a.prop === prop) || exposed.some((e) => e.type === 'boolean' && e.prop === prop);
   const el = (over: Record<string, Bind> = {}) => {
     const m = baseBinds();
     let force: string | undefined;
@@ -395,7 +408,7 @@ ${layoutImports.length ? `import { ${layoutImports.join(', ')} } from '../../sto
 const meta = {
   title: ${js(core.title)},
   component: '${tag}',
-  args: { ${[...(sw ? ['checked: false', `accessibleLabel: ${js(sw.label)}`] : []), ...enumAxes.map((a) => `${a.prop}: ${axisDefault(a, js)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`)].join(', ')} },
+  args: { ${[...(sw ? ['checked: false', `accessibleLabel: ${js(sw.label)}`] : []), ...enumAxes.map((a) => `${a.prop}: ${axisDefault(a, js)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`), ...exposed.map((e) => `${e.prop}: ${(e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default))}`)].join(', ')} },
   argTypes: {
 ${[
     ...(sw ? [`    checked: { control: 'boolean', description: ${js(`On or off. Figma: ${sw.axis.figma}`)} },`, `    accessibleLabel: { control: 'text', description: 'Accessible name (Figma has no label)' },`] : []),
@@ -403,6 +416,7 @@ ${[
     ...(hasDisabled ? [`    disabled: { control: 'boolean', description: 'Figma: State=Disabled' },`] : []),
     ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${js(`Figma: ${b.p.name}`)} },`),
     ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${js(`Figma: ${t.p.name}`)} },`),
+    ...exposed.map((e) => `    ${e.prop}: ${e.axis ? axisControl({ ...e.axis, figma: `${e.exposed!.name} › ${e.axis.figma}` }, js) : `{ control: '${e.type === 'boolean' ? 'boolean' : 'text'}', description: ${js(`Figma: ${e.exposed!.name} › ${e.figma}`)} }`},`),
   ].join('\n')}
   },
   render: (args) => ${el()},

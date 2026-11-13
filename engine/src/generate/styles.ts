@@ -62,6 +62,10 @@ export interface RoleDef {
   hint?: string[];
   /** Box around a nested generated component: only its size and position (the component paints itself). */
   layoutOnly?: boolean;
+  /** A shape (boolean operation) wrapping icons: Figma paints the icons with the shape's fill, so it sets color, not a background. */
+  shapeGroup?: boolean;
+  /** An icon inside such a shape: it takes the shape's colour. */
+  inheritColor?: boolean;
   /** Position among its siblings in a variant, when Figma reorders them between variants (CSS order). */
   order?: (v: IRVariant) => number | undefined;
 }
@@ -117,11 +121,32 @@ function nodeDeclarations(role: RoleDef, found: Found, variant: IRVariant, r: To
     if (s.textAlign) out['text-align'] = ({ CENTER: 'center', RIGHT: 'right', JUSTIFIED: 'justify' } as Record<string, string>)[s.textAlign] ?? 'left';
   } else if (type === 'INSTANCE' && found.part?.instanceOf && (found.part.icon || /^icons?\//i.test(found.part.instanceOf))) {
     Object.assign(out, declarations({ ...role, kind: 'icon' }, found, variant, r));
+    if (role.inheritColor) delete out.color;
   } else if (role.layoutOnly) {
     // The nested component draws its own fill, border, radius and padding.
   } else {
     Object.assign(out, declarations({ ...role, kind: 'box' }, found, variant, r));
     if (type === 'ELLIPSE') out['border-radius'] = '50%';
+    const shape = found.part?.shape;
+    if (role.shapeGroup) {
+      // Boolean operation around icons: the result is the icons, filled with the shape's paint.
+      const paint = out.background && out.background !== 'transparent' ? out.background : undefined;
+      out.background = 'transparent';
+      out['box-shadow'] = 'none';
+      out.color = paint ?? 'currentColor';
+    } else if (shape) {
+      // The real outline from Figma. One colour: a mask over the paint (so variant colours still apply). Several: the SVG itself.
+      const stroke = color(r, s.strokes[0], ['border', 'icon', 'fg'], words(variant));
+      const paint = out.background && out.background !== 'transparent' ? out.background : stroke;
+      const image = `url("${shape.uri}") center / 100% 100% no-repeat`;
+      if (shape.mono) {
+        out.background = paint ?? 'currentColor';
+        out['-webkit-mask'] = image;
+        out.mask = image;
+      } else out.background = image;
+      out['box-shadow'] = 'none';
+      delete out['border-radius'];
+    }
     if (s.layoutMode) {
       if (s.primaryAlign) out['justify-content'] = JUSTIFY[s.primaryAlign] ?? 'flex-start';
       if (s.counterAlign) out['align-items'] = ALIGN[s.counterAlign] ?? 'flex-start';

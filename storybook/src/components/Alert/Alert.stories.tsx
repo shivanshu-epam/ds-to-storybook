@@ -6,7 +6,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { Alert, type AlertProps } from './Alert';
 
 const meta = {
-  title: 'Components/Alert',
+  title: "Components/Alert",
   component: Alert,
   argTypes: {
     sentiment: { control: 'inline-radio', options: ['danger', 'neutral', 'info', 'success', 'warning'], description: 'Figma: Sentiment' },
@@ -24,14 +24,13 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Keep the type import used even when no lookup tables are generated.
-export type { AlertProps };
 
 /** Figma default variant: Sentiment=Neutral, Size=Sm, State=Default. */
 export const Default: Story = {};
 
 /** Figma Sentiment × Size. Pseudo states are forced with data-force-state. */
 export const SentimentAndSize: Story = {
+  name: "Sentiment and size",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const rows: Record<string, Partial<AlertProps>> = { 'Danger': { sentiment: 'danger' }, 'Neutral': { sentiment: 'neutral' }, 'Info': { sentiment: 'info' }, 'Success': { sentiment: 'success' }, 'Warning': { sentiment: 'warning' } };
@@ -49,6 +48,7 @@ export const SentimentAndSize: Story = {
 
 /** Figma State. */
 export const State: Story = {
+  name: "State",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const values: Record<string, Partial<AlertProps>> = { 'With Action + Close': { state: 'with-action-close' }, 'Default': { state: 'default' }, 'With Action': { state: 'with-action' }, 'With Close': { state: 'with-close' } };
@@ -64,7 +64,8 @@ export const State: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: (args) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>

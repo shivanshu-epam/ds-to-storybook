@@ -228,6 +228,8 @@ export function switchAxis(axes: AxisInfo[]): { axis: AxisInfo; on: string; off:
   return undefined;
 }
 
+export type NestedCheck = NonNullable<ComponentReport['nested']>;
+
 export interface GenericCore {
   set: IRComponentSet;
   css: string;
@@ -256,6 +258,11 @@ export interface GenericCore {
   dialog?: DialogLayers;
   /** The Figma variants the "Figma Variants" story renders, for ds-sync visual. */
   visual?: VisualVariant[];
+  /** Props each placed nested instance gets (keyed by the layer's IRPart): constants, lookups and pass-throughs. */
+  nestedProps?: Map<IRPart, InstanceProp[]>;
+  /** Props taken from exposed nested instances. */
+  exposed?: ChildProp[];
+  nestedCheck?: NestedCheck;
   /** Layer roles the radio packs render specially. */
   radioLayers?: { control?: string; row?: string; label?: string; items?: string; groupLabel?: string; controlComponent?: string; fieldComponent?: string; forwardStates?: string[] };
 }
@@ -273,7 +280,9 @@ export type InstanceProp =
   | { prop: string; kind: 'string'; value: string }
   | { prop: string; kind: 'boolean'; value: boolean }
   | { prop: string; kind: 'icon'; value: string }
-  | { prop: string; kind: 'force-state'; value: string };
+  | { prop: string; kind: 'force-state'; value: string }
+  /** A value the parent computes: ref turns a parent prop name into code (React: the variable; Lit: this.prop). */
+  | { prop: string; kind: 'expr'; value: string; expr: (ref: (prop: string) => string) => string; from?: string[] };
 
 export interface InstanceRef {
   component: string;
@@ -306,6 +315,7 @@ export function reactAttrs(props: InstanceProp[], text?: string): string[] {
     p.kind === 'string' ? `${p.prop}=${JSON.stringify(p.value)}`
       : p.kind === 'boolean' ? (p.value ? p.prop : `${p.prop}={false}`)
       : p.kind === 'icon' ? `${p.prop}={<Icon name="${p.value}" />}`
+      : p.kind === 'expr' ? `${p.prop}={${p.expr((x) => (x === '$checked' ? 'on' : x))}}`
       : `data-force-state="${p.value}"`,
   );
   if (text !== undefined) attrs.push(`children=${JSON.stringify(text)}`);
@@ -320,7 +330,7 @@ export function humanize(layer: string): string {
 }
 
 /** JSX attributes for one placed instance: its variant, plus the boolean and text overrides set on it in Figma. */
-export function instanceRef(entry: RegistryEntry, part: IRPart, icons: Map<string, IconAsset>): InstanceRef {
+export function instanceRef(entry: RegistryEntry, part: IRPart, icons: Map<string, IconAsset>, lookup?: EntryLookup): InstanceRef {
   const plan = propPlan(entry.set);
   const variant = entry.set.variants.find((v) => v.nodeId === part.instanceComponentId);
   const sw = entry.kind === 'switch' || entry.kind === 'radio' ? switchAxis(plan.axes) : undefined;
@@ -366,8 +376,110 @@ export function instanceRef(entry: RegistryEntry, part: IRPart, icons: Map<strin
       const v = over[t.p.name];
       if (typeof v === 'string' && v !== String(t.p.default)) props.push({ prop: t.prop, kind: 'string', value: v });
     }
+    // Configuration of the component's exposed nested instances (Accordion -> item -> Leading=Icon).
+    for (const { cp, read } of placedApi(entry, lookup).filter((x) => x.cp.exposed)) {
+      const v = read(part);
+      if (v === cp.default) continue;
+      props.push(typeof v === 'boolean' ? { prop: cp.prop, kind: 'boolean', value: v } : { prop: cp.prop, kind: 'string', value: v });
+    }
   }
   return { component: entry.component, importPath: entry.importPath, kind: entry.kind, attrs: reactAttrs(props, text), props, ...(text !== undefined ? { text } : {}), usesIcon, notes };
+}
+
+// ---------------------------------------------------------------------------------------------
+// Nested components: the API a placed instance has (its own props and its exposed nested props),
+// and the values Figma gives them in each variant of the parent.
+
+/** One prop of a nested generic component, with how to read its value from a placed Figma instance. */
+export interface ChildProp {
+  /** Prop name on the nested component. */
+  prop: string;
+  /** Figma name: the variant axis or the property. */
+  figma: string;
+  type: 'string' | 'boolean';
+  /** TypeScript type (React quoting). */
+  tsType: (quote: (s: string) => string) => string;
+  /** Default value on the nested component. */
+  default: string | boolean;
+  axis?: AxisInfo;
+  /** Set for a prop that comes from one of the component's exposed nested instances. */
+  exposed?: { path: string; name: string; entry: RegistryEntry; child: ChildProp };
+}
+
+export function defaultVariantOf(set: IRComponentSet): IRVariant | undefined {
+  const defaults = Object.fromEntries(set.properties.filter((p) => p.type === 'VARIANT').map((p) => [p.name, String(p.default)]));
+  return set.variants.find((v) => Object.entries(defaults).every(([k, x]) => v.values[k] === x)) ?? set.variants[0];
+}
+
+/** The component's own configurable props: variant axes that are not states, booleans and texts. */
+export function childApi(entry: RegistryEntry): ChildProp[] {
+  if (entry.kind !== 'generic') return [];
+  const plan = propPlan(entry.set);
+  return [
+    ...plan.axes.filter((a) => a.kind === 'variant' && a.options.length > 1).map<ChildProp>((a) => ({ prop: a.prop, figma: a.figma, type: a.boolean ? 'boolean' : 'string', tsType: (qq) => axisType(a, qq), default: a.boolean ? a.defaultValue === 'true' : a.defaultValue, axis: a })),
+    ...plan.booleans.map<ChildProp>((b) => ({ prop: b.prop, figma: b.p.name, type: 'boolean', tsType: () => 'boolean', default: String(b.p.default) === 'true' })),
+    ...plan.texts.map<ChildProp>((t) => ({ prop: t.prop, figma: t.p.name, type: 'string', tsType: () => 'ReactNode', default: String(t.p.default) })),
+  ];
+}
+
+/** A prop's value on one Figma instance (its variant and its property overrides). */
+export function childValue(entry: RegistryEntry, cp: ChildProp, componentId: string | undefined, props: Record<string, string | boolean> | undefined): string | boolean {
+  if (cp.axis) {
+    const v = entry.set.variants.find((x) => x.nodeId === componentId);
+    const value = cp.axis.values.find((x) => x.figma === v?.values[cp.axis!.figma])?.value ?? cp.axis.defaultValue;
+    return cp.axis.boolean ? value === 'true' : value;
+  }
+  const raw = props?.[cp.figma];
+  if (cp.type === 'boolean') return typeof raw === 'boolean' ? raw : cp.default;
+  return typeof raw === 'string' ? raw : cp.default;
+}
+
+export type EntryLookup = (componentId: string) => RegistryEntry | undefined;
+
+/**
+ * Props a component takes from its exposed nested instances (Figma "expose nested instance"):
+ * the nested component's own props, named as on the nested component, or prefixed with the layer name on a clash.
+ * Defaults are the values the component's default variant gives them.
+ */
+export function exposedApi(set: IRComponentSet, lookup: EntryLookup | undefined, taken: Iterable<string> = []): ChildProp[] {
+  if (!lookup) return [];
+  const plan = propPlan(set);
+  const used = new Set<string>([...plan.axes.map((a) => a.prop), ...plan.booleans.map((b) => b.prop), ...plan.texts.map((t) => t.prop), ...taken, ...RESERVED, 'disabled', 'children', 'className', 'style']);
+  const dv = defaultVariantOf(set);
+  const out: ChildProp[] = [];
+  const seen = new Set<string>();
+  for (const v of dv ? [dv, ...set.variants.filter((x) => x !== dv)] : set.variants) {
+    for (const p of v.parts) {
+      if (!p.exposed || !p.instanceComponentId || seen.has(p.path) || isIcon(p)) continue;
+      const entry = lookup(p.instanceComponentId);
+      if (!entry || entry.set === set) continue;
+      seen.add(p.path);
+      const own = dv?.parts.find((x) => x.path === p.path && x.type === 'INSTANCE') ?? p;
+      for (const cp of childApi(entry)) {
+        let prop = cp.prop;
+        if (used.has(prop)) prop = camel(`${p.name.replace(/^_+/, '')} ${cp.prop.replace(/([a-z])([A-Z])/g, '$1 $2')}`);
+        for (let i = 2; used.has(prop); i++) prop = `${prop}${i}`;
+        used.add(prop);
+        out.push({ ...cp, prop, default: childValue(entry, cp, own.instanceComponentId, own.instanceProps), exposed: { path: p.path, name: p.name, entry, child: cp } });
+      }
+    }
+  }
+  return out;
+}
+
+/** Every prop a placed instance of entry can be given, and how to read each one from the placed IRPart. */
+export function placedApi(entry: RegistryEntry, lookup: EntryLookup | undefined): { cp: ChildProp; read: (part: IRPart) => string | boolean }[] {
+  const own = childApi(entry).map((cp) => ({ cp, read: (part: IRPart) => childValue(entry, cp, part.instanceComponentId, part.instanceProps) }));
+  const exposed = exposedApi(entry.set, lookup).map((cp) => ({
+    cp,
+    read: (part: IRPart) => {
+      const e = cp.exposed!;
+      const list = part.exposedInstances ?? [];
+      const x = list.find((i) => i.path === e.path) ?? list.find((i) => i.name === e.name);
+      return x ? childValue(e.entry, e.child, x.componentId, x.props) : cp.default;
+    },
+  }));
+  return [...own, ...exposed];
 }
 
 /** A value (text or icon) that variant properties decide: an optional overriding prop value, then a table on one prop. */
@@ -385,6 +497,14 @@ export function lookupExpr(l: VariantLookup, ref: (prop: string) => string, type
   const r = (p: string) => (p === '$checked' && l.checked ? `(${ref(p)} ? ${JSON.stringify(l.checked.on)} : ${JSON.stringify(l.checked.off)})` : ref(p));
   const table = `((${JSON.stringify(l.values)} as Record<string, ${type}>)[String(${r(l.prop)})] ?? ${JSON.stringify(l.fallback)})`;
   return l.override ? `(String(${r(l.override.prop)}) === ${JSON.stringify(l.override.value)} ? ${JSON.stringify(l.override.result)} : ${table})` : table;
+}
+
+/** Like lookupExpr, for tables whose values and fallback are code literals (JSON): booleans, strings. */
+export function lookupValueExpr(l: VariantLookup, ref: (prop: string) => string, type: string): string {
+  const r = (p: string) => (p === '$checked' && l.checked ? `(${ref(p)} ? ${JSON.stringify(l.checked.on)} : ${JSON.stringify(l.checked.off)})` : ref(p));
+  const entries = Object.entries(l.values);
+  const table = entries.length ? `(({ ${entries.map(([k, v]) => `${JSON.stringify(k)}: ${v}`).join(', ')} } as Record<string, ${type}>)[String(${r(l.prop)})] ?? ${l.fallback})` : l.fallback;
+  return l.override ? `(String(${r(l.override.prop)}) === ${JSON.stringify(l.override.value)} ? ${l.override.result} : ${table})` : table;
 }
 
 export interface LayerInfo {
@@ -436,7 +556,7 @@ export function layers(set: IRComponentSet, defaultVariant: IRVariant): LayerInf
 export const isIcon = (p: IRPart) => p.type === 'INSTANCE' && Boolean(p.icon || (p.instanceOf && /^icons?\//i.test(p.instanceOf)));
 export const SHAPES = new Set(['VECTOR', 'BOOLEAN_OPERATION', 'STAR', 'LINE', 'POLYGON', 'REGULAR_POLYGON']);
 
-export function genericTemplate(ctx: TemplateContext, name: string, opts: { title: string; instance: (part: IRPart) => InstanceRef | undefined; behavior?: Behavior; related?: { control?: { name: string; set: IRComponentSet } } }): TemplateResult {
+export function genericTemplate(ctx: TemplateContext, name: string, opts: { title: string; instance: (part: IRPart) => InstanceRef | undefined; lookup?: EntryLookup; behavior?: Behavior; related?: { control?: { name: string; set: IRComponentSet } } }): TemplateResult {
   const set = ctx.sets.main;
   if (!set) throw new Error(`${name}: the generic template needs a "main" component set`);
   const dir = `src/components/${name}`;
@@ -544,6 +664,80 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
     const found = lookupBy(named, fallback);
     if (found) l.iconByAxis = found;
   }
+  // Nested components. Exposed nested instances (Figma "expose nested instance") make the nested component's
+  // props part of this component's API; every other nested prop gets the value Figma gives it in each variant
+  // of this component: a constant, a lookup on this component's props, or a pass-through of an exposed prop.
+  const packed = opts.behavior === 'radio' || opts.behavior === 'radio-field' || opts.behavior === 'radio-group' || opts.behavior === 'input' || opts.behavior === 'dialog';
+  const exposedProps = packed ? [] : exposedApi(set, opts.lookup, [...propAxes.map((a) => a.prop), ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop)]);
+  if (packed && exposedApi(set, opts.lookup).length) gaps.push('Exposed nested instance properties are not part of the API for this behaviour template yet.');
+  const valueOfAxis = (a: AxisInfo, v: IRVariant) => a.values.find((x) => x.figma === v.values[a.figma])?.value;
+  // Variants in their base state: pseudo states and disabled reach nested components through CSS and data attributes.
+  const baseVariants = set.variants.filter((v) => axes.every((a) => a.kind !== 'state' || (a.values.find((x) => x.figma === v.values[a.figma])?.role ?? 'base') === 'base'));
+  const lookupValue = (lk: VariantLookup, v: IRVariant): string => {
+    const val = (p: string) => { if (p === '$checked') return sw ? valueOfAxis(sw.axis, v) : undefined; const a = propAxes.find((x) => x.prop === p); return a ? valueOfAxis(a, v) : undefined; };
+    if (lk.override && String(val(lk.override.prop)) === lk.override.value) return lk.override.result;
+    return lk.values[String(val(lk.prop))] ?? lk.fallback;
+  };
+  const nestedProps = new Map<IRPart, InstanceProp[]>();
+  const nestedCheck: NestedCheck = { layers: 0, checked: 0, matched: 0, stateVariants: set.variants.length - baseVariants.length, mismatches: [] };
+  for (const l of all) {
+    const p0 = l.part;
+    if (p0.type !== 'INSTANCE' || isIcon(p0) || !p0.instanceComponentId || !opts.lookup) continue;
+    const entry = opts.lookup(p0.instanceComponentId);
+    if (!entry || entry.kind !== 'generic' || entry.set === set) continue;
+    const api = placedApi(entry, opts.lookup);
+    if (!api.length) continue;
+    nestedCheck.layers++;
+    const placed = [p0, ...(l.copies ?? [])];
+    const inVariant = (v: IRVariant) => {
+      const xs = v.parts.filter((x) => x.path === l.path && x.type === 'INSTANCE');
+      return l.copies?.length ? xs.filter((x) => !x.hidden || x.refs?.visible) : xs;
+    };
+    const names = new Set(api.map((x) => x.cp.prop));
+    placed.forEach((part, k) => {
+      const ref = opts.instance(part);
+      if (!ref) return;
+      const props: InstanceProp[] = ref.props.filter((x) => !names.has(x.prop));
+      for (const { cp, read } of api) {
+        const pass = p0.exposed && !cp.exposed ? exposedProps.find((e) => e.exposed!.path === l.path && e.exposed!.child.prop === cp.prop) : undefined;
+        if (pass) {
+          props.push({ prop: cp.prop, kind: 'expr', value: pass.prop, expr: (r) => r(pass.prop), from: [pass.prop] });
+          continue;
+        }
+        const rows = baseVariants.flatMap((v) => { const x = inVariant(v)[k]; return x ? [[v, JSON.stringify(read(x))] as const] : []; });
+        const own = read(part);
+        const fallback = JSON.stringify(own);
+        const lk = new Set(rows.map(([, t]) => t)).size > 1 ? lookupBy(rows, fallback) : undefined;
+        // A table that maps each value of one of this component's props to the same value is a pass-through.
+        const same = lk && !lk.override ? propAxes.find((a) => a.prop === lk.prop) : undefined;
+        const identity = Boolean(same && !same.boolean && cp.type === 'string' && same.options.every((o) => (lk!.values[o] ?? lk!.fallback) === JSON.stringify(o) && (!cp.axis || cp.axis.options.includes(o))));
+        if (lk && identity) {
+          props.push({ prop: cp.prop, kind: 'expr', value: fallback, expr: (r) => r(lk.prop), from: [lk.prop] });
+        } else if (lk) {
+          const type = cp.axis ? cp.tsType(q) : cp.type;
+          props.push({ prop: cp.prop, kind: 'expr', value: fallback, expr: (r) => lookupValueExpr(lk, r, type), from: [lk.prop, ...(lk.override ? [lk.override.prop] : [])] });
+        } else if (own !== cp.default) {
+          props.push(typeof own === 'boolean' ? { prop: cp.prop, kind: 'boolean', value: own } : { prop: cp.prop, kind: 'string', value: own });
+        }
+        for (const [v, t] of rows) {
+          const got = lk ? lookupValue(lk, v) : fallback;
+          nestedCheck.checked++;
+          if (got === t) nestedCheck.matched++;
+          else nestedCheck.mismatches.push({ layer: l.path, ...(placed.length > 1 ? { copy: k + 1 } : {}), variant: v.name, prop: cp.prop, code: got, figma: t });
+        }
+      }
+      nestedProps.set(part, props);
+    });
+  }
+  if (nestedCheck.mismatches.length) {
+    gaps.push(`Nested consistency: ${nestedCheck.matched}/${nestedCheck.checked} nested prop values match Figma; ${nestedCheck.mismatches.length} cannot be expressed with this component's props (first: ${nestedCheck.mismatches.slice(0, 3).map((m) => `${m.layer} in ${m.variant}: ${m.prop} ${m.figma}`).join('; ')}).`);
+  }
+  /** A placed instance with the props this component gives it. */
+  const inst = (part: IRPart): InstanceRef | undefined => {
+    const r = opts.instance(part);
+    const m = nestedProps.get(part);
+    return r && m ? { ...r, props: m, attrs: reactAttrs(m, r.text) } : r;
+  };
   /** JSX expression for a layer's text: the Figma text, or a lookup when a variant property changes it. */
   const reactRef = (p: string) => (p === '$checked' ? 'on' : p);
   const textExpr = (l: LayerInfo, plain: string) => (l.textByAxis ? lookupExpr(l.textByAxis, reactRef, 'string') : plain);
@@ -566,13 +760,15 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
     { role: 'root', kind: 'node', display: rootDisplay, find: (v): Found => ({ style: v.style }) },
     ...all.map<RoleDef>((l) => {
       const bound = Boolean(l.part.refs?.visible && boolFor(l.part.refs.visible));
-      const nestedComponent = l.part.type === 'INSTANCE' && !isIcon(l.part) && Boolean(l.part.instanceComponentId && opts.instance(l.part));
+      const nestedComponent = l.part.type === 'INSTANCE' && !isIcon(l.part) && Boolean(l.part.instanceComponentId && inst(l.part));
       const display = nestedComponent || l.part.style.layoutMode ? 'flex' : isIcon(l.part) ? 'inline-flex' : l.part.type === 'TEXT' ? 'block' : 'block';
       return {
         role: l.role,
         kind: 'node',
         display,
         ...(nestedComponent ? { layoutOnly: true } : {}),
+        ...(SHAPES.has(l.part.type) && all.some((c) => c.parent === l.path && c.part.type === 'INSTANCE') ? { shapeGroup: true } : {}),
+        ...(isIcon(l.part) && SHAPES.has(byPath.get(l.parent)?.part.type ?? '') ? { inheritColor: true } : {}),
         ...(reordered.has(l.parent) ? { order: (v: IRVariant) => { const i = siblingOrder(v, l.parent).indexOf(l.path); return i < 0 ? undefined : i; } } : {}),
         ...(l.parent ? { parent: byPath.get(l.parent)?.role } : {}),
         presence: !bound,
@@ -598,7 +794,7 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   const styles = generateStyles(set.variants, model, ctx.resolver);
 
   // Radio packs: which layers get special rendering.
-  const kindOf = (l: LayerInfo) => (l.part.type === 'INSTANCE' && !isIcon(l.part) && l.part.instanceComponentId ? opts.instance(l.part)?.kind : undefined);
+  const kindOf = (l: LayerInfo) => (l.part.type === 'INSTANCE' && !isIcon(l.part) && l.part.instanceComponentId ? inst(l.part)?.kind : undefined);
   const controlLayer = radio?.kind === 'field' ? all.find((l) => kindOf(l) === 'radio') : undefined;
   const rowPath = controlLayer?.parent;
   const labelLayer = controlLayer ? all.find((l) => l.parent === rowPath && l.part.type === 'TEXT') ?? all.find((l) => l.part.type === 'TEXT') : undefined;
@@ -608,7 +804,7 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   if (radio?.kind === 'group' && !itemsLayer) gaps.push('Radio group: no layer holding radio fields found; children render at the end.');
   if (radio?.kind === 'group' && !radio.control) gaps.push('Radio group: no generated radio control found, so the group cannot share its name and value through context.');
   if (radio) radio.copy = (labelLayer ?? groupLabelLayer)?.part.text ?? undefined;
-  const controlName = controlLayer ? opts.instance(controlLayer.part)?.component : undefined;
+  const controlName = controlLayer ? inst(controlLayer.part)?.component : undefined;
   const controlAxes = opts.related?.control ? analyzeAxes(opts.related.control.set) : [];
   const forwardState = Boolean(stateProp && controlAxes.find((a) => a.prop === 'state')?.options.some((o) => stateProp.options.includes(o) && o !== stateProp.defaultValue));
   const controlStates = controlAxes.find((a) => a.prop === 'state')?.options ?? [];
@@ -713,7 +909,7 @@ ${indent}/>`;
       el = `<span ${cls}>{${t ?? textExpr(l, JSON.stringify(p.text ?? ''))}}</span>`;
     } else if (p.type === 'INSTANCE') {
       const icon = p.instanceOf ? ctx.icons.get(p.instanceOf) : undefined;
-      const nested = !isIcon(p) && p.instanceComponentId ? opts.instance(p) : undefined;
+      const nested = !isIcon(p) && p.instanceComponentId ? inst(p) : undefined;
       if (icon) {
         usesIcon = true;
         el = l.iconByAxis
@@ -731,7 +927,7 @@ ${indent}/>`;
         // Each copy keeps its own boolean (Figma table rows bind column1…column7 to separate cells).
         if (l.copies?.length) {
           const guard = (part: IRPart, x: string) => { const b = boolFor(part.refs?.visible); return b ? `{${b} && (${x})}` : x; };
-          const all2 = [[p, nested] as const, ...l.copies.map((c) => [c, opts.instance(c)] as const)].filter((x): x is readonly [IRPart, InstanceRef] => Boolean(x[1]));
+          const all2 = [[p, nested] as const, ...l.copies.map((c) => [c, inst(c)] as const)].filter((x): x is readonly [IRPart, InstanceRef] => Boolean(x[1]));
           return `${indent}<>\n${all2.map(([part, n]) => `${indent}  ${guard(part, one(n))}`).join('\n')}\n${indent}</>`;
         }
         el = one(nested);
@@ -743,7 +939,7 @@ ${indent}/>`;
       // A shape group used as a mask around an icon (Figma boolean operations): render what is inside it.
       el = `<span ${cls}>\n${children(l.path).map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</span>`;
     } else if (SHAPES.has(p.type)) {
-      gaps.push(`Layer "${p.path}" is a ${p.type.toLowerCase()} shape; approximated with its fill and size (no vector path).`);
+      if (!set.variants.some((v) => v.parts.some((x) => x.path === p.path && x.shape))) gaps.push(`Layer "${p.path}" is a ${p.type.toLowerCase()} shape; approximated with its fill and size (no vector path).`);
       el = `<span ${cls} aria-hidden="true" />`;
     } else {
       const kids = children(l.path);
@@ -782,15 +978,17 @@ ${indent}/>`;
     ...(hasDisabled ? ['  /** Figma: State=Disabled. */\n  disabled?: boolean;'] : []),
     ...booleans.map((b) => `  /** Figma: ${b.p.name} (boolean). Default ${b.p.default}. */\n  ${b.prop}?: boolean;`),
     ...texts.map((t) => `  /** Figma: ${t.p.name} (text). */\n  ${t.prop}?: ReactNode;`),
+    ...exposedProps.map((e) => `  /** Figma: ${e.exposed!.name} › ${e.figma} (exposed nested instance). Default ${String(e.default)}. */\n  ${e.prop}?: ${e.tsType(q)};`),
     `  /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */\n  'data-force-state'?: string;`,
   ];
-  const ownProps = [...(sw ? ['checked', 'defaultChecked', 'value', 'onChange'] : []), ...propAxes.map((a) => a.prop), ...(hasDisabled ? ['disabled'] : []), ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop)];
+  const ownProps = [...(sw ? ['checked', 'defaultChecked', 'value', 'onChange'] : []), ...propAxes.map((a) => a.prop), ...(hasDisabled ? ['disabled'] : []), ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop), ...exposedProps.map((e) => e.prop)];
   const destructure = [
     ...(sw ? ['checked', 'defaultChecked = false', 'onCheckedChange', 'onClick'] : []),
     ...propAxes.map((a) => `${a.prop} = ${axisDefault(a, q)}`),
     ...(hasDisabled ? ['disabled = false'] : []),
     ...booleans.map((b) => `${b.prop} = ${String(b.p.default) === 'true'}`),
     ...texts.map((t) => `${t.prop} = ${q(String(t.p.default))}`),
+    ...exposedProps.map((e) => `${e.prop} = ${(e.axis ? axisLiteral(e.axis, String(e.default), q) : typeof e.default === 'boolean' ? String(e.default) : q(String(e.default)))}`),
     'className',
     '...rest',
   ];
@@ -801,10 +999,11 @@ ${indent}/>`;
     ...(sw?.busy ? ['aria-busy={busy || undefined}'] : []),
   ];
 
+  const exposedNode = exposedProps.some((e) => !e.axis && e.type === 'string');
   const radioTsx = radio ? radioComponent() : input ? inputComponent() : dialog ? dialogComponent() : undefined;
   const tsx = radioTsx ?? (sw ? `// Generated by ds-sync (switch template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 // Visuals come from Figma. Behaviour: WAI-ARIA switch pattern (native button, role="switch", aria-checked).
-import { useState, type ButtonHTMLAttributes${texts.length ? ', type ReactNode' : ''} } from 'react';
+import { useState, type ButtonHTMLAttributes${texts.length || exposedNode ? ', type ReactNode' : ''} } from 'react';
 
 ${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${all.some((l) => l.iconByAxis) ? `import type { IconName } from '../../icons/icons';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
 
@@ -836,7 +1035,7 @@ ${body}
 }
 ` : `// Generated by ds-sync (generic template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 // Visuals come from Figma. Behaviour (keyboard, focus, ARIA role) is not specified in Figma and is not generated.
-import type { HTMLAttributes${texts.length ? ', ReactNode' : ''} } from 'react';
+import type { HTMLAttributes${texts.length || exposedNode ? ', ReactNode' : ''} } from 'react';
 
 ${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${all.some((l) => l.iconByAxis) ? `import type { IconName } from '../../icons/icons';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
 
@@ -1447,6 +1646,7 @@ ${booleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.defa
     ...(hasDisabled ? [`    disabled: { control: 'boolean', description: 'Figma: State=Disabled' },`] : []),
     ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${q(`Figma: ${b.p.name}`)} },`),
     ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${q(`Figma: ${t.p.name}`)} },`),
+    ...exposedProps.map((e) => `    ${e.prop}: ${e.axis ? axisControl({ ...e.axis, figma: `${e.exposed!.name} › ${e.axis.figma}` }, q) : `{ control: '${e.type === 'boolean' ? 'boolean' : 'text'}', description: ${q(`Figma: ${e.exposed!.name} › ${e.figma}`)} }`},`),
     `    'data-force-state': { table: { disable: true } },`,
   ];
   stories.push(figmaVariantsStory);
@@ -1489,10 +1689,11 @@ ${stories.join('\n\n')}
       : ({ prop: a.options.length > 1 ? a.prop : '—', figma: `${a.figma} (variant)`, note: a.kind === 'state' ? `States: ${a.values.map((v) => `${v.figma} → ${v.role === 'pseudo' ? `:${v.state} (CSS)` : v.role === 'disabled' ? 'disabled' : v.role === 'base' ? 'default' : `${a.prop}="${v.value}"`}`).join(', ')}` : undefined })).map((m) => (m.note ? m : { prop: m.prop, figma: m.figma })),
     ...booleans.map((b) => ({ prop: b.prop, figma: `${b.p.name} (boolean)` })),
     ...texts.map((t) => ({ prop: t.prop, figma: `${t.p.name} (text)` })),
+    ...exposedProps.map((e) => ({ prop: e.prop, figma: `${e.exposed!.name} › ${e.figma} (exposed nested instance)`, note: `Passed to the nested ${e.exposed!.entry.component}.` })),
     ...swaps.map((s) => ({ prop: '—', figma: `${s.name} (instance swap)`, note: 'Not exposed yet.' })),
   ];
   const uniqueGaps = [...new Set(gaps)];
-  const core: GenericCore = { set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(dialog ? { dialog } : {}), visual, ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
+  const core: GenericCore = { set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, nestedProps, exposed: exposedProps, nestedCheck, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(dialog ? { dialog } : {}), visual, ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
   const files = [
     { path: `${dir}/${name}.tsx`, content: tsx },
     { path: `${dir}/${name}.module.css`, content: css },
@@ -1502,7 +1703,7 @@ ${stories.join('\n\n')}
   ];
   return {
     files,
-    report: { name, figmaSets: [`${set.name} (${set.nodeId})`], files: files.map((f) => f.path), props: mapping, assumptions, gaps: uniqueGaps, dependencies: styles.dependencies },
+    report: { name, figmaSets: [`${set.name} (${set.nodeId})`], files: files.map((f) => f.path), props: mapping, assumptions, gaps: uniqueGaps, dependencies: styles.dependencies, ...(nestedCheck.layers ? { nested: nestedCheck } : {}) },
     core,
   };
 }

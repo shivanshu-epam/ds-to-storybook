@@ -19,11 +19,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Keep the type import used even when no lookup tables are generated.
-export type { RadioGroupProps };
 
 /** Figma default variant: State=Enabled, Horizontal=false. */
 export const Default: Story = {
+  name: "Default",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole('radiogroup', { name: 'Delivery speed' })).toBeInTheDocument();
@@ -40,6 +39,7 @@ export const Default: Story = {
 
 /** Figma State × Horizontal. Pseudo states are forced with data-force-state. */
 export const StateAndHorizontal: Story = {
+  name: "State and horizontal",
   parameters: { controls: { disable: true } },
   render: (args) => {
     const rows: Record<string, Partial<RadioGroupProps>> = { 'Enabled': { state: 'enabled' }, 'Read-Only': { state: 'read-only' }, 'Invalid': { state: 'invalid' }, 'Warning': { state: 'warning' } };
@@ -57,7 +57,8 @@ export const StateAndHorizontal: Story = {
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
-  tags: ['!test', '!autodocs'],
+  name: "Figma variants",
+  tags: ['!dev', '!test', '!autodocs'],
   parameters: { controls: { disable: true } },
   render: (args) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>

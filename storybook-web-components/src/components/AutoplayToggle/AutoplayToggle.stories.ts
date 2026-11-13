@@ -24,6 +24,7 @@ export const Default: Story = {};
 
 /** Figma State. */
 export const State: Story = {
+  name: "State",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Playing", html`<ds-autoplay-toggle state="playing"></ds-autoplay-toggle>`),

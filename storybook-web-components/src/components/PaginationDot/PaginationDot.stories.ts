@@ -24,6 +24,7 @@ export const Default: Story = {};
 
 /** Figma State. */
 export const State: Story = {
+  name: "State",
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled("Default", html`<ds-pagination-dot ></ds-pagination-dot>`),
