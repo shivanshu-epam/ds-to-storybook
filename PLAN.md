@@ -135,6 +135,10 @@ Decision: support every stack through **layers**, as multi-framework design syst
   - Not yet: running it in CI (it needs a running Storybook).
 - [ ] Resolve the open decisions in G8 with the design system team.
 
+### Fidelity phase (started 2026-11-13)
+
+A production-grade Storybook where Figma, generated code and documentation stay aligned. Audit, standard, quality framework, documentation-skill specification and roadmap: [docs/fidelity/](docs/fidelity/README.md). Key audit results on Blade: nested components ignore parent configuration (109 of 332 nested layers) and Figma's exposed nested instances (32 sets); shapes drawn as boxes cause the "highlighted" Accordion icon; ActionListItem's red rows are Figma's destructive variants; docs pages expose raw Figma names and stray "…Props" stories. Implementation starts with the nested instance model (roadmap steps 1–4) after review.
+
 ### Phase E: keep it in sync (about 4 weeks). Fixes G6.
 
 - [x] **Polling** (2026-11-13): the workflow runs every weekday and first asks Figma for the file version (`ds-sync status`, one API call). If it did not move, the run stops there. A version that only moved the version number is remembered (Actions cache, keyed by Figma version, engine version and config), so later runs also stop after that one call. (A Figma webhook would need a hosted receiver; polling needs nothing.)
