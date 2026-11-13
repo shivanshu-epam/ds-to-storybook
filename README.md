@@ -24,7 +24,7 @@ ds-sync generate                                                     # writes ./
 cd storybook && npm install && npm run storybook                     # http://localhost:6006
 ```
 
-Prefer a guided run? Use the **Claude Skill** in [`skills/figma-to-storybook`](skills/figma-to-storybook/SKILL.md). It runs these steps, asks the questions only a person can answer (for example, what a component should do), and explains the results.
+Step-by-step guide: [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md). Prefer a guided run? Use the **Claude Skill** in [`skills/figma-to-storybook`](skills/figma-to-storybook/SKILL.md). It runs these steps, asks the questions only a person can answer (for example, what a component should do), and explains the results.
 
 ## What's in this repo
 
@@ -37,6 +37,7 @@ Prefer a guided run? Use the **Claude Skill** in [`skills/figma-to-storybook`](s
 | [`storybook/`](storybook/) | **Example output, React**: generated from the "Design system AI" Figma file. 27 components. Every story is also tested in each Figma mode (light and dark theme, two brands): all 306 pass. Contrast issues in the design (dark theme, second brand, and the Input placeholder) are accepted per mode as known issues, listed in `ds-sync.config.json` and [PLAN.md](PLAN.md). |
 | [`storybook-web-components/`](storybook-web-components/) | **Example output, Web Components** from the same file: the same 27 components as `<ds-…>` custom elements that work in React, Vue, Angular, Svelte or plain HTML. Same CSS, same test results. |
 | [`PLAN.md`](PLAN.md) | Roadmap, status and open decisions. |
+| [`docs/GETTING-STARTED.md`](docs/GETTING-STARTED.md) | **Installation and usage guide**: prerequisites, setup, generate, check, keep in sync, use the components in an app, troubleshooting. |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | How everything works today, with flow diagrams: pipeline, IR, style compiler, tokens, templates, targets, tests, visual check, change summary, CI loop. |
 | [`docs/STRATEGY.md`](docs/STRATEGY.md) | The original technical strategy (written before the build). |
 

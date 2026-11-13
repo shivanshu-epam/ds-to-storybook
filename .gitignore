@@ -16,3 +16,6 @@ storybook/storybook-static/
 engine/.ds-sync/
 engine/dist/
 .ds-sync/
+
+# Storybooks generated from other teams' design systems, for local review only
+local-examples/
