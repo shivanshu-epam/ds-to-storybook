@@ -12,6 +12,7 @@ import { isIcon, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } fr
 import type { IRComponentSet, IRPart } from '../../ir/types.ts';
 import { wcRadio } from './radio.ts';
 import { wcInput } from './input.ts';
+import { wcDialog } from './dialog.ts';
 
 export interface WcOptions {
   prefix: string;
@@ -109,6 +110,7 @@ export const header = (setNames: string, template: string) =>
 export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore, o: WcOptions, instance: (part: IRPart) => InstanceRef | undefined, tagOf: (component: string) => string): WcResult {
   if (core.radio) return wcRadio(ctx, name, core, o, instance, tagOf);
   if (core.input) return wcInput(ctx, name, core, o, instance, tagOf);
+  if (core.dialog) return wcDialog(ctx, name, core, o, instance, tagOf);
   const tag = tagFor(o.prefix, name);
   const cls = classFor(o.prefix, name);
   const dir = `src/components/${name}`;

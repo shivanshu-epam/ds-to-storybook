@@ -166,7 +166,23 @@ export interface InputLayers {
   renamed?: { from: string; to: string };
 }
 
-export type Behavior = 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input';
+/** Dialog pack: the native <dialog> and the layers that name it, describe it, close it, and hold its content and actions. */
+export interface DialogLayers {
+  title?: string;
+  body?: string;
+  close?: string;
+  footer?: string;
+  /** Figma Type value that becomes role="alertdialog". */
+  alertValue?: string;
+  /** Figma State value that sets aria-busy. */
+  busyValue?: string;
+  /** The Type axis prop (alert detection) and the State axis prop (busy). */
+  typeProp?: string;
+  stateProp?: string;
+  backdrop: string;
+}
+
+export type Behavior = 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog';
 
 export function switchAxis(axes: AxisInfo[]): { axis: AxisInfo; on: string; off: string } | undefined {
   for (const a of axes) {
@@ -201,6 +217,8 @@ export interface GenericCore {
   radio?: RadioBehavior;
   /** Set for template "input": the roles of the layers that become the native input, its label, message and so on. */
   input?: InputLayers;
+  /** Set for template "dialog". */
+  dialog?: DialogLayers;
   /** Layer roles the radio packs render specially. */
   radioLayers?: { control?: string; row?: string; label?: string; items?: string; groupLabel?: string; controlComponent?: string; fieldComponent?: string; forwardStates?: string[] };
 }
@@ -209,7 +227,7 @@ export interface GenericCore {
 export interface RegistryEntry {
   component: string;
   importPath: string;
-  kind: 'action' | 'generic' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input';
+  kind: 'action' | 'generic' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog';
   set: IRComponentSet;
 }
 
@@ -472,6 +490,30 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
     ...(renamedType ? { renamed: { from: 'type', to: 'appearance' } } : {}),
   } : undefined;
   const inputRole = (l: LayerInfo) => (input ? (Object.entries(input).find(([k, v]) => typeof v === 'string' && v === l.role && k !== 'valueColor')?.[0]) : undefined);
+  // Dialog pack.
+  const isDialog = opts.behavior === 'dialog';
+  const dTitle = isDialog ? textBound(/title|heading/i) : undefined;
+  const dBodyText = isDialog ? textBound(/body|content|description|message/i) : undefined;
+  const dBody = dBodyText?.l ? byPath.get(dBodyText.l.parent) : undefined;
+  const dClose = isDialog ? visBound(/close|dismiss/i) : undefined;
+  const dFooter = isDialog ? all.find((l) => l.parent === '' && l.part.type !== 'TEXT' && l.part.type !== 'INSTANCE' && (/footer|actions/i.test(l.part.name) || all.some((c) => c.parent === l.path && kindOf(c) === 'action'))) : undefined;
+  const typeAxis = propAxes.find((a) => a.figma.toLowerCase() === 'type');
+  const dialog: DialogLayers | undefined = isDialog ? {
+    ...(dTitle?.l ? { title: dTitle.l.role } : {}),
+    ...(dBody ? { body: dBody.role } : {}),
+    ...(dClose?.l && dClose.l.part.type === 'INSTANCE' ? { close: dClose.l.role } : {}),
+    ...(dFooter ? { footer: dFooter.role } : {}),
+    ...(typeAxis?.options.includes('alert') ? { alertValue: 'alert', typeProp: typeAxis.prop } : {}),
+    ...(stateProp?.options.includes('loading') ? { busyValue: 'loading', stateProp: stateProp.prop } : {}),
+    backdrop: ctx.resolver.byName(/^overlay\/default$/) ?? ctx.resolver.byName(/overlay/) ?? 'rgb(0 0 0 / 50%)',
+  } : undefined;
+  if (dialog) {
+    assumptions.push(`Behaviour from the WAI-ARIA dialog pattern on a native <dialog>: open (modal by default) uses showModal(), so focus moves in and stays in, the page behind is inert, Escape closes it and focus returns to the opener. ${dialog.title ? 'The title names it; ' : ''}${dialog.body ? 'the body describes it. ' : ''}${dialog.alertValue ? 'Type=Alert is role="alertdialog". ' : ''}${dialog.busyValue ? 'State=Loading sets aria-busy. ' : ''}The backdrop uses ${dialog.backdrop}.`);
+    assumptions.push('Stories that show many variants render them as open, non-modal dialogs in the page; the Default story opens a real modal from a button.');
+    if (dialog.close) gaps.push(`The close button's accessible name "Close" comes from its Figma layer name "${dClose!.l!.part.name}"; confirm the wording.`);
+    if (dialog.footer) gaps.push('The Figma footer buttons have no actions; pass `footer` with your own buttons (and close the dialog from them).');
+    if (typeAxis?.options.some((o) => /drawer|full/.test(o))) gaps.push('Placement of the drawer and full-screen types is not in Figma: a drawer opens at the right edge, full-screen fills the viewport.');
+  }
   if (input) {
     assumptions.push(`A native <input> replaces the Figma "${ph!.l!.part.name}" text layer; ${input.label ? 'the label layer is its <label>, ' : ''}${input.helper ? 'the helper text describes it (aria-describedby), ' : ''}and typed text uses ${input.valueColor} (Figma only draws the placeholder).`);
     if (renamedType) assumptions.push('The Figma Type axis is the "appearance" prop, so "type" stays the native input type (text, email, password...).');
@@ -487,7 +529,13 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
     const cls = `className={styles.${l.role}}`;
     let el: string;
     const ir = inputRole(l);
-    if (ir === 'value') {
+    if (dialog && l.role === dialog.title && p.type === 'TEXT') {
+      const t = textFor(p.refs?.characters);
+      el = `<span className={styles.${l.role}} id={titleId}>{${t ?? JSON.stringify(p.text ?? '')}}</span>`;
+    } else if (dialog && l.role === dialog.close && p.instanceOf && ctx.icons.get(p.instanceOf)) {
+      usesIcon = true;
+      el = `<button type="button" className={styles.${l.role}} aria-label="Close" onClick={() => setOpen(false)}><Icon name="${ctx.icons.get(p.instanceOf)!.name}" /></button>`;
+    } else if (ir === 'value') {
       el = `<input
 ${indent}  ref={ref}
 ${indent}  id={inputId}
@@ -543,7 +591,11 @@ ${indent}/>`;
       const kids = children(l.path);
       const box = l.path === rowPath ? 'label' : sw || radio?.kind === 'control' ? 'span' : 'div'; // a <button> may only hold phrasing content
       const inner = kids.map((k) => render(k, indent + '  ')).join('\n');
-      el = l === itemsLayer
+      const slotted = l === itemsLayer ? 'children' : dialog && l.role === dialog.body ? 'children' : dialog && l.role === dialog.footer ? 'footer' : undefined;
+      const idAttr = dialog && l.role === dialog.body ? ' id={bodyId}' : '';
+      el = slotted
+        ? `<${box} ${cls}${idAttr}>\n${indent}  {${slotted} ?? (\n${indent}    <>\n${kids.map((k) => render(k, indent + '      ')).join('\n')}\n${indent}    </>\n${indent}  )}\n${indent}</${box}>`
+        : l === itemsLayer
         ? `<${box} ${cls}>\n${indent}  {children ?? (\n${indent}    <>\n${kids.map((k) => render(k, indent + '      ')).join('\n')}\n${indent}    </>\n${indent}  )}\n${indent}</${box}>`
         : kids.length ? `<${box} ${cls}>\n${inner}\n${indent}</${box}>` : `<${box} ${cls} />`;
     }
@@ -591,7 +643,7 @@ ${indent}/>`;
     ...(sw?.busy ? ['aria-busy={busy || undefined}'] : []),
   ];
 
-  const radioTsx = radio ? radioComponent() : input ? inputComponent() : undefined;
+  const radioTsx = radio ? radioComponent() : input ? inputComponent() : dialog ? dialogComponent() : undefined;
   const tsx = radioTsx ?? (sw ? `// Generated by ds-sync (switch template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 // Visuals come from Figma. Behaviour: WAI-ARIA switch pattern (native button, role="switch", aria-checked).
 import { useState, type ButtonHTMLAttributes${texts.length ? ', type ReactNode' : ''} } from 'react';
@@ -642,6 +694,76 @@ ${body}
   );
 }
 `);
+
+  function dialogComponent(): string {
+    const d = dialog!;
+    const set = ctx.sets.main!;
+    const own = [...propAxes.map((a) => a.prop), ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop), 'open'];
+    const lines = [
+      '  /** Open (controlled). */\n  open?: boolean;',
+      '  /** Initially open (uncontrolled). Default false. */\n  defaultOpen?: boolean;',
+      '  /** Modal (default): focus stays inside, the page behind is inert, and a backdrop shows. */\n  modal?: boolean;',
+      '  /** Called when the dialog opens or closes (close button, Escape, or your code). */\n  onOpenChange?: (open: boolean) => void;',
+      ...(d.body ? ['  /** Dialog content. Default: the Figma body. */\n  children?: ReactNode;'] : []),
+      ...(d.footer ? ['  /** Action buttons. Default: the Figma buttons (no actions). */\n  footer?: ReactNode;'] : []),
+      ...propLines.filter((x) => !x.includes('disabled?: boolean;')),
+    ];
+    const destructure = [...propAxes.map((a) => `${a.prop} = ${q(a.defaultValue)}`), ...booleans.map((b) => `${b.prop} = ${String(b.p.default) === 'true'}`), ...texts.map((t) => `${t.prop} = ${q(String(t.p.default))}`), 'open', 'defaultOpen = false', 'modal = true', 'onOpenChange', ...(d.body ? ['children'] : []), ...(d.footer ? ['footer'] : []), 'className', 'onClose', 'onKeyDown', '...rest'];
+    return `// Generated by ds-sync (dialog template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
+// Visuals come from Figma. Behaviour: WAI-ARIA dialog pattern on a native <dialog> (showModal).
+import { useEffect, useId, useRef, useState, type DialogHTMLAttributes, type ReactNode } from 'react';
+
+${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
+
+export interface ${name}Props extends Omit<DialogHTMLAttributes<HTMLDialogElement>, 'children' | 'title'${own.map((x) => ` | '${x}'`).join('')}> {
+${lines.join('\n')}
+}
+
+export function ${name}({ ${destructure.join(', ')} }: ${name}Props) {
+  const ref = useRef<HTMLDialogElement>(null);
+  const [inner, setInner] = useState(defaultOpen);
+  const isOpen = open ?? inner;
+  const id = useId();
+  const titleId = \`\${id}-title\`;
+  const bodyId = \`\${id}-body\`;
+  const setOpen = (next: boolean) => {
+    if (open === undefined) setInner(next);
+    onOpenChange?.(next);
+  };
+  useEffect(() => {
+    const dialog = ref.current;
+    if (!dialog) return;
+    if (isOpen && !dialog.open) {
+      if (modal) dialog.showModal();
+      else dialog.show();
+    } else if (!isOpen && dialog.open) dialog.close();
+  }, [isOpen, modal]);
+  return (
+    <dialog
+      ref={ref}
+${d.alertValue ? `      role={${d.typeProp} === '${d.alertValue}' ? 'alertdialog' : undefined}\n` : ''}${d.title ? '      aria-labelledby={titleId}\n' : ''}${d.body ? '      aria-describedby={bodyId}\n' : ''}${d.busyValue ? `      aria-busy={${d.stateProp} === '${d.busyValue}' || undefined}\n` : ''}      className={[styles.root, className].filter(Boolean).join(' ')}
+      ${propAxes.map((a) => `data-${a.attr}={${a.prop}}`).join('\n      ')}
+      onKeyDown={(event) => {
+        onKeyDown?.(event);
+        // WAI-ARIA dialog: Escape closes it (modal or not).
+        if (event.key === 'Escape' && !event.defaultPrevented) {
+          event.preventDefault();
+          setOpen(false);
+        }
+      }}
+      onClose={(event) => {
+        // form method="dialog" or close(): keep the state in step.
+        if (isOpen) setOpen(false);
+        onClose?.(event);
+      }}
+      {...rest}
+    >
+${body}
+    </dialog>
+  );
+}
+`;
+  }
 
   function inputComponent(): string {
     const ip = input!;
@@ -856,7 +978,13 @@ ${figmaFocus ? '' : `.root:focus-visible, .root[data-force-state~="focus"] { out
 /* Native radio input over the Figma visuals: it takes the clicks, the focus and the checked state. */
 .input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; z-index: 1; }
 .input:disabled { cursor: not-allowed; }
-` : ''}${input ? `
+` : ''}${dialog ? `
+/* Native <dialog>: reset the browser styles; the Figma styles below size and paint it. Closed dialogs are hidden. */
+:where(.root) { position: static; inset: auto; margin: 0; padding: 0; border: 0; color: inherit; max-width: none; max-height: none; overflow: visible; }
+.root:not([open]) { display: none; }
+.root:modal { position: fixed; inset: 0; margin: auto; max-width: calc(100% - 32px); max-height: calc(100% - 32px); overflow: auto; }
+.root::backdrop { background: ${dialog.backdrop}; }
+${typeAxis?.options.includes('side-drawer') ? `.root:modal[data-${typeAxis.attr}="side-drawer"] { margin: 0 0 0 auto; height: 100%; max-height: none; }\n` : ''}${typeAxis?.options.includes('full-screen') ? `.root:modal[data-${typeAxis.attr}="full-screen"] { margin: 0; width: 100%; height: 100%; max-width: none; max-height: none; }\n` : ''}${dialog.close ? `:where(.${dialog.close}) { appearance: none; border: 0; padding: 0; margin: 0; background: none; color: inherit; cursor: pointer; }\n` : ''}` : ''}${input ? `
 /* Native input in place of the Figma text layer: reset, then the Figma text styles below apply. */
 :where(.${input.value}) { appearance: none; border: 0; margin: 0; padding: 0; background: none; outline: none; font: inherit; min-width: 0; flex: 1 1 auto; width: auto; }
 .root .${input.value}:not(:placeholder-shown) { color: ${input.valueColor}; }
@@ -899,7 +1027,63 @@ export const Default: Story = {
     await expect(control).toHaveAttribute('aria-checked', 'false');
     await expect(args.onCheckedChange).toHaveBeenLastCalledWith(false);
   },
-};` : radio ? radioDefault() : input ? inputDefault() : `${defaultDoc}\nexport const Default: Story = {};`];
+};` : radio ? radioDefault() : input ? inputDefault() : dialog ? dialogDefault() : `${defaultDoc}\nexport const Default: Story = {};`];
+  function dialogDefault(): string {
+    const d = dialog!;
+    const titleText = String(texts.find((t) => t.p.name === dTitle?.t.p.name)?.p.default ?? '');
+    return `/** A modal dialog opened from a button. Escape closes it and focus returns to the button. */
+export const Default: Story = {
+  args: { open: undefined, modal: true },
+  render: function Render(args) {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <button type="button" onClick={() => setOpen(true)}>Open dialog</button>
+        <${name}
+          {...args}
+          open={open}
+          onOpenChange={(next) => {
+            setOpen(next);
+            args.onOpenChange?.(next);
+          }}
+        />
+      </>
+    );
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole('button', { name: 'Open dialog' });
+    await userEvent.click(trigger);
+    const dialog = canvas.getByRole('dialog'${d.title ? `, { name: ${q(titleText)} }` : ''});
+    await expect(dialog).toHaveAttribute('open');
+    await expect(dialog.contains(document.activeElement)).toBe(true);
+    await userEvent.keyboard('{Escape}');
+    await expect(dialog).not.toHaveAttribute('open');
+    await expect(args.onOpenChange).toHaveBeenLastCalledWith(false);
+    await expect(trigger).toHaveFocus();
+  },
+};${d.close ? `
+
+/** The close button closes it. */
+export const CloseButton: Story = {
+  args: { open: undefined, defaultOpen: true },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const dialog = canvas.getByRole('dialog');
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Close' }));
+    await expect(dialog).not.toHaveAttribute('open');
+    await expect(args.onOpenChange).toHaveBeenCalledWith(false);
+  },
+};` : ''}${d.alertValue ? `
+
+/** Figma Type=Alert is an alertdialog. */
+export const AlertRole: Story = {
+  args: { ${d.typeProp}: '${d.alertValue}' },
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByRole('alertdialog')).toBeInTheDocument();
+  },
+};` : ''}`;
+  }
   function inputDefault(): string {
     const ip = input!;
     const labelText = String(texts.find((t) => t.prop === ip.props.label)?.p.default ?? '');
@@ -1074,19 +1258,19 @@ ${booleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.defa
     ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${q(`Figma: ${t.p.name}`)} },`),
     `    'data-force-state': { table: { disable: true } },`,
   ];
-  const storiesFile = `// Generated by ds-sync (${sw ? 'switch' : radio ? 'radio' : input ? 'input' : 'generic'} template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
+  const storiesFile = `// Generated by ds-sync (${sw ? 'switch' : radio ? 'radio' : input ? 'input' : dialog ? 'dialog' : 'generic'} template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 import type { Meta, StoryObj } from '@storybook/react-vite';
-${sw || radio?.kind === 'control' || radio?.kind === 'field' || input ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : radio ? "import { expect, userEvent, within } from 'storybook/test';\n" : ''}
+${dialog ? "import { useState } from 'react';\nimport { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}${sw || radio?.kind === 'control' || radio?.kind === 'field' || input ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : radio ? "import { expect, userEvent, within } from 'storybook/test';\n" : ''}
 import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { ${name}, type ${name}Props } from './${name}';
 
 const meta = {
   title: ${q(opts.title)},
   component: ${name},
-${sw ? `  args: { 'aria-label': ${q(sw.label)}, onCheckedChange: fn() },\n` : radio?.kind === 'control' ? `  args: { 'aria-label': ${q(radio.label)}, onChange: fn() },\n` : radio?.kind === 'field' || input ? '  args: { onChange: fn() },\n' : ''}  argTypes: {
+${sw ? `  args: { 'aria-label': ${q(sw.label)}, onCheckedChange: fn() },\n` : radio?.kind === 'control' ? `  args: { 'aria-label': ${q(radio.label)}, onChange: fn() },\n` : radio?.kind === 'field' || input ? '  args: { onChange: fn() },\n' : dialog ? '  // Variant stories show open, non-modal dialogs in the page.\n  args: { open: true, modal: false, onOpenChange: fn() },\n' : ''}  argTypes: {
 ${argTypes.join('\n')}
   },
-  parameters: { figma: { fileKey: ${q(ctx.fileKey)}, nodeId: ${q(set.nodeId)} }, generator: ${q(sw ? 'switch' : radio ? 'radio' : input ? 'input' : 'generic')} },
+  parameters: { figma: { fileKey: ${q(ctx.fileKey)}, nodeId: ${q(set.nodeId)} }, generator: ${q(sw ? 'switch' : radio ? 'radio' : input ? 'input' : dialog ? 'dialog' : 'generic')} },
 } satisfies Meta<typeof ${name}>;
 
 export default meta;
@@ -1102,6 +1286,7 @@ ${stories.join('\n\n')}
   });
 
   const mapping: ComponentReport['props'] = [
+    ...(dialog ? [{ prop: 'open / defaultOpen / modal / onOpenChange', figma: '—', note: 'Native <dialog>: showModal() when modal.' }, ...(dialog.body ? [{ prop: 'children', figma: `${dBody!.part.name} (layer)`, note: 'Default: the Figma body.' }] : []), ...(dialog.footer ? [{ prop: 'footer', figma: `${dFooter!.part.name} (layer)`, note: 'Default: the Figma buttons, without actions.' }] : [])] : []),
     ...(input ? [{ prop: 'value / defaultValue / onChange / type / name / maxLength / ...', figma: `${ph!.l!.part.name} (text layer)`, note: 'Native input attributes; the Figma placeholder text is the placeholder.' }, { prop: 'invalid', figma: '—', note: 'aria-invalid without changing the look.' }] : []),
     ...(radio?.kind === 'field' ? [{ prop: 'label', figma: `${labelLayer?.part.name ?? 'text'} (text layer)`, note: 'Rendered in the <label>.' }, { prop: 'name / value / checked / defaultChecked / onChange', figma: '—', note: 'Passed to the radio input.' }] : []),
     ...(radio?.kind === 'group' ? [{ prop: 'label', figma: `${groupLabelLayer?.part.name ?? 'text'} (text layer)`, note: 'Names the radiogroup.' }, { prop: 'name / value / defaultValue / onValueChange', figma: '—', note: 'Shared by the radios inside.' }, { prop: 'children', figma: `${itemsLayer?.part.name ?? 'items'} (layer)`, note: 'Default: the Figma example items.' }] : []),
@@ -1115,7 +1300,7 @@ ${stories.join('\n\n')}
     ...swaps.map((s) => ({ prop: '—', figma: `${s.name} (instance swap)`, note: 'Not exposed yet.' })),
   ];
   const uniqueGaps = [...new Set(gaps)];
-  const core: GenericCore = { set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
+  const core: GenericCore = { set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(dialog ? { dialog } : {}), ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
   const files = [
     { path: `${dir}/${name}.tsx`, content: tsx },
     { path: `${dir}/${name}.module.css`, content: css },

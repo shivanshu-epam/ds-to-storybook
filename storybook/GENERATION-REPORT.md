@@ -997,6 +997,9 @@ Figma: Dialog (348:627)
 
 | Figma | Prop | Note |
 | --- | --- | --- |
+| — | `open / defaultOpen / modal / onOpenChange` | Native <dialog>: showModal() when modal. |
+| _body (layer) | `children` | Default: the Figma body. |
+| _footer (layer) | `footer` | Default: the Figma buttons, without actions. |
 | Type (variant) | `type` |  |
 | Size (variant) | `size` |  |
 | State (variant) | `state` |  |
@@ -1011,10 +1014,15 @@ Figma: Dialog (348:627)
 **Not from Figma (archetype defaults or decisions):**
 
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
+- Behaviour from the WAI-ARIA dialog pattern on a native <dialog>: open (modal by default) uses showModal(), so focus moves in and stays in, the page behind is inert, Escape closes it and focus returns to the opener. The title names it; the body describes it. Type=Alert is role="alertdialog". State=Loading sets aria-busy. The backdrop uses var(--overlay-default).
+- Stories that show many variants render them as open, non-modal dialogs in the page; the Default story opens a real modal from a button.
 - The Figma set has 30 of 60 possible variant combinations; other combinations use the nearest defined styles.
 
 **Gaps:**
 
+- The close button's accessible name "Close" comes from its Figma layer name "_close-icon"; confirm the wording.
+- The Figma footer buttons have no actions; pass `footer` with your own buttons (and close the dialog from them).
+- Placement of the drawer and full-screen types is not in Figma: a drawer opens at the right edge, full-screen fills the viewport.
 - Layer "_divider-top" is a line shape; approximated with its fill and size (no vector path).
 - Layer "_divider-bottom" is a line shape; approximated with its fill and size (no vector path).
 - Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B orange #e46b00 with white text is 3.28:1 (needs 4.5:1)

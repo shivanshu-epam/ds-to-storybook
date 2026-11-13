@@ -223,7 +223,10 @@ export function generateStyles(variants: IRVariant[], model: StyleModel, resolve
   for (const role of model.roles) {
     table.set(role.role, usable.map((v) => {
       const found = role.find(v);
-      if (!found || (found.part?.hidden && !role.includeHidden)) return role.presence ? { display: 'none' } : {};
+      // A layer missing from a variant is hidden there. Generic layers bound to a boolean property (includeHidden)
+      // are hidden too when absent: the property can show a hidden layer, but not one the variant does not have.
+      if (!found) return role.presence || (role.includeHidden && role.kind === 'node') ? { display: 'none' } : {};
+      if (found.part?.hidden && !role.includeHidden) return role.presence ? { display: 'none' } : {};
       const d = declarations(role, found, v, resolver);
       if (role.presence || d['flex-direction'] || role.kind === 'node') d.display = role.display ?? (d['flex-direction'] ? 'flex' : 'inline-flex');
       return d;

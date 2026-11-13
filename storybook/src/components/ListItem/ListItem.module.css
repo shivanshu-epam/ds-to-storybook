@@ -385,6 +385,10 @@
   display: none;
 }
 
+.root:where([data-state="skeleton"]) .leadingControl {
+  display: none;
+}
+
 .root:where([data-state="skeleton"]) .textColumn {
   display: none;
 }
@@ -406,6 +410,10 @@
 }
 
 .root:where([data-state="skeleton"]) .headline {
+  display: none;
+}
+
+.root:where([data-state="skeleton"]) .trailingControl {
   display: none;
 }
 

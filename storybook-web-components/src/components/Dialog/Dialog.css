@@ -2,6 +2,15 @@
 .root { box-sizing: border-box; position: relative; }
 .header, .headerTextCol, .title, .closeIcon, .dividerTop, .body, .bodyContent, .dividerBottom, .footer, .secondaryButton, .primaryButton, .subtitle, .formField, .fieldLabel, .fieldInput, .fieldPlaceholder, .errorBanner, .errorIcon, .errorText { box-sizing: border-box; position: relative; margin: 0; min-width: 0; }
 
+/* Native <dialog>: reset the browser styles; the Figma styles below size and paint it. Closed dialogs are hidden. */
+:where(.root) { position: static; inset: auto; margin: 0; padding: 0; border: 0; color: inherit; max-width: none; max-height: none; overflow: visible; }
+.root:not([open]) { display: none; }
+.root:modal { position: fixed; inset: 0; margin: auto; max-width: calc(100% - 32px); max-height: calc(100% - 32px); overflow: auto; }
+.root::backdrop { background: var(--overlay-default); }
+.root:modal[data-type="side-drawer"] { margin: 0 0 0 auto; height: 100%; max-height: none; }
+.root:modal[data-type="full-screen"] { margin: 0; width: 100%; height: 100%; max-width: none; max-height: none; }
+:where(.closeIcon) { appearance: none; border: 0; padding: 0; margin: 0; background: none; color: inherit; cursor: pointer; }
+
 .root {
   background: var(--surface-bg-elevated);
   box-shadow: 0px 8px 24px 0px #00000026;
@@ -186,6 +195,10 @@
   width: 20px;
 }
 
+.root:where([data-type="alert"]) .closeIcon {
+  display: none;
+}
+
 .root:where([data-size="small"]) .dividerTop {
   width: 400px;
 }
@@ -334,6 +347,10 @@
   padding: 0 var(--space-inline-lg) 0 var(--space-inline-lg);
 }
 
+.root:where([data-type="alert"]) .secondaryButton {
+  display: none;
+}
+
 .root:where([data-state="open"]) .primaryButton {
   background: var(--interactive-bg-primary-default);
 }
@@ -355,6 +372,22 @@
   font-weight: 400;
   line-height: 18px;
   white-space: normal;
+}
+
+.root:where([data-type="confirmation"]) .subtitle {
+  display: none;
+}
+
+.root:where([data-type="alert"]) .subtitle {
+  display: none;
+}
+
+.root:where([data-type="full-screen"]) .subtitle {
+  display: none;
+}
+
+.root:where([data-type="side-drawer"]) .subtitle {
+  display: none;
 }
 
 .root:where([data-type="form"]) .formField {

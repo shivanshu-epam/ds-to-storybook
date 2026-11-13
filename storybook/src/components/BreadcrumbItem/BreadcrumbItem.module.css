@@ -36,6 +36,10 @@
   width: 16px;
 }
 
+.root:where([data-type="collapse"]) .leadingIcon {
+  display: none;
+}
+
 .root:where([data-type="link"]) .label {
   color: var(--interactive-fg-ghost-default);
   display: block;

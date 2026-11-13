@@ -1,0 +1,10 @@
+# Dialog / modal. Behaviour source: WAI-ARIA APG dialog (modal) pattern, on the native <dialog> element.
+id: dialog
+pattern: wai-aria/dialog-modal
+role: dialog / alertdialog
+element: native dialog (showModal for modal, show for in-page)
+requiredStates: [open, closed]
+keyboard:
+  - { key: Tab, action: move focus within the dialog (modal: focus cannot leave) }
+  - { key: Escape, action: close the dialog; focus returns to the element that opened it }
+requiredDocs: [usage, accessibility]
