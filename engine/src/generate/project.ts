@@ -54,6 +54,9 @@ export function projectFiles(o: ProjectOptions): GeneratedFile[] {
         private: true,
         type: 'module',
         description: `Storybook generated from the Figma file "${o.figma.fileName}" (${o.figma.fileKey}) by ds-sync.`,
+        // TypeScript source: apps import it through a bundler that compiles TS and CSS Modules (Vite, Next.js).
+        main: 'src/index.ts',
+        exports: { '.': './src/index.ts', './tokens.css': './src/tokens/tokens.css', './tokens.json': './src/tokens/tokens.json' },
         scripts: {
           storybook: 'storybook dev -p 6006',
           'build-storybook': 'storybook build',

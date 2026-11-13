@@ -4,6 +4,12 @@
   "private": true,
   "type": "module",
   "description": "Storybook generated from the Figma file \"Design system AI\" (I983NcgqSiY14YkpJbwjG8) by ds-sync.",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens/tokens.css",
+    "./tokens.json": "./src/tokens/tokens.json"
+  },
   "scripts": {
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

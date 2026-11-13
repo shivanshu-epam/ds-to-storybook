@@ -156,7 +156,7 @@ Review and merge it like any other pull request. You can also start it by hand: 
 
 ## 8. Use the components in an app
 
-Both outputs are standard packages. Publish them to your registry, or reference the folder from your app.
+Both outputs are packages whose entry point is TypeScript source (`src/index.ts`), plus `tokens.css` and `tokens.json`. Use them from an app whose bundler compiles TypeScript (Vite, Next.js, Angular CLI, Vue CLI): reference the folder (for example `"my-design-system": "file:../storybook"` in the app's `package.json`, or a workspace in a monorepo), or publish it to your registry as is. ds-sync does not yet produce a precompiled library build.
 
 **React target:**
 
