@@ -6,7 +6,7 @@
 import { docTabs, leadSentence, pascal, type GeneratedFile, type TemplateContext } from '../templates/common.ts';
 import { isIcon, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRPart } from '../../ir/types.ts';
-import { attrFor, classFor, figmaDocsMdx, header, mdx, tagFor, usage, wcProp, type WcOptions, type WcResult } from './components.ts';
+import { attrFor, classFor, figmaDocsMdx, header, mdx, tagFor, usage, wcProp, wcText, type WcOptions, type WcResult } from './components.ts';
 
 const js = (v: unknown) => JSON.stringify(v);
 
@@ -51,7 +51,7 @@ ${indent}  @input=\${this.onInput} @change=\${this.onChange} />`;
       el = `<button type="button" ${c} aria-label="Clear" ?disabled=\${this.disabled} @click=\${this.clear}>\${icon(${js(ic.name)})}</button>`;
     } else if (p.type === 'TEXT') {
       const t = textFor(p.refs?.characters);
-      el = `<span ${c}>\${${t ? `this.${t}` : js(p.text ?? '')}}</span>`;
+      el = `<span ${c}>\${${t ? `this.${t}` : wcText(l, js(p.text ?? ''))}}</span>`;
     } else if (ic) {
       usesIcon = true;
       el = `<span ${c} aria-hidden="true">\${icon(${js(ic.name)})}</span>`;

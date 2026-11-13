@@ -11,6 +11,9 @@ export interface FigmaPaint {
   opacity?: number;
   color?: FigmaColor;
   boundVariables?: { color?: VariableAlias };
+  /** Gradients: handle positions (0-1, node space) and colour stops. */
+  gradientHandlePositions?: { x: number; y: number }[];
+  gradientStops?: { position: number; color: FigmaColor }[];
 }
 
 export interface ComponentPropertyDefinition {
@@ -21,6 +24,10 @@ export interface ComponentPropertyDefinition {
 }
 
 export interface FigmaNode {
+  /** Painted area including effects (shadows, outside strokes). */
+  absoluteRenderBounds?: { x: number; y: number; width: number; height: number } | null;
+  /** Dash and gap lengths of a dashed stroke. */
+  strokeDashes?: number[];
   id: string;
   name: string;
   type: string;

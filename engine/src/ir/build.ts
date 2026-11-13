@@ -34,11 +34,38 @@ function numberValue(node: FigmaNode, key: keyof FigmaNode, resolve: Resolver): 
   return variableName ? { value, variableId, variableName } : { value, variableId };
 }
 
-function paints(list: FigmaPaint[] | undefined, resolve: Resolver): IRValue<string>[] {
+/**
+ * Figma linear gradient -> CSS linear-gradient. Figma places stops along the handle from p0 to p1
+ * (node space); CSS places them along a line through the centre that spans the box at that angle.
+ */
+export function linearGradient(p: FigmaPaint, w: number, h: number): string | undefined {
+  const [p0, p1] = p.gradientHandlePositions ?? [];
+  if (!p0 || !p1 || !p.gradientStops?.length || !w || !h) return undefined;
+  const dx = (p1.x - p0.x) * w;
+  const dy = (p1.y - p0.y) * h;
+  const len = Math.hypot(dx, dy);
+  if (!len) return undefined;
+  const ux = dx / len;
+  const uy = dy / len;
+  const angle = (Math.atan2(dx, -dy) * 180) / Math.PI;
+  const cssLen = Math.abs(w * ux) + Math.abs(h * uy);
+  const at = (t: number) => {
+    const x = (p0.x + t * (p1.x - p0.x)) * w - w / 2;
+    const y = (p0.y + t * (p1.y - p0.y)) * h - h / 2;
+    return ((x * ux + y * uy + cssLen / 2) / cssLen) * 100;
+  };
+  const stops = p.gradientStops.map((st) => `${toHex(st.color, p.opacity ?? 1)} ${round(at(st.position))}%`);
+  return `linear-gradient(${round((angle + 360) % 360)}deg, ${stops.join(', ')})`;
+}
+
+function paints(list: FigmaPaint[] | undefined, resolve: Resolver, node?: FigmaNode): IRValue<string>[] {
   return (list ?? [])
     .filter((p) => p.visible !== false)
     .map((p) => {
-      const value = p.type === 'SOLID' && p.color ? toHex(p.color, p.opacity ?? 1) : p.type;
+      const box = node?.absoluteBoundingBox;
+      const value = p.type === 'SOLID' && p.color ? toHex(p.color, p.opacity ?? 1)
+        : p.type === 'GRADIENT_LINEAR' && box ? linearGradient(p, box.width, box.height) ?? p.type
+        : p.type;
       const variableId = p.boundVariables?.color?.id ?? null;
       const variableName = resolve(variableId);
       return variableName ? { value, variableId, variableName } : { value, variableId };
@@ -46,7 +73,13 @@ function paints(list: FigmaPaint[] | undefined, resolve: Resolver): IRValue<stri
 }
 
 export function styleOf(node: FigmaNode, resolve: Resolver, parent?: FigmaNode): IRStyle {
-  const style: IRStyle = { fills: paints(node.fills, resolve), strokes: paints(node.strokes, resolve) };
+  const style: IRStyle = { fills: paints(node.fills, resolve, node), strokes: paints(node.strokes, resolve) };
+  if (node.strokeDashes?.length && style.strokes.length) style.dashes = node.strokeDashes.map(round);
+  const rb = node.absoluteRenderBounds;
+  const bb = node.absoluteBoundingBox;
+  if (rb && bb && (rb.x < bb.x || rb.y < bb.y || rb.x + rb.width > bb.x + bb.width || rb.y + rb.height > bb.y + bb.height)) {
+    style.paintBox = [round(bb.x - rb.x), round(bb.y - rb.y), round(rb.width), round(rb.height)];
+  }
   if (node.layoutSizingHorizontal) style.sizingH = node.layoutSizingHorizontal;
   if (node.layoutSizingVertical) style.sizingV = node.layoutSizingVertical;
   if (node.layoutMode && node.layoutMode !== 'NONE') {
@@ -94,8 +127,14 @@ export function styleOf(node: FigmaNode, resolve: Resolver, parent?: FigmaNode):
 const round = (n: number) => Math.round(n * 100) / 100;
 
 function collectParts(node: FigmaNode, resolve: Resolver, prefix: string, out: IRPart[], componentNames: Record<string, string>, hiddenAncestor = false): void {
+  const seen = new Map<string, number>();
   for (const child of node.children ?? []) {
-    const path = prefix ? `${prefix}/${child.name}` : child.name;
+    // Repeated siblings with one name (two form fields, seven day cells) each get a path of their own ("name#2").
+    // Repeated instances keep one path: the generator renders them as copies of one layer.
+    const n = (seen.get(child.name) ?? 0) + 1;
+    seen.set(child.name, n);
+    const name = n > 1 && child.type !== 'INSTANCE' ? `${child.name}#${n}` : child.name;
+    const path = prefix ? `${prefix}/${name}` : name;
     const part: IRPart = { path, parent: prefix, name: child.name, type: child.type, style: styleOf(child, resolve, node) };
     const refs = child.componentPropertyReferences;
     if (refs && (refs.visible || refs.characters || refs.mainComponent)) {

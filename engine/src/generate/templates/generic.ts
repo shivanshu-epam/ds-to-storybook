@@ -166,6 +166,16 @@ export interface InputLayers {
   renamed?: { from: string; to: string };
 }
 
+/** One Figma variant as rendered by the "Figma Variants" story. */
+export interface VisualVariant {
+  nodeId: string;
+  name: string;
+  width: number;
+  height: number;
+  /** Figma's painted area relative to the frame: how far it starts left and above, and its size. */
+  paintBox?: [number, number, number, number];
+}
+
 /** Dialog pack: the native <dialog> and the layers that name it, describe it, close it, and hold its content and actions. */
 export interface DialogLayers {
   title?: string;
@@ -219,6 +229,8 @@ export interface GenericCore {
   input?: InputLayers;
   /** Set for template "dialog". */
   dialog?: DialogLayers;
+  /** The Figma variants the "Figma Variants" story renders, for ds-sync visual. */
+  visual?: VisualVariant[];
   /** Layer roles the radio packs render specially. */
   radioLayers?: { control?: string; row?: string; label?: string; items?: string; groupLabel?: string; controlComponent?: string; fieldComponent?: string; forwardStates?: string[] };
 }
@@ -333,6 +345,23 @@ export function instanceRef(entry: RegistryEntry, part: IRPart, icons: Map<strin
   return { component: entry.component, importPath: entry.importPath, kind: entry.kind, attrs: reactAttrs(props, text), props, ...(text !== undefined ? { text } : {}), usesIcon, notes };
 }
 
+/** A value (text or icon) that variant properties decide: an optional overriding prop value, then a table on one prop. */
+export interface VariantLookup {
+  prop: string;
+  values: Record<string, string>;
+  fallback: string;
+  override?: { prop: string; value: string; result: string };
+  /** When a prop is "$checked": the switch's on/off state, as its Figma values. */
+  checked?: { on: string; off: string };
+}
+
+/** Expression for a lookup; ref turns a prop name into code (React: the variable; Lit: this.prop). */
+export function lookupExpr(l: VariantLookup, ref: (prop: string) => string, type: string): string {
+  const r = (p: string) => (p === '$checked' && l.checked ? `(${ref(p)} ? ${JSON.stringify(l.checked.on)} : ${JSON.stringify(l.checked.off)})` : ref(p));
+  const table = `((${JSON.stringify(l.values)} as Record<string, ${type}>)[${r(l.prop)}] ?? ${JSON.stringify(l.fallback)})`;
+  return l.override ? `(${r(l.override.prop)} === ${JSON.stringify(l.override.value)} ? ${JSON.stringify(l.override.result)} : ${table})` : table;
+}
+
 export interface LayerInfo {
   path: string;
   parent: string;
@@ -340,16 +369,28 @@ export interface LayerInfo {
   role: string;
   /** Further instances with the same path in the default variant (repeated items such as list rows). They share the role's CSS. */
   copies?: IRPart[];
+  /** Text (or a nested component's label) that Figma changes with one variant property: prop, value -> text, default text. */
+  textByAxis?: VariantLookup;
+  /** Icon that Figma swaps with one variant property: prop, value -> icon name, default icon. */
+  iconByAxis?: VariantLookup;
+  /** Set when one layer is a text in some variants and an instance in others: this entry is the one of this type. */
+  splitType?: string;
 }
 
 /** Union of layers across all variants, in a stable order (default variant first). */
 export function layers(set: IRComponentSet, defaultVariant: IRVariant): LayerInfo[] {
+  // A layer that is a text in some variants and an icon or instance in others (Type=Slash "/" vs Type=Chevron)
+  // becomes one entry per type; each shows only in its own variants.
+  const types = new Map<string, Set<string>>();
+  for (const v of set.variants) for (const p of v.parts) types.set(p.path, (types.get(p.path) ?? new Set()).add(p.type));
+  const split = (p: IRPart) => (types.get(p.path)!.size > 1 && (p.type === 'TEXT' || p.type === 'INSTANCE') ? p.type : undefined);
   const seen = new Map<string, IRPart>();
   for (const v of [defaultVariant, ...set.variants.filter((x) => x !== defaultVariant)]) {
     for (const p of v.parts) {
-      const prev = seen.get(p.path);
+      const key = `${p.path}|${split(p) ?? ''}`;
+      const prev = seen.get(key);
       // Prefer a visible copy (it carries the real text and colours).
-      if (!prev || (prev.hidden && !p.hidden)) seen.set(p.path, p);
+      if (!prev || (prev.hidden && !p.hidden)) seen.set(key, p);
     }
   }
   const used = new Set(['root']);
@@ -361,7 +402,8 @@ export function layers(set: IRComponentSet, defaultVariant: IRVariant): LayerInf
     for (let i = 2; used.has(role); i++) role = `${base}${i}`;
     used.add(role);
     const same = defaultVariant.parts.filter((p) => p.path === part.path && p.type === 'INSTANCE');
-    return { path: part.path, parent: part.parent, part, role, ...(same.length > 1 && part.type === 'INSTANCE' ? { copies: same.slice(1) } : {}) };
+    const splitType = split(part);
+    return { path: part.path, parent: part.parent, part, role, ...(same.length > 1 && part.type === 'INSTANCE' ? { copies: same.slice(1) } : {}), ...(splitType ? { splitType } : {}) };
   });
 }
 
@@ -417,23 +459,94 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   // Styles
   const all = layers(set, defaultVariant);
   const byPath = new Map(all.map((l) => [l.path, l]));
-  const partIn = (v: IRVariant, path: string) => v.parts.find((p) => p.path === path);
+  /**
+   * What a variant property decides: one prop's value -> result, optionally with one overriding value of
+   * another prop first (State=Loading -> "Loading…", otherwise by Type). Undefined when no such rule fits.
+   */
+  const lookupBy = (items: (readonly [IRVariant, string])[], fallback: string): VariantLookup | undefined => {
+    const valueOf = (a: AxisInfo, v: IRVariant) => a.values.find((x) => x.figma === v.values[a.figma])?.value;
+    // The switch's on/off axis is the "checked" state, not a prop: it is looked up as "$checked".
+    const axesForLookup: AxisInfo[] = [...propAxes, ...(sw ? [{ ...sw.axis, prop: '$checked' }] : [])];
+    const checked = sw ? { on: sw.on, off: sw.off } : undefined;
+    const single = (rows: (readonly [IRVariant, string])[]) => {
+      for (const a of axesForLookup) {
+        const map = new Map<string, Set<string>>();
+        for (const [v, t] of rows) {
+          const value = valueOf(a, v);
+          if (value) map.set(value, (map.get(value) ?? new Set()).add(t));
+        }
+        if (map.size && [...map.values()].every((ts) => ts.size === 1)) return { prop: a.prop, values: Object.fromEntries([...map].map(([k, ts]) => [k, [...ts][0]!]).filter(([, t]) => t !== fallback)) };
+      }
+      return undefined;
+    };
+    const one = single(items);
+    if (one) return { ...one, fallback, ...(checked ? { checked } : {}) };
+    for (const a of axesForLookup) {
+      for (const value of a.options) {
+        const hit = items.filter(([v]) => valueOf(a, v) === value);
+        const results = new Set(hit.map(([, t]) => t));
+        if (!hit.length || results.size !== 1) continue;
+        const rest = single(items.filter(([v]) => valueOf(a, v) !== value));
+        if (rest) return { ...rest, fallback, override: { prop: a.prop, value, result: [...results][0]! }, ...(checked ? { checked } : {}) };
+      }
+    }
+    return undefined;
+  };
+  // Unbound text (or a nested component's label) that Figma changes per variant becomes a lookup.
+  for (const l of all) {
+    const isText = l.part.type === 'TEXT' && !l.part.refs?.characters;
+    const isLabel = l.part.type === 'INSTANCE' && l.part.innerText !== undefined;
+    if (!isText && !isLabel) continue;
+    const textOf = (v: IRVariant) => { const p = v.parts.find((x) => x.path === l.path && x.type === l.part.type && !x.hidden); return p ? (isText ? p.text : p.innerText) : undefined; };
+    const texts = set.variants.map((v) => [v, textOf(v)] as const).filter((x): x is readonly [IRVariant, string] => x[1] !== undefined);
+    if (new Set(texts.map(([, t]) => t)).size < 2) continue;
+    const found = lookupBy(texts, textOf(defaultVariant) ?? (isText ? l.part.text : l.part.innerText) ?? '');
+    if (found) l.textByAxis = found;
+  }
+  // Icons that Figma swaps per variant (Type=Slash / Chevron, Interaction=Loading) become a lookup too.
+  for (const l of all.filter((x) => isIcon(x.part))) {
+    const iconOf = (v: IRVariant) => { const p = v.parts.find((x) => x.path === l.path && x.type === 'INSTANCE' && !x.hidden); return p?.instanceOf ? ctx.icons.get(p.instanceOf)?.name : undefined; };
+    const fallback = iconOf(defaultVariant) ?? (l.part.instanceOf ? ctx.icons.get(l.part.instanceOf)?.name : undefined);
+    const named = set.variants.map((v) => [v, iconOf(v)] as const).filter((x): x is readonly [IRVariant, string] => x[1] !== undefined);
+    if (!fallback || new Set(named.map(([, n]) => n)).size < 2) continue;
+    const found = lookupBy(named, fallback);
+    if (found) l.iconByAxis = found;
+  }
+  /** JSX expression for a layer's text: the Figma text, or a lookup when a variant property changes it. */
+  const reactRef = (p: string) => (p === '$checked' ? 'on' : p);
+  const textExpr = (l: LayerInfo, plain: string) => (l.textByAxis ? lookupExpr(l.textByAxis, reactRef, 'string') : plain);
+  const partIn = (v: IRVariant, path: string, type?: string) => v.parts.find((p) => p.path === path && (!type || p.type === type));
   const rootStyle = defaultVariant.style;
   const rootDisplay = rootStyle.layoutMode ? (rootStyle.sizingH === 'HUG' ? 'inline-flex' : 'flex') : 'inline-block';
+  // Layers Figma reorders between variants (for example Position=Left/Right): each sibling in that group gets a CSS order.
+  const siblingOrder = (v: IRVariant, parent: string) => [...new Set(v.parts.filter((p) => p.parent === parent).map((p) => p.path))];
+  // A group is reordered when some variant's siblings come in a different order than the rendered (DOM) order,
+  // including layers that exist only in some variants (an error banner shown first in State=Error).
+  const domOrder = (parent: string) => [...new Set(all.filter((l) => l.parent === parent).map((l) => l.path))];
+  const reordered = new Set([...new Set(all.map((l) => l.parent))].filter((parent) => {
+    const dom = domOrder(parent);
+    return set.variants.some((v) => {
+      const seq = siblingOrder(v, parent);
+      return seq.join('|') !== dom.filter((p) => seq.includes(p)).join('|');
+    });
+  }));
   const roles: RoleDef[] = [
     { role: 'root', kind: 'node', display: rootDisplay, find: (v): Found => ({ style: v.style }) },
     ...all.map<RoleDef>((l) => {
       const bound = Boolean(l.part.refs?.visible && boolFor(l.part.refs.visible));
-      const display = l.part.style.layoutMode ? 'flex' : isIcon(l.part) ? 'inline-flex' : l.part.type === 'TEXT' ? 'block' : 'block';
+      const nestedComponent = l.part.type === 'INSTANCE' && !isIcon(l.part) && Boolean(l.part.instanceComponentId && opts.instance(l.part));
+      const display = nestedComponent || l.part.style.layoutMode ? 'flex' : isIcon(l.part) ? 'inline-flex' : l.part.type === 'TEXT' ? 'block' : 'block';
       return {
         role: l.role,
         kind: 'node',
         display,
+        ...(nestedComponent ? { layoutOnly: true } : {}),
+        ...(reordered.has(l.parent) ? { order: (v: IRVariant) => { const i = siblingOrder(v, l.parent).indexOf(l.path); return i < 0 ? undefined : i; } } : {}),
         ...(l.parent ? { parent: byPath.get(l.parent)?.role } : {}),
         presence: !bound,
         includeHidden: bound,
         find: (v): Found | undefined => {
-          const p = partIn(v, l.path);
+          const p = partIn(v, l.path, l.splitType);
           if (!p) return undefined;
           const parentStyle = l.parent ? partIn(v, l.parent)?.style : v.style;
           return { style: p.style, part: p, ...(parentStyle ? { parentStyle } : {}) };
@@ -565,18 +678,23 @@ ${indent}/>`;
       el = `<span ${cls}${l === groupLabelLayer ? ' id={labelId}' : ''}>{label ?? ${JSON.stringify(p.text ?? '')}}</span>`;
     } else if (p.type === 'TEXT') {
       const t = textFor(p.refs?.characters);
-      el = `<span ${cls}>{${t ?? JSON.stringify(p.text ?? '')}}</span>`;
+      el = `<span ${cls}>{${t ?? textExpr(l, JSON.stringify(p.text ?? ''))}}</span>`;
     } else if (p.type === 'INSTANCE') {
       const icon = p.instanceOf ? ctx.icons.get(p.instanceOf) : undefined;
       const nested = !isIcon(p) && p.instanceComponentId ? opts.instance(p) : undefined;
       if (icon) {
         usesIcon = true;
-        el = `<span ${cls} aria-hidden="true"><Icon name="${icon.name}" /></span>`;
+        el = l.iconByAxis
+          ? `<span ${cls} aria-hidden="true"><Icon name={${lookupExpr(l.iconByAxis, reactRef, 'IconName')}} /></span>`
+          : `<span ${cls} aria-hidden="true"><Icon name="${icon.name}" /></span>`;
       } else if (nested && nested.component !== name) {
         imports.add(`import { ${nested.component} } from '${nested.importPath}';`);
         if (nested.usesIcon) usesIcon = true;
         gaps.push(...nested.notes);
-        const one = (n: InstanceRef) => `<span ${cls}><${n.component}${n.attrs.length ? ' ' + n.attrs.join(' ') : ''}${l === controlLayer ? ' {...control}' : ''} /></span>`;
+        const one = (n: InstanceRef) => {
+          const attrs = l.textByAxis && n.text !== undefined ? n.attrs.map((x) => (x.startsWith('children=') ? `children={${textExpr(l, '')}}` : x)) : n.attrs;
+          return `<span ${cls}><${n.component}${attrs.length ? ' ' + attrs.join(' ') : ''}${l === controlLayer ? ' {...control}' : ''} /></span>`;
+        };
         // Repeated instances (for example three radio fields in a group) render once each, sharing the role's CSS.
         const copies = (l.copies ?? []).map((c) => opts.instance(c)).filter((n): n is InstanceRef => Boolean(n));
         el = [one(nested), ...copies.map(one)].join(`\n${indent}`);
@@ -648,7 +766,7 @@ ${indent}/>`;
 // Visuals come from Figma. Behaviour: WAI-ARIA switch pattern (native button, role="switch", aria-checked).
 import { useState, type ButtonHTMLAttributes${texts.length ? ', type ReactNode' : ''} } from 'react';
 
-${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
+${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${all.some((l) => l.iconByAxis) ? `import type { IconName } from '../../icons/icons';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
 
 export interface ${name}Props extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'type'${ownProps.map((p) => ` | '${p}'`).join('')}> {
 ${propLines.join('\n')}
@@ -680,7 +798,7 @@ ${body}
 // Visuals come from Figma. Behaviour (keyboard, focus, ARIA role) is not specified in Figma and is not generated.
 import type { HTMLAttributes${texts.length ? ', ReactNode' : ''} } from 'react';
 
-${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
+${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${all.some((l) => l.iconByAxis) ? `import type { IconName } from '../../icons/icons';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
 
 export interface ${name}Props extends Omit<HTMLAttributes<HTMLDivElement>, 'children'${ownProps.map((p) => ` | '${p}'`).join('')}> {
 ${propLines.join('\n')}
@@ -713,7 +831,7 @@ ${body}
 // Visuals come from Figma. Behaviour: WAI-ARIA dialog pattern on a native <dialog> (showModal).
 import { useEffect, useId, useRef, useState, type DialogHTMLAttributes, type ReactNode } from 'react';
 
-${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
+${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${all.some((l) => l.iconByAxis) ? `import type { IconName } from '../../icons/icons';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
 
 export interface ${name}Props extends Omit<DialogHTMLAttributes<HTMLDialogElement>, 'children' | 'title'${own.map((x) => ` | '${x}'`).join('')}> {
 ${lines.join('\n')}
@@ -784,7 +902,7 @@ ${body}
 // Visuals come from Figma. Behaviour: a native <input> with its <label>, description and validity.
 import { useId, useRef, useState, type InputHTMLAttributes, type ReactNode } from 'react';
 
-${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
+${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${all.some((l) => l.iconByAxis) ? `import type { IconName } from '../../icons/icons';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
 
 export interface ${name}Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'children'${own.map((x) => ` | '${x}'`).join('')}> {
 ${lines.join('\n')}
@@ -818,7 +936,7 @@ ${body.replace(/\{\.\.\.rest\}/, '{...rest}\n' + '          value={value}\n     
     const set = ctx.sets.main!;
     const head = `// Generated by ds-sync (radio template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 // Visuals come from Figma. Behaviour: WAI-ARIA radio group pattern with native radio inputs.`;
-    const iconImports = `${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}`;
+    const iconImports = `${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${all.some((l) => l.iconByAxis) ? `import type { IconName } from '../../icons/icons';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}`;
     const axisProps = propAxes.map((a) => `${a.prop} = ${q(a.defaultValue)}`);
     const axisData = propAxes.map((a) => `data-${a.attr}={${a.prop}}`);
     const extraProps = [...booleans.map((b) => `${b.prop} = ${String(b.p.default) === 'true'}`), ...texts.map((t) => `${t.prop} = ${q(String(t.p.default))}`)];
@@ -1168,6 +1286,39 @@ export const Default: Story = {
   },
 };`;
   }
+  // Every Figma variant once, at its Figma width: the reference for "ds-sync visual" (and a quick look for designers).
+  const variantCell = (v: IRVariant): string => {
+    const out: string[] = [];
+    const force: string[] = [];
+    for (const a of axes) {
+      const val = a.values.find((x) => x.figma === v.values[a.figma]);
+      if (!val) continue;
+      if (a === sw?.axis) out.push(`checked: ${val.value === sw.on}`);
+      else if (a === radio?.axis) { if (val.value === radio.on) out.push('defaultChecked: true'); }
+      else if (val.role === 'pseudo') force.push(val.state!);
+      else if (val.role === 'disabled') out.push('disabled: true');
+      else if (a.options.length > 1) out.push(`${a.prop}: ${q(val.value)}`);
+    }
+    if (force.length) out.push(`'data-force-state': ${q(force.join(' '))}`);
+    return `{ ${out.join(', ')} }`;
+  };
+  const visual: VisualVariant[] = set.variants.map((v) => ({ nodeId: v.nodeId, name: v.name, width: Math.round(v.style.width ?? 0), height: Math.round(v.style.height ?? 0), ...(v.style.paintBox ? { paintBox: v.style.paintBox } : {}) }));
+  const figmaVariantsStory = `/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+${set.variants.map((v) => `        { id: ${q(v.nodeId)}, name: ${q(v.name)}, width: ${Math.round(v.style.width ?? 0)}, props: ${variantCell(v)} as Partial<${name}Props> },`).join('\n')}
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <${name} {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};`;
   if (sw && hasDisabled) {
     stories.push(`/** Disabled: not focusable and does not toggle. */
 export const DisabledDoesNotToggle: Story = {
@@ -1258,6 +1409,7 @@ ${booleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.defa
     ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${q(`Figma: ${t.p.name}`)} },`),
     `    'data-force-state': { table: { disable: true } },`,
   ];
+  stories.push(figmaVariantsStory);
   const storiesFile = `// Generated by ds-sync (${sw ? 'switch' : radio ? 'radio' : input ? 'input' : dialog ? 'dialog' : 'generic'} template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 import type { Meta, StoryObj } from '@storybook/react-vite';
 ${dialog ? "import { useState } from 'react';\nimport { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}${sw || radio?.kind === 'control' || radio?.kind === 'field' || input ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : radio ? "import { expect, userEvent, within } from 'storybook/test';\n" : ''}
@@ -1300,7 +1452,7 @@ ${stories.join('\n\n')}
     ...swaps.map((s) => ({ prop: '—', figma: `${s.name} (instance swap)`, note: 'Not exposed yet.' })),
   ];
   const uniqueGaps = [...new Set(gaps)];
-  const core: GenericCore = { set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(dialog ? { dialog } : {}), ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
+  const core: GenericCore = { set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(dialog ? { dialog } : {}), visual, ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
   const files = [
     { path: `${dir}/${name}.tsx`, content: tsx },
     { path: `${dir}/${name}.module.css`, content: css },

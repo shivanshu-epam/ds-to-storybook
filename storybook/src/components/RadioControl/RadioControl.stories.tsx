@@ -61,3 +61,36 @@ export const SelectedAndState: Story = {
     );
   },
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '521:2613', name: 'State=Enabled, Selected=false', width: 28, props: { state: 'enabled' } as Partial<RadioControlProps> },
+        { id: '521:2617', name: 'State=Enabled, Selected=true', width: 28, props: { state: 'enabled', defaultChecked: true } as Partial<RadioControlProps> },
+        { id: '521:2621', name: 'State=Hovered, Selected=false', width: 28, props: { 'data-force-state': 'hover' } as Partial<RadioControlProps> },
+        { id: '521:2625', name: 'State=Hovered, Selected=true', width: 28, props: { defaultChecked: true, 'data-force-state': 'hover' } as Partial<RadioControlProps> },
+        { id: '521:2629', name: 'State=Focused, Selected=false', width: 28, props: { 'data-force-state': 'focus' } as Partial<RadioControlProps> },
+        { id: '521:2633', name: 'State=Focused, Selected=true', width: 28, props: { defaultChecked: true, 'data-force-state': 'focus' } as Partial<RadioControlProps> },
+        { id: '521:2637', name: 'State=Pressed, Selected=false', width: 28, props: { 'data-force-state': 'pressed' } as Partial<RadioControlProps> },
+        { id: '521:2641', name: 'State=Pressed, Selected=true', width: 28, props: { defaultChecked: true, 'data-force-state': 'pressed' } as Partial<RadioControlProps> },
+        { id: '521:2645', name: 'State=Disabled, Selected=false', width: 28, props: { disabled: true } as Partial<RadioControlProps> },
+        { id: '521:2649', name: 'State=Disabled, Selected=true', width: 28, props: { disabled: true, defaultChecked: true } as Partial<RadioControlProps> },
+        { id: '521:2653', name: 'State=Skeleton, Selected=false', width: 28, props: { state: 'skeleton' } as Partial<RadioControlProps> },
+        { id: '521:2657', name: 'State=Skeleton, Selected=true', width: 28, props: { state: 'skeleton', defaultChecked: true } as Partial<RadioControlProps> },
+        { id: '521:2661', name: 'State=Read-Only, Selected=true', width: 28, props: { state: 'read-only', defaultChecked: true } as Partial<RadioControlProps> },
+        { id: '521:2665', name: 'State=Invalid, Selected=false', width: 28, props: { state: 'invalid' } as Partial<RadioControlProps> },
+        { id: '521:2669', name: 'State=Invalid, Selected=true', width: 28, props: { state: 'invalid', defaultChecked: true } as Partial<RadioControlProps> },
+        { id: '521:2673', name: 'State=Warning, Selected=false', width: 28, props: { state: 'warning' } as Partial<RadioControlProps> },
+        { id: '521:2677', name: 'State=Warning, Selected=true', width: 28, props: { state: 'warning', defaultChecked: true } as Partial<RadioControlProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <RadioControl {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

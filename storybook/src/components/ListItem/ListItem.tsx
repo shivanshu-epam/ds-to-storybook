@@ -3,6 +3,7 @@
 import type { HTMLAttributes } from 'react';
 
 import { Icon } from '../../icons/Icon';
+import type { IconName } from '../../icons/icons';
 import styles from './ListItem.module.css';
 
 export interface ListItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'type' | 'state' | 'size' | 'disabled' | 'hasLeadingControl' | 'hasTrailingControl'> {
@@ -32,13 +33,13 @@ export function ListItem({ type = 'default', state = 'default', size = 'sm', dis
               <span className={styles.leadingControl} aria-hidden="true" />
             )}
             <div className={styles.textColumn}>
-              <span className={styles.headline}>{"List item"}</span>
-              <span className={styles.supportingText}>{"2.4 MB · Edited 2d ago"}</span>
+              <span className={styles.headline}>{(({"menu":"Menu item","file":"Document.pdf","setting":"Notifications"} as Record<string, string>)[type] ?? "List item")}</span>
+              <span className={styles.supportingText}>{(({"setting":"Manage alert preferences"} as Record<string, string>)[type] ?? "2.4 MB · Edited 2d ago")}</span>
             </div>
             {hasTrailingControl && (
               <span className={styles.trailingControl} aria-hidden="true" />
             )}
-            <span className={styles.trailingIcon} aria-hidden="true"><Icon name="navChevronRight16" /></span>
+            <span className={styles.trailingIcon} aria-hidden="true"><Icon name={(({"md":"navChevronRight20","lg":"navChevronRight24"} as Record<string, IconName>)[size] ?? "navChevronRight16")} /></span>
             <span className={styles.leadingIcon} aria-hidden="true"><Icon name="layoutList16" /></span>
             <span className={styles.metadata}>{"12"}</span>
           </div>

@@ -37,3 +37,21 @@ export const State: Story = {
     );
   },
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '241:1816', name: 'State=Playing', width: 32, props: { state: 'playing' } as Partial<AutoplayToggleProps> },
+        { id: '241:1850', name: 'State=Paused', width: 32, props: { state: 'paused' } as Partial<AutoplayToggleProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <AutoplayToggle {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

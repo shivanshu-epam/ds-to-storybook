@@ -60,6 +60,10 @@ export interface RoleDef {
   display?: string;
   /** Extra hints for token matching, e.g. ["interactive"]. */
   hint?: string[];
+  /** Box around a nested generated component: only its size and position (the component paints itself). */
+  layoutOnly?: boolean;
+  /** Position among its siblings in a variant, when Figma reorders them between variants (CSS order). */
+  order?: (v: IRVariant) => number | undefined;
 }
 
 export interface StyleModel {
@@ -107,9 +111,14 @@ function nodeDeclarations(role: RoleDef, found: Found, variant: IRVariant, r: To
   if (type === 'TEXT') {
     Object.assign(out, declarations({ ...role, kind: 'text' }, found, variant, r));
     out['white-space'] = s.sizingH === 'HUG' ? 'nowrap' : 'normal';
+    // Figma rounds a single-line text box up to whole pixels (14.52px line -> 15px box); auto-height parents add those up.
+    const lh = s.text?.lineHeightPx;
+    if (lh && s.height !== undefined && s.sizingV !== 'FIXED' && s.height > lh && s.height < lh * 2) out['min-height'] = px(s.height);
     if (s.textAlign) out['text-align'] = ({ CENTER: 'center', RIGHT: 'right', JUSTIFIED: 'justify' } as Record<string, string>)[s.textAlign] ?? 'left';
   } else if (type === 'INSTANCE' && found.part?.instanceOf && /^icon\//i.test(found.part.instanceOf)) {
     Object.assign(out, declarations({ ...role, kind: 'icon' }, found, variant, r));
+  } else if (role.layoutOnly) {
+    // The nested component draws its own fill, border, radius and padding.
   } else {
     Object.assign(out, declarations({ ...role, kind: 'box' }, found, variant, r));
     if (type === 'ELLIPSE') out['border-radius'] = '50%';
@@ -144,6 +153,16 @@ function nodeDeclarations(role: RoleDef, found: Found, variant: IRVariant, r: To
     out.height = px(s.height);
   }
   if (inFlow) out['flex-shrink'] = s.sizingH === 'FIXED' && parentRow ? '0' : out['flex-shrink'] ?? '1';
+  // Thick dashed lines (see box declarations): border-box sizing must include the painted border.
+  for (const [k, dim] of [['--grow-h', 'height'], ['--grow-w', 'width']] as const) {
+    if (out[k] === undefined) continue;
+    const grow = Number(out[k]);
+    delete out[k];
+    const base = dim === 'height' ? s.height : s.width;
+    if (out[dim] !== undefined && base !== undefined) out[dim] = px(base + grow);
+  }
+  const order = role.order?.(variant);
+  if (order !== undefined) out.order = String(order);
   return out;
 }
 
@@ -174,11 +193,39 @@ function declarations(role: RoleDef, found: Found, variant: IRVariant, r: TokenR
     return out;
   }
   // box
-  out.background = color(r, s.fills[0], ['bg', 'surface', ...roleHint], weak) ?? 'transparent';
+  out.background = color(r, s.fills[0], ['bg', 'surface', ...roleHint], weak) ?? (s.fills[0]?.value.startsWith('linear-gradient(') ? s.fills[0].value : 'transparent');
   const shadows: string[] = [];
   const stroke = color(r, s.strokes[0], ['border', 'focus', ...roleHint], weak);
   const w = s.strokeWeight?.value ?? 1;
-  if (stroke && s.strokeSides) {
+  const dashes = s.dashes?.length ? s.dashes : undefined;
+  const thin = dashes && s.width !== undefined && s.height !== undefined && Math.min(s.width, s.height) <= w * 2;
+  if (stroke && dashes && thin) {
+    // A dashed line: repeat the exact Figma dash and gap along its long side.
+    const [dash = w, gap = dash] = dashes;
+    const horizontal = s.width! >= s.height!;
+    // Figma spreads the dashes evenly: a whole number of periods fits the length, scaled to fit,
+    // with a dash centred on each period boundary (so the line starts and ends on half a dash).
+    const length = horizontal ? s.width! : s.height!;
+    const periods = Math.max(1, Math.round(length / (dash + gap)));
+    const period = length / periods;
+    const half = (dash * period) / (dash + gap) / 2;
+    const ext = s.strokeAlign === 'OUTSIDE' ? w : s.strokeAlign === 'INSIDE' ? 0 : w / 2;
+    // "border-box" inside the shorthand: a separate background-origin rule would be reset by it.
+    out.background = `repeating-linear-gradient(${horizontal ? '90deg' : '180deg'}, ${stroke} 0 ${px(half)}, transparent ${px(half)} ${px(period - half)}, ${stroke} ${px(period - half)} ${px(period)})${ext ? ' border-box' : ''}`;
+    // A centred or outside stroke is thicker than the shape: paint into a transparent border and take the
+    // extra space back with a negative margin, so the line is as thick as in Figma without moving anything.
+    if (ext) {
+      out['border-style'] = 'solid';
+      out['border-color'] = 'transparent';
+      out['border-width'] = horizontal ? `${px(ext)} 0` : `0 ${px(ext)}`;
+      out.margin = horizontal ? `${px(-ext)} 0` : `0 ${px(-ext)}`;
+      out[horizontal ? '--grow-h' : '--grow-w'] = String(2 * ext);
+    }
+  } else if (stroke && dashes) {
+    // A dashed box: CSS cannot set the dash length; dotted when dashes are as short as the stroke.
+    out.outline = `${px(w)} ${(dashes[0] ?? w) <= w ? 'dotted' : 'dashed'} ${stroke}`;
+    out['outline-offset'] = s.strokeAlign === 'OUTSIDE' ? '0' : s.strokeAlign === 'CENTER' ? px(-w / 2) : px(-w);
+  } else if (stroke && s.strokeSides) {
     const { top, right, bottom, left } = s.strokeSides;
     if (top) shadows.push(`inset 0 ${px(top)} 0 0 ${stroke}`);
     if (bottom) shadows.push(`inset 0 ${px(-bottom)} 0 0 ${stroke}`);

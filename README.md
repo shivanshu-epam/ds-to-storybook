@@ -58,3 +58,4 @@ The tool follows the pattern multi-framework design systems use (Adobe Spectrum,
 4. **Components.** Archetype templates (button, checkbox, accordion, switch, radio, input, dialog) add tested WAI-ARIA behaviour. Every other component is rendered by the generic template from its Figma layers, and its docs say that its behaviour isn't specified yet.
 5. **Stories and docs.** It writes variant × state matrices, axis stories, play tests and MDX pages with the Figma documentation text.
 6. **Report.** `GENERATION-REPORT.md` records every assumption and gap; `token-map.json` records every token decision.
+7. **Visual check.** `ds-sync visual` compares every Figma variant, as Figma renders it, with the generated Storybook, pixel by pixel, and writes an HTML report (Figma, code and difference side by side).

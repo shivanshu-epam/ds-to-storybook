@@ -58,3 +58,27 @@ export const Options: Story = {
     </Row>
   ),
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '224:4', name: 'Type=Link, State=Default', width: 73, props: { type: 'link' } as Partial<BreadcrumbItemProps> },
+        { id: '224:1426', name: 'Type=Link, State=Hover', width: 73, props: { type: 'link', 'data-force-state': 'hover' } as Partial<BreadcrumbItemProps> },
+        { id: '224:1431', name: 'Type=Link, State=Focused', width: 73, props: { type: 'link', 'data-force-state': 'focus' } as Partial<BreadcrumbItemProps> },
+        { id: '224:1436', name: 'Type=Link, State=Disabled', width: 73, props: { type: 'link', disabled: true } as Partial<BreadcrumbItemProps> },
+        { id: '224:1441', name: 'Type=Current, State=Default', width: 73, props: { type: 'current' } as Partial<BreadcrumbItemProps> },
+        { id: '224:1446', name: 'Type=Collapse, State=Default', width: 24, props: { type: 'collapse' } as Partial<BreadcrumbItemProps> },
+        { id: '224:1451', name: 'Type=Collapse, State=Hover', width: 24, props: { type: 'collapse', 'data-force-state': 'hover' } as Partial<BreadcrumbItemProps> },
+        { id: '224:1456', name: 'Type=Collapse, State=Focused', width: 24, props: { type: 'collapse', 'data-force-state': 'focus' } as Partial<BreadcrumbItemProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <BreadcrumbItem {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

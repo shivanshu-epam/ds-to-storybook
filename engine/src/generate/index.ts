@@ -97,6 +97,26 @@ function knownIssueNotes(issue: string | Record<string, string>): string[] {
     : Object.entries(issue).map(([mode, why]) => `Known design issue in ${mode} (accessibility checks report instead of failing there): ${why}`);
 }
 
+/** Storybook's story id: "Components/Radio/RadioControl" + "FigmaVariants" -> "components-radio-radiocontrol--figma-variants". */
+export function storyId(title: string, exportName: string): string {
+  const slug = (x: string) => x.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  return `${slug(title)}--${slug(exportName.replace(/([a-z0-9])([A-Z])/g, '$1-$2'))}`;
+}
+
+/** What "ds-sync visual" compares: per component, the Figma variants and the story that renders them. */
+function visualManifest(ir: FigmaIR, results: { c: PlannedComponent; result: TemplateResult }[]) {
+  return {
+    note: 'Written by ds-sync generate; read by ds-sync visual. Figma renders come from this file key and version.',
+    fileKey: ir.fileKey,
+    version: ir.version,
+    components: results.flatMap(({ c, result }) => {
+      const visual = (result.core as GenericCore | undefined)?.visual;
+      return visual ? [{ name: c.name, story: storyId(c.title ?? `Components/${c.name}`, 'FigmaVariants'), variants: visual }] : [];
+    }),
+    notCovered: results.filter(({ result }) => !(result.core as GenericCore | undefined)?.visual).map(({ c }) => c.name),
+  };
+}
+
 /** Generated folders are replaced; files are only written under them, so the target stays clean between runs. */
 const OWNED = ['src', '.storybook', 'types'];
 
@@ -209,6 +229,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
         ...files,
         ...projectFiles({ name: packageName, figma: { fileKey: ir.fileKey, fileName: ir.fileName, version: ir.version }, modes: tokens.modes, modeAttributes, components: plan.map((c) => c.name), icons, colorTokens, page }),
         { path: 'README.md', content: readme(ir, plan, 'react') },
+        { path: 'visual-manifest.json', content: JSON.stringify(visualManifest(ir, results), null, 2) + '\n' },
       );
     } else {
       const prefix = gen.tagPrefix ?? 'ds';

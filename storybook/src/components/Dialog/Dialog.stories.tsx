@@ -137,3 +137,49 @@ export const Options: Story = {
     </Row>
   ),
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '348:597', name: 'Type=Confirmation, Size=Small, State=Open', width: 400, props: { type: 'confirmation', size: 'small', state: 'open' } as Partial<DialogProps> },
+        { id: '348:598', name: 'Type=Confirmation, Size=Small, State=Loading', width: 400, props: { type: 'confirmation', size: 'small', state: 'loading' } as Partial<DialogProps> },
+        { id: '348:599', name: 'Type=Confirmation, Size=Medium, State=Open', width: 480, props: { type: 'confirmation', size: 'medium', state: 'open' } as Partial<DialogProps> },
+        { id: '348:600', name: 'Type=Confirmation, Size=Medium, State=Loading', width: 480, props: { type: 'confirmation', size: 'medium', state: 'loading' } as Partial<DialogProps> },
+        { id: '348:601', name: 'Type=Confirmation, Size=Large, State=Open', width: 640, props: { type: 'confirmation', size: 'large', state: 'open' } as Partial<DialogProps> },
+        { id: '348:602', name: 'Type=Confirmation, Size=Large, State=Loading', width: 640, props: { type: 'confirmation', size: 'large', state: 'loading' } as Partial<DialogProps> },
+        { id: '348:603', name: 'Type=Alert, Size=Small, State=Open', width: 400, props: { type: 'alert', size: 'small', state: 'open' } as Partial<DialogProps> },
+        { id: '348:604', name: 'Type=Alert, Size=Small, State=Loading', width: 400, props: { type: 'alert', size: 'small', state: 'loading' } as Partial<DialogProps> },
+        { id: '348:605', name: 'Type=Alert, Size=Medium, State=Open', width: 480, props: { type: 'alert', size: 'medium', state: 'open' } as Partial<DialogProps> },
+        { id: '348:606', name: 'Type=Alert, Size=Medium, State=Loading', width: 480, props: { type: 'alert', size: 'medium', state: 'loading' } as Partial<DialogProps> },
+        { id: '348:607', name: 'Type=Alert, Size=Large, State=Open', width: 640, props: { type: 'alert', size: 'large', state: 'open' } as Partial<DialogProps> },
+        { id: '348:608', name: 'Type=Alert, Size=Large, State=Loading', width: 640, props: { type: 'alert', size: 'large', state: 'loading' } as Partial<DialogProps> },
+        { id: '348:609', name: 'Type=Form, Size=Small, State=Open', width: 400, props: { type: 'form', size: 'small', state: 'open' } as Partial<DialogProps> },
+        { id: '348:610', name: 'Type=Form, Size=Small, State=Loading', width: 400, props: { type: 'form', size: 'small', state: 'loading' } as Partial<DialogProps> },
+        { id: '348:611', name: 'Type=Form, Size=Small, State=Error', width: 400, props: { type: 'form', size: 'small', state: 'error' } as Partial<DialogProps> },
+        { id: '348:612', name: 'Type=Form, Size=Medium, State=Open', width: 480, props: { type: 'form', size: 'medium', state: 'open' } as Partial<DialogProps> },
+        { id: '348:613', name: 'Type=Form, Size=Medium, State=Loading', width: 480, props: { type: 'form', size: 'medium', state: 'loading' } as Partial<DialogProps> },
+        { id: '348:614', name: 'Type=Form, Size=Medium, State=Error', width: 480, props: { type: 'form', size: 'medium', state: 'error' } as Partial<DialogProps> },
+        { id: '348:615', name: 'Type=Form, Size=Large, State=Open', width: 640, props: { type: 'form', size: 'large', state: 'open' } as Partial<DialogProps> },
+        { id: '348:616', name: 'Type=Form, Size=Large, State=Loading', width: 640, props: { type: 'form', size: 'large', state: 'loading' } as Partial<DialogProps> },
+        { id: '348:617', name: 'Type=Form, Size=Large, State=Error', width: 640, props: { type: 'form', size: 'large', state: 'error' } as Partial<DialogProps> },
+        { id: '348:618', name: 'Type=Full-screen, Size=Full, State=Open', width: 1280, props: { type: 'full-screen', size: 'full', state: 'open' } as Partial<DialogProps> },
+        { id: '348:619', name: 'Type=Full-screen, Size=Full, State=Loading', width: 1280, props: { type: 'full-screen', size: 'full', state: 'loading' } as Partial<DialogProps> },
+        { id: '348:620', name: 'Type=Full-screen, Size=Full, State=Error', width: 1280, props: { type: 'full-screen', size: 'full', state: 'error' } as Partial<DialogProps> },
+        { id: '348:621', name: 'Type=Side-drawer, Size=Small, State=Open', width: 400, props: { type: 'side-drawer', size: 'small', state: 'open' } as Partial<DialogProps> },
+        { id: '348:622', name: 'Type=Side-drawer, Size=Small, State=Loading', width: 400, props: { type: 'side-drawer', size: 'small', state: 'loading' } as Partial<DialogProps> },
+        { id: '348:623', name: 'Type=Side-drawer, Size=Medium, State=Open', width: 480, props: { type: 'side-drawer', size: 'medium', state: 'open' } as Partial<DialogProps> },
+        { id: '348:624', name: 'Type=Side-drawer, Size=Medium, State=Loading', width: 480, props: { type: 'side-drawer', size: 'medium', state: 'loading' } as Partial<DialogProps> },
+        { id: '348:625', name: 'Type=Side-drawer, Size=Large, State=Open', width: 640, props: { type: 'side-drawer', size: 'large', state: 'open' } as Partial<DialogProps> },
+        { id: '348:626', name: 'Type=Side-drawer, Size=Large, State=Loading', width: 640, props: { type: 'side-drawer', size: 'large', state: 'loading' } as Partial<DialogProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <Dialog {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

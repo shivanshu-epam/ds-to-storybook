@@ -2,6 +2,7 @@
 // Visuals come from Figma. Behaviour (keyboard, focus, ARIA role) is not specified in Figma and is not generated.
 import type { HTMLAttributes } from 'react';
 
+import { Icon } from '../../icons/Icon';
 import styles from './Separator.module.css';
 
 export interface SeparatorProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'type'> {
@@ -15,6 +16,7 @@ export function Separator({ type = 'slash', className, ...rest }: SeparatorProps
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-type={type} {...rest}>
       <span className={styles.glyph}>{"/"}</span>
+      <span className={styles.glyph2} aria-hidden="true"><Icon name="navChevronRight16" /></span>
     </div>
   );
 }

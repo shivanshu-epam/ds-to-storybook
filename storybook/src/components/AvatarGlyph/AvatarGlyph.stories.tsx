@@ -62,3 +62,40 @@ export const Size: Story = {
     );
   },
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '276:3', name: 'Type=Text, Color=1, Size=Sm', width: 24, props: { type: 'text', color: '1', size: 'sm' } as Partial<AvatarGlyphProps> },
+        { id: '276:5', name: 'Type=Text, Color=1, Size=Md', width: 32, props: { type: 'text', color: '1', size: 'md' } as Partial<AvatarGlyphProps> },
+        { id: '276:7', name: 'Type=Text, Color=1, Size=Lg', width: 40, props: { type: 'text', color: '1', size: 'lg' } as Partial<AvatarGlyphProps> },
+        { id: '276:9', name: 'Type=Text, Color=2, Size=Sm', width: 24, props: { type: 'text', color: '2', size: 'sm' } as Partial<AvatarGlyphProps> },
+        { id: '276:11', name: 'Type=Text, Color=2, Size=Md', width: 32, props: { type: 'text', color: '2', size: 'md' } as Partial<AvatarGlyphProps> },
+        { id: '276:13', name: 'Type=Text, Color=2, Size=Lg', width: 40, props: { type: 'text', color: '2', size: 'lg' } as Partial<AvatarGlyphProps> },
+        { id: '276:15', name: 'Type=Text, Color=3, Size=Sm', width: 24, props: { type: 'text', color: '3', size: 'sm' } as Partial<AvatarGlyphProps> },
+        { id: '276:17', name: 'Type=Text, Color=3, Size=Md', width: 32, props: { type: 'text', color: '3', size: 'md' } as Partial<AvatarGlyphProps> },
+        { id: '276:19', name: 'Type=Text, Color=3, Size=Lg', width: 40, props: { type: 'text', color: '3', size: 'lg' } as Partial<AvatarGlyphProps> },
+        { id: '276:21', name: 'Type=Text, Color=4, Size=Sm', width: 24, props: { type: 'text', color: '4', size: 'sm' } as Partial<AvatarGlyphProps> },
+        { id: '276:23', name: 'Type=Text, Color=4, Size=Md', width: 32, props: { type: 'text', color: '4', size: 'md' } as Partial<AvatarGlyphProps> },
+        { id: '276:25', name: 'Type=Text, Color=4, Size=Lg', width: 40, props: { type: 'text', color: '4', size: 'lg' } as Partial<AvatarGlyphProps> },
+        { id: '276:27', name: 'Type=Text, Color=5, Size=Sm', width: 24, props: { type: 'text', color: '5', size: 'sm' } as Partial<AvatarGlyphProps> },
+        { id: '276:29', name: 'Type=Text, Color=5, Size=Md', width: 32, props: { type: 'text', color: '5', size: 'md' } as Partial<AvatarGlyphProps> },
+        { id: '276:31', name: 'Type=Text, Color=5, Size=Lg', width: 40, props: { type: 'text', color: '5', size: 'lg' } as Partial<AvatarGlyphProps> },
+        { id: '276:33', name: 'Type=Icon, Color=1, Size=Sm', width: 24, props: { type: 'icon', color: '1', size: 'sm' } as Partial<AvatarGlyphProps> },
+        { id: '276:1645', name: 'Type=Icon, Color=1, Size=Md', width: 32, props: { type: 'icon', color: '1', size: 'md' } as Partial<AvatarGlyphProps> },
+        { id: '276:1679', name: 'Type=Icon, Color=1, Size=Lg', width: 40, props: { type: 'icon', color: '1', size: 'lg' } as Partial<AvatarGlyphProps> },
+        { id: '276:1713', name: 'Type=Image, Color=1, Size=Sm', width: 24, props: { type: 'image', color: '1', size: 'sm' } as Partial<AvatarGlyphProps> },
+        { id: '276:1714', name: 'Type=Image, Color=1, Size=Md', width: 32, props: { type: 'image', color: '1', size: 'md' } as Partial<AvatarGlyphProps> },
+        { id: '276:1715', name: 'Type=Image, Color=1, Size=Lg', width: 40, props: { type: 'image', color: '1', size: 'lg' } as Partial<AvatarGlyphProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <AvatarGlyph {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

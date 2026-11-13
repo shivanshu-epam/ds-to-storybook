@@ -98,7 +98,7 @@
 }
 
 .root:where([data-type="image"][data-color="1"]) {
-  background: transparent;
+  background: linear-gradient(90deg, #828cf7 0%, #4f45e5 100%);
 }
 
 .root:where([data-type="text"][data-size="sm"]) .initials {

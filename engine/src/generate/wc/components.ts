@@ -8,7 +8,7 @@ import { docTabs, kebab, leadSentence, pascal } from '../templates/common.ts';
 import type { AccordionCore } from '../templates/accordion.ts';
 import type { ActionCore } from '../templates/action.ts';
 import type { CheckboxCore } from '../templates/checkbox.ts';
-import { isIcon, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
+import { isIcon, lookupExpr, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRComponentSet, IRPart } from '../../ir/types.ts';
 import { wcRadio } from './radio.ts';
 import { wcInput } from './input.ts';
@@ -32,6 +32,9 @@ export const classFor = (prefix: string, name: string) => `${pascal(prefix)}${na
 /** Lit property -> HTML attribute: hasLeadingIcon -> has-leading-icon. */
 export const attrFor = (prop: string) => prop.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
 const js = (v: unknown) => JSON.stringify(v);
+
+/** Lit expression for a layer's text: the Figma text, or a lookup on the variant property that changes it. */
+export const wcText = (l: LayerInfo, plain: string) => (l.textByAxis ? lookupExpr(l.textByAxis, (p) => (p === '$checked' ? 'this.checked' : `this.${wcProp(p)}`), 'string') : plain);
 
 /** Properties every HTMLElement already has: a generated prop with one of these names gets a "Text"/"Value" suffix. */
 const ELEMENT_RESERVED = new Set(['title', 'hidden', 'id', 'slot', 'style', 'role', 'dir', 'lang', 'draggable', 'inert', 'popover', 'translate', 'spellcheck', 'tabIndex', 'className', 'children', 'part', 'nonce', 'autofocus', 'accessKey', 'enterKeyHint', 'inputMode', 'contentEditable']);
@@ -132,13 +135,13 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     let el: string;
     if (p.type === 'TEXT') {
       const t = textFor(p.refs?.characters);
-      el = `<span ${c}>\${${t ? `this.${t}` : js(p.text ?? '')}}</span>`;
+      el = `<span ${c}>\${${t ? `this.${t}` : wcText(l, js(p.text ?? ''))}}</span>`;
     } else if (p.type === 'INSTANCE') {
       const ic = p.instanceOf ? ctx.icons.get(p.instanceOf) : undefined;
       const nested = !isIcon(p) && p.instanceComponentId ? instance(p) : undefined;
       if (ic) {
         usesIcon = true;
-        el = `<span ${c} aria-hidden="true">\${icon(${js(ic.name)})}</span>`;
+        el = `<span ${c} aria-hidden="true">\${icon(${l.iconByAxis ? lookupExpr(l.iconByAxis, (p) => (p === '$checked' ? 'this.checked' : `this.${wcProp(p)}`), 'string') : js(ic.name)})}</span>`;
       } else if (nested && nested.component !== name) {
         const ntag = tagOf(nested.component);
         imports.add(`import '../${nested.component}/${ntag}';`);
@@ -148,7 +151,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
             : x.prop === 'defaultChecked' ? '?checked=${true}'
             : `.${wcProp(x.prop)}=\${${js(x.value)}}`))
           .join(' ');
-        el = `<span ${c}><${ntag}${props ? ' ' + props : ''}>${nested.text !== undefined ? `\${${js(nested.text)}}` : ''}</${ntag}></span>`;
+        el = `<span ${c}><${ntag}${props ? ' ' + props : ''}>${nested.text !== undefined ? `\${${wcText(l, js(nested.text))}}` : ''}</${ntag}></span>`;
         // Repeated instances: one element each (the React output does the same).
         for (const copy of l.copies ?? []) {
           const n = instance(copy);

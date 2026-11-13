@@ -106,9 +106,15 @@ export class DsDialog extends LitElement {
         <div class="body" id="body"><slot>
             <span class="bodyContent">${this.bodyContent}</span>
             <div class="formField">
-              <span class="fieldLabel">${"Full name"}</span>
+              <span class="fieldLabel">${(({"full-screen":"Project name"} as Record<string, string>)[this.type] ?? "Full name")}</span>
               <div class="fieldInput">
-                <span class="fieldPlaceholder">${"Jordan Lee"}</span>
+                <span class="fieldPlaceholder">${(({"full-screen":"Marketing website redesign"} as Record<string, string>)[this.type] ?? "Jordan Lee")}</span>
+              </div>
+            </div>
+            <div class="formField2">
+              <span class="fieldLabel2">${(({"full-screen":"Workspace"} as Record<string, string>)[this.type] ?? "Email address")}</span>
+              <div class="fieldInput2">
+                <span class="fieldPlaceholder2">${(({"full-screen":"Select a workspace"} as Record<string, string>)[this.type] ?? "jordan@company.com")}</span>
               </div>
             </div>
             <div class="errorBanner">
@@ -119,7 +125,7 @@ export class DsDialog extends LitElement {
         ${this.scrollableContent ? html`<span class="dividerBottom" aria-hidden="true"></span>` : nothing}
         <div class="footer"><slot name="footer">
             ${this.hasSecondaryAction ? html`<span class="secondaryButton"><ds-button .variant=${"secondary"} .size=${"md"}>${"Cancel"}</ds-button></span>` : nothing}
-            <span class="primaryButton"><ds-button .size=${"md"}>${"Confirm"}</ds-button></span>
+            <span class="primaryButton"><ds-button .size=${"md"}>${(this.state === "loading" ? "Loading…" : (({"alert":"Got it","form":"Save changes","full-screen":"Create project","side-drawer":"Save"} as Record<string, string>)[this.type] ?? "Confirm"))}</ds-button></span>
           </slot></div>
       </dialog>`;
   }

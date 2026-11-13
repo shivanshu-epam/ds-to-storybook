@@ -40,3 +40,27 @@ export const DirectionAndState: Story = {
     );
   },
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '241:4', name: 'Direction=Prev, State=Default', width: 36, props: { direction: 'prev' } as Partial<NavControlProps> },
+        { id: '241:1581', name: 'Direction=Prev, State=Hover', width: 36, props: { direction: 'prev', 'data-force-state': 'hover' } as Partial<NavControlProps> },
+        { id: '241:1614', name: 'Direction=Prev, State=Focused', width: 36, props: { direction: 'prev', 'data-force-state': 'focus' } as Partial<NavControlProps> },
+        { id: '241:1647', name: 'Direction=Prev, State=Disabled', width: 36, props: { direction: 'prev', disabled: true } as Partial<NavControlProps> },
+        { id: '241:1680', name: 'Direction=Next, State=Default', width: 36, props: { direction: 'next' } as Partial<NavControlProps> },
+        { id: '241:1713', name: 'Direction=Next, State=Hover', width: 36, props: { direction: 'next', 'data-force-state': 'hover' } as Partial<NavControlProps> },
+        { id: '241:1746', name: 'Direction=Next, State=Focused', width: 36, props: { direction: 'next', 'data-force-state': 'focus' } as Partial<NavControlProps> },
+        { id: '241:1779', name: 'Direction=Next, State=Disabled', width: 36, props: { direction: 'next', disabled: true } as Partial<NavControlProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <NavControl {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

@@ -61,3 +61,59 @@ export const State: Story = {
     );
   },
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '515:3', name: 'Sentiment=Danger, Size=Md, State=With Action + Close', width: 400, props: { sentiment: 'danger', size: 'md', state: 'with-action-close' } as Partial<AlertProps> },
+        { id: '516:14', name: 'Sentiment=Neutral, Size=Sm, State=Default', width: 400, props: { sentiment: 'neutral', size: 'sm', state: 'default' } as Partial<AlertProps> },
+        { id: '516:24', name: 'Sentiment=Neutral, Size=Sm, State=With Action', width: 400, props: { sentiment: 'neutral', size: 'sm', state: 'with-action' } as Partial<AlertProps> },
+        { id: '516:44', name: 'Sentiment=Neutral, Size=Sm, State=With Close', width: 400, props: { sentiment: 'neutral', size: 'sm', state: 'with-close' } as Partial<AlertProps> },
+        { id: '516:61', name: 'Sentiment=Neutral, Size=Sm, State=With Action + Close', width: 400, props: { sentiment: 'neutral', size: 'sm', state: 'with-action-close' } as Partial<AlertProps> },
+        { id: '516:87', name: 'Sentiment=Neutral, Size=Md, State=Default', width: 400, props: { sentiment: 'neutral', size: 'md', state: 'default' } as Partial<AlertProps> },
+        { id: '516:99', name: 'Sentiment=Neutral, Size=Md, State=With Action', width: 400, props: { sentiment: 'neutral', size: 'md', state: 'with-action' } as Partial<AlertProps> },
+        { id: '516:116', name: 'Sentiment=Neutral, Size=Md, State=With Close', width: 400, props: { sentiment: 'neutral', size: 'md', state: 'with-close' } as Partial<AlertProps> },
+        { id: '516:133', name: 'Sentiment=Neutral, Size=Md, State=With Action + Close', width: 400, props: { sentiment: 'neutral', size: 'md', state: 'with-action-close' } as Partial<AlertProps> },
+        { id: '516:159', name: 'Sentiment=Info, Size=Sm, State=Default', width: 400, props: { sentiment: 'info', size: 'sm', state: 'default' } as Partial<AlertProps> },
+        { id: '516:171', name: 'Sentiment=Info, Size=Sm, State=With Action', width: 400, props: { sentiment: 'info', size: 'sm', state: 'with-action' } as Partial<AlertProps> },
+        { id: '516:188', name: 'Sentiment=Info, Size=Sm, State=With Close', width: 400, props: { sentiment: 'info', size: 'sm', state: 'with-close' } as Partial<AlertProps> },
+        { id: '516:205', name: 'Sentiment=Info, Size=Sm, State=With Action + Close', width: 400, props: { sentiment: 'info', size: 'sm', state: 'with-action-close' } as Partial<AlertProps> },
+        { id: '516:231', name: 'Sentiment=Info, Size=Md, State=Default', width: 400, props: { sentiment: 'info', size: 'md', state: 'default' } as Partial<AlertProps> },
+        { id: '516:243', name: 'Sentiment=Info, Size=Md, State=With Action', width: 400, props: { sentiment: 'info', size: 'md', state: 'with-action' } as Partial<AlertProps> },
+        { id: '516:260', name: 'Sentiment=Info, Size=Md, State=With Close', width: 400, props: { sentiment: 'info', size: 'md', state: 'with-close' } as Partial<AlertProps> },
+        { id: '516:277', name: 'Sentiment=Info, Size=Md, State=With Action + Close', width: 400, props: { sentiment: 'info', size: 'md', state: 'with-action-close' } as Partial<AlertProps> },
+        { id: '516:303', name: 'Sentiment=Success, Size=Sm, State=Default', width: 400, props: { sentiment: 'success', size: 'sm', state: 'default' } as Partial<AlertProps> },
+        { id: '516:314', name: 'Sentiment=Success, Size=Sm, State=With Action', width: 400, props: { sentiment: 'success', size: 'sm', state: 'with-action' } as Partial<AlertProps> },
+        { id: '516:330', name: 'Sentiment=Success, Size=Sm, State=With Close', width: 400, props: { sentiment: 'success', size: 'sm', state: 'with-close' } as Partial<AlertProps> },
+        { id: '516:346', name: 'Sentiment=Success, Size=Sm, State=With Action + Close', width: 400, props: { sentiment: 'success', size: 'sm', state: 'with-action-close' } as Partial<AlertProps> },
+        { id: '516:371', name: 'Sentiment=Success, Size=Md, State=Default', width: 400, props: { sentiment: 'success', size: 'md', state: 'default' } as Partial<AlertProps> },
+        { id: '516:382', name: 'Sentiment=Success, Size=Md, State=With Action', width: 400, props: { sentiment: 'success', size: 'md', state: 'with-action' } as Partial<AlertProps> },
+        { id: '516:398', name: 'Sentiment=Success, Size=Md, State=With Close', width: 400, props: { sentiment: 'success', size: 'md', state: 'with-close' } as Partial<AlertProps> },
+        { id: '516:414', name: 'Sentiment=Success, Size=Md, State=With Action + Close', width: 400, props: { sentiment: 'success', size: 'md', state: 'with-action-close' } as Partial<AlertProps> },
+        { id: '516:439', name: 'Sentiment=Warning, Size=Sm, State=Default', width: 400, props: { sentiment: 'warning', size: 'sm', state: 'default' } as Partial<AlertProps> },
+        { id: '516:451', name: 'Sentiment=Warning, Size=Sm, State=With Action', width: 400, props: { sentiment: 'warning', size: 'sm', state: 'with-action' } as Partial<AlertProps> },
+        { id: '516:468', name: 'Sentiment=Warning, Size=Sm, State=With Close', width: 400, props: { sentiment: 'warning', size: 'sm', state: 'with-close' } as Partial<AlertProps> },
+        { id: '516:485', name: 'Sentiment=Warning, Size=Sm, State=With Action + Close', width: 400, props: { sentiment: 'warning', size: 'sm', state: 'with-action-close' } as Partial<AlertProps> },
+        { id: '516:511', name: 'Sentiment=Warning, Size=Md, State=Default', width: 400, props: { sentiment: 'warning', size: 'md', state: 'default' } as Partial<AlertProps> },
+        { id: '516:523', name: 'Sentiment=Warning, Size=Md, State=With Action', width: 400, props: { sentiment: 'warning', size: 'md', state: 'with-action' } as Partial<AlertProps> },
+        { id: '516:540', name: 'Sentiment=Warning, Size=Md, State=With Close', width: 400, props: { sentiment: 'warning', size: 'md', state: 'with-close' } as Partial<AlertProps> },
+        { id: '516:557', name: 'Sentiment=Warning, Size=Md, State=With Action + Close', width: 400, props: { sentiment: 'warning', size: 'md', state: 'with-action-close' } as Partial<AlertProps> },
+        { id: '516:583', name: 'Sentiment=Danger, Size=Sm, State=Default', width: 400, props: { sentiment: 'danger', size: 'sm', state: 'default' } as Partial<AlertProps> },
+        { id: '516:595', name: 'Sentiment=Danger, Size=Sm, State=With Action', width: 400, props: { sentiment: 'danger', size: 'sm', state: 'with-action' } as Partial<AlertProps> },
+        { id: '516:612', name: 'Sentiment=Danger, Size=Sm, State=With Close', width: 400, props: { sentiment: 'danger', size: 'sm', state: 'with-close' } as Partial<AlertProps> },
+        { id: '516:629', name: 'Sentiment=Danger, Size=Sm, State=With Action + Close', width: 400, props: { sentiment: 'danger', size: 'sm', state: 'with-action-close' } as Partial<AlertProps> },
+        { id: '516:655', name: 'Sentiment=Danger, Size=Md, State=Default', width: 400, props: { sentiment: 'danger', size: 'md', state: 'default' } as Partial<AlertProps> },
+        { id: '516:667', name: 'Sentiment=Danger, Size=Md, State=With Action', width: 400, props: { sentiment: 'danger', size: 'md', state: 'with-action' } as Partial<AlertProps> },
+        { id: '516:684', name: 'Sentiment=Danger, Size=Md, State=With Close', width: 400, props: { sentiment: 'danger', size: 'md', state: 'with-close' } as Partial<AlertProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <Alert {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

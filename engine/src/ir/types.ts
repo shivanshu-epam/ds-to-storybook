@@ -18,6 +18,10 @@ export interface IRStyle {
   fills: IRValue<string>[];
   strokes: IRValue<string>[];
   strokeWeight?: IRValue<number>;
+  /** Painted area relative to the frame (left, top, width, height), from Figma absoluteRenderBounds. */
+  paintBox?: [number, number, number, number];
+  /** Dash pattern of the stroke (dash, gap, ...), from Figma strokeDashes. */
+  dashes?: number[];
   cornerRadius?: IRValue<number>;
   paddingLeft?: IRValue<number>;
   paddingRight?: IRValue<number>;

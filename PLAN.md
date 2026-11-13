@@ -29,7 +29,7 @@ The full product strategy (market research, architecture options, security, KPIs
 | Tokens: Figma variables to CSS, light/dark and brand modes | Done | `storybook/src/tokens/tokens.css` |
 | Generated components: 9 with behaviour templates (Button, Checkbox, Accordion, Switch, RadioControl, RadioField, RadioGroup, Input, Dialog), 12 generic; stories, MDX docs, 42 icons | Done; 258/258 story tests pass across all Figma modes (1 real design contrast issue) | `storybook/src/components` |
 | Discovery, `init`, installable CLI, Claude Skill, GitHub workflow, Figma plugin | Done (Phases A and B) | `engine/`, `skills/`, `plugin/` |
-| Engine tests | 52/52 pass | `engine/test` |
+| Engine tests | 61/61 pass | `engine/test` |
 
 **Figma file:** "Design system AI" (`I983NcgqSiY14YkpJbwjG8`). The variables come from `engine/inputs/figma-variables.json`, because the Variables REST API is Enterprise-only.
 
@@ -122,7 +122,11 @@ Decision: support every stack through **layers**, as multi-framework design syst
     - dark theme: 23, because dark text `#111827` sits on mid-tone avatar and badge colours (1.72–3.97:1) and grey `#6b7280` text on dark surfaces is 3.66–4.16:1 (Badge, Avatar, Checkbox, DatePicker, Dialog, Input, ListItem).
   - **Accepted for now (2026-11-13)**, per mode: `overrides.knownIssues` in `ds-sync.config.json` lists each component, mode and measured contrast. In those modes axe reports instead of failing; every other mode stays strict. The Input placeholder contrast in the default modes (4.39:1) was accepted the same way. Result: all 246 story tests pass in both outputs.
   - To do in Figma: a darker brand B orange, and lighter or darker text for dark-theme badges, avatars and grey helper text. Remove each entry from `knownIssues` once its tokens are fixed.
-- [ ] Visual comparison against Figma renders: element positions, computed styles, then a perceptual score.
+- [x] **Visual comparison against Figma** (2026-11-13): `ds-sync visual` compares every Figma variant (Figma's own PNG, from the generated version) with the same variant in the running React Storybook ("Figma Variants" story per component), pixel by pixel, and writes `.ds-sync/visual/report.html`.
+  - Coverage: 18 of 21 components, 1,034 variants. Button, Checkbox and Accordion (own templates) are not covered yet.
+  - First run: 516 match, 162 close, 356 differ. It found real generator bugs, now fixed: repeated layers with one name were merged (the Form dialog's second field, the Range date picker's second field, calendar days); nested components painted their fill and border twice; layers Figma reorders per variant (Position=Right, an error banner shown first) kept one order; dashed and dotted strokes were solid; gradient fills were dropped; text and icons Figma swaps per variant (button labels, Loading spinners, the Switch check/cross, the Separator chevron) always showed the default; single-line text was up to 1px shorter than Figma's rounded text boxes; a layer that is text in one variant and an icon in another showed only one.
+  - Now: **697 match** (≤ 2%), **265 close** (2–7%: text anti-aliasing between Figma and Chromium, and static focus examples that nest a focused child), **72 differ**: all 1px dashed Divider lines, where Chromium snaps the half-pixel stroke differently (they look the same).
+  - Not yet: Button, Checkbox and Accordion coverage; running it in CI (it needs a running Storybook).
 - [ ] Resolve the open decisions in G8 with the design system team.
 
 ### Phase E: keep it in sync (about 4 weeks). Fixes G6.

@@ -76,6 +76,8 @@ For each failing test, read the error and say which kind it is:
 
 Summarise `GENERATION-REPORT.md`: what came from Figma, what came from archetype defaults, and the gaps. Offer to start Storybook (`npm run storybook`, port 6006).
 
+With the React Storybook running, `ds-sync visual` compares every Figma variant with the code, pixel by pixel, and writes `.ds-sync/visual/report.html`. Report the counts (match, close, differ) and look at the worst variants: a different size or a missing or misplaced layer is a generator issue; small text-edge differences are font rendering.
+
 ## 5. Keep it in sync
 
 - After a Figma change, run `ds-sync generate` again and review the diff before committing.

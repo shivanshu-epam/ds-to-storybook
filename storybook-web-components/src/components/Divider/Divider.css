@@ -10,7 +10,6 @@
 }
 
 .root .line {
-  background: transparent;
   display: block;
 }
 
@@ -24,6 +23,16 @@
 
 .root {
   opacity: 1;
+}
+
+.root:where([data-style="dotted"]) .line {
+  border-color: transparent;
+  border-style: solid;
+}
+
+.root:where([data-style="dash"]) .line {
+  border-color: transparent;
+  border-style: solid;
 }
 
 .root:where([data-orientation="horizontal"]) .line {
@@ -70,166 +79,834 @@
   opacity: 1;
 }
 
-.root:where([data-color="light"]) .line {
+.root:where([data-orientation="horizontal"][data-style="dotted"]) .line {
+  border-width: 0.5px 0;
+  margin: -0.5px 0;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"]) .line {
+  border-width: 0.5px 0;
+  margin: -0.5px 0;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"]) .line {
+  border-width: 0 0.5px;
+  margin: 0 -0.5px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"]) .line {
+  border-width: 0 0.5px;
+  margin: 0 -0.5px;
+}
+
+.root:where([data-style="solid"][data-color="light"]) .line {
   box-shadow: 0 0 0 0.5px var(--border-subtle), inset 0 0 0 0.5px var(--border-subtle);
 }
 
-.root:where([data-color="dark"]) .line {
+.root:where([data-style="solid"][data-color="dark"]) .line {
   box-shadow: 0 0 0 0.5px var(--border-strong), inset 0 0 0 0.5px var(--border-strong);
 }
 
-.root:where([data-color="subtle"]) .line {
+.root:where([data-style="solid"][data-color="subtle"]) .line {
   box-shadow: 0 0 0 0.5px var(--border-interactive-disabled), inset 0 0 0 0.5px var(--border-interactive-disabled);
 }
 
-.root:where([data-color="transparent"]) .line {
+.root:where([data-style="solid"][data-color="transparent"]) .line {
   box-shadow: 0 0 0 0.5px var(--border-subtle), inset 0 0 0 0.5px var(--border-subtle);
 }
 
-.root:where([data-color="danger"]) .line {
+.root:where([data-style="solid"][data-color="danger"]) .line {
   box-shadow: 0 0 0 0.5px var(--border-interactive-error), inset 0 0 0 0.5px var(--border-interactive-error);
 }
 
-.root:where([data-color="success"]) .line {
+.root:where([data-style="solid"][data-color="success"]) .line {
   box-shadow: 0 0 0 0.5px var(--border-success), inset 0 0 0 0.5px var(--border-success);
 }
 
-.root:where([data-color="neutral"]) .line {
+.root:where([data-style="solid"][data-color="neutral"]) .line {
   box-shadow: 0 0 0 0.5px var(--border-default), inset 0 0 0 0.5px var(--border-default);
 }
 
-.root:where([data-color="warning"]) .line {
+.root:where([data-style="solid"][data-color="warning"]) .line {
   box-shadow: 0 0 0 0.5px var(--border-warning), inset 0 0 0 0.5px var(--border-warning);
 }
 
-.root:where([data-color="info"]) .line {
+.root:where([data-style="solid"][data-color="info"]) .line {
   box-shadow: 0 0 0 0.5px var(--border-info), inset 0 0 0 0.5px var(--border-info);
 }
 
-.root:where([data-orientation="horizontal"][data-size="sm"]) .line {
+.root:where([data-style="dotted"][data-color="light"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dotted"][data-color="dark"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dotted"][data-color="subtle"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dotted"][data-color="transparent"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dotted"][data-color="danger"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dotted"][data-color="success"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dotted"][data-color="neutral"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dotted"][data-color="warning"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dotted"][data-color="info"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dash"][data-color="light"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dash"][data-color="dark"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dash"][data-color="subtle"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dash"][data-color="transparent"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dash"][data-color="danger"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dash"][data-color="success"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dash"][data-color="neutral"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dash"][data-color="warning"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-style="dash"][data-color="info"]) .line {
+  box-shadow: none;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"][data-color="light"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"][data-color="dark"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"][data-color="subtle"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"][data-color="transparent"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"][data-color="danger"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"][data-color="success"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"][data-color="neutral"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"][data-color="warning"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"][data-color="info"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="md"][data-color="light"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="md"][data-color="dark"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="md"][data-color="subtle"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="md"][data-color="transparent"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="md"][data-color="danger"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="md"][data-color="success"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="md"][data-color="neutral"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="md"][data-color="warning"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="md"][data-color="info"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="sm"][data-color="light"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-subtle) 0 0.5px, transparent 0.5px 3.5px, var(--border-subtle) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="sm"][data-color="dark"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-strong) 0 0.5px, transparent 0.5px 3.5px, var(--border-strong) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="sm"][data-color="subtle"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-interactive-disabled) 0 0.5px, transparent 0.5px 3.5px, var(--border-interactive-disabled) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="sm"][data-color="transparent"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-subtle) 0 0.5px, transparent 0.5px 3.5px, var(--border-subtle) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="sm"][data-color="danger"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-interactive-error) 0 0.5px, transparent 0.5px 3.5px, var(--border-interactive-error) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="sm"][data-color="success"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-success) 0 0.5px, transparent 0.5px 3.5px, var(--border-success) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="sm"][data-color="neutral"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-default) 0 0.5px, transparent 0.5px 3.5px, var(--border-default) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="sm"][data-color="warning"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-warning) 0 0.5px, transparent 0.5px 3.5px, var(--border-warning) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="sm"][data-color="info"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-info) 0 0.5px, transparent 0.5px 3.5px, var(--border-info) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="md"][data-color="light"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-subtle) 0 0.5px, transparent 0.5px 3.5px, var(--border-subtle) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="md"][data-color="dark"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-strong) 0 0.5px, transparent 0.5px 3.5px, var(--border-strong) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="md"][data-color="subtle"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-interactive-disabled) 0 0.5px, transparent 0.5px 3.5px, var(--border-interactive-disabled) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="md"][data-color="transparent"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-subtle) 0 0.5px, transparent 0.5px 3.5px, var(--border-subtle) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="md"][data-color="danger"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-interactive-error) 0 0.5px, transparent 0.5px 3.5px, var(--border-interactive-error) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="md"][data-color="success"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-success) 0 0.5px, transparent 0.5px 3.5px, var(--border-success) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="md"][data-color="neutral"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-default) 0 0.5px, transparent 0.5px 3.5px, var(--border-default) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="md"][data-color="warning"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-warning) 0 0.5px, transparent 0.5px 3.5px, var(--border-warning) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="md"][data-color="info"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-info) 0 0.5px, transparent 0.5px 3.5px, var(--border-info) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="sm"][data-color="light"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-subtle) 0 3.6px, transparent 3.6px 8.4px, var(--border-subtle) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="sm"][data-color="dark"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-strong) 0 3.6px, transparent 3.6px 8.4px, var(--border-strong) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="sm"][data-color="subtle"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-interactive-disabled) 0 3.6px, transparent 3.6px 8.4px, var(--border-interactive-disabled) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="sm"][data-color="transparent"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-subtle) 0 3.6px, transparent 3.6px 8.4px, var(--border-subtle) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="sm"][data-color="danger"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-interactive-error) 0 3.6px, transparent 3.6px 8.4px, var(--border-interactive-error) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="sm"][data-color="success"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-success) 0 3.6px, transparent 3.6px 8.4px, var(--border-success) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="sm"][data-color="neutral"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-default) 0 3.6px, transparent 3.6px 8.4px, var(--border-default) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="sm"][data-color="warning"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-warning) 0 3.6px, transparent 3.6px 8.4px, var(--border-warning) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="sm"][data-color="info"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-info) 0 3.6px, transparent 3.6px 8.4px, var(--border-info) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"][data-color="light"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-subtle) 0 2.88px, transparent 2.88px 6.72px, var(--border-subtle) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"][data-color="dark"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-strong) 0 2.88px, transparent 2.88px 6.72px, var(--border-strong) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"][data-color="subtle"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-interactive-disabled) 0 2.88px, transparent 2.88px 6.72px, var(--border-interactive-disabled) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"][data-color="transparent"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-subtle) 0 2.88px, transparent 2.88px 6.72px, var(--border-subtle) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"][data-color="danger"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-interactive-error) 0 2.88px, transparent 2.88px 6.72px, var(--border-interactive-error) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"][data-color="success"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-success) 0 2.88px, transparent 2.88px 6.72px, var(--border-success) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"][data-color="neutral"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-default) 0 2.88px, transparent 2.88px 6.72px, var(--border-default) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"][data-color="warning"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-warning) 0 2.88px, transparent 2.88px 6.72px, var(--border-warning) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"][data-color="info"]) .line {
+  background: repeating-linear-gradient(90deg, var(--border-info) 0 2.88px, transparent 2.88px 6.72px, var(--border-info) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"][data-color="light"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"][data-color="dark"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"][data-color="subtle"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"][data-color="transparent"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"][data-color="danger"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"][data-color="success"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"][data-color="neutral"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"][data-color="warning"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"][data-color="info"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"][data-color="light"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"][data-color="dark"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"][data-color="subtle"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"][data-color="transparent"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"][data-color="danger"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"][data-color="success"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"][data-color="neutral"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"][data-color="warning"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"][data-color="info"]) .line {
+  background: transparent;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"][data-color="light"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-subtle) 0 0.5px, transparent 0.5px 3.5px, var(--border-subtle) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"][data-color="dark"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-strong) 0 0.5px, transparent 0.5px 3.5px, var(--border-strong) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"][data-color="subtle"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-interactive-disabled) 0 0.5px, transparent 0.5px 3.5px, var(--border-interactive-disabled) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"][data-color="transparent"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-subtle) 0 0.5px, transparent 0.5px 3.5px, var(--border-subtle) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"][data-color="danger"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-interactive-error) 0 0.5px, transparent 0.5px 3.5px, var(--border-interactive-error) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"][data-color="success"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-success) 0 0.5px, transparent 0.5px 3.5px, var(--border-success) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"][data-color="neutral"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-default) 0 0.5px, transparent 0.5px 3.5px, var(--border-default) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"][data-color="warning"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-warning) 0 0.5px, transparent 0.5px 3.5px, var(--border-warning) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"][data-color="info"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-info) 0 0.5px, transparent 0.5px 3.5px, var(--border-info) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"][data-color="light"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-subtle) 0 0.5px, transparent 0.5px 3.5px, var(--border-subtle) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"][data-color="dark"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-strong) 0 0.5px, transparent 0.5px 3.5px, var(--border-strong) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"][data-color="subtle"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-interactive-disabled) 0 0.5px, transparent 0.5px 3.5px, var(--border-interactive-disabled) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"][data-color="transparent"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-subtle) 0 0.5px, transparent 0.5px 3.5px, var(--border-subtle) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"][data-color="danger"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-interactive-error) 0 0.5px, transparent 0.5px 3.5px, var(--border-interactive-error) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"][data-color="success"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-success) 0 0.5px, transparent 0.5px 3.5px, var(--border-success) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"][data-color="neutral"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-default) 0 0.5px, transparent 0.5px 3.5px, var(--border-default) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"][data-color="warning"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-warning) 0 0.5px, transparent 0.5px 3.5px, var(--border-warning) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"][data-color="info"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-info) 0 0.5px, transparent 0.5px 3.5px, var(--border-info) 3.5px 4px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"][data-color="light"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-subtle) 0 3.6px, transparent 3.6px 8.4px, var(--border-subtle) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"][data-color="dark"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-strong) 0 3.6px, transparent 3.6px 8.4px, var(--border-strong) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"][data-color="subtle"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-interactive-disabled) 0 3.6px, transparent 3.6px 8.4px, var(--border-interactive-disabled) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"][data-color="transparent"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-subtle) 0 3.6px, transparent 3.6px 8.4px, var(--border-subtle) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"][data-color="danger"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-interactive-error) 0 3.6px, transparent 3.6px 8.4px, var(--border-interactive-error) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"][data-color="success"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-success) 0 3.6px, transparent 3.6px 8.4px, var(--border-success) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"][data-color="neutral"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-default) 0 3.6px, transparent 3.6px 8.4px, var(--border-default) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"][data-color="warning"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-warning) 0 3.6px, transparent 3.6px 8.4px, var(--border-warning) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"][data-color="info"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-info) 0 3.6px, transparent 3.6px 8.4px, var(--border-info) 8.4px 12px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"][data-color="light"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-subtle) 0 2.88px, transparent 2.88px 6.72px, var(--border-subtle) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"][data-color="dark"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-strong) 0 2.88px, transparent 2.88px 6.72px, var(--border-strong) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"][data-color="subtle"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-interactive-disabled) 0 2.88px, transparent 2.88px 6.72px, var(--border-interactive-disabled) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"][data-color="transparent"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-subtle) 0 2.88px, transparent 2.88px 6.72px, var(--border-subtle) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"][data-color="danger"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-interactive-error) 0 2.88px, transparent 2.88px 6.72px, var(--border-interactive-error) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"][data-color="success"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-success) 0 2.88px, transparent 2.88px 6.72px, var(--border-success) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"][data-color="neutral"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-default) 0 2.88px, transparent 2.88px 6.72px, var(--border-default) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"][data-color="warning"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-warning) 0 2.88px, transparent 2.88px 6.72px, var(--border-warning) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"][data-color="info"]) .line {
+  background: repeating-linear-gradient(180deg, var(--border-info) 0 2.88px, transparent 2.88px 6.72px, var(--border-info) 6.72px 9.6px) border-box;
+}
+
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"]) .line {
   height: 1px;
   width: 24px;
 }
 
-.root:where([data-orientation="horizontal"][data-size="md"]) .line {
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="md"]) .line {
   height: 1px;
   width: 48px;
 }
 
-.root:where([data-orientation="vertical"][data-size="sm"]) .line {
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="sm"]) .line {
+  height: 2px;
+  width: 24px;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="md"]) .line {
+  height: 2px;
+  width: 48px;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="sm"]) .line {
+  height: 2px;
+  width: 24px;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"]) .line {
+  height: 2px;
+  width: 48px;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"]) .line {
   height: 24px;
   width: 1px;
 }
 
-.root:where([data-orientation="vertical"][data-size="md"]) .line {
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"]) .line {
   height: 48px;
   width: 1px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"]) .line {
+  height: 24px;
+  width: 2px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"]) .line {
+  height: 48px;
+  width: 2px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"]) .line {
+  height: 24px;
+  width: 2px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"]) .line {
+  height: 48px;
+  width: 2px;
 }
 
 .root:where([data-disabled]) {
   opacity: 0.4;
 }
 
-.root:where([data-color="light"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+.root:where([data-orientation="horizontal"][data-style="dotted"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+  border-width: 1px 0;
+  margin: -1px 0;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-state="selected"]) .line {
+  border-width: 1px 0;
+  margin: -1px 0;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+  border-width: 1px 0;
+  margin: -1px 0;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-state="selected"]) .line {
+  border-width: 1px 0;
+  margin: -1px 0;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+  border-width: 0 1px;
+  margin: 0 -1px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-state="selected"]) .line {
+  border-width: 0 1px;
+  margin: 0 -1px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+  border-width: 0 1px;
+  margin: 0 -1px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-state="selected"]) .line {
+  border-width: 0 1px;
+  margin: 0 -1px;
+}
+
+.root:where([data-style="solid"][data-color="light"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   box-shadow: 0 0 0 1px var(--border-subtle), inset 0 0 0 1px var(--border-subtle);
 }
 
-.root:where([data-color="light"][data-state="selected"]) .line {
+.root:where([data-style="solid"][data-color="light"][data-state="selected"]) .line {
   box-shadow: 0 0 0 1px var(--border-subtle), inset 0 0 0 1px var(--border-subtle);
 }
 
-.root:where([data-color="dark"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+.root:where([data-style="solid"][data-color="dark"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   box-shadow: 0 0 0 1px var(--border-strong), inset 0 0 0 1px var(--border-strong);
 }
 
-.root:where([data-color="dark"][data-state="selected"]) .line {
+.root:where([data-style="solid"][data-color="dark"][data-state="selected"]) .line {
   box-shadow: 0 0 0 1px var(--border-strong), inset 0 0 0 1px var(--border-strong);
 }
 
-.root:where([data-color="subtle"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+.root:where([data-style="solid"][data-color="subtle"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   box-shadow: 0 0 0 1px var(--border-interactive-disabled), inset 0 0 0 1px var(--border-interactive-disabled);
 }
 
-.root:where([data-color="subtle"][data-state="selected"]) .line {
+.root:where([data-style="solid"][data-color="subtle"][data-state="selected"]) .line {
   box-shadow: 0 0 0 1px var(--border-interactive-disabled), inset 0 0 0 1px var(--border-interactive-disabled);
 }
 
-.root:where([data-color="transparent"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+.root:where([data-style="solid"][data-color="transparent"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   box-shadow: 0 0 0 1px var(--border-subtle), inset 0 0 0 1px var(--border-subtle);
 }
 
-.root:where([data-color="transparent"][data-state="selected"]) .line {
+.root:where([data-style="solid"][data-color="transparent"][data-state="selected"]) .line {
   box-shadow: 0 0 0 1px var(--border-subtle), inset 0 0 0 1px var(--border-subtle);
 }
 
-.root:where([data-color="danger"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+.root:where([data-style="solid"][data-color="danger"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   box-shadow: 0 0 0 1px var(--border-interactive-error), inset 0 0 0 1px var(--border-interactive-error);
 }
 
-.root:where([data-color="danger"][data-state="selected"]) .line {
+.root:where([data-style="solid"][data-color="danger"][data-state="selected"]) .line {
   box-shadow: 0 0 0 1px var(--border-interactive-error), inset 0 0 0 1px var(--border-interactive-error);
 }
 
-.root:where([data-color="success"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+.root:where([data-style="solid"][data-color="success"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   box-shadow: 0 0 0 1px var(--border-success), inset 0 0 0 1px var(--border-success);
 }
 
-.root:where([data-color="success"][data-state="selected"]) .line {
+.root:where([data-style="solid"][data-color="success"][data-state="selected"]) .line {
   box-shadow: 0 0 0 1px var(--border-success), inset 0 0 0 1px var(--border-success);
 }
 
-.root:where([data-color="neutral"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+.root:where([data-style="solid"][data-color="neutral"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   box-shadow: 0 0 0 1px var(--border-default), inset 0 0 0 1px var(--border-default);
 }
 
-.root:where([data-color="neutral"][data-state="selected"]) .line {
+.root:where([data-style="solid"][data-color="neutral"][data-state="selected"]) .line {
   box-shadow: 0 0 0 1px var(--border-default), inset 0 0 0 1px var(--border-default);
 }
 
-.root:where([data-color="warning"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+.root:where([data-style="solid"][data-color="warning"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   box-shadow: 0 0 0 1px var(--border-warning), inset 0 0 0 1px var(--border-warning);
 }
 
-.root:where([data-color="warning"][data-state="selected"]) .line {
+.root:where([data-style="solid"][data-color="warning"][data-state="selected"]) .line {
   box-shadow: 0 0 0 1px var(--border-warning), inset 0 0 0 1px var(--border-warning);
 }
 
-.root:where([data-color="info"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+.root:where([data-style="solid"][data-color="info"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   box-shadow: 0 0 0 1px var(--border-info), inset 0 0 0 1px var(--border-info);
 }
 
-.root:where([data-color="info"][data-state="selected"]) .line {
+.root:where([data-style="solid"][data-color="info"][data-state="selected"]) .line {
   box-shadow: 0 0 0 1px var(--border-info), inset 0 0 0 1px var(--border-info);
 }
 
-.root:where([data-orientation="horizontal"][data-size="sm"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   height: 2px;
 }
 
-.root:where([data-orientation="horizontal"][data-size="sm"][data-state="selected"]) .line {
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"][data-state="selected"]) .line {
   height: 2px;
 }
 
-.root:where([data-orientation="horizontal"][data-size="md"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="md"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   height: 2px;
 }
 
-.root:where([data-orientation="horizontal"][data-size="md"][data-state="selected"]) .line {
+.root:where([data-orientation="horizontal"][data-style="solid"][data-size="md"][data-state="selected"]) .line {
   height: 2px;
 }
 
-.root:where([data-orientation="vertical"][data-size="sm"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="sm"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+  height: 4px;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="sm"][data-state="selected"]) .line {
+  height: 4px;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="md"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+  height: 4px;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dotted"][data-size="md"][data-state="selected"]) .line {
+  height: 4px;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="sm"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+  height: 4px;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="sm"][data-state="selected"]) .line {
+  height: 4px;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+  height: 4px;
+}
+
+.root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"][data-state="selected"]) .line {
+  height: 4px;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   width: 2px;
 }
 
-.root:where([data-orientation="vertical"][data-size="sm"][data-state="selected"]) .line {
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"][data-state="selected"]) .line {
   width: 2px;
 }
 
-.root:where([data-orientation="vertical"][data-size="md"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   width: 2px;
 }
 
-.root:where([data-orientation="vertical"][data-size="md"][data-state="selected"]) .line {
+.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"][data-state="selected"]) .line {
   width: 2px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+  width: 4px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"][data-state="selected"]) .line {
+  width: 4px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+  width: 4px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"][data-state="selected"]) .line {
+  width: 4px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+  width: 4px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"][data-state="selected"]) .line {
+  width: 4px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+  width: 4px;
+}
+
+.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"][data-state="selected"]) .line {
+  width: 4px;
 }

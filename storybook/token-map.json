@@ -1963,7 +1963,9 @@
       "hint": [
         "bg",
         "surface",
-        "default"
+        "text",
+        "1",
+        "sm"
       ],
       "variableId": "VariableID:273:3",
       "token": "--surface-bg-brand",

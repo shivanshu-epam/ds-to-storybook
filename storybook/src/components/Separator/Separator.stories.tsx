@@ -37,3 +37,21 @@ export const Type: Story = {
     );
   },
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '224:1462', name: 'Type=Slash', width: 5, props: { type: 'slash' } as Partial<SeparatorProps> },
+        { id: '224:1464', name: 'Type=Chevron', width: 16, props: { type: 'chevron' } as Partial<SeparatorProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <Separator {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

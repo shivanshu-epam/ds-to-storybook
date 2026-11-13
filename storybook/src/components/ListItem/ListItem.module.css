@@ -75,6 +75,7 @@
   display: block;
   flex-shrink: 0;
   opacity: 1;
+  order: 0;
 }
 
 .root .textColumn {
@@ -137,6 +138,7 @@
   flex-shrink: 1;
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-weight: 400;
+  order: 3;
   white-space: nowrap;
 }
 
@@ -156,25 +158,61 @@
   gap: var(--space-inline-sm);
 }
 
+.root:where([data-type="default"]) .textColumn {
+  order: 1;
+}
+
+.root:where([data-type="menu"]) .textColumn {
+  order: 1;
+}
+
+.root:where([data-type="file"]) .textColumn {
+  order: 2;
+}
+
+.root:where([data-type="setting"]) .textColumn {
+  order: 2;
+}
+
 .root:where([data-size="sm"]) .headline {
   font-size: 12px;
   line-height: 14.52px;
+  min-height: 15px;
 }
 
 .root:where([data-size="md"]) .headline {
   font-size: 13px;
   line-height: 15.73px;
+  min-height: 16px;
 }
 
 .root:where([data-size="lg"]) .headline {
   font-size: 14px;
   line-height: 16.94px;
+  min-height: 17px;
+}
+
+.root:where([data-type="default"]) .trailingControl {
+  order: 2;
+}
+
+.root:where([data-type="menu"]) .trailingControl {
+  order: 3;
+}
+
+.root:where([data-type="file"]) .trailingControl {
+  order: 4;
+}
+
+.root:where([data-type="setting"]) .trailingControl {
+  order: 4;
 }
 
 .root:where([data-type="menu"]) .trailingIcon {
   color: var(--icon-default);
   display: inline-flex;
   flex-shrink: 0;
+  order: 2;
   transform: none;
 }
 
@@ -182,6 +220,7 @@
   color: var(--icon-default);
   display: inline-flex;
   flex-shrink: 0;
+  order: 3;
   transform: none;
 }
 
@@ -197,6 +236,7 @@
   color: var(--icon-default);
   display: inline-flex;
   flex-shrink: 0;
+  order: 1;
   transform: none;
 }
 
@@ -204,6 +244,7 @@
   color: var(--icon-default);
   display: inline-flex;
   flex-shrink: 0;
+  order: 1;
   transform: none;
 }
 
@@ -243,6 +284,22 @@
   display: none;
 }
 
+.root:where([data-type="file"][data-size="md"]) .supportingText {
+  min-height: 15px;
+}
+
+.root:where([data-type="file"][data-size="lg"]) .supportingText {
+  min-height: 16px;
+}
+
+.root:where([data-type="setting"][data-size="md"]) .supportingText {
+  min-height: 15px;
+}
+
+.root:where([data-type="setting"][data-size="lg"]) .supportingText {
+  min-height: 16px;
+}
+
 .root:where([data-type="file"]) .metadata {
   color: var(--interactive-fg-readonly);
 }
@@ -255,11 +312,13 @@
 .root:where([data-type="file"][data-size="md"]) .metadata {
   font-size: 12px;
   line-height: 14.52px;
+  min-height: 15px;
 }
 
 .root:where([data-type="file"][data-size="lg"]) .metadata {
   font-size: 13px;
   line-height: 15.73px;
+  min-height: 16px;
 }
 
 .root:where([data-type="menu"][data-size="sm"]) .trailingIcon {

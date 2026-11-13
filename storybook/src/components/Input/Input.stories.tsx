@@ -118,3 +118,79 @@ export const Options: Story = {
     </Row>
   ),
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '836:20', name: 'Type=Outlined, Size=Sm, State=Default', width: 260, props: { appearance: 'outlined', size: 'sm', state: 'default' } as Partial<InputProps> },
+        { id: '836:36', name: 'Type=Outlined, Size=Sm, State=Hover', width: 260, props: { appearance: 'outlined', size: 'sm', 'data-force-state': 'hover' } as Partial<InputProps> },
+        { id: '836:52', name: 'Type=Outlined, Size=Sm, State=Focus', width: 260, props: { appearance: 'outlined', size: 'sm', 'data-force-state': 'focus' } as Partial<InputProps> },
+        { id: '836:68', name: 'Type=Outlined, Size=Sm, State=Disabled', width: 260, props: { appearance: 'outlined', size: 'sm', disabled: true } as Partial<InputProps> },
+        { id: '836:84', name: 'Type=Outlined, Size=Sm, State=Error', width: 260, props: { appearance: 'outlined', size: 'sm', state: 'error' } as Partial<InputProps> },
+        { id: '836:100', name: 'Type=Outlined, Size=Md, State=Default', width: 260, props: { appearance: 'outlined', size: 'md', state: 'default' } as Partial<InputProps> },
+        { id: '836:116', name: 'Type=Outlined, Size=Md, State=Hover', width: 260, props: { appearance: 'outlined', size: 'md', 'data-force-state': 'hover' } as Partial<InputProps> },
+        { id: '836:132', name: 'Type=Outlined, Size=Md, State=Focus', width: 260, props: { appearance: 'outlined', size: 'md', 'data-force-state': 'focus' } as Partial<InputProps> },
+        { id: '836:148', name: 'Type=Outlined, Size=Md, State=Disabled', width: 260, props: { appearance: 'outlined', size: 'md', disabled: true } as Partial<InputProps> },
+        { id: '836:164', name: 'Type=Outlined, Size=Md, State=Error', width: 260, props: { appearance: 'outlined', size: 'md', state: 'error' } as Partial<InputProps> },
+        { id: '836:180', name: 'Type=Outlined, Size=Lg, State=Default', width: 260, props: { appearance: 'outlined', size: 'lg', state: 'default' } as Partial<InputProps> },
+        { id: '836:196', name: 'Type=Outlined, Size=Lg, State=Hover', width: 260, props: { appearance: 'outlined', size: 'lg', 'data-force-state': 'hover' } as Partial<InputProps> },
+        { id: '836:212', name: 'Type=Outlined, Size=Lg, State=Focus', width: 260, props: { appearance: 'outlined', size: 'lg', 'data-force-state': 'focus' } as Partial<InputProps> },
+        { id: '836:228', name: 'Type=Outlined, Size=Lg, State=Disabled', width: 260, props: { appearance: 'outlined', size: 'lg', disabled: true } as Partial<InputProps> },
+        { id: '836:244', name: 'Type=Outlined, Size=Lg, State=Error', width: 260, props: { appearance: 'outlined', size: 'lg', state: 'error' } as Partial<InputProps> },
+        { id: '836:260', name: 'Type=Filled, Size=Sm, State=Default', width: 260, props: { appearance: 'filled', size: 'sm', state: 'default' } as Partial<InputProps> },
+        { id: '836:276', name: 'Type=Filled, Size=Sm, State=Hover', width: 260, props: { appearance: 'filled', size: 'sm', 'data-force-state': 'hover' } as Partial<InputProps> },
+        { id: '836:292', name: 'Type=Filled, Size=Sm, State=Focus', width: 260, props: { appearance: 'filled', size: 'sm', 'data-force-state': 'focus' } as Partial<InputProps> },
+        { id: '836:308', name: 'Type=Filled, Size=Sm, State=Disabled', width: 260, props: { appearance: 'filled', size: 'sm', disabled: true } as Partial<InputProps> },
+        { id: '836:324', name: 'Type=Filled, Size=Sm, State=Error', width: 260, props: { appearance: 'filled', size: 'sm', state: 'error' } as Partial<InputProps> },
+        { id: '836:340', name: 'Type=Filled, Size=Md, State=Default', width: 260, props: { appearance: 'filled', size: 'md', state: 'default' } as Partial<InputProps> },
+        { id: '836:356', name: 'Type=Filled, Size=Md, State=Hover', width: 260, props: { appearance: 'filled', size: 'md', 'data-force-state': 'hover' } as Partial<InputProps> },
+        { id: '836:372', name: 'Type=Filled, Size=Md, State=Focus', width: 260, props: { appearance: 'filled', size: 'md', 'data-force-state': 'focus' } as Partial<InputProps> },
+        { id: '836:388', name: 'Type=Filled, Size=Md, State=Disabled', width: 260, props: { appearance: 'filled', size: 'md', disabled: true } as Partial<InputProps> },
+        { id: '836:404', name: 'Type=Filled, Size=Md, State=Error', width: 260, props: { appearance: 'filled', size: 'md', state: 'error' } as Partial<InputProps> },
+        { id: '836:420', name: 'Type=Filled, Size=Lg, State=Default', width: 260, props: { appearance: 'filled', size: 'lg', state: 'default' } as Partial<InputProps> },
+        { id: '836:436', name: 'Type=Filled, Size=Lg, State=Hover', width: 260, props: { appearance: 'filled', size: 'lg', 'data-force-state': 'hover' } as Partial<InputProps> },
+        { id: '836:452', name: 'Type=Filled, Size=Lg, State=Focus', width: 260, props: { appearance: 'filled', size: 'lg', 'data-force-state': 'focus' } as Partial<InputProps> },
+        { id: '836:468', name: 'Type=Filled, Size=Lg, State=Disabled', width: 260, props: { appearance: 'filled', size: 'lg', disabled: true } as Partial<InputProps> },
+        { id: '836:484', name: 'Type=Filled, Size=Lg, State=Error', width: 260, props: { appearance: 'filled', size: 'lg', state: 'error' } as Partial<InputProps> },
+        { id: '836:500', name: 'Type=Borderless, Size=Sm, State=Default', width: 260, props: { appearance: 'borderless', size: 'sm', state: 'default' } as Partial<InputProps> },
+        { id: '836:516', name: 'Type=Borderless, Size=Sm, State=Hover', width: 260, props: { appearance: 'borderless', size: 'sm', 'data-force-state': 'hover' } as Partial<InputProps> },
+        { id: '836:532', name: 'Type=Borderless, Size=Sm, State=Focus', width: 260, props: { appearance: 'borderless', size: 'sm', 'data-force-state': 'focus' } as Partial<InputProps> },
+        { id: '836:548', name: 'Type=Borderless, Size=Sm, State=Disabled', width: 260, props: { appearance: 'borderless', size: 'sm', disabled: true } as Partial<InputProps> },
+        { id: '836:564', name: 'Type=Borderless, Size=Sm, State=Error', width: 260, props: { appearance: 'borderless', size: 'sm', state: 'error' } as Partial<InputProps> },
+        { id: '836:580', name: 'Type=Borderless, Size=Md, State=Default', width: 260, props: { appearance: 'borderless', size: 'md', state: 'default' } as Partial<InputProps> },
+        { id: '836:596', name: 'Type=Borderless, Size=Md, State=Hover', width: 260, props: { appearance: 'borderless', size: 'md', 'data-force-state': 'hover' } as Partial<InputProps> },
+        { id: '836:612', name: 'Type=Borderless, Size=Md, State=Focus', width: 260, props: { appearance: 'borderless', size: 'md', 'data-force-state': 'focus' } as Partial<InputProps> },
+        { id: '836:628', name: 'Type=Borderless, Size=Md, State=Disabled', width: 260, props: { appearance: 'borderless', size: 'md', disabled: true } as Partial<InputProps> },
+        { id: '836:644', name: 'Type=Borderless, Size=Md, State=Error', width: 260, props: { appearance: 'borderless', size: 'md', state: 'error' } as Partial<InputProps> },
+        { id: '836:660', name: 'Type=Borderless, Size=Lg, State=Default', width: 260, props: { appearance: 'borderless', size: 'lg', state: 'default' } as Partial<InputProps> },
+        { id: '836:676', name: 'Type=Borderless, Size=Lg, State=Hover', width: 260, props: { appearance: 'borderless', size: 'lg', 'data-force-state': 'hover' } as Partial<InputProps> },
+        { id: '836:692', name: 'Type=Borderless, Size=Lg, State=Focus', width: 260, props: { appearance: 'borderless', size: 'lg', 'data-force-state': 'focus' } as Partial<InputProps> },
+        { id: '836:708', name: 'Type=Borderless, Size=Lg, State=Disabled', width: 260, props: { appearance: 'borderless', size: 'lg', disabled: true } as Partial<InputProps> },
+        { id: '836:724', name: 'Type=Borderless, Size=Lg, State=Error', width: 260, props: { appearance: 'borderless', size: 'lg', state: 'error' } as Partial<InputProps> },
+        { id: '836:740', name: 'Type=Inline, Size=Sm, State=Default', width: 380, props: { appearance: 'inline', size: 'sm', state: 'default' } as Partial<InputProps> },
+        { id: '836:756', name: 'Type=Inline, Size=Sm, State=Hover', width: 380, props: { appearance: 'inline', size: 'sm', 'data-force-state': 'hover' } as Partial<InputProps> },
+        { id: '836:772', name: 'Type=Inline, Size=Sm, State=Focus', width: 380, props: { appearance: 'inline', size: 'sm', 'data-force-state': 'focus' } as Partial<InputProps> },
+        { id: '836:788', name: 'Type=Inline, Size=Sm, State=Disabled', width: 380, props: { appearance: 'inline', size: 'sm', disabled: true } as Partial<InputProps> },
+        { id: '836:804', name: 'Type=Inline, Size=Sm, State=Error', width: 380, props: { appearance: 'inline', size: 'sm', state: 'error' } as Partial<InputProps> },
+        { id: '836:820', name: 'Type=Inline, Size=Md, State=Default', width: 380, props: { appearance: 'inline', size: 'md', state: 'default' } as Partial<InputProps> },
+        { id: '836:836', name: 'Type=Inline, Size=Md, State=Hover', width: 380, props: { appearance: 'inline', size: 'md', 'data-force-state': 'hover' } as Partial<InputProps> },
+        { id: '836:852', name: 'Type=Inline, Size=Md, State=Focus', width: 380, props: { appearance: 'inline', size: 'md', 'data-force-state': 'focus' } as Partial<InputProps> },
+        { id: '836:868', name: 'Type=Inline, Size=Md, State=Disabled', width: 380, props: { appearance: 'inline', size: 'md', disabled: true } as Partial<InputProps> },
+        { id: '836:884', name: 'Type=Inline, Size=Md, State=Error', width: 380, props: { appearance: 'inline', size: 'md', state: 'error' } as Partial<InputProps> },
+        { id: '836:900', name: 'Type=Inline, Size=Lg, State=Default', width: 380, props: { appearance: 'inline', size: 'lg', state: 'default' } as Partial<InputProps> },
+        { id: '836:916', name: 'Type=Inline, Size=Lg, State=Hover', width: 380, props: { appearance: 'inline', size: 'lg', 'data-force-state': 'hover' } as Partial<InputProps> },
+        { id: '836:932', name: 'Type=Inline, Size=Lg, State=Focus', width: 380, props: { appearance: 'inline', size: 'lg', 'data-force-state': 'focus' } as Partial<InputProps> },
+        { id: '836:948', name: 'Type=Inline, Size=Lg, State=Disabled', width: 380, props: { appearance: 'inline', size: 'lg', disabled: true } as Partial<InputProps> },
+        { id: '836:964', name: 'Type=Inline, Size=Lg, State=Error', width: 380, props: { appearance: 'inline', size: 'lg', state: 'error' } as Partial<InputProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <Input {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

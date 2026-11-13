@@ -19,6 +19,7 @@
   font-size: 12px;
   font-weight: 700;
   line-height: 14.52px;
+  min-height: 15px;
   white-space: nowrap;
 }
 
@@ -34,13 +35,7 @@
 }
 
 .root .radioField {
-  background: transparent;
-  box-shadow: none;
   display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  gap: var(--space-stack-xs);
-  opacity: 1;
 }
 
 .root:where([data-horizontal="false"]) {
@@ -107,6 +102,7 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 14.52px;
+  min-height: 15px;
   white-space: nowrap;
 }
 
@@ -130,6 +126,7 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 14.52px;
+  min-height: 15px;
   white-space: nowrap;
 }
 

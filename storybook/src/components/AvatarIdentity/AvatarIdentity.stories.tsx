@@ -62,3 +62,25 @@ export const Options: Story = {
     </Row>
   ),
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '274:3', name: 'State=Default', width: 126, props: { state: 'default' } as Partial<AvatarIdentityProps> },
+        { id: '274:1613', name: 'State=Hover', width: 126, props: { 'data-force-state': 'hover' } as Partial<AvatarIdentityProps> },
+        { id: '274:1651', name: 'State=Focused', width: 126, props: { 'data-force-state': 'focus' } as Partial<AvatarIdentityProps> },
+        { id: '274:1689', name: 'State=Active', width: 126, props: { 'data-force-state': 'pressed' } as Partial<AvatarIdentityProps> },
+        { id: '274:1727', name: 'State=Disabled', width: 126, props: { disabled: true } as Partial<AvatarIdentityProps> },
+        { id: '274:1765', name: 'State=Selected', width: 126, props: { state: 'selected' } as Partial<AvatarIdentityProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <AvatarIdentity {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

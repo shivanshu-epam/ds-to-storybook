@@ -51,3 +51,33 @@ export const PositionAndState: Story = {
     );
   },
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '522:3', name: 'State=Enabled, Position=Left', width: 280, props: { state: 'enabled', position: 'left' } as Partial<RadioFieldProps> },
+        { id: '522:10', name: 'State=Enabled, Position=Right', width: 280, props: { state: 'enabled', position: 'right' } as Partial<RadioFieldProps> },
+        { id: '522:17', name: 'State=Focused, Position=Left', width: 280, props: { position: 'left', 'data-force-state': 'focus' } as Partial<RadioFieldProps> },
+        { id: '522:24', name: 'State=Focused, Position=Right', width: 280, props: { position: 'right', 'data-force-state': 'focus' } as Partial<RadioFieldProps> },
+        { id: '522:31', name: 'State=Invalid, Position=Left', width: 280, props: { state: 'invalid', position: 'left' } as Partial<RadioFieldProps> },
+        { id: '522:44', name: 'State=Invalid, Position=Right', width: 280, props: { state: 'invalid', position: 'right' } as Partial<RadioFieldProps> },
+        { id: '522:57', name: 'State=Warning, Position=Left', width: 280, props: { state: 'warning', position: 'left' } as Partial<RadioFieldProps> },
+        { id: '522:70', name: 'State=Warning, Position=Right', width: 280, props: { state: 'warning', position: 'right' } as Partial<RadioFieldProps> },
+        { id: '522:83', name: 'State=Read-Only, Position=Left', width: 280, props: { state: 'read-only', position: 'left' } as Partial<RadioFieldProps> },
+        { id: '522:90', name: 'State=Read-Only, Position=Right', width: 280, props: { state: 'read-only', position: 'right' } as Partial<RadioFieldProps> },
+        { id: '522:97', name: 'State=Disabled, Position=Left', width: 280, props: { disabled: true, position: 'left' } as Partial<RadioFieldProps> },
+        { id: '522:104', name: 'State=Disabled, Position=Right', width: 280, props: { disabled: true, position: 'right' } as Partial<RadioFieldProps> },
+        { id: '522:111', name: 'State=Skeleton, Position=Left', width: 280, props: { state: 'skeleton', position: 'left' } as Partial<RadioFieldProps> },
+        { id: '522:118', name: 'State=Skeleton, Position=Right', width: 280, props: { state: 'skeleton', position: 'right' } as Partial<RadioFieldProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <RadioField {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

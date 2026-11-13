@@ -68,7 +68,7 @@ export class DsSwitch extends LitElement {
     return html`<button type="button" role="switch" class="root" part="root" aria-checked=${this.checked ? 'true' : 'false'} aria-label=${this.accessibleLabel ?? nothing} data-value=${this.checked ? "on" : "off"} data-interaction=${this.interaction} data-size=${this.size} ?data-disabled=${this.disabled} ?disabled=${this.disabled} aria-busy=${this.interaction === 'loading' ? 'true' : nothing} data-force-state=${this.forceState ?? nothing} @click=${this.toggle}>
         <span class="track"></span>
         <span class="handle"></span>
-        ${this.showInnerContent ? html`<span class="innerIcon" aria-hidden="true">${icon("actionClose16")}</span>` : nothing}
+        ${this.showInnerContent ? html`<span class="innerIcon" aria-hidden="true">${icon((this.interaction === "loading" ? "statusLoading16" : (({"on":"formCheck16"} as Record<string, string>)[(this.checked ? "on" : "off")] ?? "actionClose16")))}</span>` : nothing}
       </button>`;
   }
 }

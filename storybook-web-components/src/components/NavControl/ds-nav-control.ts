@@ -28,7 +28,7 @@ export class DsNavControl extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-direction=${this.direction} ?data-disabled=${this.disabled} aria-disabled=${this.disabled ? 'true' : nothing} data-force-state=${this.forceState ?? nothing}>
-        <span class="icon" aria-hidden="true">${icon("navChevronLeft20")}</span>
+        <span class="icon" aria-hidden="true">${icon((({"next":"navChevronRight20"} as Record<string, string>)[this.direction] ?? "navChevronLeft20"))}</span>
       </div>`;
   }
 }

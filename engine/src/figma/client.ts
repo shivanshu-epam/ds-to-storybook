@@ -1,5 +1,5 @@
-import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 
 import { sha256, writeText } from '../util/core.ts';
 import type { FileResponse, LocalVariablesResponse, NodesResponse } from './types.ts';
@@ -21,7 +21,7 @@ export interface FigmaReader {
 
 /** Optional capability: rendering nodes to SVG (used by the generator for icons). */
 export interface FigmaRenderer {
-  images(fileKey: string, ids: string[], format: 'svg' | 'png', version?: string): Promise<{ images: Record<string, string | null> }>;
+  images(fileKey: string, ids: string[], format: 'svg' | 'png', version?: string, scale?: number): Promise<{ images: Record<string, string | null> }>;
   fetchText(url: string): Promise<string>;
 }
 
@@ -72,8 +72,9 @@ export class FigmaClient implements FigmaReader, FigmaRenderer {
     return this.get(`/v1/files/${fileKey}/variables/local`);
   }
 
-  images(fileKey: string, ids: string[], format: 'svg' | 'png', version?: string): Promise<{ images: Record<string, string | null> }> {
+  images(fileKey: string, ids: string[], format: 'svg' | 'png', version?: string, scale?: number): Promise<{ images: Record<string, string | null> }> {
     const params = new URLSearchParams({ ids: ids.join(','), format });
+    if (scale) params.set('scale', String(scale));
     if (format === 'svg') params.set('svg_outline_text', 'true');
     if (version) params.set('version', version);
     return this.get(`/v1/images/${fileKey}?${params}`);
@@ -88,6 +89,18 @@ export class FigmaClient implements FigmaReader, FigmaRenderer {
     const text = await res.text();
     writeText(cacheFile, text);
     return text;
+  }
+
+  /** Fetches a rendered image (an S3 URL from the images endpoint) as bytes, cached by URL path. */
+  async fetchBinary(url: string): Promise<Buffer> {
+    const cacheFile = join(this.opts.cacheDir, 'assets', `${sha256(url.replace(/\?.*/, '')).slice(0, 24)}.bin`);
+    if (existsSync(cacheFile)) return readFileSync(cacheFile);
+    const res = await fetch(url);
+    if (!res.ok) throw new FigmaHttpError(res.status, url, await res.text());
+    const bytes = Buffer.from(await res.arrayBuffer());
+    mkdirSync(dirname(cacheFile), { recursive: true });
+    writeFileSync(cacheFile, bytes);
+    return bytes;
   }
 
   /** 2s, 6s, 18s… (overridable for tests through retryBaseMs). */

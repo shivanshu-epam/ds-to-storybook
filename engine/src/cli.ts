@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 
 import { loadConfig } from './config.ts';
@@ -8,6 +8,7 @@ import { FigmaClient } from './figma/client.ts';
 import { discover, discoveryMarkdown, targetsFromDiscovery, type Discovery } from './discover/discover.ts';
 import { generateStorybook, type PlannedComponent } from './generate/index.ts';
 import { runInit } from './init.ts';
+import { runVisual, verdict } from './visual/visual.ts';
 import { extractIR } from './ir/extract.ts';
 import { loadIR, paths, stepAnalyze, stepExtract, stepReport, stepSpecs } from './pipeline.ts';
 import { loadDotEnv, writeJson, writeText } from './util/core.ts';
@@ -26,11 +27,14 @@ Commands:
   discover  Find every component set and classify frames → out/discovery.md
   generate  Build a fresh Storybook project from Figma (auto-discovers components
             unless "generate.components" is set in the config)
+  visual    Compare every Figma variant with the generated Storybook, pixel by pixel
+            → out/visual/report.html (needs a running React Storybook: --url)
 
 Options:
   --config <file>   Config file (default: ds-sync.config.json)
   --out <dir>       Working directory for reports and cache (default: .ds-sync)
   --figma-version <id>  Read this Figma version instead of the latest (discover, generate)
+  visual: --url <storybook url> (default http://localhost:6006)  --dir <React Storybook folder>  --only <A,B>
   init:  --figma <link>  --target react|web-components|both  --dir <folder>  --variables <file>  --ci  --yes
   --refresh         Ignore the Figma response cache
   --help            Show this help
@@ -68,6 +72,8 @@ async function main() {
       target: { type: 'string' },
       'figma-version': { type: 'string' },
       dir: { type: 'string' },
+      url: { type: 'string' },
+      only: { type: 'string' },
       variables: { type: 'string' },
       yes: { type: 'boolean', default: false },
       ci: { type: 'boolean', default: false },
@@ -159,6 +165,16 @@ async function main() {
       const res = await generateStorybook(config, config.generate, ir, client, log, plan);
       log(`Tokens: ${res.tokenCounts.bound} bound, ${res.tokenCounts.rawInFigma} raw in Figma, ${res.tokenCounts.noMatchingToken} unmatched`);
       log(`Storybook project: ${res.files.length} files → ${res.outDir}`);
+      break;
+    }
+    case 'visual': {
+      const g = config.generate;
+      const react = g?.targets?.find((t) => t.target === 'react')?.outDir ?? (g && (g.target ?? 'react') === 'react' ? g.outDir : undefined);
+      const dir = resolve(config.baseDir, values.dir ?? react ?? 'storybook');
+      const { results } = await runVisual(figmaClient(), { dir, url: values.url ?? 'http://localhost:6006', outDir: join(p.out, 'visual'), ...(values.only ? { only: values.only.split(',').map((x) => x.trim()) } : {}), log });
+      const counts: Record<'match' | 'check' | 'differs' | 'error', number> = { match: 0, check: 0, differs: 0, error: 0 };
+      for (const r of results) counts[verdict(r)]++;
+      log(`Visual: ${results.length} variants: ${counts.match} match, ${counts.check} to check, ${counts.differs + counts.error} differ`);
       break;
     }
     default:

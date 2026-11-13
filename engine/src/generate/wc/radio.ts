@@ -11,7 +11,7 @@
 import { docTabs, leadSentence, pascal, type GeneratedFile, type TemplateContext } from '../templates/common.ts';
 import { isIcon, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRPart } from '../../ir/types.ts';
-import { attrFor, classFor, figmaDocsMdx, header, mdx, tagFor, usage, wcProp, type WcOptions, type WcResult } from './components.ts';
+import { attrFor, classFor, figmaDocsMdx, header, mdx, tagFor, usage, wcProp, wcText, type WcOptions, type WcResult } from './components.ts';
 
 const js = (v: unknown) => JSON.stringify(v);
 
@@ -38,7 +38,7 @@ export function wcRadio(ctx: TemplateContext, name: string, core: GenericCore, o
     if (p.type === 'TEXT' && (l.role === rl.label || l.role === rl.groupLabel)) {
       el = `<span ${c}${l.role === rl.groupLabel ? ' id="label"' : ''}>\${this.label ?? ${js(p.text ?? '')}}</span>`;
     } else if (p.type === 'TEXT') {
-      el = `<span ${c}>\${${js(p.text ?? '')}}</span>`;
+      el = `<span ${c}>\${${wcText(l, js(p.text ?? ''))}}</span>`;
     } else if (p.type === 'INSTANCE') {
       const ic = p.instanceOf ? ctx.icons.get(p.instanceOf) : undefined;
       const one = (part: IRPart): string | undefined => {

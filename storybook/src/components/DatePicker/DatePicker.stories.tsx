@@ -58,3 +58,40 @@ export const Options: Story = {
     </Row>
   ),
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '657:55', name: 'Type=Single, State=Default', width: 280, props: { type: 'single', state: 'default' } as Partial<DatePickerProps> },
+        { id: '657:167', name: 'Type=Single, State=Hover', width: 280, props: { type: 'single', 'data-force-state': 'hover' } as Partial<DatePickerProps> },
+        { id: '657:279', name: 'Type=Single, State=Focused', width: 280, props: { type: 'single', 'data-force-state': 'focus' } as Partial<DatePickerProps> },
+        { id: '657:391', name: 'Type=Single, State=Filled', width: 280, props: { type: 'single', state: 'filled' } as Partial<DatePickerProps> },
+        { id: '657:503', name: 'Type=Single, State=Disabled', width: 280, props: { type: 'single', disabled: true } as Partial<DatePickerProps> },
+        { id: '657:615', name: 'Type=Single, State=Read-only', width: 280, props: { type: 'single', state: 'read-only' } as Partial<DatePickerProps> },
+        { id: '657:727', name: 'Type=Single, State=Error', width: 280, props: { type: 'single', state: 'error' } as Partial<DatePickerProps> },
+        { id: '660:83', name: 'Type=Range, State=Default', width: 576, props: { type: 'range', state: 'default' } as Partial<DatePickerProps> },
+        { id: '660:328', name: 'Type=Range, State=Hover', width: 576, props: { type: 'range', 'data-force-state': 'hover' } as Partial<DatePickerProps> },
+        { id: '660:573', name: 'Type=Range, State=Focused', width: 576, props: { type: 'range', 'data-force-state': 'focus' } as Partial<DatePickerProps> },
+        { id: '660:818', name: 'Type=Range, State=Filled', width: 576, props: { type: 'range', state: 'filled' } as Partial<DatePickerProps> },
+        { id: '660:1063', name: 'Type=Range, State=Disabled', width: 576, props: { type: 'range', disabled: true } as Partial<DatePickerProps> },
+        { id: '660:1308', name: 'Type=Range, State=Read-only', width: 576, props: { type: 'range', state: 'read-only' } as Partial<DatePickerProps> },
+        { id: '660:1553', name: 'Type=Range, State=Error', width: 576, props: { type: 'range', state: 'error' } as Partial<DatePickerProps> },
+        { id: '660:4102', name: 'Type=DateTime, State=Default', width: 320, props: { type: 'date-time', state: 'default' } as Partial<DatePickerProps> },
+        { id: '660:4230', name: 'Type=DateTime, State=Hover', width: 320, props: { type: 'date-time', 'data-force-state': 'hover' } as Partial<DatePickerProps> },
+        { id: '660:4358', name: 'Type=DateTime, State=Focused', width: 320, props: { type: 'date-time', 'data-force-state': 'focus' } as Partial<DatePickerProps> },
+        { id: '660:4486', name: 'Type=DateTime, State=Filled', width: 320, props: { type: 'date-time', state: 'filled' } as Partial<DatePickerProps> },
+        { id: '660:4614', name: 'Type=DateTime, State=Disabled', width: 320, props: { type: 'date-time', disabled: true } as Partial<DatePickerProps> },
+        { id: '660:4742', name: 'Type=DateTime, State=Read-only', width: 320, props: { type: 'date-time', state: 'read-only' } as Partial<DatePickerProps> },
+        { id: '660:4870', name: 'Type=DateTime, State=Error', width: 320, props: { type: 'date-time', state: 'error' } as Partial<DatePickerProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <DatePicker {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

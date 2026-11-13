@@ -36,3 +36,21 @@ export const State: Story = {
     );
   },
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '241:1813', name: 'State=Default', width: 8, props: {  } as Partial<PaginationDotProps> },
+        { id: '241:1814', name: 'State=Active', width: 10, props: { 'data-force-state': 'pressed' } as Partial<PaginationDotProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <PaginationDot {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

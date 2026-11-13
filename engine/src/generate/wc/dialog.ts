@@ -6,7 +6,7 @@
 import { docTabs, leadSentence, pascal, type GeneratedFile, type TemplateContext } from '../templates/common.ts';
 import { isIcon, SHAPES, type GenericCore, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRPart } from '../../ir/types.ts';
-import { attrFor, classFor, figmaDocsMdx, header, mdx, tagFor, usage, wcProp, type WcOptions, type WcResult } from './components.ts';
+import { attrFor, classFor, figmaDocsMdx, header, mdx, tagFor, usage, wcProp, wcText, type WcOptions, type WcResult } from './components.ts';
 
 const js = (v: unknown) => JSON.stringify(v);
 
@@ -27,13 +27,13 @@ export function wcDialog(ctx: TemplateContext, name: string, core: GenericCore, 
   let usesIcon = false;
   const children = (parent: string) => core.layers.filter((l) => l.parent === parent);
 
-  const nestedEl = (c: string, part: IRPart): string | undefined => {
+  const nestedEl = (c: string, part: IRPart, l: LayerInfo): string | undefined => {
     const n = !isIcon(part) && part.instanceComponentId ? instance(part) : undefined;
     if (!n || n.component === name) return undefined;
     const ntag = tagOf(n.component);
     imports.add(`import '../${n.component}/${ntag}';`);
     const attrs = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? `.label=\${${js(x.value)}}` : `.${wcProp(x.prop)}=\${${js(x.value)}}`));
-    return `<span ${c}><${ntag}${attrs.length ? ' ' + attrs.join(' ') : ''}>${n.text !== undefined ? `\${${js(n.text)}}` : ''}</${ntag}></span>`;
+    return `<span ${c}><${ntag}${attrs.length ? ' ' + attrs.join(' ') : ''}>${n.text !== undefined ? `\${${wcText(l, js(n.text))}}` : ''}</${ntag}></span>`;
   };
   const render = (l: LayerInfo, indent: string): string => {
     const p = l.part;
@@ -48,12 +48,12 @@ export function wcDialog(ctx: TemplateContext, name: string, core: GenericCore, 
       el = `<button type="button" ${c} aria-label="Close" @click=\${() => this.setOpen(false)}>\${icon(${js(ic.name)})}</button>`;
     } else if (p.type === 'TEXT') {
       const t = textFor(p.refs?.characters);
-      el = `<span ${c}>\${${t ? `this.${t}` : js(p.text ?? '')}}</span>`;
+      el = `<span ${c}>\${${t ? `this.${t}` : wcText(l, js(p.text ?? ''))}}</span>`;
     } else if (ic) {
       usesIcon = true;
       el = `<span ${c} aria-hidden="true">\${icon(${js(ic.name)})}</span>`;
     } else if (p.type === 'INSTANCE') {
-      el = [p, ...(l.copies ?? [])].map((x) => nestedEl(c, x)).filter(Boolean).join(`\n${indent}`) || `<span ${c} aria-hidden="true"></span>`;
+      el = [p, ...(l.copies ?? [])].map((x) => nestedEl(c, x, l)).filter(Boolean).join(`\n${indent}`) || `<span ${c} aria-hidden="true"></span>`;
     } else if (SHAPES.has(p.type)) {
       el = `<span ${c} aria-hidden="true"></span>`;
     } else {

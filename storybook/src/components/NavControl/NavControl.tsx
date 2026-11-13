@@ -3,6 +3,7 @@
 import type { HTMLAttributes } from 'react';
 
 import { Icon } from '../../icons/Icon';
+import type { IconName } from '../../icons/icons';
 import styles from './NavControl.module.css';
 
 export interface NavControlProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'direction' | 'disabled'> {
@@ -17,7 +18,7 @@ export interface NavControlProps extends Omit<HTMLAttributes<HTMLDivElement>, 'c
 export function NavControl({ direction = 'prev', disabled = false, className, ...rest }: NavControlProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-direction={direction} data-disabled={disabled ? '' : undefined} aria-disabled={disabled || undefined} {...rest}>
-      <span className={styles.icon} aria-hidden="true"><Icon name="navChevronLeft20" /></span>
+      <span className={styles.icon} aria-hidden="true"><Icon name={(({"next":"navChevronRight20"} as Record<string, IconName>)[direction] ?? "navChevronLeft20")} /></span>
     </div>
   );
 }

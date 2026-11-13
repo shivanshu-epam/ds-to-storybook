@@ -109,3 +109,31 @@ export const Options: Story = {
     </Row>
   ),
 };
+
+/** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
+export const FigmaVariants: Story = {
+  tags: ['!test', '!autodocs'],
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
+      {[
+        { id: '723:4', name: 'Value=Off, Interaction=Default, Size=Medium', width: 40, props: { checked: false, interaction: 'default', size: 'medium' } as Partial<SwitchProps> },
+        { id: '723:10', name: 'Value=On, Interaction=Default, Size=Medium', width: 40, props: { checked: true, interaction: 'default', size: 'medium' } as Partial<SwitchProps> },
+        { id: '723:15', name: 'Value=Off, Interaction=Disabled, Size=Medium', width: 40, props: { checked: false, disabled: true, size: 'medium' } as Partial<SwitchProps> },
+        { id: '723:21', name: 'Value=On, Interaction=Disabled, Size=Medium', width: 40, props: { checked: true, disabled: true, size: 'medium' } as Partial<SwitchProps> },
+        { id: '723:26', name: 'Value=Off, Interaction=Loading, Size=Medium', width: 40, props: { checked: false, interaction: 'loading', size: 'medium' } as Partial<SwitchProps> },
+        { id: '723:31', name: 'Value=On, Interaction=Loading, Size=Medium', width: 40, props: { checked: true, interaction: 'loading', size: 'medium' } as Partial<SwitchProps> },
+        { id: '723:36', name: 'Value=Off, Interaction=Default, Size=Small', width: 32, props: { checked: false, interaction: 'default', size: 'small' } as Partial<SwitchProps> },
+        { id: '723:42', name: 'Value=On, Interaction=Default, Size=Small', width: 32, props: { checked: true, interaction: 'default', size: 'small' } as Partial<SwitchProps> },
+        { id: '723:47', name: 'Value=Off, Interaction=Disabled, Size=Small', width: 32, props: { checked: false, disabled: true, size: 'small' } as Partial<SwitchProps> },
+        { id: '723:53', name: 'Value=On, Interaction=Disabled, Size=Small', width: 32, props: { checked: true, disabled: true, size: 'small' } as Partial<SwitchProps> },
+        { id: '723:58', name: 'Value=Off, Interaction=Loading, Size=Small', width: 32, props: { checked: false, interaction: 'loading', size: 'small' } as Partial<SwitchProps> },
+        { id: '723:63', name: 'Value=On, Interaction=Loading, Size=Small', width: 32, props: { checked: true, interaction: 'loading', size: 'small' } as Partial<SwitchProps> },
+      ].map((v) => (
+        <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
+          <Switch {...args} {...v.props} />
+        </div>
+      ))}
+    </div>
+  ),
+};

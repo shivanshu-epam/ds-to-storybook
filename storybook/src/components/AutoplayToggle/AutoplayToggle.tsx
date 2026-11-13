@@ -3,6 +3,7 @@
 import type { HTMLAttributes } from 'react';
 
 import { Icon } from '../../icons/Icon';
+import type { IconName } from '../../icons/icons';
 import styles from './AutoplayToggle.module.css';
 
 export interface AutoplayToggleProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'state'> {
@@ -15,7 +16,7 @@ export interface AutoplayToggleProps extends Omit<HTMLAttributes<HTMLDivElement>
 export function AutoplayToggle({ state = 'playing', className, ...rest }: AutoplayToggleProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-state={state} {...rest}>
-      <span className={styles.icon} aria-hidden="true"><Icon name="mediaPause16" /></span>
+      <span className={styles.icon} aria-hidden="true"><Icon name={(({"paused":"mediaPlay16"} as Record<string, IconName>)[state] ?? "mediaPause16")} /></span>
     </div>
   );
 }

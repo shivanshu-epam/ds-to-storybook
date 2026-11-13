@@ -17,6 +17,7 @@ npm ci && npm run build && npm link     # until published: puts ds-sync on your 
 | `ds-sync init --figma <link> [--target react\|web-components\|both] [--dir storybook] [--variables file.json] [--ci] [--yes]` | Checks that the token can open the file, detects the stack and chooses the output target(s), writes `ds-sync.config.json`, and git-ignores `.env` and `.ds-sync/`. `--ci` adds the GitHub workflow. |
 | `ds-sync discover` | Finds every component set, classifies frames and proposes templates. Writes `.ds-sync/discovery.md` with the items that need a person. |
 | `ds-sync generate [--figma-version <id>]` | Discover, then extract, then generate one project per target (`react`, `web-components`). `--figma-version` pins a Figma version. |
+| `ds-sync visual [--url http://localhost:6006] [--dir storybook] [--only A,B]` | Compares every Figma variant (Figma's PNG render, from the generated version) with the running React Storybook, pixel by pixel. Writes `.ds-sync/visual/report.html` and `summary.json`. |
 | `ds-sync outputs` | Lists the generated folders in GitHub Actions output format (used by the workflow). |
 | `ds-sync run` | Drift report for an existing repo (needs `repo` and hand-mapped `components` in the config). Writes `.ds-sync/report.html`. |
 | `extract`, `spec`, `analyze`, `report` | The drift report steps, one at a time. |
@@ -36,12 +37,13 @@ Config reference: [`../skills/figma-to-storybook/reference/config.md`](../skills
 | `src/generate` | Tokens (CSS, DTCG JSON, TS), style compiler, icons, React project scaffold, templates (`action`, `checkbox`, `accordion`, `switch`, `radio`, `radio-field`, `radio-group`, `input`, `dialog`, `generic`) |
 | `src/generate/wc` | Web Components target: Lit renderers that reuse each template's model (`radio.ts`: the radio family; `input.ts`: text input; `dialog.ts`: dialog), and the project scaffold |
 | `archetypes/` | Behaviour packs (required states, keyboard) |
+| `src/visual` | Visual check: Figma renders vs Storybook screenshots (Playwright from the generated project), pixelmatch |
 | `templates/github-workflow.yml` | CI template used by `init --ci` |
 
 ## Develop
 
 ```bash
-npm test              # 52 tests, against recorded Figma fixtures (no token needed)
+npm test              # 61 tests, against recorded Figma fixtures (no token needed)
 npm run typecheck
 npm run ds-sync -- generate   # run from source with tsx
 ```

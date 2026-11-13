@@ -3,6 +3,7 @@
 import type { ChangeEventHandler, HTMLAttributes, ReactNode } from 'react';
 
 import { Icon } from '../../icons/Icon';
+import type { IconName } from '../../icons/icons';
 import { RadioControl } from '../RadioControl/RadioControl';
 import type { RadioControlProps } from '../RadioControl/RadioControl';
 import styles from './RadioField.module.css';
@@ -35,7 +36,7 @@ export function RadioField({ state = 'enabled', position = 'left', disabled = fa
         <span className={styles.value}>{label ?? "Radio label"}</span>
       </label>
       <div className={styles.statusRow}>
-        <span className={styles.statusIcon} aria-hidden="true"><Icon name="statusError16" /></span>
+        <span className={styles.statusIcon} aria-hidden="true"><Icon name={(({"warning":"statusWarning16"} as Record<string, IconName>)[state] ?? "statusError16")} /></span>
         <span className={styles.errorText}>{"Please select an option"}</span>
         <span className={styles.warningText}>{"This selection may need review"}</span>
       </div>

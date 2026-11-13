@@ -3,6 +3,7 @@
 import { useState, type ButtonHTMLAttributes } from 'react';
 
 import { Icon } from '../../icons/Icon';
+import type { IconName } from '../../icons/icons';
 import styles from './Switch.module.css';
 
 export interface SwitchProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'type' | 'checked' | 'defaultChecked' | 'value' | 'onChange' | 'interaction' | 'size' | 'disabled' | 'showInnerContent'> {
@@ -51,7 +52,7 @@ export function Switch({ checked, defaultChecked = false, onCheckedChange, onCli
       <span className={styles.track} />
       <span className={styles.handle} />
       {showInnerContent && (
-        <span className={styles.innerIcon} aria-hidden="true"><Icon name="actionClose16" /></span>
+        <span className={styles.innerIcon} aria-hidden="true"><Icon name={(interaction === "loading" ? "statusLoading16" : (({"on":"formCheck16"} as Record<string, IconName>)[(on ? "on" : "off")] ?? "actionClose16"))} /></span>
       )}
     </button>
   );

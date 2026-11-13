@@ -29,9 +29,7 @@
 }
 
 .root .radioControl {
-  background: transparent;
-  box-shadow: none;
-  display: block;
+  display: flex;
   flex-shrink: 0;
 }
 
@@ -43,6 +41,7 @@
   font-size: 13px;
   font-weight: 400;
   line-height: 15.73px;
+  min-height: 16px;
   white-space: normal;
 }
 
@@ -50,12 +49,24 @@
   opacity: 1;
 }
 
-.root .radioControl {
-  opacity: 1;
+.root:where([data-position="left"]) .radioControl {
+  order: 0;
+}
+
+.root:where([data-position="right"]) .radioControl {
+  order: 1;
 }
 
 .root .value {
   color: var(--interactive-fg-secondary-default);
+}
+
+.root:where([data-position="left"]) .value {
+  order: 1;
+}
+
+.root:where([data-position="right"]) .value {
+  order: 0;
 }
 
 .root .statusRow {
@@ -76,10 +87,6 @@
 
 .root:where([data-disabled]) {
   opacity: 0.6;
-}
-
-.root:where([data-disabled]) .radioControl {
-  opacity: 0.45;
 }
 
 .root:where([data-disabled]) .value {
@@ -141,6 +148,7 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 14.52px;
+  min-height: 15px;
   white-space: normal;
 }
 
@@ -153,5 +161,6 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 14.52px;
+  min-height: 15px;
   white-space: normal;
 }

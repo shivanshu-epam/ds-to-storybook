@@ -2,6 +2,7 @@
 // Visuals come from Figma. Behaviour (keyboard, focus, ARIA role) is not specified in Figma and is not generated.
 import { LitElement, html, nothing, unsafeCSS } from 'lit';
 
+import { icon } from '../../icons/icon';
 import css from './Separator.css?inline';
 
 export class DsSeparator extends LitElement {
@@ -24,6 +25,7 @@ export class DsSeparator extends LitElement {
   override render() {
     return html`<div class="root" part="root" data-type=${this.type} data-force-state=${this.forceState ?? nothing}>
         <span class="glyph">${"/"}</span>
+        <span class="glyph2" aria-hidden="true">${icon("navChevronRight16")}</span>
       </div>`;
   }
 }

@@ -29,7 +29,7 @@ export function DatePicker({ type = 'single', state = 'default', disabled = fals
         <span className={styles.l13452026}>{"13/45/2026"}</span>
         <span className={styles.mMDDYYYYHhMm}>{"MM/DD/YYYY hh:mm"}</span>
         <span className={styles.l07302026230PM}>{"07/30/2026 2:30 PM"}</span>
-        <span className={styles.l134520263}>{"13/45/2026 --:--"}</span>
+        <span className={styles.l134520264}>{"13/45/2026 --:--"}</span>
       </div>
       {showCalendar && (
         <div className={styles.calendarPanel}>
@@ -50,83 +50,159 @@ export function DatePicker({ type = 'single', state = 'default', disabled = fals
           <div className={styles.week1}>
             <div className={styles.stateDefault}>
               <span className={styles.l28}>{"28"}</span>
+            </div>
+            <div className={styles.stateDefault2}>
               <span className={styles.l29}>{"29"}</span>
+            </div>
+            <div className={styles.stateDefault3}>
               <span className={styles.l30}>{"30"}</span>
+            </div>
+            <div className={styles.stateDefault4}>
               <span className={styles.l1}>{"1"}</span>
+            </div>
+            <div className={styles.stateDefault5}>
               <span className={styles.l2}>{"2"}</span>
+            </div>
+            <div className={styles.stateDefault6}>
               <span className={styles.l3}>{"3"}</span>
+            </div>
+            <div className={styles.stateDefault7}>
               <span className={styles.l4}>{"4"}</span>
             </div>
           </div>
           <div className={styles.week2}>
-            <div className={styles.stateDefault2}>
+            <div className={styles.stateDefault8}>
               <span className={styles.l5}>{"5"}</span>
+            </div>
+            <div className={styles.stateDefault9}>
               <span className={styles.l6}>{"6"}</span>
+            </div>
+            <div className={styles.stateDefault10}>
               <span className={styles.l7}>{"7"}</span>
+            </div>
+            <div className={styles.stateDefault11}>
               <span className={styles.l8}>{"8"}</span>
+            </div>
+            <div className={styles.stateDefault12}>
               <span className={styles.l9}>{"9"}</span>
+            </div>
+            <div className={styles.stateDefault13}>
               <span className={styles.l10}>{"10"}</span>
+            </div>
+            <div className={styles.stateDefault14}>
               <span className={styles.l11}>{"11"}</span>
             </div>
           </div>
           <div className={styles.week3}>
-            <div className={styles.stateDefault3}>
+            <div className={styles.stateDefault15}>
               <span className={styles.l12}>{"12"}</span>
+            </div>
+            <div className={styles.stateDefault16}>
               <span className={styles.l13}>{"13"}</span>
+            </div>
+            <div className={styles.stateDefault17}>
               <span className={styles.l14}>{"14"}</span>
-              <span className={styles.l16}>{"16"}</span>
-              <span className={styles.l17}>{"17"}</span>
-              <span className={styles.l18}>{"18"}</span>
             </div>
             <div className={styles.stateSelected}>
               <span className={styles.l15}>{"15"}</span>
             </div>
+            <div className={styles.stateDefault18}>
+              <span className={styles.l16}>{"16"}</span>
+            </div>
+            <div className={styles.stateDefault19}>
+              <span className={styles.l17}>{"17"}</span>
+            </div>
+            <div className={styles.stateDefault20}>
+              <span className={styles.l18}>{"18"}</span>
+            </div>
           </div>
           <div className={styles.week4}>
-            <div className={styles.stateDefault4}>
+            <div className={styles.stateDefault21}>
               <span className={styles.l19}>{"19"}</span>
+            </div>
+            <div className={styles.stateDefault22}>
               <span className={styles.l20}>{"20"}</span>
+            </div>
+            <div className={styles.stateDefault23}>
               <span className={styles.l21}>{"21"}</span>
-              <span className={styles.l23}>{"23"}</span>
-              <span className={styles.l24}>{"24"}</span>
-              <span className={styles.l25}>{"25"}</span>
             </div>
             <div className={styles.stateDisabled}>
               <span className={styles.l22}>{"22"}</span>
             </div>
+            <div className={styles.stateDefault24}>
+              <span className={styles.l23}>{"23"}</span>
+            </div>
+            <div className={styles.stateDefault25}>
+              <span className={styles.l24}>{"24"}</span>
+            </div>
+            <div className={styles.stateDefault26}>
+              <span className={styles.l25}>{"25"}</span>
+            </div>
           </div>
           <div className={styles.week5}>
-            <div className={styles.stateDefault5}>
+            <div className={styles.stateDefault27}>
               <span className={styles.l26}>{"26"}</span>
+            </div>
+            <div className={styles.stateDefault28}>
               <span className={styles.l27}>{"27"}</span>
+            </div>
+            <div className={styles.stateDefault29}>
               <span className={styles.l282}>{"28"}</span>
+            </div>
+            <div className={styles.stateDefault30}>
               <span className={styles.l292}>{"29"}</span>
-              <span className={styles.l31}>{"31"}</span>
-              <span className={styles.l110}>{"1"}</span>
             </div>
             <div className={styles.stateToday}>
               <span className={styles.l302}>{"30"}</span>
               <div className={styles.ellipse} />
             </div>
+            <div className={styles.stateDefault31}>
+              <span className={styles.l31}>{"31"}</span>
+            </div>
+            <div className={styles.stateDefault32}>
+              <span className={styles.l110}>{"1"}</span>
+            </div>
           </div>
           <div className={styles.week6}>
-            <div className={styles.stateDefault6}>
+            <div className={styles.stateDefault33}>
               <span className={styles.l210}>{"2"}</span>
+            </div>
+            <div className={styles.stateDefault34}>
               <span className={styles.l32}>{"3"}</span>
+            </div>
+            <div className={styles.stateDefault35}>
               <span className={styles.l42}>{"4"}</span>
+            </div>
+            <div className={styles.stateDefault36}>
               <span className={styles.l52}>{"5"}</span>
+            </div>
+            <div className={styles.stateDefault37}>
               <span className={styles.l62}>{"6"}</span>
+            </div>
+            <div className={styles.stateDefault38}>
               <span className={styles.l72}>{"7"}</span>
+            </div>
+            <div className={styles.stateDefault39}>
               <span className={styles.l82}>{"8"}</span>
             </div>
           </div>
           <div className={styles.presets}>
             <div className={styles.presetItem}>
               <span className={styles.today}>{"Today"}</span>
+            </div>
+            <div className={styles.presetItem2}>
               <span className={styles.yesterday}>{"Yesterday"}</span>
+            </div>
+            <div className={styles.presetItem3}>
               <span className={styles.last7Days}>{"Last 7 days"}</span>
+            </div>
+            <div className={styles.presetItem4}>
               <span className={styles.last30Days}>{"Last 30 days"}</span>
+            </div>
+            <div className={styles.presetItem5}>
               <span className={styles.thisMonth}>{"This month"}</span>
+            </div>
+            <div className={styles.presetItem6}>
               <span className={styles.lastMonth}>{"Last month"}</span>
             </div>
           </div>
@@ -149,40 +225,76 @@ export function DatePicker({ type = 'single', state = 'default', disabled = fals
                   <span className={styles.sa2}>{"Sa"}</span>
                 </div>
                 <div className={styles.week12}>
-                  <div className={styles.stateDefault7}>
+                  <div className={styles.stateDefault40}>
                     <span className={styles.l283}>{"28"}</span>
+                  </div>
+                  <div className={styles.stateDefault41}>
                     <span className={styles.l293}>{"29"}</span>
+                  </div>
+                  <div className={styles.stateDefault42}>
                     <span className={styles.l303}>{"30"}</span>
+                  </div>
+                  <div className={styles.stateDefault43}>
                     <span className={styles.l111}>{"1"}</span>
+                  </div>
+                  <div className={styles.stateDefault44}>
                     <span className={styles.l211}>{"2"}</span>
+                  </div>
+                  <div className={styles.stateDefault45}>
                     <span className={styles.l33}>{"3"}</span>
+                  </div>
+                  <div className={styles.stateDefault46}>
                     <span className={styles.l43}>{"4"}</span>
                   </div>
                 </div>
                 <div className={styles.week22}>
-                  <div className={styles.stateDefault8}>
+                  <div className={styles.stateDefault47}>
                     <span className={styles.l53}>{"5"}</span>
+                  </div>
+                  <div className={styles.stateDefault48}>
                     <span className={styles.l63}>{"6"}</span>
+                  </div>
+                  <div className={styles.stateDefault49}>
                     <span className={styles.l73}>{"7"}</span>
+                  </div>
+                  <div className={styles.stateDefault50}>
                     <span className={styles.l83}>{"8"}</span>
+                  </div>
+                  <div className={styles.stateDefault51}>
                     <span className={styles.l92}>{"9"}</span>
+                  </div>
+                  <div className={styles.stateDefault52}>
                     <span className={styles.l102}>{"10"}</span>
+                  </div>
+                  <div className={styles.stateDefault53}>
                     <span className={styles.l112}>{"11"}</span>
                   </div>
                 </div>
                 <div className={styles.week32}>
-                  <div className={styles.stateDefault9}>
+                  <div className={styles.stateDefault54}>
                     <span className={styles.l122}>{"12"}</span>
+                  </div>
+                  <div className={styles.stateDefault55}>
                     <span className={styles.l132}>{"13"}</span>
+                  </div>
+                  <div className={styles.stateDefault56}>
                     <span className={styles.l142}>{"14"}</span>
+                  </div>
+                  <div className={styles.stateDefault57}>
                     <span className={styles.l152}>{"15"}</span>
+                  </div>
+                  <div className={styles.stateDefault58}>
                     <span className={styles.l162}>{"16"}</span>
+                  </div>
+                  <div className={styles.stateDefault59}>
                     <span className={styles.l172}>{"17"}</span>
+                  </div>
+                  <div className={styles.stateDefault60}>
                     <span className={styles.l182}>{"18"}</span>
                   </div>
                 </div>
                 <div className={styles.week42}>
-                  <div className={styles.stateDefault10}>
+                  <div className={styles.stateDefault61}>
                     <span className={styles.l192}>{"19"}</span>
                   </div>
                   <div className={styles.stateSelected2}>
@@ -190,33 +302,63 @@ export function DatePicker({ type = 'single', state = 'default', disabled = fals
                   </div>
                   <div className={styles.stateInRange}>
                     <span className={styles.l212}>{"21"}</span>
+                  </div>
+                  <div className={styles.stateInRange2}>
                     <span className={styles.l222}>{"22"}</span>
+                  </div>
+                  <div className={styles.stateInRange3}>
                     <span className={styles.l232}>{"23"}</span>
+                  </div>
+                  <div className={styles.stateInRange4}>
                     <span className={styles.l242}>{"24"}</span>
+                  </div>
+                  <div className={styles.stateInRange5}>
                     <span className={styles.l252}>{"25"}</span>
                   </div>
                 </div>
                 <div className={styles.week52}>
-                  <div className={styles.stateInRange2}>
+                  <div className={styles.stateInRange6}>
                     <span className={styles.l262}>{"26"}</span>
+                  </div>
+                  <div className={styles.stateInRange7}>
                     <span className={styles.l272}>{"27"}</span>
+                  </div>
+                  <div className={styles.stateInRange8}>
                     <span className={styles.l284}>{"28"}</span>
+                  </div>
+                  <div className={styles.stateInRange9}>
                     <span className={styles.l294}>{"29"}</span>
+                  </div>
+                  <div className={styles.stateInRange10}>
                     <span className={styles.l304}>{"30"}</span>
+                  </div>
+                  <div className={styles.stateInRange11}>
                     <span className={styles.l312}>{"31"}</span>
                   </div>
-                  <div className={styles.stateDefault11}>
+                  <div className={styles.stateDefault62}>
                     <span className={styles.l113}>{"1"}</span>
                   </div>
                 </div>
                 <div className={styles.week62}>
-                  <div className={styles.stateDefault12}>
+                  <div className={styles.stateDefault63}>
                     <span className={styles.l213}>{"2"}</span>
+                  </div>
+                  <div className={styles.stateDefault64}>
                     <span className={styles.l34}>{"3"}</span>
+                  </div>
+                  <div className={styles.stateDefault65}>
                     <span className={styles.l44}>{"4"}</span>
+                  </div>
+                  <div className={styles.stateDefault66}>
                     <span className={styles.l54}>{"5"}</span>
+                  </div>
+                  <div className={styles.stateDefault67}>
                     <span className={styles.l64}>{"6"}</span>
+                  </div>
+                  <div className={styles.stateDefault68}>
                     <span className={styles.l74}>{"7"}</span>
+                  </div>
+                  <div className={styles.stateDefault69}>
                     <span className={styles.l84}>{"8"}</span>
                   </div>
                 </div>
@@ -237,72 +379,140 @@ export function DatePicker({ type = 'single', state = 'default', disabled = fals
                   <span className={styles.sa3}>{"Sa"}</span>
                 </div>
                 <div className={styles.week13}>
-                  <div className={styles.stateInRange3}>
+                  <div className={styles.stateInRange12}>
                     <span className={styles.l263}>{"26"}</span>
+                  </div>
+                  <div className={styles.stateInRange13}>
                     <span className={styles.l273}>{"27"}</span>
+                  </div>
+                  <div className={styles.stateInRange14}>
                     <span className={styles.l285}>{"28"}</span>
+                  </div>
+                  <div className={styles.stateInRange15}>
                     <span className={styles.l295}>{"29"}</span>
+                  </div>
+                  <div className={styles.stateInRange16}>
                     <span className={styles.l305}>{"30"}</span>
+                  </div>
+                  <div className={styles.stateInRange17}>
                     <span className={styles.l313}>{"31"}</span>
+                  </div>
+                  <div className={styles.stateInRange18}>
                     <span className={styles.l114}>{"1"}</span>
                   </div>
                 </div>
                 <div className={styles.week23}>
-                  <div className={styles.stateInRange4}>
+                  <div className={styles.stateInRange19}>
                     <span className={styles.l214}>{"2"}</span>
+                  </div>
+                  <div className={styles.stateInRange20}>
                     <span className={styles.l35}>{"3"}</span>
+                  </div>
+                  <div className={styles.stateInRange21}>
                     <span className={styles.l45}>{"4"}</span>
                   </div>
                   <div className={styles.stateSelected3}>
                     <span className={styles.l55}>{"5"}</span>
                   </div>
-                  <div className={styles.stateDefault13}>
+                  <div className={styles.stateDefault70}>
                     <span className={styles.l65}>{"6"}</span>
+                  </div>
+                  <div className={styles.stateDefault71}>
                     <span className={styles.l75}>{"7"}</span>
+                  </div>
+                  <div className={styles.stateDefault72}>
                     <span className={styles.l85}>{"8"}</span>
                   </div>
                 </div>
                 <div className={styles.week33}>
-                  <div className={styles.stateDefault14}>
+                  <div className={styles.stateDefault73}>
                     <span className={styles.l93}>{"9"}</span>
+                  </div>
+                  <div className={styles.stateDefault74}>
                     <span className={styles.l103}>{"10"}</span>
+                  </div>
+                  <div className={styles.stateDefault75}>
                     <span className={styles.l115}>{"11"}</span>
+                  </div>
+                  <div className={styles.stateDefault76}>
                     <span className={styles.l123}>{"12"}</span>
+                  </div>
+                  <div className={styles.stateDefault77}>
                     <span className={styles.l133}>{"13"}</span>
+                  </div>
+                  <div className={styles.stateDefault78}>
                     <span className={styles.l143}>{"14"}</span>
+                  </div>
+                  <div className={styles.stateDefault79}>
                     <span className={styles.l153}>{"15"}</span>
                   </div>
                 </div>
                 <div className={styles.week43}>
-                  <div className={styles.stateDefault15}>
+                  <div className={styles.stateDefault80}>
                     <span className={styles.l163}>{"16"}</span>
+                  </div>
+                  <div className={styles.stateDefault81}>
                     <span className={styles.l173}>{"17"}</span>
+                  </div>
+                  <div className={styles.stateDefault82}>
                     <span className={styles.l183}>{"18"}</span>
+                  </div>
+                  <div className={styles.stateDefault83}>
                     <span className={styles.l193}>{"19"}</span>
+                  </div>
+                  <div className={styles.stateDefault84}>
                     <span className={styles.l203}>{"20"}</span>
+                  </div>
+                  <div className={styles.stateDefault85}>
                     <span className={styles.l215}>{"21"}</span>
+                  </div>
+                  <div className={styles.stateDefault86}>
                     <span className={styles.l223}>{"22"}</span>
                   </div>
                 </div>
                 <div className={styles.week53}>
-                  <div className={styles.stateDefault16}>
+                  <div className={styles.stateDefault87}>
                     <span className={styles.l233}>{"23"}</span>
+                  </div>
+                  <div className={styles.stateDefault88}>
                     <span className={styles.l243}>{"24"}</span>
+                  </div>
+                  <div className={styles.stateDefault89}>
                     <span className={styles.l253}>{"25"}</span>
+                  </div>
+                  <div className={styles.stateDefault90}>
                     <span className={styles.l264}>{"26"}</span>
+                  </div>
+                  <div className={styles.stateDefault91}>
                     <span className={styles.l274}>{"27"}</span>
+                  </div>
+                  <div className={styles.stateDefault92}>
                     <span className={styles.l286}>{"28"}</span>
+                  </div>
+                  <div className={styles.stateDefault93}>
                     <span className={styles.l296}>{"29"}</span>
                   </div>
                 </div>
                 <div className={styles.week63}>
-                  <div className={styles.stateDefault17}>
+                  <div className={styles.stateDefault94}>
                     <span className={styles.l306}>{"30"}</span>
+                  </div>
+                  <div className={styles.stateDefault95}>
                     <span className={styles.l314}>{"31"}</span>
+                  </div>
+                  <div className={styles.stateDefault96}>
                     <span className={styles.l116}>{"1"}</span>
+                  </div>
+                  <div className={styles.stateDefault97}>
                     <span className={styles.l216}>{"2"}</span>
+                  </div>
+                  <div className={styles.stateDefault98}>
                     <span className={styles.l36}>{"3"}</span>
+                  </div>
+                  <div className={styles.stateDefault99}>
                     <span className={styles.l46}>{"4"}</span>
+                  </div>
+                  <div className={styles.stateDefault100}>
                     <span className={styles.l56}>{"5"}</span>
                   </div>
                 </div>
@@ -332,70 +542,140 @@ export function DatePicker({ type = 'single', state = 'default', disabled = fals
               <span className={styles.sa4}>{"Sa"}</span>
             </div>
             <div className={styles.week14}>
-              <div className={styles.stateDefault18}>
+              <div className={styles.stateDefault101}>
                 <span className={styles.l287}>{"28"}</span>
+              </div>
+              <div className={styles.stateDefault102}>
                 <span className={styles.l297}>{"29"}</span>
+              </div>
+              <div className={styles.stateDefault103}>
                 <span className={styles.l307}>{"30"}</span>
+              </div>
+              <div className={styles.stateDefault104}>
                 <span className={styles.l117}>{"1"}</span>
+              </div>
+              <div className={styles.stateDefault105}>
                 <span className={styles.l217}>{"2"}</span>
+              </div>
+              <div className={styles.stateDefault106}>
                 <span className={styles.l37}>{"3"}</span>
+              </div>
+              <div className={styles.stateDefault107}>
                 <span className={styles.l47}>{"4"}</span>
               </div>
             </div>
             <div className={styles.week24}>
-              <div className={styles.stateDefault19}>
+              <div className={styles.stateDefault108}>
                 <span className={styles.l57}>{"5"}</span>
+              </div>
+              <div className={styles.stateDefault109}>
                 <span className={styles.l66}>{"6"}</span>
+              </div>
+              <div className={styles.stateDefault110}>
                 <span className={styles.l76}>{"7"}</span>
+              </div>
+              <div className={styles.stateDefault111}>
                 <span className={styles.l86}>{"8"}</span>
+              </div>
+              <div className={styles.stateDefault112}>
                 <span className={styles.l94}>{"9"}</span>
+              </div>
+              <div className={styles.stateDefault113}>
                 <span className={styles.l104}>{"10"}</span>
+              </div>
+              <div className={styles.stateDefault114}>
                 <span className={styles.l118}>{"11"}</span>
               </div>
             </div>
             <div className={styles.week34}>
-              <div className={styles.stateDefault20}>
+              <div className={styles.stateDefault115}>
                 <span className={styles.l124}>{"12"}</span>
+              </div>
+              <div className={styles.stateDefault116}>
                 <span className={styles.l134}>{"13"}</span>
+              </div>
+              <div className={styles.stateDefault117}>
                 <span className={styles.l144}>{"14"}</span>
+              </div>
+              <div className={styles.stateDefault118}>
                 <span className={styles.l154}>{"15"}</span>
+              </div>
+              <div className={styles.stateDefault119}>
                 <span className={styles.l164}>{"16"}</span>
+              </div>
+              <div className={styles.stateDefault120}>
                 <span className={styles.l174}>{"17"}</span>
+              </div>
+              <div className={styles.stateDefault121}>
                 <span className={styles.l184}>{"18"}</span>
               </div>
             </div>
             <div className={styles.week44}>
-              <div className={styles.stateDefault21}>
+              <div className={styles.stateDefault122}>
                 <span className={styles.l194}>{"19"}</span>
+              </div>
+              <div className={styles.stateDefault123}>
                 <span className={styles.l204}>{"20"}</span>
+              </div>
+              <div className={styles.stateDefault124}>
                 <span className={styles.l218}>{"21"}</span>
+              </div>
+              <div className={styles.stateDefault125}>
                 <span className={styles.l224}>{"22"}</span>
+              </div>
+              <div className={styles.stateDefault126}>
                 <span className={styles.l234}>{"23"}</span>
+              </div>
+              <div className={styles.stateDefault127}>
                 <span className={styles.l244}>{"24"}</span>
+              </div>
+              <div className={styles.stateDefault128}>
                 <span className={styles.l254}>{"25"}</span>
               </div>
             </div>
             <div className={styles.week54}>
-              <div className={styles.stateDefault22}>
+              <div className={styles.stateDefault129}>
                 <span className={styles.l265}>{"26"}</span>
+              </div>
+              <div className={styles.stateDefault130}>
                 <span className={styles.l275}>{"27"}</span>
+              </div>
+              <div className={styles.stateDefault131}>
                 <span className={styles.l288}>{"28"}</span>
+              </div>
+              <div className={styles.stateDefault132}>
                 <span className={styles.l298}>{"29"}</span>
-                <span className={styles.l315}>{"31"}</span>
-                <span className={styles.l119}>{"1"}</span>
               </div>
               <div className={styles.stateSelected4}>
                 <span className={styles.l308}>{"30"}</span>
               </div>
+              <div className={styles.stateDefault133}>
+                <span className={styles.l315}>{"31"}</span>
+              </div>
+              <div className={styles.stateDefault134}>
+                <span className={styles.l119}>{"1"}</span>
+              </div>
             </div>
             <div className={styles.week64}>
-              <div className={styles.stateDefault23}>
+              <div className={styles.stateDefault135}>
                 <span className={styles.l219}>{"2"}</span>
+              </div>
+              <div className={styles.stateDefault136}>
                 <span className={styles.l38}>{"3"}</span>
+              </div>
+              <div className={styles.stateDefault137}>
                 <span className={styles.l48}>{"4"}</span>
+              </div>
+              <div className={styles.stateDefault138}>
                 <span className={styles.l58}>{"5"}</span>
+              </div>
+              <div className={styles.stateDefault139}>
                 <span className={styles.l67}>{"6"}</span>
+              </div>
+              <div className={styles.stateDefault140}>
                 <span className={styles.l77}>{"7"}</span>
+              </div>
+              <div className={styles.stateDefault141}>
                 <span className={styles.l87}>{"8"}</span>
               </div>
             </div>
@@ -404,9 +684,11 @@ export function DatePicker({ type = 'single', state = 'default', disabled = fals
             <span className={styles.time}>{"Time"}</span>
             <div className={styles.timeBox}>
               <span className={styles.l02}>{"02"}</span>
-              <span className={styles.l309}>{"30"}</span>
             </div>
             <span className={styles.layer}>{":"}</span>
+            <div className={styles.timeBox2}>
+              <span className={styles.l309}>{"30"}</span>
+            </div>
             <div className={styles.ampm}>
               <div className={styles.segAM}>
                 <span className={styles.aM}>{"AM"}</span>
@@ -428,8 +710,13 @@ export function DatePicker({ type = 'single', state = 'default', disabled = fals
           <span className={styles.mMDDYYYY2}>{"MM/DD/YYYY"}</span>
           <span className={styles.iconFormCalendar162} aria-hidden="true"><Icon name="formCalendar16" /></span>
           <span className={styles.l07202026}>{"07/20/2026"}</span>
-          <span className={styles.l08052026}>{"08/05/2026"}</span>
           <span className={styles.l134520262}>{"13/45/2026"}</span>
+        </div>
+        <div className={styles.fieldRow3}>
+          <span className={styles.mMDDYYYY3}>{"MM/DD/YYYY"}</span>
+          <span className={styles.iconFormCalendar163} aria-hidden="true"><Icon name="formCalendar16" /></span>
+          <span className={styles.l08052026}>{"08/05/2026"}</span>
+          <span className={styles.l134520263}>{"13/45/2026"}</span>
         </div>
       </div>
     </div>
