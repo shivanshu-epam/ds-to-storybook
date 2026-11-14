@@ -61,6 +61,40 @@ Details are in `token-map.json`.
 | --- | --- | --- | --- | --- |
 | Inter | 2686 | 400, 500, 600, 700 | `@fontsource-variable/inter` 5.3.0 |  |
 
+## Scorecards
+
+One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured. No overall score: each measure is gated on its own. Public components: 27; 105 ✓, 77 ⚠, 0 ✗. Full detail in `scorecard.json`; building blocks are in the file, not this table.
+
+| Component | Visual fidelity | Variants | Properties | Nested consistency | Interaction | Tokens | Accessibility | Documentation | Open decisions |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Button | – | ✓ | ⚠ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| ListItem | – | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
+| Checkbox | – | ✓ | ✓ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| Badge | – | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
+| BreadcrumbItem | – | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
+| Separator | – | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
+| Accordion | – | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
+| NavControl | – | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
+| PaginationDot | – | ✓ | ✓ | – | ⚠ | ✓ | ✓ | ✓ | ✓ |
+| AutoplayToggle | – | ✓ | ✓ | – | ⚠ | ✓ | ✓ | ⚠ | ✓ |
+| AvatarIdentity | – | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ |
+| AvatarGlyph | – | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
+| Alert | – | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
+| Dialog | – | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ | ⚠ |
+| RadioControl | – | ✓ | ✓ | – | ✓ | ⚠ | ✓ | ⚠ | ✓ |
+| RadioField | – | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
+| RadioGroup | – | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
+| Divider | – | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
+| DatePicker | – | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
+| Switch | – | ✓ | ✓ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| Input | – | ✓ | ⚠ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| DropdownTrigger | – | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| DropdownMenu | – | ✓ | ✓ | ✓ | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ |
+| Dropdown | – | ✓ | ✓ | ✓ | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| InputControl | – | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| InputField | – | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| Form | – | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ |
+
 ## Nested consistency
 
 For each nested component and each parent variant in its base state, the props the generated parent gives the nested component, compared with the Figma instance (its variant, booleans, texts and exposed nested instances).

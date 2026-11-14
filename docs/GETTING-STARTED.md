@@ -154,6 +154,18 @@ It compares every Figma variant (Figma's own render) with the Storybook, pixel b
 - **Sidebar.** Components go under `Components/<category>` when `categories` assigns one. Components Figma marks as building blocks (names starting with `_` or `.`, or ending in `Base`) are built and tested but not listed; their parent's docs page links to them under Composition. `publicComponents` and `internalComponents` override that.
 - **Docs pages** follow [the documentation standard](fidelity/STANDARD.md): Overview, Preview, Variants, Properties (grouped, with the Figma property each one comes from), States, Behaviour, Composition, Accessibility, Code and Design reference (Figma links, nested consistency, visual check). Test-only stories are kept out of the sidebar.
 
+**6.5 Scorecards and the audit.** Every component gets a scorecard: one status per fidelity measure (visual, variants, properties, nested consistency, interaction, tokens, accessibility, documentation, open decisions). It appears on its docs page, in `GENERATION-REPORT.md`, and in `scorecard.json`. There is no overall score: each measure is checked on its own. To include real test results:
+
+```bash
+cd storybook && npx vitest run --reporter=json --outputFile=../.ds-sync/tests.json; cd ..
+```
+
+```bash
+ds-sync audit --tests .ds-sync/tests.json
+```
+
+The audit writes `.ds-sync/audit.md` (and a short `audit-summary.md`). If a visual check of the same Figma version exists, it uses that too. With `--strict` it exits with an error when any public component fails a measure, for use as a CI gate. The GitHub workflow adds the summary to each pull request.
+
 ## 7. Keep it in sync (GitHub)
 
 1. Run `npx ds-sync init --ci` (or answer yes during init). It adds `.github/workflows/ds-sync.yml`.

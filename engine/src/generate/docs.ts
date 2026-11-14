@@ -125,6 +125,8 @@ export interface DocsInput {
   modes: string[];
   packageName: string;
   visual?: { match: number; total: number; worst: number };
+  /** Scorecard lines (QUALITY.md section 3), shown under Design reference. */
+  scorecard?: string[];
   /** Plain-language descriptions by code prop, from applied decisions. */
   descriptions?: Record<string, string>;
   /** Component description from an applied decision, used when Figma has none. */
@@ -252,6 +254,7 @@ import * as Stories from './${d.name}.stories';`;
     `<li>{${js(d.visual ? `Visual check: ${d.visual.match}/${d.visual.total} variants match Figma (worst difference ${d.visual.worst}%).` : 'Visual check: not run for this version yet ("ds-sync visual").')}}</li>`,
   ];
   out.push(`<ul>${ref.join('')}</ul>`, '');
+  if (d.scorecard?.length) out.push('### Scorecard', '', p('One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured.'), list(d.scorecard), '');
   const notes = [...d.report.assumptions.filter((a) => !behaviour.includes(a) && !a11y.includes(a)), ...d.report.gaps.filter((g) => !a11y.includes(g))];
   if (notes.length) out.push(`<details>\n  <summary>Generation notes: what Figma does not specify, and approximations</summary>\n  ${list(notes)}\n</details>`, '');
   if (d.framework === 'react') out.push('<FigmaDocs docs={docs} only="tabs" />', '');

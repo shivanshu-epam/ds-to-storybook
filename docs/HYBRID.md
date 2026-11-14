@@ -218,7 +218,31 @@ Checks after these: engine 102 tests; Design System AI 306 of 306 in both output
 
 Still open: a single radio without a group (it needs group semantics to be useful).
 
-## 11. Reproduce
+## 11. Phase 4, first increment: scorecards and audit (14 Nov 2026)
+
+- **Scorecards** (`engine/src/generate/scorecard.ts`). For every component there is one status per measure from [QUALITY.md](fidelity/QUALITY.md): visual fidelity, variants, properties, nested consistency, interaction, tokens, accessibility, documentation and open decisions. Each comes with one line of evidence. There is no weighted total, as section 4 argues. They appear on docs pages (Design reference), in `GENERATION-REPORT.md`, and in `scorecard.json`.
+- **`ds-sync audit`** reads the scorecards. With `--tests <vitest json>` it replaces the interaction and accessibility lines with real test results, separating contrast failures from behaviour failures. It uses a visual check of the same Figma version when one exists. It writes `audit.md` and `audit-summary.md`, and `--strict` fails on any ✗.
+- **The GitHub workflow** saves a JSON test report, runs the audit, adds the summary to the pull request and keeps `audit.md` with the run's files.
+
+First audits:
+
+| Measure | Design System AI (27 public): ✓ / ⚠ / ✗ / – | Blade (49 public) |
+| --- | --- | --- |
+| Visual fidelity | not measured for this Figma version | 3 / 4 / 4 / 38 (Divider: 0 of 48, a known rendering bug) |
+| Properties | 25 / 2 / 0 / 0 | 48 / 1 / 0 / 0 |
+| Nested consistency | 4 / 0 / 0 / 23 | 29 / 0 / 0 / 20 |
+| Interaction | 9 / 7 / 0 / 11 | 10 / 12 / 0 / 27 |
+| Accessibility | 9 / 18 / 0 / 0 (accepted known issues) | 29 / 3 / 17 / 0 (contrast in Blade's palette) |
+| Documentation | 1 / 26 / 0 / 0 | 0 / 1 / 48 / 0 (no descriptions in Figma; AI proposals not accepted) |
+
+The audit points to the next work by itself:
+- Blade's documentation needs its descriptions accepted.
+- 12 Blade components (Tabs, Chip, Dropdown, Pagination and others) look interactive but have no behaviour template.
+- Divider doesn't render.
+
+Still open from step 12: a separate docs lint.
+
+## 12. Reproduce
 
 - Blade Storybook inventory: `fetch('https://blade.razorpay.com/index.json')`.
 - Blade source: `git clone --depth 1 --filter=blob:none --sparse https://github.com/razorpay/blade`, with sparse paths `packages/blade/src/components` and `packages/blade-plugin`.

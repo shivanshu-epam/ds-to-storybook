@@ -78,6 +78,8 @@ Summarise `GENERATION-REPORT.md`: what came from Figma, what came from archetype
 
 With the React Storybook running, `ds-sync visual` compares every Figma variant with the code, pixel by pixel, and writes `.ds-sync/visual/report.html`. Report the counts (match, close, differ) and look at the worst variants: a different size or a missing or misplaced layer is a generator issue; small text-edge differences are font rendering.
 
+**Scorecards.** Every generated component has one (`scorecard.json`, its docs page, `GENERATION-REPORT.md`). After tests, run `ds-sync audit --tests <vitest json>` and report per measure, never as one number. A ✗ in Interaction or Accessibility is a test failure (use diagnose-fidelity); a ✗ in Documentation usually means no description in Figma (interpret + review-decisions can fill it).
+
 ## 5. Interpretation decisions (optional)
 
 Figma names properties for designers (`Show Leading Icon`, `isIntermediate`, `Screen Size`); code needs names and descriptions an engineer would ship. ds-sync never guesses them. They come from `ds-sync.decisions.json`: proposals with evidence, accepted by a person, applied on the next `generate`. Without the file, everything works as before.

@@ -1,6 +1,8 @@
 /** Scenario 2: Figma design system -> a fresh, tested Storybook project. */
 import { composition, docsPage, isBuildingBlock, polishStories, templateSections } from './docs.ts';
 import { activeDecisions, decidedSetDescription, decisionsReport, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel, type DecisionsFile } from '../decisions/decisions.ts';
+import { buildScorecard, scorecardLines, scorecardReport } from './scorecard.ts';
+import { leadSentence } from './templates/common.ts';
 import { fontsReport, httpFontSource, planFonts, usedFonts, type FontOverride, type FontPlan } from './fonts.ts';
 import { existsSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -277,6 +279,22 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     }
   } catch { visual = {}; }
   const modeNames = [...new Set(Object.values(tokens.modes).flat())];
+  // Scorecards (QUALITY.md section 3): per component, one status per measure.
+  const issueCount = (i: string | Record<string, string> | undefined) => (!i ? 0 : typeof i === 'string' ? 1 : Object.keys(i).length);
+  const cards = results.map(({ c, ctx, result }) => {
+    const sets = Object.values(ctx.sets);
+    const docs = decisionDocs(sets);
+    return buildScorecard({
+      name: c.name, template: c.template, sets, report: result.report,
+      css: (result.core as GenericCore | undefined)?.css ?? result.files.find((f) => f.path.endsWith('.module.css'))?.content ?? '',
+      buildingBlock: blockOf(c), ...(visual[c.name] ? { visual: visual[c.name] } : {}),
+      knownIssues: issueCount(gen.overrides?.knownIssues?.[c.name]),
+      questions: sets.reduce((n, s) => n + (decisionsFile?.sets[s.name]?.questions?.length ?? 0), 0),
+      described: sets.some((s) => s.description.trim()) || Boolean(leadSentence(sets.flatMap((s) => s.docFrames))) || Boolean(docs.decidedDescription),
+      describedProps: Object.keys(docs.descriptions ?? {}).length,
+    });
+  });
+  const cardOf = new Map(cards.map((x) => [x.component, x]));
   const applyDocs = (list: GeneratedFile[], framework: 'react' | 'wc', packageName: string) => {
     for (const { c, ctx, result } of results) {
       const dir = `src/components/${c.name}/`;
@@ -302,6 +320,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
         knownIssues: issue ? knownIssueNotes(issue) : [], modes: modeNames, packageName,
         ...(visual[c.name] ? { visual: visual[c.name] } : {}),
         ...decisionDocs(Object.values(ctx.sets)),
+        ...(cardOf.get(c.name) ? { scorecard: scorecardLines(cardOf.get(c.name)!) } : {}),
       });
     }
   };
@@ -333,7 +352,8 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   const shared: GeneratedFile[] = [
     ...tokenFiles,
     { path: 'token-map.json', content: JSON.stringify(tokenMap, null, 2) + '\n' },
-    { path: 'GENERATION-REPORT.md', content: report(ir, reports, tokenMap.counts, icons, fonts, decisionsReport(decisionsFile, decisionLevel, decisionProblems)) },
+    { path: 'GENERATION-REPORT.md', content: report(ir, reports, tokenMap.counts, icons, fonts, [...scorecardReport(cards), ...decisionsReport(decisionsFile, decisionLevel, decisionProblems)]) },
+    { path: 'scorecard.json', content: JSON.stringify({ fileKey: ir.fileKey, version: ir.version, components: cards }, null, 2) + '\n' },
   ];
 
   const targets: TargetConfig[] = gen.targets?.length ? gen.targets : [{ target: gen.target ?? 'react', outDir: gen.outDir, ...(gen.packageName ? { packageName: gen.packageName } : {}) }];

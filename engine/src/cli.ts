@@ -26,6 +26,7 @@ import { activeDecisions, DECISIONS_FILE, loadDecisions, setActiveDecisions, val
 import { buildReview, writeReview } from './review/review.ts';
 import { claudeAvailable, interpret } from './ai/interpret.ts';
 import { evalMarkdown, evaluate } from './eval/eval.ts';
+import { auditMarkdown, loadScorecards, testTallies, withTests, withVisual } from './audit/audit.ts';
 
 const USAGE = `ds-sync — generate and sync a tested Storybook from a Figma design system
 
@@ -52,6 +53,8 @@ Commands:
   decisions validate | accept | reject: check ds-sync.decisions.json against Figma, or change
             the status of entries (--only A,B; --by <name>). Accepting is a person's call.
   eval      Compare the generated API with a reference library: --reference <components folder>
+  audit     Scorecards of the generated project, one status per fidelity measure → out/audit.md
+            (--tests <vitest json report> adds real test results; --strict fails on any ✗)
 
 Options:
   --config <file>   Config file (default: ds-sync.config.json)
@@ -146,6 +149,8 @@ async function main() {
       model: { type: 'string' },
       budget: { type: 'string' },
       by: { type: 'string' },
+      tests: { type: 'string' },
+      strict: { type: 'boolean', default: false },
       yes: { type: 'boolean', default: false },
       ci: { type: 'boolean', default: false },
       refresh: { type: 'boolean', default: false },
@@ -272,6 +277,35 @@ async function main() {
         writeText(decisionsPath, JSON.stringify(file, null, 2) + '\n');
         log(`Decisions: ${names.length} set(s) ${action}ed.`);
       } else throw new Error(`Unknown decisions action "${action}" (validate, accept, reject).`);
+      break;
+    }
+    case 'audit': {
+      // Scorecards of each generated target, optionally with real story-test results (--tests <vitest json>).
+      const g = config.generate;
+      const dirs = values.dir ? [values.dir] : g?.targets?.length ? g.targets.map((t) => t.outDir) : g ? [g.outDir] : [];
+      const parts: string[] = [];
+      const summaries: string[] = [];
+      let failingTotal = 0;
+      const visualFile = join(p.out, 'visual', 'summary.json');
+      for (const d of dirs) {
+        const sc = loadScorecards(resolve(config.baseDir, d));
+        if (!sc) { log(`Audit: no scorecard.json in ${d} (run ds-sync generate first)`); continue; }
+        const tallies = values.tests ? testTallies(resolve(values.tests)) : undefined;
+        const visualRun = exists(visualFile) ? (JSON.parse(readFileSync(visualFile, 'utf8')) as { version?: string; results?: { component: string; verdict: string; diff: number }[] }) : undefined;
+        const fresh = visualRun?.version === sc.version ? visualRun.results ?? [] : [];
+        const cards = sc.components.map((c) => withTests(withVisual(c, fresh), tallies?.get(c.component)));
+        const { text, summary, failing } = auditMarkdown(d, sc.version, cards);
+        parts.push(text);
+        summaries.push(summary);
+        failingTotal += failing.length;
+        log(`Audit (${d}): ${cards.filter((c) => !c.buildingBlock).length} public components, ${failing.length} failing measure(s)${tallies ? ' (with test results)' : ''}`);
+        for (const f of failing.slice(0, 15)) log(`  ✗ ${f.component}: ${f.measure}: ${f.value}`);
+      }
+      const file = join(p.out, 'audit.md');
+      writeText(file, parts.join('\n\n'));
+      writeText(join(p.out, 'audit-summary.md'), summaries.join('\n'));
+      log(`Audit → ${file}`);
+      if (values.strict && failingTotal) process.exitCode = 1;
       break;
     }
     case 'eval': {

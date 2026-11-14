@@ -15,7 +15,7 @@ Ordered by impact and dependency. Each step is a generator change, so it applies
 | 9 | **Fonts**: load Google-hosted families, report missing ones | Blade headings | none | S | Done (13 Nov 2026) |
 | 10 | **Instance-swap properties as slots** | 43 Blade properties | 1 | M | Done (13 Nov 2026): an instance swap bound to a layer is a content prop (React `ReactNode`, Web Components named `<slot>`) with the Figma instance as default |
 | 11 | **Behaviour by structure**: recognise disclosure, checkbox, radio, button by properties (`isExpanded`, `isChecked`, label text, `isDisabled`), not names | F8 | 2, 3 | L | Done (14 Nov 2026): checkbox and disclosure from structure; button and link from their names (no structural marker exists) with an `archetype` decision to correct either; a single radio without a group stays generic until it has one |
-| 12 | **`ds-sync audit` and `docs lint`**, decisions file, scorecards in reports and PRs | Measures 2, 3, 8; decision mechanism | 4, 6 | M | |
+| 12 | **`ds-sync audit` and `docs lint`**, decisions file, scorecards in reports and PRs | Measures 2, 3, 8; decision mechanism | 4, 6 | M | Partly done (14 Nov 2026): per-component scorecards (9 measures, no overall score) in docs pages, GENERATION-REPORT.md and scorecard.json; `ds-sync audit` with real test and visual results, `--strict` gate, summary in the workflow PR; the decisions file exists (phase 1). A separate docs lint is still open (documentation completeness is a scorecard measure) |
 | 13 | **Storybook Documentation Skill** | Repeatability | 12 | M | |
 | 14 | **Apply to the whole library**, remeasure, close or record every open item | Phase 5 | all | ongoing | |
 
