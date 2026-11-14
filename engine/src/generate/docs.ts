@@ -125,6 +125,12 @@ export interface DocsInput {
   modes: string[];
   packageName: string;
   visual?: { match: number; total: number; worst: number };
+  /** Scorecard lines (QUALITY.md section 3), shown under Design reference. */
+  scorecard?: string[];
+  /** Plain-language descriptions by code prop, from applied decisions. */
+  descriptions?: Record<string, string>;
+  /** Component description from an applied decision, used when Figma has none. */
+  decidedDescription?: string;
 }
 
 const GROUPS = ['Appearance', 'Content', 'State', 'Behaviour', 'Composition'] as const;
@@ -141,7 +147,9 @@ const list = (items: string[]) => `<ul>${items.map((i) => `<li>{${js(i)}}</li>`)
 
 export function docsPage(d: DocsInput): string {
   const sets = d.sets;
-  const description = sets.map((s) => s.description).find((x) => x?.trim()) ?? leadSentence(sets.flatMap((s) => s.docFrames));
+  const figmaDescription = sets.map((s) => s.description).find((x) => x?.trim()) ?? leadSentence(sets.flatMap((s) => s.docFrames));
+  const description = figmaDescription || d.decidedDescription;
+  const fromDecision = !figmaDescription && Boolean(d.decidedDescription);
   const sections = templateSections(d.templateMdx);
   const out: string[] = [];
   const header = d.framework === 'react'
@@ -158,6 +166,7 @@ import * as Stories from './${d.name}.stories';`;
   // Overview
   out.push('## Overview', '');
   out.push(description ? p(description) : `<p><strong>No description in Figma.</strong> Add one to the component set's description in Figma; it appears here on the next sync.</p>`);
+  if (fromDecision) out.push('<p><small>Description from ds-sync.decisions.json (Figma has none).</small></p>');
   if (d.buildingBlock) {
     out.push(`<p>{${js(`Building block${d.usedIn.length ? ` of ${d.usedIn.map((u) => u.name).join(', ')}` : ''}: Figma marks it as internal (its name starts with "_" or "." or ends with "Base"), so it is not listed in the sidebar. Use the parent component unless you are composing your own.`)}}</p>`);
     if (d.usedIn.length) out.push(`<p>Used in: ${d.usedIn.map((u) => `<a href=${js(docsLink(u.title))} target="_top">{${js(u.name)}}</a>`).join(', ')}</p>`);
@@ -170,6 +179,10 @@ import * as Stories from './${d.name}.stories';`;
   // Variants (designed variants, grouped by property)
   if (sections.length) {
     out.push('## Variants', '');
+    // Designed vs computed (fidelity step 7): Controls can combine values Figma never drew together.
+    const possible = sets.reduce((n, st) => n * (st.properties ?? []).filter((x) => x.type === 'VARIANT').reduce((m, x) => m * (x.options?.length ?? 1), 1), 1);
+    const designed = sets.reduce((n, st) => n * (st.variants?.length ?? 0), 1);
+    if (sets.length === 1 && designed > 0 && designed < possible) out.push(p(`Figma designs ${designed} of the ${possible} possible combinations of these properties. The stories below show designed variants only; other combinations set in the controls are computed from the nearest designed styles and are not reviewed designs.`), '');
     for (const s of sections) out.push(`### ${plainLabel(s.heading)}`, '', ...(s.note ? [s.note, ''] : []), `<Canvas of={Stories.${s.story}} />`, '');
   }
 
@@ -181,7 +194,7 @@ import * as Stories from './${d.name}.stories';`;
       const gr = rows.filter((m) => groupOf(m) === g);
       if (!gr.length) continue;
       out.push(`### ${g}`, '', `<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody>${gr
-        .map((m) => `<tr><td>{${js(m.prop === '—' ? m.figma.replace(/ \(.*\)$/, '') : plainLabel(m.prop))}}</td><td>${m.prop === '—' ? '—' : `<code>{${js(m.prop)}}</code>`}</td><td>{${js(m.figma)}}</td><td>{${js(m.note ?? '')}}</td></tr>`)
+        .map((m) => `<tr><td>{${js(m.prop === '—' ? m.figma.replace(/ \(.*\)$/, '') : plainLabel(m.prop))}}</td><td>${m.prop === '—' ? '—' : `<code>{${js(m.prop)}}</code>`}</td><td>{${js(m.figma)}}</td><td>{${js([d.descriptions?.[m.prop], m.note].filter(Boolean).join(' '))}}</td></tr>`)
         .join('')}</tbody></table>`, '');
     }
     out.push('### Try it', '', '<Controls of={Stories.Default} />', '');
@@ -241,6 +254,7 @@ import * as Stories from './${d.name}.stories';`;
     `<li>{${js(d.visual ? `Visual check: ${d.visual.match}/${d.visual.total} variants match Figma (worst difference ${d.visual.worst}%).` : 'Visual check: not run for this version yet ("ds-sync visual").')}}</li>`,
   ];
   out.push(`<ul>${ref.join('')}</ul>`, '');
+  if (d.scorecard?.length) out.push('### Scorecard', '', p('One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured.'), list(d.scorecard), '');
   const notes = [...d.report.assumptions.filter((a) => !behaviour.includes(a) && !a11y.includes(a)), ...d.report.gaps.filter((g) => !a11y.includes(g))];
   if (notes.length) out.push(`<details>\n  <summary>Generation notes: what Figma does not specify, and approximations</summary>\n  ${list(notes)}\n</details>`, '');
   if (d.framework === 'react') out.push('<FigmaDocs docs={docs} only="tabs" />', '');

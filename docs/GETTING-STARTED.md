@@ -93,7 +93,7 @@ Open `.ds-sync/discovery.md`. It lists every component set found, the template c
 - Working or QA pages to skip: `"skipPages": ["<page name>"]`.
 - Frames classified wrongly (documentation, example, other): `"frames": { "<frame id>": "documentation" }`.
 
-The [config reference](../skills/figma-to-storybook/reference/config.md) lists every option.
+The [config reference](../engine/claude-plugin/skills/ds-sync/reference/config.md) lists every option.
 
 **5.2 Generate:**
 
@@ -154,6 +154,18 @@ It compares every Figma variant (Figma's own render) with the Storybook, pixel b
 - **Sidebar.** Components go under `Components/<category>` when `categories` assigns one. Components Figma marks as building blocks (names starting with `_` or `.`, or ending in `Base`) are built and tested but not listed; their parent's docs page links to them under Composition. `publicComponents` and `internalComponents` override that.
 - **Docs pages** follow [the documentation standard](fidelity/STANDARD.md): Overview, Preview, Variants, Properties (grouped, with the Figma property each one comes from), States, Behaviour, Composition, Accessibility, Code and Design reference (Figma links, nested consistency, visual check). Test-only stories are kept out of the sidebar.
 
+**6.5 Scorecards and the audit.** Every component gets a scorecard: one status per fidelity measure (visual, variants, properties, nested consistency, interaction, tokens, accessibility, documentation, open decisions). It appears on its docs page, in `GENERATION-REPORT.md`, and in `scorecard.json`. There is no overall score: each measure is checked on its own. To include real test results:
+
+```bash
+cd storybook && npx vitest run --reporter=json --outputFile=../.ds-sync/tests.json; cd ..
+```
+
+```bash
+ds-sync audit --tests .ds-sync/tests.json
+```
+
+The audit writes `.ds-sync/audit.md` (and a short `audit-summary.md`). If a visual check of the same Figma version exists, it uses that too. With `--strict` it exits with an error when any public component fails a measure, for use as a CI gate. The GitHub workflow adds the summary to each pull request.
+
 ## 7. Keep it in sync (GitHub)
 
 1. Run `npx ds-sync init --ci` (or answer yes during init). It adds `.github/workflows/ds-sync.yml`.
@@ -200,7 +212,35 @@ Every component's docs page shows the snippet for HTML, React, Vue, Angular and 
 
 ## 9. Optional: with Claude
 
-The repository includes a Claude Skill, [`skills/figma-to-storybook`](../skills/figma-to-storybook/SKILL.md). With it, Claude runs the same commands and handles the questions that need a person: it reads `discovery.md` with you, asks what an unclear component should do, records your answers as overrides, explains failing tests (design issue or generator issue), and summarises the reports. It is a guide, not a requirement: everything above works without it.
+Everything above works without AI. With Claude Code, two more things are possible: a guided run, and code names and descriptions a design-system engineer would ship instead of Figma's literal names. Why the work is split this way: [HYBRID.md](HYBRID.md).
+
+**Install the plugin** (in Claude Code):
+
+```
+/plugin marketplace add shivanshu-epam/ds-to-storybook
+/plugin install ds-sync@ds-sync
+```
+
+Its `ds-sync` skill runs the same commands and handles the questions that need a person:
+- it reads `discovery.md` with you;
+- it asks what an unclear component should do, and records your answers as overrides;
+- it explains failing tests (design issue or generator issue) and summarises the reports.
+
+**Decisions: better names and descriptions, reviewed by you.** Figma names properties for designers (`Show Leading Icon`, `isIntermediate`). Decisions turn them into code names and plain descriptions, with the evidence for each:
+
+```bash
+ds-sync review                        # one evidence file per component → .ds-sync/review/
+ds-sync interpret --budget 0.5        # Claude proposes, headless (needs the claude command and your login or API key)
+ds-sync decisions validate            # check ds-sync.decisions.json against Figma
+ds-sync generate --decisions proposed # preview the proposals
+ds-sync decisions accept --only "Checkbox,Badge" --by "<your name>"
+ds-sync generate                      # applies accepted decisions only
+```
+
+Things to know:
+- **Proposals are only proposals.** Proposals are never applied until accepted, except in a `--decisions proposed` preview. Accepted entries are never overwritten by a later `interpret`. A renamed prop breaks existing code that uses the old name, so accept with care.
+- **Writing decisions without AI.** You can write `ds-sync.decisions.json` by hand; its schema is `engine/schemas/decisions.schema.json`.
+- **Measuring against existing code.** If your team already has component code, `ds-sync eval --reference <components folder> --decisions proposed` measures how many of its props the generated API matches.
 
 ## 10. Troubleshooting
 
@@ -215,7 +255,7 @@ The repository includes a Claude Skill, [`skills/figma-to-storybook`](../skills/
 | Story tests fail on colour contrast | A design token issue: fix in Figma or accept it in `knownIssues` (section 6.1). |
 | The pull request workflow cannot open pull requests | Enable "Allow GitHub Actions to create and approve pull requests" (section 7, step 3). |
 
-More: [troubleshooting reference](../skills/figma-to-storybook/reference/troubleshooting.md), [architecture](../ARCHITECTURE.md).
+More: [troubleshooting reference](../engine/claude-plugin/skills/ds-sync/reference/troubleshooting.md), [architecture](../ARCHITECTURE.md).
 
 ## 11. Updating ds-sync
 

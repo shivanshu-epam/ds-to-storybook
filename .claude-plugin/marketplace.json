@@ -1,0 +1,12 @@
+{
+  "name": "ds-sync",
+  "owner": { "name": "ds-sync contributors" },
+  "metadata": { "description": "ds-sync: tested Storybooks from Figma design systems, with Claude for the judgement calls." },
+  "plugins": [
+    {
+      "name": "ds-sync",
+      "source": "./engine/claude-plugin",
+      "description": "Run the ds-sync CLI, interpret Figma components into reviewed decisions, and diagnose fidelity failures."
+    }
+  ]
+}

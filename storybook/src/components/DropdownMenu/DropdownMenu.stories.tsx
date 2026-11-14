@@ -12,6 +12,7 @@ const meta = {
     state: { control: 'inline-radio', options: ['default', 'loading', 'empty'], description: 'Figma: State' },
     showSearch: { control: 'boolean', description: 'Figma: Show Search' },
     grouped: { control: 'boolean', description: 'Figma: Grouped' },
+    children: { control: false, description: 'Your own ListItem items; DropdownMenu sets nothing on each.' },
     'data-force-state': { table: { disable: true } },
   },
   parameters: {

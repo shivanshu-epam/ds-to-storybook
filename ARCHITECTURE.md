@@ -17,7 +17,7 @@ flowchart LR
     T --> W
     R --> CI["GitHub Actions<br/>tests · visual check · PR"]
     W --> CI
-    S["Claude Skill<br/>figma-to-storybook"] -. drives .-> E
+    S["Claude Code plugin<br/>ds-sync"] -. drives .-> E
 ```
 
 Four ways in, one engine:
@@ -25,7 +25,7 @@ Four ways in, one engine:
 | Entry point | Who uses it | What it does |
 | --- | --- | --- |
 | `engine/` CLI (`ds-sync`) | Developers, CI | All the work: discover, extract, generate, check, diff |
-| `skills/figma-to-storybook` | Claude, on a person's behalf | Runs the CLI and asks the questions only a person can answer (what a component should do, whether to accept a design issue) |
+| `engine/claude-plugin` | Claude, on a person's behalf | Runs the CLI and asks the questions only a person can answer (what a component should do, whether to accept a design issue) |
 | `.github/workflows/ds-sync.yml` | The repository, every weekday | Polls Figma, regenerates, tests, compares with Figma, opens a labelled pull request |
 | `plugin/` (Figma plugin) | Designers on non-Enterprise plans | Exports Figma variables to JSON, because the Variables REST API is Enterprise-only |
 
@@ -330,7 +330,7 @@ All requests pass `version=` when a version is pinned (`--figma-version`), so ru
 
 ## 9. Configuration
 
-`ds-sync.config.json` (full reference: [skills/figma-to-storybook/reference/config.md](skills/figma-to-storybook/reference/config.md)):
+`ds-sync.config.json` (full reference: [engine/claude-plugin/skills/ds-sync/reference/config.md](engine/claude-plugin/skills/ds-sync/reference/config.md)):
 
 ```jsonc
 {

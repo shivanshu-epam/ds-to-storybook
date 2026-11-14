@@ -33,22 +33,19 @@
       "figma": "has-trailing-control (boolean)"
     },
     {
-      "prop": "—",
+      "prop": "leadingControl",
       "figma": "leading-control (instance swap)",
-      "note": "Not exposed yet."
+      "note": "Slot: any content; the Figma instance is the default."
     },
     {
-      "prop": "—",
+      "prop": "trailingControl",
       "figma": "trailing-control (instance swap)",
-      "note": "Not exposed yet."
+      "note": "Slot: any content; the Figma instance is the default."
     }
   ],
   "notes": [
     "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
-    "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified.",
-    "Instance swap properties not exposed as props (default instance rendered): leading-control, trailing-control.",
-    "Layer \"_interaction-wrapper/_visual-container/_content-container/leading-control\" is an instance of \"Size=Md, Type=Unselected, State=Enabled\", which is not generated here; rendered as an empty box.",
-    "Layer \"_interaction-wrapper/_visual-container/_content-container/trailing-control\" is an instance of \"Size=Md, Type=Unselected, State=Enabled\", which is not generated here; rendered as an empty box."
+    "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified."
   ],
   "tabs": [
     {

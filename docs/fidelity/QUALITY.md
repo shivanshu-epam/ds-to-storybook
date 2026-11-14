@@ -30,6 +30,8 @@ Pass: all four in under five minutes, without asking. Failures become documentat
 
 ## 3. Component scorecard
 
+Implemented (14 Nov 2026): `engine/src/generate/scorecard.ts` builds it at generation time; `ds-sync audit` adds real story-test and visual results and gates each measure (`--strict`). The automated statuses are: visual ≥ 95% match with the worst variant ≤ 10%; nested consistency 100%; every Figma property mapped; a behaviour template for components named like interactive ones; no raw colours; no failing axe checks or accepted issues; a description and described props; no open questions. The manual reviews below are not replaced.
+
 Every component gets a scorecard in `GENERATION-REPORT.md`, its docs page, and the PR description:
 
 ```

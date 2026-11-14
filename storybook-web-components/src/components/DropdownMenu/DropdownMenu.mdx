@@ -36,6 +36,10 @@ The default configuration (every property at its Figma default).
 
 <table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"With search"}</td><td><code>{"showSearch"}</code></td><td>{"Show Search (boolean)"}</td><td>{""}</td></tr><tr><td>{"Grouped"}</td><td><code>{"grouped"}</code></td><td>{"Grouped (boolean)"}</td><td>{""}</td></tr></tbody></table>
 
+### Behaviour
+
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Children"}</td><td><code>{"children"}</code></td><td>{"_option (repeated ListItem)"}</td><td>{"Children: DropdownMenu sets nothing on each ListItem; the Figma examples are the default."}</td></tr></tbody></table>
+
 ### Try it
 
 <Controls of={Stories.Default} />
@@ -81,6 +85,11 @@ This is a standard Web Component: it works in any framework, or none.
 ## Design reference
 
 <ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=400-1970">{"DropdownMenu"}</a> · version 2420998788157412873 · 3 designed variants</li><li>{"Nested consistency: 16/16 nested values match Figma (1 nested component layers; 0 state variants not compared)."}</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
+
+### Scorecard
+
+<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
+<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 3 designed variants shown"}</li><li>{"✓ Properties: 4/4 Figma properties mapped"}</li><li>{"✓ Nested consistency: 16/16 nested values match Figma (1 nested layers)"}</li><li>{"⚠ Interaction: visuals only: the name suggests behaviour that no template provides (add an archetype decision)"}</li><li>{"⚠ Tokens: 1 raw colour value (not bound to a variable in Figma)"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 1 accepted known issue"}</li><li>{"⚠ Documentation: description; 0/4 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 1 generator note"}</li></ul>
 
 <h2>{"Usage"}</h2>
 <h3>{"Dropdown"}</h3>

@@ -8,7 +8,7 @@ import { docTabs, kebab, leadSentence, pascal } from '../templates/common.ts';
 import type { AccordionCore } from '../templates/accordion.ts';
 import type { ActionCore } from '../templates/action.ts';
 import type { CheckboxCore } from '../templates/checkbox.ts';
-import { axisControl, axisData, axisDefault, axisType, isIcon, lookupExpr, SHAPES, type GenericCore, type InstanceProp, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
+import { axisControl, axisData, figmaNote, axisDefault, axisType, isIcon, lookupExpr, SHAPES, type GenericCore, type InstanceProp, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRComponentSet, IRPart } from '../../ir/types.ts';
 import { wcRadio } from './radio.ts';
 import { wcInput } from './input.ts';
@@ -138,6 +138,18 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
   const boolFor = (figma?: string) => booleans.find((b) => b.p.name === figma)?.prop;
   const textFor = (figma?: string) => texts.find((t) => t.p.name === figma)?.prop;
   const children = (parent: string) => core.layers.filter((l) => l.parent === parent);
+  const dis = core.disclosure;
+  const col = core.collection;
+  const colState = col?.stateProp ? wcProp(col.stateProp) : undefined;
+  /** Attributes the group gives item k (a Figma copy) in the Lit template. */
+  const itemAttrs = (k: number) => !col || col.item === 'own' ? ''
+    : col.item === 'tab' ? `role="tab" aria-selected=\${this.selectedIndex === ${k} ? 'true' : 'false'} tabindex=\${this.focusable(${k}) ? '0' : '-1'} data-ds-item .${colState}=\${this.selectedIndex === ${k}} @click=\${() => this.select(${k})}`
+    : col.item === 'own-radio' ? `.checked=\${this.selectedIndex === ${k}} tabindex=\${this.focusable(${k}) ? '0' : '-1'} data-ds-item @change=\${() => this.select(${k})}`
+    : `role="checkbox" aria-checked=\${this.selectedIndexes.includes(${k}) ? 'true' : 'false'} tabindex="0" data-ds-item .${colState}=\${this.selectedIndexes.includes(${k})} @click=\${() => this.toggleItem(${k})} @keydown=\${(e: KeyboardEvent) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); this.toggleItem(${k}); } }}`;
+  const responsiveWc = new Set((core.responsive ?? []).map(wcProp));
+  const disProp = dis ? wcProp(dis.prop) : undefined;
+  const byPathWc = new Map(core.layers.map((l) => [l.path, l]));
+  const inHeader = (l: LayerInfo): boolean => Boolean(dis) && (l.path === dis!.headerPath || (l.parent !== '' && byPathWc.has(l.parent) && inHeader(byPathWc.get(l.parent)!)));
 
   const render = (l: LayerInfo, indent: string): string => {
     const p = l.part;
@@ -157,7 +169,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
         imports.add(`import '../${nested.component}/${ntag}';`);
         const props = nested.props
           .map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}`
-            : x.prop === 'aria-label' ? (nested.kind === 'switch' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`)
+            : x.prop === 'aria-label' ? (nested.kind === 'switch' || nested.kind === 'button' || nested.kind === 'link' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`)
             : x.prop === 'defaultChecked' ? '?checked=${true}'
             : `.${wcProp(x.prop)}=\${${wcVal(x)}}`))
           .join(' ');
@@ -169,14 +181,31 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
         for (const copy of l.copies ?? []) {
           const n = instance(copy);
           if (!n) continue;
-          const cp = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? (n.kind === 'switch' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`) : x.prop === 'defaultChecked' ? '?checked=${true}' : `.${wcProp(x.prop)}=\${${wcVal(x)}}`)).join(' ');
+          const cp = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? (n.kind === 'switch' || n.kind === 'button' || n.kind === 'link' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`) : x.prop === 'defaultChecked' ? '?checked=${true}' : `.${wcProp(x.prop)}=\${${wcVal(x)}}`)).join(' ');
           const one = `<span ${c}><${ntag}${cp ? ' ' + cp : ''}>${n.text !== undefined ? `\${${wcText(l, js(n.text))}}` : ''}</${ntag}></span>`;
           const b = boolFor(copy.refs?.visible);
           el += `\n${indent}${b ? `\${this.${b} ? html\`${one}\` : nothing}` : one}`;
         }
+        const rp = core.repeats?.find((r) => r.path === l.path);
+        if (rp && col?.repeatPath === l.path && col.item !== 'own') {
+          let k = 0;
+          // The group owns the item's state: drop the value Figma gave each copy, then add the group's bindings.
+          const owned = col.item === 'own-radio' ? /\s\?checked=\$\{true\}/g : new RegExp(`\\s[.?]?${colState}=\\$\\{[^}]*\\}`, 'g');
+          // Generated hosts use display: contents, which cannot take focus or clicks; a managed item needs a box.
+          el = el.replace(owned, '').replace(new RegExp(`<${ntag}(?=[ >])`, 'g'), (m) => `${m} style="display: block" ${itemAttrs(k++)}`);
+        }
+        if (rp) {
+          const slotName = rp.prop === 'children' ? '' : ` name="${attrFor(rp.prop)}"`;
+          return `${indent}<slot${slotName} @slotchange=\${this.applyRepeated}>\n${indent}  ${el.split('\n').join(`\n${indent}  `)}\n${indent}</slot>`;
+        }
         if (l.copies?.length) return `${indent}${el}`;
       } else {
-        el = `<span ${c} aria-hidden="true"></span>`;
+        el = l.slot ? `<span ${c}></span>` : `<span ${c} aria-hidden="true"></span>`;
+      }
+      // Slots (phase 2): the consumer's content replaces the Figma default, which stays as the slot's fallback.
+      if (l.slot && !l.copies?.length) {
+        const name = l.slot.name ? ` name="${l.slot.name}"` : '';
+        el = el.replace(/^<span ([^>]*)>([\s\S]*)<\/span>$/, (_m, attrs: string, inner: string) => `<span ${attrs}><slot${name}>${inner}</slot></span>`);
       }
     } else if (SHAPES.has(p.type) && children(l.path).some((k) => k.part.type === 'INSTANCE')) {
       el = `<span ${c}>\n${children(l.path).map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</span>`;
@@ -184,9 +213,18 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
       el = `<span ${c} aria-hidden="true"></span>`;
     } else {
       const kids = children(l.path);
-      const box = sw ? 'span' : 'div'; // a <button> may only hold phrasing content
-      el = kids.length ? `<${box} ${c}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</${box}>` : `<${box} ${c}></${box}>`;
+      const box = sw || inHeader(l) || core.rootTag ? 'span' : 'div'; // a <button> or <a> may only hold phrasing content
+      if (dis && l.path === dis.headerPath) {
+        const btn = `<button type="button" ${c} aria-expanded=\${this.${disProp} ? 'true' : 'false'} aria-controls="panel" @click=\${this.toggleExpanded}${hasDisabled ? ' ?disabled=\${this.disabled}' : ''}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</button>`;
+        const b0 = boolFor(p.refs?.visible);
+        return b0 ? `${indent}\${this.${b0} ? html\`${btn}\` : nothing}` : `${indent}${btn}`;
+      }
+      const panelId = dis && l.role === dis.panel ? ' id="panel"' : '';
+      el = panelId && kids.length ? `<${box} ${c}${panelId}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</${box}>` : kids.length ? `<${box} ${c}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</${box}>` : `<${box} ${c}></${box}>`;
     }
+    if (col?.labelPath === l.path) el = el.replace(/^<([\w-]+) /, '<$1 id="group-label" ');
+    if (core.trigger?.panel === l.path) el = el.replace(/^<([\w-]+) /, '<$1 id="panel" ');
+    if (core.trigger?.trigger === l.path) el = el.replace(/<(ds-[\w-]+)(?=[ >])/, '<$1 @click=${this.toggleExpanded}');
     const b = boolFor(p.refs?.visible);
     return b ? `${indent}\${this.${b} ? html\`${el}\` : nothing}` : `${indent}${el}`;
   };
@@ -202,22 +240,31 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
       { prop: 'name', type: 'string | undefined', init: 'undefined', decl: '{ type: String, reflect: true }' },
       { prop: 'value', type: 'string', init: "'on'", decl: '{ type: String }' },
     ] : []),
-    ...enumAxes.map((a) => ({ prop: a.prop, type: axisType(a, js), init: axisDefault(a, js), decl: `{ type: ${a.boolean ? 'Boolean' : 'String'}, reflect: true, attribute: ${js(attrFor(a.prop))} }` })),
+    ...enumAxes.map((a) => ({ prop: a.prop, type: responsiveWc.has(a.prop) ? `${axisType(a, js)} | undefined` : axisType(a, js), init: responsiveWc.has(a.prop) ? 'undefined' : axisDefault(a, js), decl: `{ type: ${a.boolean ? 'Boolean' : 'String'}, reflect: true, attribute: ${js(attrFor(a.prop))} }` })),
     ...(hasDisabled ? [{ prop: 'disabled', type: 'boolean', init: 'false', decl: '{ type: Boolean, reflect: true }' }] : []),
+    ...(core.rootTag === 'a' ? [{ prop: 'href', type: 'string | undefined', init: 'undefined', decl: '{ type: String }' }] : []),
+    ...(core.rootTag ? [{ prop: 'accessibleLabel', type: 'string | undefined', init: 'undefined', decl: "{ type: String, attribute: 'accessible-label' }" }] : []),
+    ...(col?.selection === 'single' ? [{ prop: 'selected', type: 'number', init: String(col.initial[0] ?? -1), decl: '{ type: Number, reflect: true }' }] : []),
+    ...(col?.selection === 'multi' ? [{ prop: 'selected', type: 'number[]', init: `[${col.initial.join(', ')}]`, decl: '{ type: Array }' }] : []),
     ...booleans.map((b) => ({ prop: b.prop, type: 'boolean', init: String(String(b.p.default) === 'true'), decl: `{ type: Boolean, attribute: ${js(attrFor(b.prop))} }` })),
     ...texts.map((t) => ({ prop: t.prop, type: 'string', init: js(String(t.p.default)), decl: `{ type: String, attribute: ${js(attrFor(t.prop))} }` })),
     ...exposed.map((e) => ({ prop: e.prop, type: e.axis ? axisType(e.axis, js) : e.type, init: (e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default)), decl: `{ type: ${e.type === 'boolean' ? 'Boolean' : 'String'}, attribute: ${js(attrFor(e.prop))} }` })),
   ];
   const dataAttrs = [
     ...(sw ? [`data-${sw.axis.attr}=\${this.checked ? ${js(sw.on)} : ${js(sw.off)}}`] : []),
-    ...enumAxes.map((a) => `data-${a.attr}=\${${axisData(a, `this.${a.prop}`)}}`),
-    ...(hasDisabled ? ['?data-disabled=${this.disabled}', sw ? '?disabled=${this.disabled}' : "aria-disabled=${this.disabled ? 'true' : nothing}"] : []),
+    ...enumAxes.map((a) => (responsiveWc.has(a.prop) ? `data-${a.attr}=\${this.${a.prop} ?? 'responsive'}` : `data-${a.attr}=\${${axisData(a, `this.${a.prop}`)}}`)),
+    ...(hasDisabled ? ['?data-disabled=${this.disabled}', sw || core.rootTag === 'button' ? '?disabled=${this.disabled}' : "aria-disabled=${this.disabled ? 'true' : nothing}"] : []),
+    ...(core.busyProp ? [`aria-busy=\${this.${wcProp(core.busyProp)} ? 'true' : nothing}`] : []),
+    ...(core.rootTag === 'a' ? ['href=${this.href ?? nothing}'] : []),
+    ...(core.rootTag ? ['aria-label=${this.accessibleLabel ?? nothing}'] : []),
+    ...(col ? [`role="${col.role}"`, ...(col.labelPath ? ['aria-labelledby="group-label"'] : []), ...(col.orientation && col.role !== 'group' ? [`aria-orientation=\${this.${wcProp(col.orientation.prop)} === 'vertical' ? 'vertical' : 'horizontal'}`] : [])] : []),
+
     ...(busyProp ? [`aria-busy=\${this.${busyProp} === 'loading' ? 'true' : nothing}`] : []),
     'data-force-state=${this.forceState ?? nothing}',
   ];
 
   const swDocs: Record<string, string> = { checked: `On or off. Figma: ${sw?.axis.figma}`, accessibleLabel: 'Accessible name (Figma has no label). Or use aria-labelledby on a wrapping label.', name: 'Form field name', value: 'Form value when on. Default "on"' };
-  const component = `${header(js(set.name), sw ? 'switch template' : 'generic template')}// Visuals come from Figma. ${sw ? 'Behaviour: WAI-ARIA switch pattern (native button, role="switch", aria-checked), form-associated.' : 'Behaviour (keyboard, focus, ARIA role) is not specified in Figma and is not generated.'}
+  const component = `${header(js(set.name), sw ? 'switch template' : 'generic template')}// Visuals come from Figma. ${sw ? `Behaviour: WAI-ARIA ${sw.role} pattern (native button, role="${sw.role}", aria-checked), form-associated.` : 'Behaviour (keyboard, focus, ARIA role) is not specified in Figma and is not generated.'}
 import { LitElement, html, nothing, unsafeCSS } from 'lit';
 
 ${usesIcon ? "import { icon } from '../../icons/icon';\n" : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import css from './${name}.css?inline';
@@ -229,16 +276,82 @@ ${props.map((p) => `    ${p.prop}: ${p.decl},`).join('\n')}
     forceState: { type: String, attribute: 'data-force-state' },
   };
 
-${props.map((p) => `  /** ${swDocs[p.prop] && sw ? swDocs[p.prop] : `Figma: ${figmaOf(p.prop)}`} */\n  declare ${p.prop}: ${p.type};`).join('\n')}
+${props.map((p) => `  /** ${swDocs[p.prop] && (sw || p.prop === 'accessibleLabel') ? swDocs[p.prop] : `Figma: ${figmaOf(p.prop)}`} */\n  declare ${p.prop}: ${p.type};`).join('\n')}
   /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */
   declare forceState: string | undefined;
 
   constructor() {
     super();
-${props.map((p) => `    this.${p.prop} = ${p.init};`).join('\n')}
+${props.map((p) => `    this.${p.prop} = ${p.init};`).join('\n')}${col?.selection === 'single' ? '\n    // On the host: key events from inside the shadow root bubble here, and so do events sent to the focused host.\n    this.addEventListener(\'keydown\', this.moveSelection);' : ''}
   }
 
-${sw ? `  private readonly internals = this.attachInternals();
+${col && col.selection !== 'none' ? `${col.selection === 'single' ? `  get selectedIndex() {
+    return this.selected;
+  }
+
+  /** Only the selected item (or the first, when none is) is in the tab order. */
+  focusable(i: number) {
+    return i === (this.selected >= 0 ? this.selected : 0);
+  }
+
+  select(i: number) {
+    if (this.selected === i) return;
+    this.selected = i;
+    this.dispatchEvent(new CustomEvent('selected-change', { detail: i, bubbles: true, composed: true }));
+  }
+
+  private items() {
+    const slotted = [...this.renderRoot.querySelectorAll('slot')].flatMap((s) => (s as HTMLSlotElement).assignedElements());
+    return [...this.renderRoot.querySelectorAll<HTMLElement>('[data-ds-item]'), ...slotted.filter((e) => e.hasAttribute('data-ds-item'))] as HTMLElement[];
+  }
+
+  /** Arrow keys, Home and End move the selection (WAI-ARIA ${col.role === 'tablist' ? 'tabs' : 'radio group'}). */
+  private moveSelection = (event: KeyboardEvent) => {
+    const step = ({ ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 } as Record<string, number>)[event.key];
+    const items = this.items();
+    const active = (this.renderRoot as ShadowRoot).activeElement;
+    const at = items.findIndex((x) => x === active || x === document.activeElement || x.contains(active));
+    const to = at < 0 ? -1 : step !== undefined ? (at + step + items.length) % items.length : event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : -1;
+    if (to < 0) return;
+    event.preventDefault();
+    items[to]!.focus();
+    this.select(to);
+  };
+
+` : `  get selectedIndexes() {
+    return this.selected;
+  }
+
+  toggleItem(i: number) {
+    this.selected = this.selected.includes(i) ? this.selected.filter((x) => x !== i) : [...this.selected, i].sort((a, b) => a - b);
+    this.dispatchEvent(new CustomEvent('selected-change', { detail: this.selected, bubbles: true, composed: true }));
+  }
+
+`}` : ''}${core.repeats?.length ? `  /** Sets what ${name} drives on slotted children (the ones the page provides instead of the Figma examples). */
+  private applyRepeated = () => {
+    const slots = [...(this.renderRoot.querySelectorAll('slot') ?? [])] as HTMLSlotElement[];
+${core.repeats.map((r) => `    {
+      const slot = slots.find((s) => s.name === ${js(r.prop === 'children' ? '' : attrFor(r.prop))});
+      const items = (slot?.assignedElements() ?? []).filter((el) => el.localName === ${js(tagOf(r.component))});
+      items.forEach((el, i) => {
+        const item = el as unknown as Record<string, unknown>;
+${r.driven.filter((d) => d.numbered || (d.same && d.same.kind !== 'icon' && d.same.kind !== 'force-state')).map((d) => `        if (!el.hasAttribute(${js(attrFor(wcProp(d.prop)))})) item[${js(wcProp(d.prop))}] = ${d.numbered ? `\`${d.numbered.prefix}\${i + ${d.numbered.start}}${d.numbered.suffix}\`` : d.same!.kind === 'expr' ? d.same!.expr((p) => (p === '$checked' ? 'this.checked' : `this.${wcProp(p)}`)) : JSON.stringify(d.same!.value)};`).join('\n')}
+        void i;
+      });
+    }`).join('\n')}
+  };
+
+${sw ? '' : '  override updated() {\n    this.applyRepeated();\n  }\n\n'}` : ''}${core.trigger ? `  private toggleExpanded() {
+    this.${wcProp(core.trigger.prop)} = !this.${wcProp(core.trigger.prop)};
+    this.dispatchEvent(new CustomEvent('expanded-change', { detail: this.${wcProp(core.trigger.prop)}, bubbles: true, composed: true }));
+  }
+
+` : ''}${dis ? `  private toggleExpanded() {
+    ${hasDisabled ? 'if (this.disabled) return;\n    ' : ''}this.${disProp} = !this.${disProp};
+    this.dispatchEvent(new CustomEvent('expanded-change', { detail: this.${disProp}, bubbles: true, composed: true }));
+  }
+
+` : ''}${sw ? `  private readonly internals = this.attachInternals();
 
   override updated() {
     this.internals.setFormValue(this.checked ? this.value : null);
@@ -246,19 +359,19 @@ ${sw ? `  private readonly internals = this.attachInternals();
 
   private toggle() {
     if (${[hasDisabled ? 'this.disabled' : '', busyProp ? `this.${busyProp} === 'loading'` : ''].filter(Boolean).join(' || ') || 'false'}) return;
-    this.checked = !this.checked;
+    ${sw.role === 'radio' ? 'if (this.checked) return;\n    ' : ''}this.checked = !this.checked;
     this.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
   }
 
   override render() {
-    return html\`<button type="button" role="switch" class="root" part="root" aria-checked=\${this.checked ? 'true' : 'false'} aria-label=\${this.accessibleLabel ?? nothing} ${dataAttrs.join(' ')} @click=\${this.toggle}>
+    return html\`<button type="button" role="${sw.role}" class="root" part="root" aria-checked=\${${sw.mixed ? `this.${wcProp(sw.mixed.prop)} ? 'mixed' : ` : ''}this.checked ? 'true' : 'false'}${sw.role !== 'switch' ? ' @keydown=\${(e: KeyboardEvent) => { if (e.key === \'Enter\') e.preventDefault(); }}' : ''} aria-label=\${this.accessibleLabel ?? nothing} ${dataAttrs.join(' ')} @click=\${this.toggle}>
 ${body}
       </button>\`;
   }
 }` : `  override render() {
-    return html\`<div class="root" part="root" ${dataAttrs.join(' ')}>
+    return html\`<${core.rootTag ?? 'div'}${core.rootTag === 'button' ? ' type="button"' : ''} class="root" part="root" ${dataAttrs.join(' ')}>
 ${body}
-      </div>\`;
+      </${core.rootTag ?? 'div'}>\`;
   }
 }`}
 
@@ -275,6 +388,8 @@ declare global {
   type Bind = string | boolean | { force: string };
   const baseBinds = (): Map<string, Bind> => new Map<string, Bind>([
     ...(sw ? [['checked', 'args.checked'], ['accessibleLabel', 'args.accessibleLabel']] as [string, Bind][] : []),
+    ...(core.storyLabel ? [['accessibleLabel', 'args.accessibleLabel']] as [string, Bind][] : []),
+    ...(core.rootTag === 'a' ? [['href', 'args.href']] as [string, Bind][] : []),
     ...enumAxes.map((a) => [a.prop, `args.${a.prop}`] as [string, Bind]),
     ...(hasDisabled ? [['disabled', 'args.disabled'] as [string, Bind]] : []),
     ...booleans.map((b) => [b.prop, `args.${b.prop}`] as [string, Bind]),
@@ -308,7 +423,7 @@ declare global {
     return a.options.length > 1 ? { [wcProp(a.prop)]: a.boolean ? v.value === 'true' : v.value } : {};
   };
   const find = sw ? `const host = canvasElement.querySelector('${tag}')!;
-    const control = within(shadowOf(canvasElement, '${tag}') as unknown as HTMLElement).getByRole('switch', { name: ${js(sw.label)} });
+    const control = within(shadowOf(canvasElement, '${tag}') as unknown as HTMLElement).getByRole('${sw.role}'${sw.labelled ? '' : `, { name: ${js(sw.label)} }`});
     const onChange = fn();
     host.addEventListener('change', onChange);` : '';
   const stories: string[] = [sw ? `export const Default: Story = {
@@ -319,11 +434,15 @@ declare global {
     await expect(control).toHaveAttribute('aria-checked', 'true');
     await expect(host.checked).toBe(true);
     await expect(onChange).toHaveBeenCalledTimes(1);
-    // WAI-ARIA switch: Space toggles (Enter too, from the native button).
+${sw.role === 'radio' ? `    // WAI-ARIA radio: a selected radio stays selected (its group selects another).
+    control.focus();
+    await userEvent.keyboard(' ');
+    await expect(control).toHaveAttribute('aria-checked', 'true');
+    await expect(onChange).toHaveBeenCalledTimes(1);` : `    // WAI-ARIA ${sw.role}: Space toggles.
     control.focus();
     await userEvent.keyboard(' ');
     await expect(control).toHaveAttribute('aria-checked', 'false');
-    await expect(onChange).toHaveBeenCalledTimes(2);
+    await expect(onChange).toHaveBeenCalledTimes(2);`}
   },
 };` : 'export const Default: Story = {};'];
   if (sw && hasDisabled) {
@@ -399,23 +518,83 @@ ${booleans.map((b) => `    labelled(${js(`${b.p.name}: ${String(b.p.default) ===
 };`);
     sections.push({ heading: 'Options', story: n });
   }
+  if (col && col.selection !== 'none') {
+    const attr = col.item === 'tab' ? 'aria-selected' : col.item === 'own-radio' ? '' : 'aria-checked';
+    const t = [1, 2, 0].find((i) => !col.initial.includes(i)) ?? 1;
+    stories.push(`/** The group selects items (test only). */
+export const Selects: Story = {
+  name: 'Selects',
+  play: async ({ canvasElement }) => {
+    const host = canvasElement.querySelector('${tag}') as HTMLElement & { selected: number | number[] };
+    const onChange = fn();
+    host.addEventListener('selected-change', onChange);
+    const items = [...(shadowOf(canvasElement, '${tag}') as unknown as HTMLElement).querySelectorAll<HTMLElement>('[data-ds-item]')];
+    await expect(items.length).toBeGreaterThan(1);
+    // userEvent sends the click to the element given: a radio item's own button is inside its shadow root.
+    await userEvent.click(items[${t}]!.shadowRoot?.querySelector<HTMLElement>('button') ?? items[${t}]!);
+    await expect(onChange).toHaveBeenCalledTimes(1);${attr ? `
+    await expect(items[${t}]).toHaveAttribute('${attr}', 'true');` : ''}${col.selection === 'single' ? `
+    await expect(host.selected).toBe(${t});
+    items[${t}]!.focus();
+    await userEvent.keyboard('{ArrowRight}');
+    await expect(host.selected).toBe(${t + 1} % items.length);` : `
+    await expect(host.selected).toContain(${t});`}
+  },
+};`);
+  }
+  if (core.rootTag === 'button') {
+    stories.push(`/** WAI-ARIA button: a native button that activates with a click, Enter and Space (test only). */
+export const Activates: Story = {
+  name: 'Activates',
+  play: async ({ canvasElement }) => {
+    const host = canvasElement.querySelector('${tag}')!;
+    const onClick = fn();
+    host.addEventListener('click', onClick);
+    const button = within(shadowOf(canvasElement, '${tag}') as unknown as HTMLElement).getByRole('button');
+    await userEvent.click(button);
+    await expect(onClick).toHaveBeenCalledTimes(1);
+    button.focus();
+    await userEvent.keyboard('{Enter}');
+    await expect(onClick).toHaveBeenCalledTimes(2);
+  },
+};`);
+  }
+  if (dis) {
+    stories.push(`/** WAI-ARIA disclosure: the header button toggles the panel (test only). */
+export const ExpandsAndCollapses: Story = {
+  name: 'Expands and collapses',
+  play: async ({ canvasElement }) => {
+    const host = canvasElement.querySelector('${tag}')!;
+    const onChange = fn();
+    host.addEventListener('expanded-change', onChange);
+    const button = within(shadowOf(canvasElement, '${tag}') as unknown as HTMLElement).getAllByRole('button')[0]!;
+    const before = button.getAttribute('aria-expanded') === 'true';
+    await userEvent.click(button);
+    await expect(button).toHaveAttribute('aria-expanded', String(!before));
+    await expect(onChange).toHaveBeenCalledTimes(1);
+    button.focus();
+    await userEvent.keyboard('{Enter}');
+    await expect(button).toHaveAttribute('aria-expanded', String(before));
+  },
+};`);
+  }
   const layoutImports = ['matrix', 'row', 'labelled', 'shadowOf'].filter((f) => stories.some((st) => st.includes(`${f}(`)));
   const storiesFile = `${header(js(set.name), sw ? 'switch template' : 'generic template')}import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
-${sw ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}
+${sw || dis || core.rootTag === 'button' || (col && col.selection !== 'none') ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}
 ${layoutImports.length ? `import { ${layoutImports.join(', ')} } from '../../storybook/layout';\n` : ''}import './${tag}';
 
 const meta = {
   title: ${js(core.title)},
   component: '${tag}',
-  args: { ${[...(sw ? ['checked: false', `accessibleLabel: ${js(sw.label)}`] : []), ...enumAxes.map((a) => `${a.prop}: ${axisDefault(a, js)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`), ...exposed.map((e) => `${e.prop}: ${(e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default))}`)].join(', ')} },
+  args: { ${[...(sw ? ['checked: false', ...(sw.labelled ? [] : [`accessibleLabel: ${js(sw.label)}`])] : []), ...(core.storyLabel ? [`accessibleLabel: ${js(core.storyLabel)}`] : []), ...(core.rootTag === 'a' ? ["href: '#'"] : []), ...enumAxes.map((a) => `${a.prop}: ${axisDefault(a, js)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`), ...exposed.map((e) => `${e.prop}: ${(e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default))}`)].join(', ')} },
   argTypes: {
 ${[
     ...(sw ? [`    checked: { control: 'boolean', description: ${js(`On or off. Figma: ${sw.axis.figma}`)} },`, `    accessibleLabel: { control: 'text', description: 'Accessible name (Figma has no label)' },`] : []),
     ...enumAxes.map((a) => `    ${a.prop}: ${axisControl(a, js)},`),
     ...(hasDisabled ? [`    disabled: { control: 'boolean', description: 'Figma: State=Disabled' },`] : []),
-    ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${js(`Figma: ${b.p.name}`)} },`),
-    ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${js(`Figma: ${t.p.name}`)} },`),
+    ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${js(figmaNote(b.p.name, b.description))} },`),
+    ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${js(figmaNote(t.p.name, t.description))} },`),
     ...exposed.map((e) => `    ${e.prop}: ${e.axis ? axisControl({ ...e.axis, figma: `${e.exposed!.name} › ${e.axis.figma}` }, js) : `{ control: '${e.type === 'boolean' ? 'boolean' : 'text'}', description: ${js(`Figma: ${e.exposed!.name} › ${e.figma}`)} }`},`),
   ].join('\n')}
   },
@@ -431,7 +610,7 @@ ${stories.join('\n\n')}
 `;
 
   const firstAxis = enumAxes[0];
-  const usageAttrs = sw ? ` accessible-label=${js(sw.label)} name=${js(kebab(name))}` : firstAxis ? ` ${attrFor(firstAxis.prop)}=${js(firstAxis.defaultValue)}` : '';
+  const usageAttrs = sw ? `${sw.labelled ? '' : ` accessible-label=${js(sw.label)}`} name=${js(kebab(name))}` : firstAxis ? ` ${attrFor(firstAxis.prop)}=${js(firstAxis.defaultValue)}` : '';
   const description = core.description || leadSentence(set.docFrames);
   const mapping = core.mapping.map((m) => ({ ...m, prop: m.prop === '—' ? m.prop : m.prop === 'checked / defaultChecked' ? 'checked' : wcProp(m.prop) }));
   const docs = figmaDocsMdx(docTabs(set.docFrames, name), mapping, [...core.assumptions, ...core.gaps], [set], ctx.fileKey);

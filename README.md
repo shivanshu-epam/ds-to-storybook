@@ -24,14 +24,14 @@ ds-sync generate                                                     # writes ./
 cd storybook && npm install && npm run storybook                     # http://localhost:6006
 ```
 
-Step-by-step guide: [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md). Prefer a guided run? Use the **Claude Skill** in [`skills/figma-to-storybook`](skills/figma-to-storybook/SKILL.md). It runs these steps, asks the questions only a person can answer (for example, what a component should do), and explains the results.
+Step-by-step guide: [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md). Prefer a guided run? Use the **Claude Code plugin** in [`engine/claude-plugin`](engine/claude-plugin/README.md). It runs these steps, asks the questions only a person can answer (for example, what a component should do), and explains the results. It also proposes code names and descriptions for Figma properties as reviewed decisions (`ds-sync review`, `interpret`, `decisions`, `eval`). AI is optional: the engine never needs it. Design and benchmark: [docs/HYBRID.md](docs/HYBRID.md).
 
 ## What's in this repo
 
 | Folder | What it is |
 | --- | --- |
 | [`engine/`](engine/) | **The tool**: the `ds-sync` CLI (TypeScript, Node 22+). |
-| [`skills/figma-to-storybook/`](skills/figma-to-storybook/) | **Claude Skill** that drives the CLI and handles the judgement calls. |
+| [`engine/claude-plugin/`](engine/claude-plugin/README.md) | **Claude Code plugin**: skills that drive the CLI, interpret Figma into reviewed decisions, and diagnose fidelity failures. See [docs/HYBRID.md](docs/HYBRID.md). |
 | [`plugin/`](plugin/) | **Figma plugin** that exports variables, for teams not on a Figma Enterprise plan. |
 | [`engine/templates/github-workflow.yml`](engine/templates/github-workflow.yml) | **GitHub Action** (`ds-sync init --ci`): every weekday it checks whether Figma changed (one API call); if so it regenerates, tests, compares with Figma, and opens a pull request that lists what changed in Figma, labelled by kind, with before/after renders. |
 | [`storybook/`](storybook/) | **Example output, React**: generated from the "Design system AI" Figma file. 27 components. Every story is also tested in each Figma mode (light and dark theme, two brands): all 306 pass. Contrast issues in the design (dark theme, second brand, and the Input placeholder) are accepted per mode as known issues, listed in `ds-sync.config.json` and [PLAN.md](PLAN.md). |

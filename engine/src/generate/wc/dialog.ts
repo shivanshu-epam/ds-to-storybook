@@ -32,7 +32,7 @@ export function wcDialog(ctx: TemplateContext, name: string, core: GenericCore, 
     if (!n || n.component === name) return undefined;
     const ntag = tagOf(n.component);
     imports.add(`import '../${n.component}/${ntag}';`);
-    const attrs = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? `.label=\${${js(x.value)}}` : `.${wcProp(x.prop)}=\${${wcVal(x)}}`));
+    const attrs = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? (n.kind === 'button' || n.kind === 'link' || n.kind === 'switch' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`) : `.${wcProp(x.prop)}=\${${wcVal(x)}}`));
     return `<span ${c}><${ntag}${attrs.length ? ' ' + attrs.join(' ') : ''}>${n.text !== undefined ? `\${${wcText(l, js(n.text))}}` : ''}</${ntag}></span>`;
   };
   const render = (l: LayerInfo, indent: string): string => {

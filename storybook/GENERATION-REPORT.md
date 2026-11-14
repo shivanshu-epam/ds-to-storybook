@@ -61,6 +61,40 @@ Details are in `token-map.json`.
 | --- | --- | --- | --- | --- |
 | Inter | 2686 | 400, 500, 600, 700 | `@fontsource-variable/inter` 5.3.0 |  |
 
+## Scorecards
+
+One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured. No overall score: each measure is gated on its own. Public components: 27; 105 ✓, 77 ⚠, 0 ✗. Full detail in `scorecard.json`; building blocks are in the file, not this table.
+
+| Component | Visual fidelity | Variants | Properties | Nested consistency | Interaction | Tokens | Accessibility | Documentation | Open decisions |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Button | – | ✓ | ⚠ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| ListItem | – | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
+| Checkbox | – | ✓ | ✓ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| Badge | – | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
+| BreadcrumbItem | – | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
+| Separator | – | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
+| Accordion | – | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
+| NavControl | – | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
+| PaginationDot | – | ✓ | ✓ | – | ⚠ | ✓ | ✓ | ✓ | ✓ |
+| AutoplayToggle | – | ✓ | ✓ | – | ⚠ | ✓ | ✓ | ⚠ | ✓ |
+| AvatarIdentity | – | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ |
+| AvatarGlyph | – | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
+| Alert | – | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
+| Dialog | – | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ | ⚠ |
+| RadioControl | – | ✓ | ✓ | – | ✓ | ⚠ | ✓ | ⚠ | ✓ |
+| RadioField | – | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
+| RadioGroup | – | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
+| Divider | – | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
+| DatePicker | – | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
+| Switch | – | ✓ | ✓ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| Input | – | ✓ | ⚠ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| DropdownTrigger | – | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| DropdownMenu | – | ✓ | ✓ | ✓ | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ |
+| Dropdown | – | ✓ | ✓ | ✓ | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| InputControl | – | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| InputField | – | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| Form | – | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ |
+
 ## Nested consistency
 
 For each nested component and each parent variant in its base state, the props the generated parent gives the nested component, compared with the Figma instance (its variant, booleans, texts and exposed nested instances).
@@ -141,8 +175,8 @@ Figma: ListItem (520:3110)
 | Size (variant) | `size` |  |
 | has-leading-control (boolean) | `hasLeadingControl` |  |
 | has-trailing-control (boolean) | `hasTrailingControl` |  |
-| leading-control (instance swap) | `—` | Not exposed yet. |
-| trailing-control (instance swap) | `—` | Not exposed yet. |
+| leading-control (instance swap) | `leadingControl` | Slot: any content; the Figma instance is the default. |
+| trailing-control (instance swap) | `trailingControl` | Slot: any content; the Figma instance is the default. |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -151,9 +185,6 @@ Figma: ListItem (520:3110)
 
 **Gaps:**
 
-- Instance swap properties not exposed as props (default instance rendered): leading-control, trailing-control.
-- Layer "_interaction-wrapper/_visual-container/_content-container/leading-control" is an instance of "Size=Md, Type=Unselected, State=Enabled", which is not generated here; rendered as an empty box.
-- Layer "_interaction-wrapper/_visual-container/_content-container/trailing-control" is an instance of "Size=Md, Type=Unselected, State=Enabled", which is not generated here; rendered as an empty box.
 - Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B: #ab5910 on #ffd0a7 is 3.55:1
 - Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: #9ca3af on #374151 is 4.05:1
 
@@ -859,7 +890,7 @@ Figma: AvatarGlyph (276:1716)
 | Type (variant) | `type` |  |
 | Color (variant) | `color` |  |
 | Size (variant) | `size` |  |
-| Icon (instance swap) | `—` | Not exposed yet. |
+| Icon (instance swap) | `icon` | Slot: any content; the Figma instance is the default. |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -868,7 +899,6 @@ Figma: AvatarGlyph (276:1716)
 
 **Gaps:**
 
-- Instance swap properties not exposed as props (default instance rendered): Icon.
 - Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B: white #f9fafb on orange #e46b00 is 3.13:1
 - Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: text #111827 on avatar colours (#1e40af, #b91c1c, #15803d, #b45309) is 2.03–3.53:1
 
@@ -2299,8 +2329,8 @@ Figma: Input (836:4005)
 | Placeholder (text) | `placeholder` |  |
 | Helper text (text) | `helperText` |  |
 | Character count (text) | `characterCount` |  |
-| Leading icon (instance swap) | `—` | Not exposed yet. |
-| Trailing icon (instance swap) | `—` | Not exposed yet. |
+| Leading icon (instance swap) | `—` | Not exposed by this behaviour template yet. |
+| Trailing icon (instance swap) | `—` | Not exposed by this behaviour template yet. |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -2506,6 +2536,7 @@ Figma: DropdownMenu (400:1970)
 | State (variant) | `state` |  |
 | Show Search (boolean) | `showSearch` |  |
 | Grouped (boolean) | `grouped` |  |
+| _option (repeated ListItem) | `children` | Children: DropdownMenu sets nothing on each ListItem; the Figma examples are the default. |
 
 **Not from Figma (archetype defaults or decisions):**
 

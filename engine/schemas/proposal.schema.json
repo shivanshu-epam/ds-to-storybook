@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/shivanshu-epam/ds-to-storybook/engine/schemas/proposal.schema.json",
+  "title": "ds-sync interpretation proposal for one component",
+  "description": "What the interpret-component skill returns for one review file: one decision per Figma set.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sets"
+  ],
+  "properties": {
+    "sets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "set",
+          "confidence",
+          "evidence"
+        ],
+        "properties": {
+          "set": {
+            "type": "string",
+            "description": "Figma set name, exactly as in the review file (sets[].name)."
+          },
+          "description": {
+            "type": "string",
+            "description": "What the component is for, only when Figma has no description."
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "props": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "figma",
+                "confidence",
+                "evidence"
+              ],
+              "properties": {
+                "figma": {
+                  "type": "string",
+                  "description": "Figma property name from sets[].properties[].figma."
+                },
+                "name": {
+                  "type": "string",
+                  "pattern": "^[a-z][A-Za-z0-9]*$",
+                  "description": "Code name; omit to keep the generated name."
+                },
+                "description": {
+                  "type": "string"
+                },
+                "confidence": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "evidence": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "archetype": {
+            "enum": [
+              "generic",
+              "button",
+              "link",
+              "checkbox",
+              "switch",
+              "disclosure"
+            ],
+            "description": "Only when the evidence shows what the component does (for example, a set named and drawn as a button)."
+          }
+        }
+      }
+    }
+  }
+}

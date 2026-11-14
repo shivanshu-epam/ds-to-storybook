@@ -1,6 +1,6 @@
 ---
-name: figma-to-storybook
-description: Generate a tested Storybook from a Figma design system, as React components or framework-agnostic Web Components (for Vue, Angular, Svelte or any stack), or refresh it after Figma changes, using the ds-sync CLI. Use when the user wants to build, create, generate, refresh or sync Storybook, stories or component docs from a Figma file or link, set up ds-sync, answer ds-sync discovery questions, or understand a ds-sync generation report.
+name: ds-sync
+description: Generate a tested Storybook from a Figma design system, as React components or framework-agnostic Web Components (for Vue, Angular, Svelte or any stack), or refresh it after Figma changes, using the ds-sync CLI; then improve its API and docs with reviewed interpretation decisions. Use when the user wants to build, create, generate, refresh or sync Storybook, stories or component docs from a Figma file or link, set up ds-sync, answer ds-sync discovery questions, interpret or name components, measure accuracy against an existing library, or understand a ds-sync generation report.
 ---
 
 # Figma to Storybook (ds-sync)
@@ -52,7 +52,7 @@ Then work through **Needs a person**, one topic at a time:
 | Wrong component name | What should it be called? | `sets: { "<set name>": { "name": "NewName" } }` |
 | Working or QA page found | Skip it? | `skipPages: ["<page name>"]` |
 
-Templates available: `action` (button), `checkbox` (control + field + group sets), `accordion` (item set with `_header` and `_panel` layers), `switch` (a set with an on/off variant axis, such as Value=Off/On), `radio`, `radio-field` and `radio-group` (a Radio Control/Field/Group family whose control has a selected axis), `input` (a set with a Placeholder text property), `dialog` (a set named dialog or modal), and `generic` (any set). Never claim behaviour that no template provides.
+Templates available: `action` (button), `checkbox` (control + field + group sets), `accordion` (item set with `_header` and `_panel` layers), `switch` (a set with an on/off variant axis, such as Value=Off/On), `radio`, `radio-field` and `radio-group` (a Radio Control/Field/Group family whose control has a selected axis), `input` (a set with a Placeholder text property), `dialog` (a set named dialog or modal), `checkbox-single` (a set with a checked True/False axis, recognised from the property; a mixed axis sets aria-checked="mixed"), `disclosure` (an expanded True/False axis, with a header and a panel found from which layers Figma shows when expanded), `button` and `link` (named as one, not a building block: a native `<button>` or `<a>` around the Figma layers), `radio-single` (a checked axis on a set named as a radio). The generic template also recognises groups of repeated items: tab lists (items with a selected axis, in a set named Tabs), radio groups, checkbox groups and selectable chip groups. A boolean expanded property that shows a panel, with a nested button as trigger, is a disclosure. Combobox and menu are not generated: say so rather than claiming them. and `generic` (any set). When names and structure cannot tell, an `archetype` decision (`button`, `link`, `checkbox`, `switch`, `disclosure`, `generic`) chooses the behaviour. Screen-size axes follow the viewport only when `generate.breakpoints` says at which width. On every template, an instance swap bound to a layer becomes a content slot, and a placeholder "Slot" instance becomes `children`. Never claim behaviour that no template provides.
 
 ## 4. Generate and test
 
@@ -78,7 +78,21 @@ Summarise `GENERATION-REPORT.md`: what came from Figma, what came from archetype
 
 With the React Storybook running, `ds-sync visual` compares every Figma variant with the code, pixel by pixel, and writes `.ds-sync/visual/report.html`. Report the counts (match, close, differ) and look at the worst variants: a different size or a missing or misplaced layer is a generator issue; small text-edge differences are font rendering.
 
-## 5. Keep it in sync
+**Scorecards.** Every generated component has one (`scorecard.json`, its docs page, `GENERATION-REPORT.md`). After tests, run `ds-sync audit --tests <vitest json>` and report per measure, never as one number. A ✗ in Interaction or Accessibility is a test failure (use diagnose-fidelity); a ✗ in Documentation usually means no description in Figma (interpret + review-decisions can fill it).
+
+## 5. Interpretation decisions (optional)
+
+Figma names properties for designers (`Show Leading Icon`, `isIntermediate`, `Screen Size`); code needs names and descriptions an engineer would ship. ds-sync never guesses them. They come from `ds-sync.decisions.json`: proposals with evidence, accepted by a person, applied on the next `generate`. Without the file, everything works as before.
+
+1. `ds-sync review` writes one evidence file per component to `.ds-sync/review/` (no Figma calls). Tell the user how many are open.
+2. Get proposals, one of two ways:
+   - **Headless, many components:** `ds-sync interpret` (runs Claude Code with this plugin, 4 at a time; `--only A,B`, `--model`, `--budget <usd per call>`). It needs the `claude` command and the user's own Claude login or API key. Say what it costs per run before starting a large batch.
+   - **In this session, a few components:** run the `interpret-component` skill on each review file, or hand a batch to the `component-interpreter` agent, and record the answers in the decisions file as proposed.
+3. Hand over to the `review-decisions` skill: the user accepts, edits or rejects. Never accept on their behalf.
+4. `ds-sync generate` applies accepted decisions. `--decisions proposed` previews proposals; the report marks it.
+5. When the team has existing component code, `ds-sync eval --reference <components folder> --decisions proposed` measures how many of its props the generated API matches. The reference is only for measuring: never give it to the interpret step.
+
+## 6. Keep it in sync
 
 - After a Figma change, run `ds-sync generate` again. It writes `.ds-sync/changes.md` (what changed in Figma, per component) and `.ds-sync/changes/changes.html` (Figma's before/after renders): summarise those for the user before they review the code diff.
 - To automate it, run `ds-sync init --ci` (or answer yes during init). That adds `.github/workflows/ds-sync.yml`. Every weekday it checks Figma's version (one API call) and stops if nothing moved; otherwise it regenerates, tests, compares with Figma, and opens a pull request only when the design changed, with the change summary as its description and labels by kind. The repository needs a `FIGMA_TOKEN` secret.
@@ -88,6 +102,8 @@ With the React Storybook running, `ds-sync visual` compares every Figma variant 
 - Do not edit generated files. Change Figma, the overrides, or the generator.
 - Do not invent behaviour, props or copy that Figma does not have. Name the gap instead.
 - Do not set `knownIssues` without the user's explicit agreement.
+- Do not accept decisions without the user's explicit agreement; a renamed prop breaks existing code.
+- When a test or visual check fails, use the `diagnose-fidelity` skill to sort it before proposing a fix.
 - Never commit `.env`, and never print the token.
 
 More detail: [reference/config.md](reference/config.md) (every config field) and [reference/troubleshooting.md](reference/troubleshooting.md).

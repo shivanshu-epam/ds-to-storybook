@@ -47,12 +47,12 @@ export class DsListItem extends LitElement {
         <div class="interactionWrapper">
           <div class="visualContainer">
             <div class="contentContainer">
-              ${this.hasLeadingControl ? html`<span class="leadingControl" aria-hidden="true"></span>` : nothing}
+              ${this.hasLeadingControl ? html`<span class="leadingControl"><slot name="leading-control"></slot></span>` : nothing}
               <div class="textColumn">
                 <span class="headline">${(({"menu":"Menu item","file":"Document.pdf","setting":"Notifications"} as Record<string, string>)[String(this.type)] ?? "List item")}</span>
                 <span class="supportingText">${(({"setting":"Manage alert preferences"} as Record<string, string>)[String(this.type)] ?? "2.4 MB · Edited 2d ago")}</span>
               </div>
-              ${this.hasTrailingControl ? html`<span class="trailingControl" aria-hidden="true"></span>` : nothing}
+              ${this.hasTrailingControl ? html`<span class="trailingControl"><slot name="trailing-control"></slot></span>` : nothing}
               <span class="trailingIcon" aria-hidden="true">${icon((({"md":"navChevronRight20","lg":"navChevronRight24"} as Record<string, string>)[String(this.size)] ?? "navChevronRight16"))}</span>
               <span class="leadingIcon" aria-hidden="true">${icon("layoutList16")}</span>
               <span class="metadata">${"12"}</span>
