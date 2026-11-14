@@ -44,6 +44,12 @@ describe('scorecards and audit (phase 4, step 12)', () => {
     expect(scorecardReport([c]).join('\n')).toContain('| Tabs | ✓ | ✓ | ⚠ | ✗ | ✓ | ⚠ | ✓ | ✓ | ⚠ |');
   });
 
+  it('does not take tables for tabs, and credits composites whose items behave', () => {
+    expect(status(buildScorecard(input({ name: 'TableRow' })), 'Interaction').status).toBe('n/a');
+    expect(status(buildScorecard(input({ name: 'Accordion', itemBehaviour: 'WAI-ARIA disclosure' })), 'Interaction')).toMatchObject({ status: 'pass', value: 'behaviour comes from its items (WAI-ARIA disclosure)' });
+    expect(status(buildScorecard(input({ name: 'Tabs', template: 'collection:tablist' })), 'Interaction').value).toBe('WAI-ARIA tabs pattern, tested in the stories');
+  });
+
   it('folds real test results into interaction and accessibility, and lists failing measures', () => {
     const dir = mkdtempSync(join(tmpdir(), 'ds-audit-'));
     const file = join(dir, 'r.json');

@@ -166,8 +166,8 @@ export interface SwitchBehavior {
   label: string;
   /** Focus ring colour: a focus token, or currentColor. */
   focusColor: string;
-  /** WAI-ARIA role: a switch, or a checkbox (phase 3: recognised from a checked axis, not the name). */
-  role: 'switch' | 'checkbox';
+  /** WAI-ARIA role: a switch, a checkbox (recognised from a checked axis), or a radio (a checked axis on a set named as one). */
+  role: 'switch' | 'checkbox' | 'radio';
   /** Checkbox only: a True/False axis for the mixed state (indeterminate), which sets aria-checked="mixed". */
   mixed?: AxisInfo;
   /** The component has its own label text (a Figma text property): that text is its accessible name, not aria-label. */
@@ -230,7 +230,7 @@ export interface DialogLayers {
   backdrop: string;
 }
 
-export type Behavior = 'switch' | 'checkbox-single' | 'disclosure' | 'button' | 'link' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog';
+export type Behavior = 'switch' | 'checkbox-single' | 'radio-single' | 'disclosure' | 'button' | 'link' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog';
 
 export function switchAxis(axes: AxisInfo[]): { axis: AxisInfo; on: string; off: string } | undefined {
   // Prefer an axis named for the on/off state; never one that names another state (expanded, loading, error, mixed).
@@ -284,6 +284,10 @@ export function disclosureLayers(set: IRComponentSet, axes: AxisInfo[]): Disclos
 export interface GenericCore {
   /** Button or link pack: the native root element, and the axis that sets aria-busy. */
   rootTag?: 'button' | 'a';
+  /** Disclosure with a nested trigger button: the boolean prop, the trigger layer and the panel layer. */
+  trigger?: { prop: string; trigger: string; panel: string };
+  /** Collection pack: group role, item semantics and selection. */
+  collection?: Collection;
   /** Repeated children the parent configures: the layer, the prop that replaces Figma's examples, what it sets on each. */
   repeats?: { path: string; prop: string; component: string; driven: DrivenProp[] }[];
   /** Viewport axes (props) that follow the viewport when not set. */
@@ -384,6 +388,70 @@ export function reactAttrs(props: InstanceProp[], text?: string): string[] {
   );
   if (text !== undefined) attrs.push(`children=${JSON.stringify(text)}`);
   return attrs;
+}
+
+/**
+ * Collection pack (phase 3): a group of repeated items, recognised from what the item is.
+ * - items that already behave as radios (radio pack) -> radiogroup, single selection managed by the group;
+ * - items that already behave (checkbox, switch) -> group, each item keeps its own state;
+ * - items with a selected axis in a set named as tabs -> tablist, single selection, items become tabs;
+ * - items with a checked axis but no behaviour (chips) -> group, multiple selection, items become checkboxes.
+ */
+export interface Collection {
+  role: 'group' | 'radiogroup' | 'tablist';
+  item: 'own' | 'own-radio' | 'tab' | 'checkbox';
+  selection: 'none' | 'single' | 'multi';
+  /** The item's state prop the group sets (isSelected, isChecked), when items have no behaviour of their own. */
+  stateProp?: string;
+  repeatPath: string;
+  /** Layer whose text names the group (aria-labelledby). */
+  labelPath?: string;
+  /** Item indexes selected in the Figma default. */
+  initial: number[];
+  orientation?: AxisInfo;
+}
+
+/** Component-body code for a collection: label id, selection state, item props and arrow-key navigation (React). */
+function collectionBody(c: Collection): string {
+  const lines = ['  const labelId = useId();'];
+  if (c.selection === 'single') {
+    lines.push(
+      '  const [innerSelected, setInnerSelected] = useState(defaultSelected);',
+      '  const selectedIndex = selected ?? innerSelected;',
+      '  const select = (i: number) => {',
+      '    if (selected === undefined) setInnerSelected(i);',
+      '    onSelectedChange?.(i);',
+      '  };',
+      '  /** Only the selected item (or the first, when none is) is in the tab order. */',
+      '  const focusable = (i: number) => i === (selectedIndex >= 0 ? selectedIndex : 0);',
+      c.item === 'tab'
+        ? `  const itemProps = (i: number) => ({ role: 'tab', 'aria-selected': i === selectedIndex, tabIndex: focusable(i) ? 0 : -1, ${c.stateProp}: i === selectedIndex, 'data-ds-item': '', onClick: () => select(i) });`
+        : "  const itemProps = (i: number) => ({ checked: i === selectedIndex, onCheckedChange: () => select(i), tabIndex: focusable(i) ? 0 : -1, 'data-ds-item': '' });",
+      '  const moveSelection = (event: KeyboardEvent<HTMLDivElement>) => {',
+      '    onKeyDown?.(event);',
+      "    const step = ({ ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 } as Record<string, number>)[event.key];",
+      "    const items = [...event.currentTarget.querySelectorAll<HTMLElement>('[data-ds-item]')];",
+      '    const at = items.findIndex((x) => x === document.activeElement || x.contains(document.activeElement));',
+      "    const to = at < 0 ? -1 : step !== undefined ? (at + step + items.length) % items.length : event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : -1;",
+      '    if (to < 0) return;',
+      '    event.preventDefault();',
+      '    items[to]!.focus();',
+      '    items[to]!.click();',
+      '  };',
+    )
+  } else if (c.selection === 'multi') {
+    lines.push(
+      '  const [innerSelected, setInnerSelected] = useState(defaultSelected);',
+      '  const selectedIndexes = selected ?? innerSelected;',
+      '  const toggle = (i: number) => {',
+      '    const next = selectedIndexes.includes(i) ? selectedIndexes.filter((x) => x !== i) : [...selectedIndexes, i].sort((a, b) => a - b);',
+      '    if (selected === undefined) setInnerSelected(next);',
+      '    onSelectedChange?.(next);',
+      '  };',
+      `  const itemProps = (i: number) => ({ role: 'checkbox', 'aria-checked': selectedIndexes.includes(i), tabIndex: 0, ${c.stateProp}: selectedIndexes.includes(i), 'data-ds-item': '', onClick: () => toggle(i), onKeyDown: (event: KeyboardEvent) => { if (event.key === ' ' || event.key === 'Enter') { event.preventDefault(); toggle(i); } } });`,
+    )
+  }
+  return lines.join('\n') + '\n';
 }
 
 /** One value a parent gives every copy of a repeated child: the same for all copies, or numbered by position. */
@@ -713,7 +781,7 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   if (!defaultVariant) throw new Error(`${name}: component set has no variants`);
   const gaps: string[] = [];
   const assumptions: string[] = [];
-  const toggleRole = opts.behavior === 'switch' ? 'switch' as const : opts.behavior === 'checkbox-single' ? 'checkbox' as const : undefined;
+  const toggleRole = opts.behavior === 'switch' ? 'switch' as const : opts.behavior === 'checkbox-single' ? 'checkbox' as const : opts.behavior === 'radio-single' ? 'radio' as const : undefined;
   const found = toggleRole ? switchAxis(axes) : undefined;
   if (opts.behavior === 'switch' && !found) gaps.push('Switch template: no on/off variant axis found (for example Value=Off/On), so no switch behaviour was generated.');
   const sw: SwitchBehavior | undefined = found && {
@@ -722,7 +790,7 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
     label: humanize(name.replace(/([a-z])([A-Z])/g, '$1 $2')),
     focusColor: ctx.resolver.byName(/(^|\/)(border\/)?(interactive\/)?focus(ed)?$/) ?? 'currentColor',
     role: toggleRole!,
-    ...(toggleRole === 'checkbox' && set.properties.some((x) => x.type === 'TEXT') ? { labelled: true } : {}),
+    ...(toggleRole !== 'switch' && set.properties.some((x) => x.type === 'TEXT') ? { labelled: true } : {}),
     ...(() => { const mixed = toggleRole === 'checkbox' ? axes.find((a) => a !== found.axis && a.boolean && /indeterm|intermed|mixed/i.test(a.figma)) : undefined; return mixed ? { mixed } : {}; })(),
   };
   // Button and link packs: the generic layers inside a native <button> or <a> root (WAI-ARIA button and link patterns).
@@ -736,7 +804,7 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   const disclosure = opts.behavior === 'disclosure' ? disclosureLayers(set, axes) : undefined;
   const responsive = new Set(responsiveAxes(axes));
   for (const a of responsive) assumptions.push(`${a.figma} follows the viewport when ${a.prop} is not set: ${a.options.map((o) => `${o}${BREAKPOINTS[o] ? ` at ${BREAKPOINTS[o]}` : ' otherwise'}`).join(', ')} (generate.breakpoints in ds-sync.config.json). Set ${a.prop} to fix one layout.`);
-  if (opts.behavior === 'disclosure' && !disclosure) gaps.push('Disclosure: an expanded axis exists, but no single header and panel were found in the layers, so no expand/collapse behaviour was generated.');
+  if (opts.behavior === 'disclosure' && !disclosure && !set.properties.some((x) => x.type === 'BOOLEAN' && /expand|open/i.test(x.name))) gaps.push('Disclosure: an expanded axis exists, but no single header and panel were found in the layers, so no expand/collapse behaviour was generated.');
   if (disclosure) assumptions.push(`Behaviour from the WAI-ARIA disclosure pattern, recognised from structure: the "${disclosure.header.split('/').pop()}" layer is a native button with aria-expanded and aria-controls; it shows and hides "${disclosure.panel.split('/').pop()}", which Figma shows only when ${disclosure.axis.figma} is true. Tab focuses it; Enter and Space toggle it. ${disclosure.axis.prop} controls it; defaultExpanded and onExpandedChange make it uncontrolled.`);
   const radioKind = opts.behavior === 'radio' ? 'control' : opts.behavior === 'radio-field' ? 'field' : opts.behavior === 'radio-group' ? 'group' : undefined;
   const sel = radioKind === 'control' ? switchAxis(axes) : undefined;
@@ -751,7 +819,9 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
         ? 'The row holding the radio and its text is a <label>, so clicking the text selects the radio.'
         : 'role="radiogroup" named by the group label. Radios inside share one name, so arrow keys move the selection (native radio behaviour); value and onValueChange control it.');
   } else assumptions.push(sw
-    ? sw.role === 'checkbox'
+    ? sw.role === 'radio'
+      ? `Behaviour from the WAI-ARIA radio pattern, recognised from the ${sw.axis.figma} axis: a native button with role="radio" and aria-checked. Clicking or Space selects it; it does not deselect itself (a radio group selects another one and moves focus with the arrow keys). Figma ${sw.axis.figma}=${sw.axis.values.find((v) => v.value === sw.on)?.figma} is checked.`
+      : sw.role === 'checkbox'
       ? `Behaviour from the WAI-ARIA checkbox pattern, recognised from the ${sw.axis.figma} axis: a native button with role="checkbox" and aria-checked${sw.mixed ? ` ("mixed" when ${sw.mixed.prop} is set, from Figma ${sw.mixed.figma})` : ''}. Tab focuses it; Space toggles it. Figma ${sw.axis.figma}=${sw.axis.values.find((v) => v.value === sw.on)?.figma} is checked.`
       : `Behaviour from the WAI-ARIA switch pattern: a native button with role="switch" and aria-checked. Tab focuses it; Space and Enter toggle it. Figma ${sw.axis.figma}=${sw.axis.values.find((v) => v.value === sw.on)?.figma} is checked.`
     : 'Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.');
@@ -806,6 +876,15 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   }
   const boundSwaps = new Set(slotList.filter((x) => x.kind === 'swap').map((x) => x.figma));
   const unboundSwaps = swaps.filter((x) => !boundSwaps.has(x.name));
+  // Disclosure with a trigger (phase 3): a boolean about being expanded that shows a panel, and a nested button.
+  const trig = (() => {
+    if (opts.behavior !== 'disclosure' || disclosure) return undefined;
+    const bool = booleans.find((b) => /expand|open/i.test(b.p.name));
+    const panel = bool ? all.find((l) => l.part.refs?.visible === bool.p.name) : undefined;
+    const trigger = panel ? all.find((l) => l.part.type === 'INSTANCE' && l !== panel && !l.path.startsWith(`${panel.path}/`) && l.part.instanceComponentId && ['button', 'action'].includes(opts.lookup?.(l.part.instanceComponentId)?.kind ?? '')) : undefined;
+    return bool && panel && trigger ? { bool, prop: bool.prop, panel: panel.path, trigger: trigger.path, defaultOpen: String(bool.p.default) === 'true' } : undefined;
+  })();
+  if (trig) assumptions.push(`Behaviour from the WAI-ARIA disclosure pattern, recognised from structure: the nested ${trig.trigger.split('/').pop()} button toggles ${trig.prop}, which shows "${trig.panel.split('/').pop()}"; the button gets aria-expanded and aria-controls. ${trig.prop} controls it; defaultExpanded and onExpandedChange make it uncontrolled.`);
   if (unboundSwaps.length) gaps.push(`Instance swap properties not exposed as props (default instance rendered): ${unboundSwaps.map((x) => x.name).join(', ')}.`);
   /**
    * What a variant property decides: one prop's value -> result, optionally with one overriding value of
@@ -938,7 +1017,7 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   };
   // Repeated children (phase 2, step 5): copies of one child component that the parent configures. Consumers may pass
   // their own children instead of Figma's examples; the parent fills in what it drives on each (shared values, numbering).
-  const repeats = new Map<string, { prop: string; component: string; driven: DrivenProp[] }>();
+  const repeats = new Map<string, { prop: string; component: string; driven: DrivenProp[]; entry?: RegistryEntry; parts: IRPart[] }>();
   if (slotsEnabled) {
     const taken = new Set<string>([...axes.map((a) => a.prop), ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop), ...slotList.map((x) => x.prop), 'disabled', 'className', 'style']);
     for (const l of all) {
@@ -954,10 +1033,38 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
       // The same text on every copy is Figma's example content, not configuration: only numbered text is driven.
       const textProps = new Set((entry ? childApi(entry) : []).filter((cp) => !cp.axis && cp.type === 'string').map((cp) => cp.prop));
       const driven = drivenProps(refs.map((r) => r!.props), defaults).filter((d) => !(d.same && textProps.has(d.prop)));
-      repeats.set(l.path, { prop, component: refs[0]!.component, driven });
+      repeats.set(l.path, { prop, component: refs[0]!.component, driven, ...(entry ? { entry } : {}), parts });
     }
   }
-  const repeatList = [...repeats.entries()].map(([path, r]) => ({ path, ...r }));
+  const repeatList = [...repeats.entries()].map(([path, r]) => ({ path, prop: r.prop, component: r.component, driven: r.driven }));
+  // Collection pack: only for components without another behaviour.
+  const collection: Collection | undefined = (() => {
+    if (opts.behavior) return undefined;
+    const [path, r] = [...repeats.entries()][0] ?? [];
+    if (!path || !r?.entry) return undefined;
+    const childAxes = propPlan(r.entry.set).axes;
+    const sel = childAxes.find((a) => a.boolean && a.kind === 'variant' && /selected|active/i.test(a.figma));
+    const chk = childAxes.find((a) => a.boolean && a.kind === 'variant' && /check/i.test(a.figma));
+    const on = (prop: string) => r.parts.map((x, k) => (inst(x)?.props.some((y) => y.prop === prop && y.kind === 'boolean' && y.value === true) ? k : -1)).filter((k) => k >= 0);
+    const orientation = axes.find((a) => /orientation|direction/i.test(a.figma) && a.options.some((o) => /vertical/.test(o)));
+    const labelPath = all.find((l) => !l.path.startsWith(path) && ((l.part.type === 'TEXT' && /label|title|heading|legend/i.test(l.part.refs?.characters ?? l.part.name)) || (l.part.type === 'INSTANCE' && /header|label|legend/i.test(l.part.instanceOf ?? '') && l.part.instanceComponentId && /header|label|legend/i.test(opts.lookup?.(l.part.instanceComponentId)?.set.name ?? ''))))?.path;
+    const base = { repeatPath: path, ...(labelPath ? { labelPath } : {}), ...(orientation ? { orientation } : {}) };
+    if (r.entry.kind === 'switch' && /radio/i.test(r.component)) return { ...base, role: 'radiogroup', item: 'own-radio', selection: 'single', initial: on('defaultChecked') };
+    if (r.entry.kind === 'switch') return { ...base, role: 'group', item: 'own', selection: 'none', initial: [] };
+    // "Tabs", "Tab Bar": a whole word, never "Table".
+    const words = name.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().split(/[^a-z0-9]+/);
+    if (sel && words.some((x) => x === 'tab' || x === 'tabs')) return { ...base, role: 'tablist', item: 'tab', selection: 'single', stateProp: sel.prop, initial: on(sel.prop) };
+    if (chk && r.entry.kind === 'generic') return { ...base, role: 'group', item: 'checkbox', selection: 'multi', stateProp: chk.prop, initial: on(chk.prop) };
+    return undefined;
+  })();
+  if (collection) assumptions.push(collection.role === 'tablist'
+    ? `Behaviour from the WAI-ARIA tabs pattern, recognised from the items' ${collection.stateProp} axis: role="tablist" with tabs that have aria-selected; one tab is focusable, arrow keys (and Home, End) move the selection. selected / defaultSelected / onSelectedChange control it. Figma has no tab panels: connect them with aria-controls in your app.`
+    : collection.role === 'radiogroup'
+      ? 'Behaviour from the WAI-ARIA radio group pattern: role="radiogroup"; the group selects one radio, only the selected one is focusable, and arrow keys move the selection. selected / defaultSelected / onSelectedChange control it.'
+      : collection.item === 'checkbox'
+        ? `Behaviour from the WAI-ARIA checkbox pattern for each item, recognised from the items' ${collection.stateProp} axis: role="group" with checkbox items (Space or Enter toggles one). selected / defaultSelected / onSelectedChange hold the selected indexes.`
+        : 'role="group" around items that have their own behaviour.');
+  if (collection && !collection.labelPath) gaps.push(`${name}: no label layer found for the group; name it with aria-label or aria-labelledby.`);
   /** JSX expression for a layer's text: the Figma text, or a lookup when a variant property changes it. */
   const reactRef = (p: string) => (p === '$checked' ? 'on' : p);
   const textExpr = (l: LayerInfo, plain: string) => (l.textByAxis ? lookupExpr(l.textByAxis, reactRef, 'string') : plain);
@@ -1167,7 +1274,9 @@ ${indent}/>`;
               return x.kind === 'expr' ? x.expr(reactRef) : JSON.stringify(x.value);
             };
             const driven = `{ ${rp.driven.map((d) => `${JSON.stringify(d.prop)}: ${value(d)}`).join(', ')} }`;
-            return `${indent}{${rp.prop} !== undefined\n${indent}  ? Children.map(${rp.prop}, (child, i) => <span ${cls} key={i}>{isValidElement(child) && child.type === ${rp.component} ? cloneElement(child, { ...${driven}, ...(child.props as object) }) : child}</span>)\n${indent}  : (\n${indent}    <>\n${all2.map(([part, n]) => `${indent}      ${guard(part, one(n))}`).join('\n')}\n${indent}    </>\n${indent}  )}`;
+            const items = collection?.repeatPath === l.path && collection.item !== 'own';
+            const own = (k: number, x: string) => (items ? x.replace(/ \/><\/span>$/, ` {...(itemProps(${k}) as object)} /></span>`) : x);
+            return `${indent}{${rp.prop} !== undefined\n${indent}  ? Children.map(${rp.prop}, (child, i) => <span ${cls} key={i}>{isValidElement(child) && child.type === ${rp.component} ? cloneElement(child, { ...${driven}, ...(child.props as object)${items ? ', ...(itemProps(i) as object)' : ''} }) : child}</span>)\n${indent}  : (\n${indent}    <>\n${all2.map(([part, n], k) => `${indent}      ${guard(part, own(k, one(n)))}`).join('\n')}\n${indent}    </>\n${indent}  )}`;
           }
           return `${indent}<>\n${all2.map(([part, n]) => `${indent}  ${guard(part, one(n))}`).join('\n')}\n${indent}</>`;
         }
@@ -1200,6 +1309,10 @@ ${indent}/>`;
         ? `<${box} ${cls}>\n${indent}  {children ?? (\n${indent}    <>\n${kids.map((k) => render(k, indent + '      ')).join('\n')}\n${indent}    </>\n${indent}  )}\n${indent}</${box}>`
         : kids.length ? `<${box} ${cls}${idAttr}>\n${inner}\n${indent}</${box}>` : `<${box} ${cls}${idAttr} />`;
     }
+    if (collection?.labelPath === l.path) el = el.replace(/^<(\w+) /, '<$1 id={labelId} ');
+    if (trig?.panel === l.path) el = el.replace(/^<(\w+) /, '<$1 id={panelId} ');
+    // The trigger may be a plain nested button or the default of a slot (an instance swap): add the attributes to its tag.
+    if (trig?.trigger === l.path) el = el.replace(/ \/>(\)\})?<\/span>$/, (_m, slot: string | undefined) => ` aria-expanded={${trig.prop}} aria-controls={${trig.prop} ? panelId : undefined} onClick={toggleExpanded} />${slot ?? ''}</span>`);
     const b = boolFor(p.refs?.visible);
     return b ? `${indent}{${b} && (\n${indent}  ${el.replace(/\n/g, `\n  `)}\n${indent})}` : `${indent}${el}`;
   };
@@ -1228,23 +1341,38 @@ ${indent}/>`;
     ...exposedProps.map((e) => `  /** Figma: ${e.exposed!.name} › ${e.figma} (exposed nested instance). Default ${String(e.default)}. */\n  ${e.prop}?: ${e.tsType(q)};`),
     ...repeatList.map((r) => `  /** Your own ${r.component} items instead of the Figma examples. ${name} sets ${r.driven.length ? r.driven.map((d) => d.prop).join(', ') : 'nothing'} on each one you do not set yourself${r.driven.some((d) => d.numbered) ? ' (numbered by position)' : ''}. */\n  ${r.prop}?: ReactNode;`),
     ...slotList.map((x) => `  /** ${x.description ? `${x.description} ` : ''}Content for ${x.kind === 'swap' ? `the "${x.figma}" slot (Figma instance swap)` : `the "${x.figma}" placeholder`}; the Figma default when not set. */\n  ${x.prop}?: ReactNode;`),
+    ...(collection && collection.selection !== 'none' ? (collection.selection === 'single' ? [
+      '  /** Index of the selected item (controlled). */\n  selected?: number;',
+      `  /** Initial selection when selected is not set. Default ${collection.initial[0] ?? 'none'} (Figma). */\n  defaultSelected?: number;`,
+      '  /** Called with the index the user selects. */\n  onSelectedChange?: (index: number) => void;',
+    ] : [
+      '  /** Indexes of the selected items (controlled). */\n  selected?: number[];',
+      `  /** Initial selection when selected is not set. Default [${collection.initial.join(', ')}] (Figma). */\n  defaultSelected?: number[];`,
+      '  /** Called with the selected indexes when the user toggles an item. */\n  onSelectedChange?: (indexes: number[]) => void;',
+    ]) : []),
+    ...(trig ? [
+      `  /** Initial state when ${trig.prop} is not set (uncontrolled). Default ${trig.defaultOpen}. */\n  defaultExpanded?: boolean;`,
+      '  /** Called with the new state when the user toggles it. */\n  onExpandedChange?: (expanded: boolean) => void;',
+    ] : []),
     ...(disclosure ? [
       `  /** Initial state when ${disclosure.axis.prop} is not set (uncontrolled). Default ${disclosure.axis.defaultValue}. */\n  defaultExpanded?: boolean;`,
       '  /** Called with the new state when the user toggles it. */\n  onExpandedChange?: (expanded: boolean) => void;',
     ] : []),
     `  /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */\n  'data-force-state'?: string;`,
   ];
-  const ownProps = [...(sw ? ['checked', 'defaultChecked', 'value', 'onChange'] : []), ...propAxes.map((a) => a.prop), ...(hasDisabled ? ['disabled'] : []), ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop), ...exposedProps.map((e) => e.prop), ...slotList.map((x) => x.prop), ...repeatList.map((r) => r.prop), ...(disclosure ? ['defaultExpanded', 'onExpandedChange'] : [])];
+  const ownProps = [...(sw ? ['checked', 'defaultChecked', 'value', 'onChange'] : []), ...propAxes.map((a) => a.prop), ...(hasDisabled ? ['disabled'] : []), ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop), ...exposedProps.map((e) => e.prop), ...slotList.map((x) => x.prop), ...repeatList.map((r) => r.prop), ...(collection && collection.selection !== 'none' ? ['selected', 'defaultSelected', 'onSelectedChange'] : []), ...(trig ? ['defaultExpanded', 'onExpandedChange'] : []), ...(disclosure ? ['defaultExpanded', 'onExpandedChange'] : [])];
   const destructure = [
-    ...(sw ? ['checked', 'defaultChecked = false', 'onCheckedChange', 'onClick', ...(sw.role === 'checkbox' ? ['onKeyDown'] : [])] : []),
+    ...(sw ? ['checked', 'defaultChecked = false', 'onCheckedChange', 'onClick', ...(sw.role !== 'switch' ? ['onKeyDown'] : [])] : []),
     ...propAxes.map((a) => (a === disclosure?.axis ? `${a.prop}: ${a.prop}Prop` : responsive.has(a) ? a.prop : `${a.prop} = ${axisDefault(a, q)}`)),
     ...(disclosure ? [`defaultExpanded = ${disclosure.axis.defaultValue === 'true'}`, 'onExpandedChange'] : []),
     ...(hasDisabled ? ['disabled = false'] : []),
-    ...booleans.map((b) => `${b.prop} = ${String(b.p.default) === 'true'}`),
+    ...booleans.map((b) => (b === trig?.bool ? `${b.prop}: ${b.prop}Prop` : `${b.prop} = ${String(b.p.default) === 'true'}`)),
+    ...(trig ? [`defaultExpanded = ${trig.defaultOpen}`, 'onExpandedChange'] : []),
     ...texts.map((t) => `${t.prop} = ${q(String(t.p.default))}`),
     ...exposedProps.map((e) => `${e.prop} = ${(e.axis ? axisLiteral(e.axis, String(e.default), q) : typeof e.default === 'boolean' ? String(e.default) : q(String(e.default)))}`),
     ...slotList.map((x) => x.prop),
     ...repeatList.map((r) => r.prop),
+    ...(collection && collection.selection !== 'none' ? ['selected', `defaultSelected = ${collection.selection === 'single' ? (collection.initial[0] ?? -1) : `[${collection.initial.join(', ')}]`}`, 'onSelectedChange', 'onKeyDown'] : []),
     'className',
     '...rest',
   ];
@@ -1254,6 +1382,8 @@ ${indent}/>`;
     ...(hasDisabled ? ["data-disabled={disabled ? '' : undefined}", sw || rootTag === 'button' ? 'disabled={disabled}' : 'aria-disabled={disabled || undefined}'] : []),
     ...(sw?.busy ? ['aria-busy={busy || undefined}'] : []),
     ...(busyAxis ? [`aria-busy={${busyAxis.prop} || undefined}`] : []),
+    ...(collection ? [`role="${collection.role}"`, ...(collection.labelPath ? ['aria-labelledby={labelId}'] : []), ...(collection.orientation && collection.role !== 'group' ? [`aria-orientation={${collection.orientation.prop} === 'vertical' ? 'vertical' : 'horizontal'}`] : [])] : []),
+    ...(collection?.selection === 'single' ? ['onKeyDown={moveSelection}'] : []),
   ];
 
   const exposedNode = exposedProps.some((e) => !e.axis && e.type === 'string');
@@ -1277,10 +1407,10 @@ ${sw.busy ? `  const busy = ${sw.busy.prop} === 'loading';\n` : ''}  return (
     <button
       type="button"
       role="${sw.role}"
-      aria-checked={${sw.mixed ? `${sw.mixed.prop} ? 'mixed' : on` : 'on'}}${sw.role === 'checkbox' ? `
+      aria-checked={${sw.mixed ? `${sw.mixed.prop} ? 'mixed' : on` : 'on'}}${sw.role !== 'switch' ? `
       onKeyDown={(event) => {
         onKeyDown?.(event);
-        // The checkbox pattern toggles with Space only; a native button would also toggle on Enter.
+        // The ${sw.role} pattern toggles with Space only; a native button would also toggle on Enter.
         if (event.key === 'Enter') event.preventDefault();
       }}` : ''}
       className={[styles.root, className].filter(Boolean).join(' ')}
@@ -1289,7 +1419,7 @@ ${sw.busy ? `  const busy = ${sw.busy.prop} === 'loading';\n` : ''}  return (
       onClick={(event) => {
         onClick?.(event);
         if (event.defaultPrevented${sw.busy ? ' || busy' : ''}) return;
-        if (checked === undefined) setInner(!on);
+        ${sw.role === 'radio' ? 'if (on) return;\n        ' : ''}if (checked === undefined) setInner(!on);
         onCheckedChange?.(!on);
       }}
     >
@@ -1299,16 +1429,23 @@ ${body}
 }
 ` : `// Generated by ds-sync (generic template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 // Visuals come from Figma. Behaviour (keyboard, focus, ARIA role) is not specified in Figma and is not generated.
-${disclosure ? `import { useId, useState, type ${rootAttrs}${texts.length || exposedNode || slotList.length || repeatList.length ? ', type ReactNode' : ''} } from 'react';` : `import type { ${rootAttrs}${texts.length || exposedNode || slotList.length || repeatList.length ? ', ReactNode' : ''} } from 'react';`}
+${disclosure || trig ? `import { useId, useState, type ${rootAttrs}${texts.length || exposedNode || slotList.length || repeatList.length ? ', type ReactNode' : ''} } from 'react';` : `import type { ${rootAttrs}${texts.length || exposedNode || slotList.length || repeatList.length ? ', ReactNode' : ''}${collection && collection.selection !== 'none' ? ', KeyboardEvent' : ''} } from 'react';`}
 
-${usesRepeat ? "import { Children, cloneElement, isValidElement } from 'react';\n" : ''}${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${all.some((l) => l.iconByAxis) ? `import type { IconName } from '../../icons/icons';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
+${usesRepeat ? `import { Children, cloneElement, isValidElement${collection ? ', useId' : ''}${collection && collection.selection !== 'none' ? ', useState' : ''} } from 'react';\n` : ''}${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${all.some((l) => l.iconByAxis) ? `import type { IconName } from '../../icons/icons';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
 
 export interface ${name}Props extends Omit<${rootAttrs}<${rootElement}>, 'children'${ownProps.filter((p) => p !== 'children').map((p) => ` | '${p}'`).join('')}> {
 ${propLines.join('\n')}
 }
 
 export function ${name}({ ${destructure.join(', ')} }: ${name}Props) {
-${disclosure ? `  const [innerExpanded, setInnerExpanded] = useState(defaultExpanded);
+${collection ? collectionBody(collection) : ''}${trig ? `  const [innerExpanded, setInnerExpanded] = useState(defaultExpanded);
+  const ${trig.prop} = ${trig.prop}Prop ?? innerExpanded;
+  const panelId = useId();
+  const toggleExpanded = () => {
+    if (${trig.prop}Prop === undefined) setInnerExpanded(!${trig.prop});
+    onExpandedChange?.(!${trig.prop});
+  };
+` : ''}${disclosure ? `  const [innerExpanded, setInnerExpanded] = useState(defaultExpanded);
   const ${disclosure.axis.prop} = ${disclosure.axis.prop}Prop ?? innerExpanded;
   const panelId = useId();
   const toggleExpanded = () => {
@@ -1657,11 +1794,15 @@ export const Default: Story = {
     await userEvent.click(control);
     await expect(control).toHaveAttribute('aria-checked', 'true');
     await expect(args.onCheckedChange).toHaveBeenLastCalledWith(true);
-    // WAI-ARIA switch: Space toggles (Enter too, from the native button).
+${sw.role === 'radio' ? `    // WAI-ARIA radio: a selected radio stays selected (its group selects another).
+    control.focus();
+    await userEvent.keyboard(' ');
+    await expect(control).toHaveAttribute('aria-checked', 'true');
+    await expect(args.onCheckedChange).toHaveBeenCalledTimes(1);` : `    // WAI-ARIA ${sw.role}: Space toggles.
     control.focus();
     await userEvent.keyboard(' ');
     await expect(control).toHaveAttribute('aria-checked', 'false');
-    await expect(args.onCheckedChange).toHaveBeenLastCalledWith(false);
+    await expect(args.onCheckedChange).toHaveBeenLastCalledWith(false);`}
   },
 };` : radio ? radioDefault() : input ? inputDefault() : dialog ? dialogDefault() : `${defaultDoc}\nexport const Default: Story = {};`];
   function dialogDefault(): string {
@@ -1930,6 +2071,30 @@ ${booleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.defa
     ...slotList.map((x) => `    ${x.prop}: { control: false, description: ${q(figmaNote(x.kind === 'swap' ? `${x.figma} (instance swap)` : `${x.figma} (placeholder)`, x.description))} },`),
     `    'data-force-state': { table: { disable: true } },`,
   ];
+  if (collection && collection.selection !== 'none') {
+    const attr = collection.item === 'tab' ? 'aria-selected' : 'aria-checked';
+    // An item that is not selected in the Figma default, so clicking it changes the selection.
+    const t = [1, 2, 0].find((i) => !collection.initial.includes(i)) ?? 1;
+    stories.push(`export const Selects: Story = {
+  name: 'Selects',
+  args: { onSelectedChange: fn() },
+  play: async ({ canvasElement, args }) => {
+    const items = [...canvasElement.querySelectorAll<HTMLElement>('[data-ds-item]')];
+    await expect(items.length).toBeGreaterThan(1);
+    await userEvent.click(items[${t}]!);
+    await expect(items[${t}]).toHaveAttribute('${attr}', 'true');
+    await expect(args.onSelectedChange).toHaveBeenCalled();${collection.selection === 'single' ? `
+    // Arrow keys move the selection; only the selected item is in the tab order.
+    items[${t}]!.focus();
+    await userEvent.keyboard('{ArrowRight}');
+    const next = items[${t + 1} % items.length]!;
+    await expect(next).toHaveAttribute('${attr}', 'true');
+    await expect(items[${t}]).toHaveAttribute('${attr}', 'false');` : `
+    await userEvent.click(items[${t}]!);
+    await expect(items[${t}]).toHaveAttribute('${attr}', 'false');`}
+  },
+};`);
+  }
   if (rootTag === 'button') {
     stories.push(`export const Activates: Story = {
   name: 'Activates',
@@ -1957,6 +2122,21 @@ ${booleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.defa
   },
 };`);
   }
+  if (trig) {
+    stories.push(`export const ExpandsAndCollapses: Story = {
+  name: 'Expands and collapses',
+  args: { onExpandedChange: fn() },
+  play: async ({ canvasElement, args }) => {
+    const button = within(canvasElement).getAllByRole('button')[0]!;
+    const before = button.getAttribute('aria-expanded') === 'true';
+    await userEvent.click(button);
+    await expect(button).toHaveAttribute('aria-expanded', String(!before));
+    await expect(args.onExpandedChange).toHaveBeenCalledWith(!before);
+    const open = before ? null : button.getAttribute('aria-controls');
+    if (open) await expect(document.getElementById(open)).not.toBeNull();
+  },
+};`);
+  }
   if (disclosure) {
     stories.push(`export const ExpandsAndCollapses: Story = {
   name: 'Expands and collapses',
@@ -1978,7 +2158,7 @@ ${booleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.defa
   stories.push(figmaVariantsStory);
   const storiesFile = `// Generated by ds-sync (${sw ? (sw.role === 'checkbox' ? 'checkbox' : 'switch') : radio ? 'radio' : input ? 'input' : dialog ? 'dialog' : 'generic'} template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 import type { Meta, StoryObj } from '@storybook/react-vite';
-${dialog ? "import { useState } from 'react';\nimport { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}${sw || radio?.kind === 'control' || radio?.kind === 'field' || input || disclosure || rootTag !== 'div' ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : radio ? "import { expect, userEvent, within } from 'storybook/test';\n" : ''}
+${dialog ? "import { useState } from 'react';\nimport { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}${sw || radio?.kind === 'control' || radio?.kind === 'field' || input || disclosure || rootTag !== 'div' || (collection && collection.selection !== 'none') || trig ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : radio ? "import { expect, userEvent, within } from 'storybook/test';\n" : ''}
 import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { ${name}, type ${name}Props } from './${name}';
 
@@ -2024,7 +2204,7 @@ ${stories.join('\n\n')}
   ];
   const uniqueGaps = [...new Set(gaps)];
   if (responsive.size) css = [...responsive].reduce((c, a) => makeResponsive(c, a.attr, a.options), css);
-  const core: GenericCore = { ...(repeatList.length ? { repeats: repeatList } : {}), ...(responsive.size ? { responsive: [...responsive].map((a) => a.prop) } : {}), ...(rootTag !== 'div' ? { rootTag, ...(busyAxis ? { busyProp: busyAxis.prop } : {}), ...(needsName ? { storyLabel: humanize(name.replace(/([a-z])([A-Z])/g, '$1 $2')) } : {}) } : {}), ...(disclosure ? { disclosure: { prop: disclosure.axis.prop, header: byPath.get(disclosure.header)!.role, panel: byPath.get(disclosure.panel)!.role, headerPath: disclosure.header } } : {}), slots: slotList, set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, nestedProps, exposed: exposedProps, nestedCheck, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(dialog ? { dialog } : {}), visual, ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
+  const core: GenericCore = { ...(trig ? { trigger: { prop: trig.prop, trigger: trig.trigger, panel: trig.panel } } : {}), ...(collection ? { collection } : {}), ...(repeatList.length ? { repeats: repeatList } : {}), ...(responsive.size ? { responsive: [...responsive].map((a) => a.prop) } : {}), ...(rootTag !== 'div' ? { rootTag, ...(busyAxis ? { busyProp: busyAxis.prop } : {}), ...(needsName ? { storyLabel: humanize(name.replace(/([a-z])([A-Z])/g, '$1 $2')) } : {}) } : {}), ...(disclosure ? { disclosure: { prop: disclosure.axis.prop, header: byPath.get(disclosure.header)!.role, panel: byPath.get(disclosure.panel)!.role, headerPath: disclosure.header } } : {}), slots: slotList, set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, nestedProps, exposed: exposedProps, nestedCheck, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(dialog ? { dialog } : {}), visual, ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
   const files = [
     { path: `${dir}/${name}.tsx`, content: tsx },
     { path: `${dir}/${name}.module.css`, content: css },

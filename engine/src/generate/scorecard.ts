@@ -36,14 +36,18 @@ export interface ScorecardInput {
   described: boolean;
   /** Props with a plain-language description (from decisions). */
   describedProps: number;
+  /** A composite whose repeated items have a behaviour template: that behaviour. */
+  itemBehaviour?: string;
 }
 
 const BEHAVIOUR: Record<string, string> = {
   action: 'WAI-ARIA button', button: 'WAI-ARIA button', link: 'WAI-ARIA link', checkbox: 'WAI-ARIA checkbox', 'checkbox-single': 'WAI-ARIA checkbox',
-  switch: 'WAI-ARIA switch', accordion: 'WAI-ARIA accordion', disclosure: 'WAI-ARIA disclosure', radio: 'WAI-ARIA radio', 'radio-field': 'WAI-ARIA radio (label)',
-  'radio-group': 'WAI-ARIA radio group', input: 'native input', dialog: 'WAI-ARIA dialog',
+  switch: 'WAI-ARIA switch', 'radio-single': 'WAI-ARIA radio', accordion: 'WAI-ARIA accordion', disclosure: 'WAI-ARIA disclosure', radio: 'WAI-ARIA radio', 'radio-field': 'WAI-ARIA radio (label)',
+  'radio-group': 'WAI-ARIA radio group', 'collection:tablist': 'WAI-ARIA tabs', 'collection:radiogroup': 'WAI-ARIA radio group', 'collection:group': 'WAI-ARIA group', input: 'native input', dialog: 'WAI-ARIA dialog',
 };
-const INTERACTIVE_NAME = /button|link|tab|menu|select|dropdown|toggle|switch|checkbox|radio|accordion|collapsible|input|slider|chip|pagination/i;
+const INTERACTIVE_NAME = /button|link|\btabs?\b|tabs?(item)?$|menu|select|dropdown|toggle|switch|checkbox|radio|accordion|collapsible|input|slider|chip|pagination/i;
+
+export { BEHAVIOUR };
 
 export function buildScorecard(x: ScorecardInput): Scorecard {
   const m: Measure[] = [];
@@ -68,6 +72,7 @@ export function buildScorecard(x: ScorecardInput): Scorecard {
   // 5. Interaction: a behaviour contract tested in the stories, or none.
   const behaviour = BEHAVIOUR[x.template];
   if (behaviour) m.push({ name: 'Interaction', status: 'pass', value: `${behaviour} pattern, tested in the stories` });
+  else if (x.itemBehaviour) m.push({ name: 'Interaction', status: 'pass', value: `behaviour comes from its items (${x.itemBehaviour})` });
   else m.push({ name: 'Interaction', status: INTERACTIVE_NAME.test(x.name) && !x.buildingBlock ? 'warn' : 'n/a', value: INTERACTIVE_NAME.test(x.name) && !x.buildingBlock ? 'visuals only: the name suggests behaviour that no template provides (add an archetype decision)' : 'visuals only (display component)' });
   // 6. Tokens: raw colours left in the component CSS (outside var()).
   const raw = (x.css.replace(/var\([^)]*\)/g, '').match(/#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)/g) ?? []).length;

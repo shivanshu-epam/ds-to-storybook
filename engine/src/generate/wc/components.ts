@@ -139,6 +139,13 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
   const textFor = (figma?: string) => texts.find((t) => t.p.name === figma)?.prop;
   const children = (parent: string) => core.layers.filter((l) => l.parent === parent);
   const dis = core.disclosure;
+  const col = core.collection;
+  const colState = col?.stateProp ? wcProp(col.stateProp) : undefined;
+  /** Attributes the group gives item k (a Figma copy) in the Lit template. */
+  const itemAttrs = (k: number) => !col || col.item === 'own' ? ''
+    : col.item === 'tab' ? `role="tab" aria-selected=\${this.selectedIndex === ${k} ? 'true' : 'false'} tabindex=\${this.focusable(${k}) ? '0' : '-1'} data-ds-item .${colState}=\${this.selectedIndex === ${k}} @click=\${() => this.select(${k})}`
+    : col.item === 'own-radio' ? `.checked=\${this.selectedIndex === ${k}} tabindex=\${this.focusable(${k}) ? '0' : '-1'} data-ds-item @change=\${() => this.select(${k})}`
+    : `role="checkbox" aria-checked=\${this.selectedIndexes.includes(${k}) ? 'true' : 'false'} tabindex="0" data-ds-item .${colState}=\${this.selectedIndexes.includes(${k})} @click=\${() => this.toggleItem(${k})} @keydown=\${(e: KeyboardEvent) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); this.toggleItem(${k}); } }}`;
   const responsiveWc = new Set((core.responsive ?? []).map(wcProp));
   const disProp = dis ? wcProp(dis.prop) : undefined;
   const byPathWc = new Map(core.layers.map((l) => [l.path, l]));
@@ -180,6 +187,13 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
           el += `\n${indent}${b ? `\${this.${b} ? html\`${one}\` : nothing}` : one}`;
         }
         const rp = core.repeats?.find((r) => r.path === l.path);
+        if (rp && col?.repeatPath === l.path && col.item !== 'own') {
+          let k = 0;
+          // The group owns the item's state: drop the value Figma gave each copy, then add the group's bindings.
+          const owned = col.item === 'own-radio' ? /\s\?checked=\$\{true\}/g : new RegExp(`\\s[.?]?${colState}=\\$\\{[^}]*\\}`, 'g');
+          // Generated hosts use display: contents, which cannot take focus or clicks; a managed item needs a box.
+          el = el.replace(owned, '').replace(new RegExp(`<${ntag}(?=[ >])`, 'g'), (m) => `${m} style="display: block" ${itemAttrs(k++)}`);
+        }
         if (rp) {
           const slotName = rp.prop === 'children' ? '' : ` name="${attrFor(rp.prop)}"`;
           return `${indent}<slot${slotName} @slotchange=\${this.applyRepeated}>\n${indent}  ${el.split('\n').join(`\n${indent}  `)}\n${indent}</slot>`;
@@ -208,6 +222,9 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
       const panelId = dis && l.role === dis.panel ? ' id="panel"' : '';
       el = panelId && kids.length ? `<${box} ${c}${panelId}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</${box}>` : kids.length ? `<${box} ${c}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</${box}>` : `<${box} ${c}></${box}>`;
     }
+    if (col?.labelPath === l.path) el = el.replace(/^<([\w-]+) /, '<$1 id="group-label" ');
+    if (core.trigger?.panel === l.path) el = el.replace(/^<([\w-]+) /, '<$1 id="panel" ');
+    if (core.trigger?.trigger === l.path) el = el.replace(/<(ds-[\w-]+)(?=[ >])/, '<$1 @click=${this.toggleExpanded}');
     const b = boolFor(p.refs?.visible);
     return b ? `${indent}\${this.${b} ? html\`${el}\` : nothing}` : `${indent}${el}`;
   };
@@ -227,6 +244,8 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     ...(hasDisabled ? [{ prop: 'disabled', type: 'boolean', init: 'false', decl: '{ type: Boolean, reflect: true }' }] : []),
     ...(core.rootTag === 'a' ? [{ prop: 'href', type: 'string | undefined', init: 'undefined', decl: '{ type: String }' }] : []),
     ...(core.rootTag ? [{ prop: 'accessibleLabel', type: 'string | undefined', init: 'undefined', decl: "{ type: String, attribute: 'accessible-label' }" }] : []),
+    ...(col?.selection === 'single' ? [{ prop: 'selected', type: 'number', init: String(col.initial[0] ?? -1), decl: '{ type: Number, reflect: true }' }] : []),
+    ...(col?.selection === 'multi' ? [{ prop: 'selected', type: 'number[]', init: `[${col.initial.join(', ')}]`, decl: '{ type: Array }' }] : []),
     ...booleans.map((b) => ({ prop: b.prop, type: 'boolean', init: String(String(b.p.default) === 'true'), decl: `{ type: Boolean, attribute: ${js(attrFor(b.prop))} }` })),
     ...texts.map((t) => ({ prop: t.prop, type: 'string', init: js(String(t.p.default)), decl: `{ type: String, attribute: ${js(attrFor(t.prop))} }` })),
     ...exposed.map((e) => ({ prop: e.prop, type: e.axis ? axisType(e.axis, js) : e.type, init: (e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default)), decl: `{ type: ${e.type === 'boolean' ? 'Boolean' : 'String'}, attribute: ${js(attrFor(e.prop))} }` })),
@@ -238,6 +257,8 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     ...(core.busyProp ? [`aria-busy=\${this.${wcProp(core.busyProp)} ? 'true' : nothing}`] : []),
     ...(core.rootTag === 'a' ? ['href=${this.href ?? nothing}'] : []),
     ...(core.rootTag ? ['aria-label=${this.accessibleLabel ?? nothing}'] : []),
+    ...(col ? [`role="${col.role}"`, ...(col.labelPath ? ['aria-labelledby="group-label"'] : []), ...(col.orientation && col.role !== 'group' ? [`aria-orientation=\${this.${wcProp(col.orientation.prop)} === 'vertical' ? 'vertical' : 'horizontal'}`] : [])] : []),
+
     ...(busyProp ? [`aria-busy=\${this.${busyProp} === 'loading' ? 'true' : nothing}`] : []),
     'data-force-state=${this.forceState ?? nothing}',
   ];
@@ -261,10 +282,52 @@ ${props.map((p) => `  /** ${swDocs[p.prop] && (sw || p.prop === 'accessibleLabel
 
   constructor() {
     super();
-${props.map((p) => `    this.${p.prop} = ${p.init};`).join('\n')}
+${props.map((p) => `    this.${p.prop} = ${p.init};`).join('\n')}${col?.selection === 'single' ? '\n    // On the host: key events from inside the shadow root bubble here, and so do events sent to the focused host.\n    this.addEventListener(\'keydown\', this.moveSelection);' : ''}
   }
 
-${core.repeats?.length ? `  /** Sets what ${name} drives on slotted children (the ones the page provides instead of the Figma examples). */
+${col && col.selection !== 'none' ? `${col.selection === 'single' ? `  get selectedIndex() {
+    return this.selected;
+  }
+
+  /** Only the selected item (or the first, when none is) is in the tab order. */
+  focusable(i: number) {
+    return i === (this.selected >= 0 ? this.selected : 0);
+  }
+
+  select(i: number) {
+    if (this.selected === i) return;
+    this.selected = i;
+    this.dispatchEvent(new CustomEvent('selected-change', { detail: i, bubbles: true, composed: true }));
+  }
+
+  private items() {
+    const slotted = [...this.renderRoot.querySelectorAll('slot')].flatMap((s) => (s as HTMLSlotElement).assignedElements());
+    return [...this.renderRoot.querySelectorAll<HTMLElement>('[data-ds-item]'), ...slotted.filter((e) => e.hasAttribute('data-ds-item'))] as HTMLElement[];
+  }
+
+  /** Arrow keys, Home and End move the selection (WAI-ARIA ${col.role === 'tablist' ? 'tabs' : 'radio group'}). */
+  private moveSelection = (event: KeyboardEvent) => {
+    const step = ({ ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 } as Record<string, number>)[event.key];
+    const items = this.items();
+    const active = (this.renderRoot as ShadowRoot).activeElement;
+    const at = items.findIndex((x) => x === active || x === document.activeElement || x.contains(active));
+    const to = at < 0 ? -1 : step !== undefined ? (at + step + items.length) % items.length : event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : -1;
+    if (to < 0) return;
+    event.preventDefault();
+    items[to]!.focus();
+    this.select(to);
+  };
+
+` : `  get selectedIndexes() {
+    return this.selected;
+  }
+
+  toggleItem(i: number) {
+    this.selected = this.selected.includes(i) ? this.selected.filter((x) => x !== i) : [...this.selected, i].sort((a, b) => a - b);
+    this.dispatchEvent(new CustomEvent('selected-change', { detail: this.selected, bubbles: true, composed: true }));
+  }
+
+`}` : ''}${core.repeats?.length ? `  /** Sets what ${name} drives on slotted children (the ones the page provides instead of the Figma examples). */
   private applyRepeated = () => {
     const slots = [...(this.renderRoot.querySelectorAll('slot') ?? [])] as HTMLSlotElement[];
 ${core.repeats.map((r) => `    {
@@ -278,7 +341,12 @@ ${r.driven.filter((d) => d.numbered || (d.same && d.same.kind !== 'icon' && d.sa
     }`).join('\n')}
   };
 
-${sw ? '' : '  override updated() {\n    this.applyRepeated();\n  }\n\n'}` : ''}${dis ? `  private toggleExpanded() {
+${sw ? '' : '  override updated() {\n    this.applyRepeated();\n  }\n\n'}` : ''}${core.trigger ? `  private toggleExpanded() {
+    this.${wcProp(core.trigger.prop)} = !this.${wcProp(core.trigger.prop)};
+    this.dispatchEvent(new CustomEvent('expanded-change', { detail: this.${wcProp(core.trigger.prop)}, bubbles: true, composed: true }));
+  }
+
+` : ''}${dis ? `  private toggleExpanded() {
     ${hasDisabled ? 'if (this.disabled) return;\n    ' : ''}this.${disProp} = !this.${disProp};
     this.dispatchEvent(new CustomEvent('expanded-change', { detail: this.${disProp}, bubbles: true, composed: true }));
   }
@@ -291,12 +359,12 @@ ${sw ? '' : '  override updated() {\n    this.applyRepeated();\n  }\n\n'}` : ''}
 
   private toggle() {
     if (${[hasDisabled ? 'this.disabled' : '', busyProp ? `this.${busyProp} === 'loading'` : ''].filter(Boolean).join(' || ') || 'false'}) return;
-    this.checked = !this.checked;
+    ${sw.role === 'radio' ? 'if (this.checked) return;\n    ' : ''}this.checked = !this.checked;
     this.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
   }
 
   override render() {
-    return html\`<button type="button" role="${sw.role}" class="root" part="root" aria-checked=\${${sw.mixed ? `this.${wcProp(sw.mixed.prop)} ? 'mixed' : ` : ''}this.checked ? 'true' : 'false'}${sw.role === 'checkbox' ? ' @keydown=\${(e: KeyboardEvent) => { if (e.key === \'Enter\') e.preventDefault(); }}' : ''} aria-label=\${this.accessibleLabel ?? nothing} ${dataAttrs.join(' ')} @click=\${this.toggle}>
+    return html\`<button type="button" role="${sw.role}" class="root" part="root" aria-checked=\${${sw.mixed ? `this.${wcProp(sw.mixed.prop)} ? 'mixed' : ` : ''}this.checked ? 'true' : 'false'}${sw.role !== 'switch' ? ' @keydown=\${(e: KeyboardEvent) => { if (e.key === \'Enter\') e.preventDefault(); }}' : ''} aria-label=\${this.accessibleLabel ?? nothing} ${dataAttrs.join(' ')} @click=\${this.toggle}>
 ${body}
       </button>\`;
   }
@@ -366,11 +434,15 @@ declare global {
     await expect(control).toHaveAttribute('aria-checked', 'true');
     await expect(host.checked).toBe(true);
     await expect(onChange).toHaveBeenCalledTimes(1);
-    // WAI-ARIA switch: Space toggles (Enter too, from the native button).
+${sw.role === 'radio' ? `    // WAI-ARIA radio: a selected radio stays selected (its group selects another).
+    control.focus();
+    await userEvent.keyboard(' ');
+    await expect(control).toHaveAttribute('aria-checked', 'true');
+    await expect(onChange).toHaveBeenCalledTimes(1);` : `    // WAI-ARIA ${sw.role}: Space toggles.
     control.focus();
     await userEvent.keyboard(' ');
     await expect(control).toHaveAttribute('aria-checked', 'false');
-    await expect(onChange).toHaveBeenCalledTimes(2);
+    await expect(onChange).toHaveBeenCalledTimes(2);`}
   },
 };` : 'export const Default: Story = {};'];
   if (sw && hasDisabled) {
@@ -446,6 +518,30 @@ ${booleans.map((b) => `    labelled(${js(`${b.p.name}: ${String(b.p.default) ===
 };`);
     sections.push({ heading: 'Options', story: n });
   }
+  if (col && col.selection !== 'none') {
+    const attr = col.item === 'tab' ? 'aria-selected' : col.item === 'own-radio' ? '' : 'aria-checked';
+    const t = [1, 2, 0].find((i) => !col.initial.includes(i)) ?? 1;
+    stories.push(`/** The group selects items (test only). */
+export const Selects: Story = {
+  name: 'Selects',
+  play: async ({ canvasElement }) => {
+    const host = canvasElement.querySelector('${tag}') as HTMLElement & { selected: number | number[] };
+    const onChange = fn();
+    host.addEventListener('selected-change', onChange);
+    const items = [...(shadowOf(canvasElement, '${tag}') as unknown as HTMLElement).querySelectorAll<HTMLElement>('[data-ds-item]')];
+    await expect(items.length).toBeGreaterThan(1);
+    // userEvent sends the click to the element given: a radio item's own button is inside its shadow root.
+    await userEvent.click(items[${t}]!.shadowRoot?.querySelector<HTMLElement>('button') ?? items[${t}]!);
+    await expect(onChange).toHaveBeenCalledTimes(1);${attr ? `
+    await expect(items[${t}]).toHaveAttribute('${attr}', 'true');` : ''}${col.selection === 'single' ? `
+    await expect(host.selected).toBe(${t});
+    items[${t}]!.focus();
+    await userEvent.keyboard('{ArrowRight}');
+    await expect(host.selected).toBe(${t + 1} % items.length);` : `
+    await expect(host.selected).toContain(${t});`}
+  },
+};`);
+  }
   if (core.rootTag === 'button') {
     stories.push(`/** WAI-ARIA button: a native button that activates with a click, Enter and Space (test only). */
 export const Activates: Story = {
@@ -485,7 +581,7 @@ export const ExpandsAndCollapses: Story = {
   const layoutImports = ['matrix', 'row', 'labelled', 'shadowOf'].filter((f) => stories.some((st) => st.includes(`${f}(`)));
   const storiesFile = `${header(js(set.name), sw ? 'switch template' : 'generic template')}import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
-${sw || dis || core.rootTag === 'button' ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}
+${sw || dis || core.rootTag === 'button' || (col && col.selection !== 'none') ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}
 ${layoutImports.length ? `import { ${layoutImports.join(', ')} } from '../../storybook/layout';\n` : ''}import './${tag}';
 
 const meta = {

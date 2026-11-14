@@ -1,7 +1,7 @@
 /** Scenario 2: Figma design system -> a fresh, tested Storybook project. */
 import { composition, docsPage, isBuildingBlock, polishStories, templateSections } from './docs.ts';
 import { activeDecisions, decidedSetDescription, decisionsReport, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel, type DecisionsFile } from '../decisions/decisions.ts';
-import { buildScorecard, scorecardLines, scorecardReport } from './scorecard.ts';
+import { BEHAVIOUR, buildScorecard, scorecardLines, scorecardReport } from './scorecard.ts';
 import { leadSentence } from './templates/common.ts';
 import { fontsReport, httpFontSource, planFonts, usedFonts, type FontOverride, type FontPlan } from './fonts.ts';
 import { existsSync, rmSync } from 'node:fs';
@@ -87,7 +87,7 @@ export interface GenerateConfig {
 
 export interface PlannedComponent {
   name: string;
-  template: 'action' | 'checkbox' | 'checkbox-single' | 'disclosure' | 'button' | 'link' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
+  template: 'action' | 'checkbox' | 'checkbox-single' | 'radio-single' | 'disclosure' | 'button' | 'link' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
   sets: Record<string, string>;
   /** Storybook title; default Components/<name>. */
   title?: string;
@@ -218,7 +218,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     if (c.template === 'checkbox' || c.template === 'accordion') continue;
     const set = setsById.get(c.sets.main ?? '');
     if (!set) continue;
-    const entry: RegistryEntry = { component: c.name, importPath: `../${c.name}/${c.name}`, kind: c.template === 'checkbox-single' ? 'switch' : c.template, set };
+    const entry: RegistryEntry = { component: c.name, importPath: `../${c.name}/${c.name}`, kind: c.template === 'checkbox-single' || c.template === 'radio-single' ? 'switch' : c.template, set };
     for (const v of set.variants) registry.set(v.nodeId, entry);
   }
   const lookupEntry = (id: string) => registry.get(id);
@@ -284,8 +284,13 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   const cards = results.map(({ c, ctx, result }) => {
     const sets = Object.values(ctx.sets);
     const docs = decisionDocs(sets);
+    const core = result.core as GenericCore | undefined;
+    // Effective behaviour: a template, a collection the generic template recognised, or a trigger disclosure.
+    const template = core?.collection ? `collection:${core.collection.role}` : core?.trigger ? 'disclosure' : c.template;
+    const itemTemplate = core?.repeats?.length ? plan.find((p) => p.name === core.repeats![0]!.component)?.template : undefined;
+    const itemBehaviour = itemTemplate ? BEHAVIOUR[itemTemplate] : undefined;
     return buildScorecard({
-      name: c.name, template: c.template, sets, report: result.report,
+      name: c.name, template, sets, report: result.report, ...(itemBehaviour ? { itemBehaviour } : {}),
       css: (result.core as GenericCore | undefined)?.css ?? result.files.find((f) => f.path.endsWith('.module.css'))?.content ?? '',
       buildingBlock: blockOf(c), ...(visual[c.name] ? { visual: visual[c.name] } : {}),
       knownIssues: issueCount(gen.overrides?.knownIssues?.[c.name]),

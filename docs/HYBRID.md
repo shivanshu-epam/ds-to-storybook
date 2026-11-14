@@ -242,7 +242,42 @@ The audit points to the next work by itself:
 
 Still open from step 12: a separate docs lint.
 
-## 12. Reproduce
+## 12. Behaviour for the components the audit flagged (14 Nov 2026)
+
+The first Blade audit listed 12 components with "visuals only, but the name suggests behaviour":
+- **Three were false positives.** Table, Table Row and Table Column matched "tab"; the check now uses whole words.
+- **One already behaved.** Accordion gets its behaviour from its items; a composite whose repeated items have a behaviour template now passes.
+- **Six now have behaviour, recognised from structure:**
+
+| Component | What the structure shows | Behaviour |
+| --- | --- | --- |
+| Radio | a checked axis, on a set named as a radio | `role="radio"`, `aria-checked`; selecting does not deselect itself; Space selects |
+| Radio Group | repeated Radio items | `role="radiogroup"` named by its label; one selection managed by the group; only the selected radio is in the tab order; arrow keys, Home and End move the selection; `selected` / `defaultSelected` / `onSelectedChange` |
+| Tabs | repeated items with an `isSelected` axis, in a set named Tabs | `role="tablist"` (`aria-orientation` from the orientation axis), items become `role="tab"` with `aria-selected`; one in the tab order; arrow keys select. Figma has no tab panels; the report says to connect them |
+| Chip Group | repeated chips with an `isChecked` axis and no behaviour of their own | `role="group"`, chips become checkboxes (`aria-checked`, Space or Enter toggles); `selected` holds the indexes |
+| Checkbox Group | repeated Checkbox items that already behave | `role="group"` named by its label; each checkbox keeps its own state |
+| Collapsible | a boolean `isExpanded` that shows a panel, and a nested Button | the Button gets `aria-expanded`, `aria-controls` and toggles it; controlled or uncontrolled. Web Components: the trigger toggles, but `aria-expanded` is not forwarded into the Lit button yet |
+
+- **Two are deliberately left out:**
+  - Select Input with Autocomplete is a combobox, which needs the full WAI-ARIA combobox contract (popup, active descendant, filtering). Guessing it would be worse than saying so.
+  - Dropdown Menu's items sit two levels down, in an internal item group.
+
+  Both still show ⚠ in the audit.
+
+Found while testing:
+- **Web Component items need a box.** Generated Web Components use `display: contents` on the host, which can take neither focus nor clicks, so items a group manages get a box.
+- **Key events in the shadow DOM.** Keyboard listeners sit on the host, where events from inside the shadow root arrive.
+- **Shadow DOM in the stories.** `userEvent.click` on a host does not reach the button in its shadow root, so the stories click the inner button.
+
+Checks:
+- engine: 109 tests;
+- Design System AI: unchanged, 306 of 306 in both outputs;
+- Blade React: 266 of 415;
+- Blade Web Components: 264 of 413;
+- the Blade failures are colour contrast only;
+- Blade audit, Interaction: 17 ✓, 2 ⚠, 0 ✗.
+
+## 13. Reproduce
 
 - Blade Storybook inventory: `fetch('https://blade.razorpay.com/index.json')`.
 - Blade source: `git clone --depth 1 --filter=blob:none --sparse https://github.com/razorpay/blade`, with sparse paths `packages/blade/src/components` and `packages/blade-plugin`.

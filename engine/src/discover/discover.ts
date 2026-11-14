@@ -34,7 +34,7 @@ export interface DiscoveredFrame {
 export interface Proposal {
   /** Generated component name (PascalCase). */
   name: string;
-  template: 'action' | 'checkbox' | 'checkbox-single' | 'disclosure' | 'button' | 'link' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
+  template: 'action' | 'checkbox' | 'checkbox-single' | 'radio-single' | 'disclosure' | 'button' | 'link' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
   /** Template role -> component set id. */
   sets: Record<string, string>;
   page: string;
@@ -143,6 +143,15 @@ function hasOnOffAxis(node?: FigmaNode): boolean {
 function disclosureStructure(node?: FigmaNode): string | undefined {
   const defs = Object.entries(node?.componentPropertyDefinitions ?? {}) as [string, { type?: string; variantOptions?: string[] }][];
   const axis = defs.find(([k, d]) => d.type === 'VARIANT' && /expand|open/i.test(k) && d.variantOptions?.length === 2 && d.variantOptions.every((o) => /^(true|false)$/i.test(o)))?.[0];
+  // A boolean property shows the panel and a nested instance triggers it (a Collapsible): the generator checks the trigger is a button.
+  const bool = defs.find(([k, d]) => d.type === 'BOOLEAN' && /expand|open/i.test(k))?.[0];
+  if (!axis && bool && node?.children?.length) {
+    let bound = false;
+    let instances = 0;
+    const walk = (n: FigmaNode) => { if ((n.componentPropertyReferences as Record<string, string> | undefined)?.visible === bool) bound = true; else if (n.type === 'INSTANCE') instances++; if (n.type !== 'INSTANCE') n.children?.forEach(walk); };
+    node.children.forEach(walk);
+    return bound && instances ? bool.replace(/#[\d:]+$/, '') : undefined;
+  }
   if (!axis || !node?.children?.length) return undefined;
   const valueOf = (v: FigmaNode) => Object.fromEntries(v.name.split(',').map((x) => x.split('=').map((y) => y.trim()) as [string, string]))[axis];
   const walk = (n: FigmaNode, prefix: string, out: Map<string, { visible: boolean; type: string; parent: string }>, depth: number, hidden: boolean) => {
@@ -249,6 +258,10 @@ function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides
         template = 'disclosure';
         reason = `${disclosureStructure(nodes.get(s.id))} axis with a header and a panel shown only when expanded: disclosure archetype (WAI-ARIA disclosure), recognised from structure.`;
         confidence = 0.8;
+      } else if (checkedAxis(nodes.get(s.id)) && /radio/i.test(s.name) && !/group/i.test(s.name) && !/^[_.]|base$/i.test(s.name.trim())) {
+        template = 'radio-single';
+        reason = `${checkedAxis(nodes.get(s.id))} axis on a set named as a radio: radio archetype (WAI-ARIA radio), selected by its group.`;
+        confidence = 0.75;
       } else if (checkedAxis(nodes.get(s.id)) && !/radio|switch|toggle/i.test(s.name) && !/^[_.]|base$/i.test(s.name.trim())) {
         template = 'checkbox-single';
         reason = `${checkedAxis(nodes.get(s.id))} axis: checkbox archetype (WAI-ARIA checkbox), recognised from the property.`;
@@ -408,7 +421,7 @@ export function targetsFromDiscovery(d: Discovery): ComponentTarget[] {
     const p = d.proposals.find((x) => Object.values(x.sets).includes(s.id));
     return {
       id: `auto.${s.id}`,
-      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' || p?.template === 'checkbox-single' ? 'selection.binary' : p?.template === 'disclosure' ? 'disclosure' : p?.template === 'button' ? 'action' : p?.template === 'link' ? 'generic' : p?.template === 'accordion' ? 'disclosure' : p?.template === 'switch' ? 'switch' : p?.template?.startsWith('radio') ? 'radio' : p?.template === 'input' ? 'input' : p?.template === 'dialog' ? 'dialog' : 'generic',
+      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' || p?.template === 'checkbox-single' ? 'selection.binary' : p?.template === 'radio-single' ? 'radio' : p?.template === 'disclosure' ? 'disclosure' : p?.template === 'button' ? 'action' : p?.template === 'link' ? 'generic' : p?.template === 'accordion' ? 'disclosure' : p?.template === 'switch' ? 'switch' : p?.template?.startsWith('radio') ? 'radio' : p?.template === 'input' ? 'input' : p?.template === 'dialog' ? 'dialog' : 'generic',
       figma: { page: s.page, componentSet: { id: s.id, name: s.name }, docFrames: p?.docFrames ?? [] },
     };
   });

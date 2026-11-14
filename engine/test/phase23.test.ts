@@ -203,3 +203,65 @@ describe('phase 2: repeated children with parent context', () => {
     expect(r.report.props.find((x) => x.prop === 'children')?.note).toMatch(/size, number \(numbered\)/);
   });
 });
+
+describe('phase 3: groups, radios and triggers from structure', () => {
+  // A tab item (isSelected axis + label) repeated three times by a set named Tabs; the second is selected in Figma.
+  const tabItem: FigmaNode = {
+    id: 'TI:1', name: '_Tab Item', type: 'COMPONENT_SET',
+    componentPropertyDefinitions: { isSelected: { type: 'VARIANT', defaultValue: 'False', variantOptions: ['False', 'True'] }, 'label#1:0': { type: 'TEXT', defaultValue: 'Tab' } },
+    children: ['False', 'True'].map((v, k) => ({ id: `TI:${k + 2}`, name: `isSelected=${v}`, type: 'COMPONENT', layoutMode: 'HORIZONTAL', absoluteBoundingBox: box(80, 32), children: [{ id: `TI:${k + 2}t`, name: 'label', type: 'TEXT', characters: 'Tab', componentPropertyReferences: { characters: 'label#1:0' }, absoluteBoundingBox: box(40, 20) }] })),
+  };
+  const groupOf = (id: string, name: string, item: (k: number) => string): FigmaNode => ({
+    id, name, type: 'COMPONENT_SET', componentPropertyDefinitions: { size: { type: 'VARIANT', defaultValue: 'Small', variantOptions: ['Small'] } },
+    children: [{ id: `${id}v`, name: 'size=Small', type: 'COMPONENT', layoutMode: 'HORIZONTAL', absoluteBoundingBox: box(300, 40), children: [
+      { id: `${id}l`, name: 'label', type: 'TEXT', characters: 'Choose', absoluteBoundingBox: box(60, 20) },
+      ...[0, 1, 2].map((k) => ({ id: `${id}i${k}`, name: 'item', type: 'INSTANCE' as const, componentId: item(k), absoluteBoundingBox: box(80, 32), children: [] })),
+    ] }],
+  });
+  const tabs = build(tabItem);
+  const reg = new Map<string, RegistryEntry>(tabs.variants.map((v) => [v.nodeId, { component: 'TabItem', importPath: '../TabItem/TabItem', kind: 'generic', set: tabs }]));
+  const look = (id: string) => reg.get(id);
+  const inst2 = (part: { instanceComponentId?: string }) => { const e = part.instanceComponentId ? reg.get(part.instanceComponentId) : undefined; return e ? instanceRef(e, part as never, new Map(), look) : undefined; };
+
+  it('makes repeated items with a selected axis, in a set named Tabs, a WAI-ARIA tab list', () => {
+    const r = genericTemplate(ctx(build(groupOf('G:1', 'Tabs', (k) => (k === 1 ? 'TI:3' : 'TI:2')), { 'TI:2': 'isSelected=False', 'TI:3': 'isSelected=True' })), 'Tabs', { title: 'Tabs', lookup: look, instance: inst2 as never });
+    const tsx = file(r, /Tabs\.tsx$/);
+    expect(tsx).toContain('role="tablist"');
+    expect(tsx).toContain('aria-labelledby={labelId}');
+    expect(tsx).toContain("const itemProps = (i: number) => ({ role: 'tab', 'aria-selected': i === selectedIndex");
+    expect(tsx).toContain('defaultSelected = 1');
+    expect(tsx).toContain('onKeyDown={moveSelection}');
+    expect(file(r, /stories\.tsx$/)).toContain("name: 'Selects'");
+    // The same structure in a set named Table is not a tab list.
+    expect(file(genericTemplate(ctx(build(groupOf('G:2', 'Table', () => 'TI:2'), { 'TI:2': 'isSelected=False' })), 'Table', { title: 'Table', lookup: look, instance: inst2 as never }), /Table\.tsx$/)).not.toContain('role="tablist"');
+  });
+
+  it('makes a set named as a radio a WAI-ARIA radio that does not deselect itself', () => {
+    const radioNode: FigmaNode = { ...checkboxNode, id: 'R:1', name: 'Radio' };
+    const tsx = file(genericTemplate(ctx(build(radioNode)), 'Radio', { title: 'Radio', instance: () => undefined, behavior: 'radio-single' }), /Radio\.tsx$/);
+    expect(tsx).toContain('role="radio"');
+    expect(tsx).toContain('if (on) return;');
+  });
+
+  it('turns a boolean that shows a panel, with a nested button, into a disclosure on that button', () => {
+    const btnSet = build({ ...buttonNode, id: 'BB:1' });
+    const breg = new Map<string, RegistryEntry>(btnSet.variants.map((v) => [v.nodeId, { component: 'Button', importPath: '../Button/Button', kind: 'button', set: btnSet }]));
+    const blook = (id: string) => breg.get(id);
+    const node: FigmaNode = {
+      id: 'C:1', name: 'Collapsible', type: 'COMPONENT_SET', componentPropertyDefinitions: { 'isExpanded#1:0': { type: 'BOOLEAN', defaultValue: false } },
+      children: [{ id: 'C:2', name: 'Default', type: 'COMPONENT', layoutMode: 'VERTICAL', absoluteBoundingBox: box(200, 100), children: [
+        { id: 'C:2b', name: 'trigger', type: 'INSTANCE', componentId: btnSet.variants[0]!.nodeId, absoluteBoundingBox: box(100, 32), children: [] },
+        { id: 'C:2p', name: 'panel', type: 'FRAME', componentPropertyReferences: { visible: 'isExpanded#1:0' }, absoluteBoundingBox: box(200, 60), children: [{ id: 'C:2pt', name: 'body', type: 'TEXT', characters: 'Body', absoluteBoundingBox: box(100, 20) }] },
+      ] }],
+    };
+    const r = genericTemplate(ctx(build(node, { [btnSet.variants[0]!.nodeId]: btnSet.variants[0]!.name })), 'Collapsible', {
+      title: 'Collapsible', behavior: 'disclosure', lookup: blook,
+      instance: (part) => { const e = part.instanceComponentId ? breg.get(part.instanceComponentId) : undefined; return e ? instanceRef(e, part, new Map(), blook) : undefined; },
+    });
+    const tsx = file(r, /Collapsible\.tsx$/);
+    expect(tsx).toContain('isExpanded: isExpandedProp');
+    expect(tsx).toContain('aria-expanded={isExpanded} aria-controls={isExpanded ? panelId : undefined} onClick={toggleExpanded} />');
+    expect(tsx).toMatch(/id=\{panelId\}/);
+    expect(r.report.gaps.join(' ')).not.toMatch(/no single header and panel/);
+  });
+});

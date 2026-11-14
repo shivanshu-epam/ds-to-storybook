@@ -34,7 +34,7 @@ export const Default: Story = {
     await userEvent.click(control);
     await expect(control).toHaveAttribute('aria-checked', 'true');
     await expect(args.onCheckedChange).toHaveBeenLastCalledWith(true);
-    // WAI-ARIA switch: Space toggles (Enter too, from the native button).
+    // WAI-ARIA switch: Space toggles.
     control.focus();
     await userEvent.keyboard(' ');
     await expect(control).toHaveAttribute('aria-checked', 'false');
