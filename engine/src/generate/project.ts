@@ -373,6 +373,8 @@ const run = (name: string, modes: Record<string, string>) => ({
   define: { 'import.meta.env.VITE_DS_MODES': JSON.stringify(JSON.stringify(modes)) },
   test: {
     name,
+    // Large libraries: the first story of a file includes browser start-up, which can pass 15 s under full-suite load.
+    testTimeout: 30000,
     browser: { enabled: true, headless: true, provider: playwright({}), instances: [{ browser: 'chromium' as const }] },
   },
 });

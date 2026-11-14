@@ -22,7 +22,8 @@ For each Figma set in `sets[]`:
    Leave a property out when its generated name is fine. Never rename an interaction-state axis (`generatedAs: "state"`): it is not a prop.
 2. **A description** for every property you are confident about: one plain sentence on what it changes, from the options, the layers it is bound to (`layers[].boundTo`) and the docs text. "Shows the leading icon." beats "Controls the visibility of the leading icon element in the component." Do not describe behaviour the evidence does not show (no "fires an event", no "is keyboard accessible").
 3. **A set description**, only when `sets[].description` is empty: one or two sentences on what the component is for, taken from the docs text or the structure.
-4. **Questions** for what the evidence cannot settle, written for a designer to answer.
+4. **An archetype**, only when the evidence shows what the component does and the `template` in the review file is wrong: `button` (an action), `link` (navigation), `checkbox`, `switch`, `disclosure` (shows and hides a panel) or `generic` (no behaviour). Leave it out when the template is right or you are unsure.
+5. **Questions** for what the evidence cannot settle, written for a designer to answer.
 
 The `hints` are patterns the engine noticed. Use them as leads, not answers. Properties with `generatedAs: "slot"` are content props (an instance swap bound to a layer): name them for what goes in them (`icon`, `trailing`), not for Figma's layer. Patterns you cannot express yet as a name or description, such as a viewport axis that should be responsive, go in `questions` or `evidence`.
 

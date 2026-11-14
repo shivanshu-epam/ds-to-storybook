@@ -19,7 +19,13 @@ export interface PropDecision {
   evidence?: string[];
 }
 
+/** Behaviour templates a decision can choose for a component set (when structure and names cannot tell). */
+export const ARCHETYPES = ['generic', 'button', 'link', 'checkbox', 'switch', 'disclosure'] as const;
+export type Archetype = (typeof ARCHETYPES)[number];
+
 export interface SetDecision {
+  /** Behaviour: which archetype template builds this set. Omitted: the one discovery chose. */
+  archetype?: Archetype;
   /** Used when the Figma component set has no description of its own. */
   description?: string;
   /** Keyed by the Figma property name (as in Figma's property panel, without the #id suffix). */
@@ -79,6 +85,7 @@ export function validateDecisions(file: unknown, ir?: FigmaIR): DecisionProblem[
     if (!d || typeof d !== 'object') { err(setName, 'Entry must be an object.'); continue; }
     if (!['proposed', 'accepted', 'rejected'].includes(d.status)) err(setName, 'status must be proposed, accepted or rejected.');
     if (d.confidence !== undefined && !(d.confidence >= 0 && d.confidence <= 1)) err(setName, 'confidence must be between 0 and 1.');
+    if (d.archetype !== undefined && !(ARCHETYPES as readonly string[]).includes(d.archetype)) err(setName, `archetype must be one of ${ARCHETYPES.join(', ')}.`);
     const sets = byName.get(setName);
     if (ir && !sets) { err(setName, 'No Figma component set has this name (renamed or removed in Figma?).'); continue; }
     if (sets && sets.length > 1) warn(setName, `${sets.length} Figma sets share this name; the decision applies to all of them.`);
@@ -103,6 +110,7 @@ export function validateDecisions(file: unknown, ir?: FigmaIR): DecisionProblem[
 
 /** What the generator applies for each set: accepted entries, or also proposed ones when previewing. */
 export interface ActiveDecision {
+  archetype?: Archetype;
   description?: string;
   props: Map<string, { name?: string; description?: string }>;
   status: DecisionStatus;
@@ -121,7 +129,8 @@ export function activeDecisions(file: DecisionsFile | undefined, level: ApplyLev
       props.set(prop, { ...(pd.name ? { name: pd.name } : {}), ...(pd.description ? { description: pd.description } : {}) });
     }
     const description = ok(d.status) ? d.description : undefined;
-    if (props.size || description) out.set(setName, { ...(description ? { description } : {}), props, status: d.status });
+    const archetype = ok(d.status) ? d.archetype : undefined;
+    if (props.size || description || archetype) out.set(setName, { ...(archetype ? { archetype } : {}), ...(description ? { description } : {}), props, status: d.status });
   }
   return out;
 }

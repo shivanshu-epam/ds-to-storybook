@@ -310,6 +310,16 @@ async function main() {
           sets: Object.fromEntries(Object.entries(x.sets).map(([role, id]) => [role, `auto.${id}`])),
           title: (perPage.get(x.page) ?? 0) > 1 ? `Components/${pageLabel(x.page)}/${x.name}` : `Components/${x.name}`,
         }));
+        // Archetype decisions choose the behaviour template where structure and names cannot tell (single-set components only).
+        const archetypes = activeDecisions(loadDecisions(resolve(config.baseDir, config.generate.decisions?.file ?? DECISIONS_FILE)), config.generate.decisions?.apply ?? 'accepted');
+        const TEMPLATE = { generic: 'generic', button: 'button', link: 'link', checkbox: 'checkbox-single', switch: 'switch', disclosure: 'disclosure' } as const;
+        for (const c of plan) {
+          const setName = c.sets.main ? ir.components.find((x) => x.targetId === c.sets.main)?.name : undefined;
+          const a = setName ? archetypes.get(setName)?.archetype : undefined;
+          if (!a || Object.keys(c.sets).length !== 1 || TEMPLATE[a] === c.template) continue;
+          log(`Decision: ${c.name} uses the ${TEMPLATE[a]} template (archetype "${a}"; discovery chose ${c.template})`);
+          c.template = TEMPLATE[a];
+        }
         if (ir.missing.length) log(`Not extracted: ${ir.missing.map((m) => m.targetId).join(', ')}`);
       } else {
         ir = values.refresh ? await stepExtract(config, p, { refresh: true, log }) : loadIR(p);

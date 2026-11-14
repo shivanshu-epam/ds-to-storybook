@@ -34,7 +34,7 @@ export interface DiscoveredFrame {
 export interface Proposal {
   /** Generated component name (PascalCase). */
   name: string;
-  template: 'action' | 'checkbox' | 'checkbox-single' | 'disclosure' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
+  template: 'action' | 'checkbox' | 'checkbox-single' | 'disclosure' | 'button' | 'link' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
   /** Template role -> component set id. */
   sets: Record<string, string>;
   page: string;
@@ -253,6 +253,14 @@ function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides
         template = 'checkbox-single';
         reason = `${checkedAxis(nodes.get(s.id))} axis: checkbox archetype (WAI-ARIA checkbox), recognised from the property.`;
         confidence = 0.75;
+      } else if (/\bbutton\b|button$/i.test(s.name.replace(/([a-z])([A-Z])/g, '$1 $2')) && !/group|bar/i.test(s.name) && !/^[_.]|base$/i.test(s.name.trim())) {
+        template = 'button';
+        reason = 'Named as a button, with no checked or expanded axis: button archetype (native <button>, WAI-ARIA button). Figma has no structural marker for a button, so the name is the evidence; override with an archetype decision if wrong.';
+        confidence = 0.7;
+      } else if (/\blink\b|link$/i.test(s.name.replace(/([a-z])([A-Z])/g, '$1 $2')) && !/group|list/i.test(s.name) && !/^[_.]|base$/i.test(s.name.trim())) {
+        template = 'link';
+        reason = 'Named as a link: link archetype (native <a>, pass href). The name is the evidence; override with an archetype decision if wrong.';
+        confidence = 0.7;
       } else if (/button|accordion|checkbox|radio|switch|tab|dialog|modal|menu|select|dropdown|input|slider/i.test(s.name)) {
         confidence = 0.6;
         reason += ' The name suggests an interactive component, so behaviour must be specified before production use.';
@@ -400,7 +408,7 @@ export function targetsFromDiscovery(d: Discovery): ComponentTarget[] {
     const p = d.proposals.find((x) => Object.values(x.sets).includes(s.id));
     return {
       id: `auto.${s.id}`,
-      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' || p?.template === 'checkbox-single' ? 'selection.binary' : p?.template === 'disclosure' ? 'disclosure' : p?.template === 'accordion' ? 'disclosure' : p?.template === 'switch' ? 'switch' : p?.template?.startsWith('radio') ? 'radio' : p?.template === 'input' ? 'input' : p?.template === 'dialog' ? 'dialog' : 'generic',
+      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' || p?.template === 'checkbox-single' ? 'selection.binary' : p?.template === 'disclosure' ? 'disclosure' : p?.template === 'button' ? 'action' : p?.template === 'link' ? 'generic' : p?.template === 'accordion' ? 'disclosure' : p?.template === 'switch' ? 'switch' : p?.template?.startsWith('radio') ? 'radio' : p?.template === 'input' ? 'input' : p?.template === 'dialog' ? 'dialog' : 'generic',
       figma: { page: s.page, componentSet: { id: s.id, name: s.name }, docFrames: p?.docFrames ?? [] },
     };
   });

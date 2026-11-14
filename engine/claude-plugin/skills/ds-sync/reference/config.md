@@ -38,6 +38,8 @@
 | `generate.tagPrefix` | Custom element prefix for the `web-components` target (default `ds` → `<ds-button>`). |
 | `generate.variablesExport` | Variables JSON from the ds-sync Figma plugin. Not needed on Enterprise plans, where the Variables API is used. |
 | `generate.modeAttributes` | Variable collection → HTML attribute that selects its modes. Default: collections with a dark mode use `data-theme`; others use `data-<collection>`. |
+| `generate.breakpoints` | Viewport value → CSS media condition, for Figma axes named Screen Size, Device, Breakpoint, Viewport or Platform, for example `{ "Mobile": "(max-width: 767px)" }`. Such an axis then follows the viewport when its prop is not set; setting the prop pins one layout. Figma does not say at which width a layout changes, so without this the axis stays a plain prop. |
+| `generate.decisions` | `{ "file": "ds-sync.decisions.json", "apply": "accepted" }`: interpretation decisions (code names, descriptions, `archetype`). `apply` is `accepted`, `proposed` (preview) or `none`. See [HYBRID.md](../../../../../docs/HYBRID.md). |
 | `overrides.skipPages` | Pages to ignore. Pages named QA, test, archive, playground and similar are skipped automatically. |
 | `overrides.frames` | Correct a frame's classification: `documentation`, `example`, `page-text` or `other`. Documentation frames become the docs page. |
 | `overrides.sets` | By set name or id: `exclude`, `name` (component name) or `template` (`action`, `checkbox`, `accordion`, `switch`, `radio`, `radio-field`, `radio-group`, `input`, `dialog`, `generic`). |

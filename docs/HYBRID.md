@@ -203,11 +203,20 @@ Checks:
 | Blade visual check | Checkbox and Badge unchanged against Figma (24 and 35 matching variants). Accordion item, newly measured: 4 of 6 match |
 | API match with Blade's code (generated props, same rule) | 74 → 75 of 207; 76 with the AI proposals. Slots exist now, but Blade names them `icon` where Figma says `leadingIcon`: naming them is what the review files now allow the AI to propose |
 
-Not done yet, and why:
+Not done in that increment, and done since (14 Nov 2026):
 
-- **Responsive viewport axes** (`Screen Size: Desktop / Mobile`). Figma does not say at which width the variant changes, so a media query would be a guess. It needs a breakpoint source (a variables collection or a decision) before generating. Until then the axis stays a prop and the review hint flags it.
-- **Button, link and single radio by structure.** Their properties (variant, size, state) look like any other component's; nothing structural says "button". These need the name, or an `archetype` decision, which is the next schema addition.
-- **Repeated children with parent context** (an Accordion that numbers its items). Still open.
+- **Responsive viewport axes.** `generate.breakpoints` in the config maps viewport values to media conditions (`{ "Mobile": "(max-width: 767px)" }`). An axis named Screen Size, Device, Breakpoint, Viewport or Platform with a configured value then follows the viewport when its prop is not set, through copies of its CSS rules inside the media queries; setting the prop pins one layout. Without the setting nothing changes, because Figma does not say at which width a layout switches. Blade (local test with that one breakpoint): Modal, Drawer, Card, Carousel, Table and Media Card follow the viewport.
+- **Button and link.** A set named as a button or a link (not a building block) renders the Figma layers inside a native `<button type="button">` or `<a>`, with native `disabled`, `aria-busy` from a loading axis, phrasing content only, a focus ring when Figma has none, and a story test. Nothing structural marks a button in Figma, so the name is the evidence, and an `archetype` decision corrects it either way. Components without text, and icon-only variants, have no accessible name: stories give a default, nested ones are named from their layer name, and the report says to confirm both. Blade: Button, IconButton, Link.
+- **Archetype decisions.** `archetype` in `ds-sync.decisions.json` (`button`, `link`, `checkbox`, `switch`, `disclosure`, `generic`) picks the behaviour template for a single-set component; the interpret skill may propose one when the evidence shows it.
+
+Checks after these: engine 100 tests; Design System AI unchanged, 306 of 306 in both outputs; Blade React 264 of 410 and Web Components 263 of 409, failures colour contrast only (two React timeouts in one full run passed on rerun).
+
+- **Repeated children with parent context (step 5).** When a component places several copies of one child (Accordion items, Breadcrumb links, Chip Group chips, Tabs, Checkbox and Radio groups, list options), consumers can pass their own children instead of Figma's examples. The parent sets what it drives on each child the consumer did not set: values that are the same on every copy and come from the parent's own props (Accordion: `leading`, `showLeading`; Chip Group: `size`), and text numbered by position ("1.", "2.", "3." becomes `${i + 1}.`). The same example text on every copy is content, so it is not pushed onto your children. Each child is wrapped like the Figma copies, so layout stays the same. Web Components use a slot, and the parent sets the same properties on the slotted elements. Copies with their own visibility toggles (table columns) stay as designed. Blade: 9 components; Design System AI: Dropdown Menu.
+- **Test reliability.** Generated projects give story tests 30 seconds: in a large library the first story of a file includes browser start-up, which passed 15 seconds in some full runs.
+
+Checks after these: engine 102 tests; Design System AI 306 of 306 in both outputs (Dropdown Menu gains `children`); Blade React 264 of 410 and Web Components 263 of 409, failures colour contrast only, no timeouts.
+
+Still open: a single radio without a group (it needs group semantics to be useful).
 
 ## 11. Reproduce
 

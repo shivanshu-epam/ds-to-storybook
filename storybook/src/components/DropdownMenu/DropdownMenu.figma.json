@@ -22,6 +22,11 @@
     {
       "prop": "grouped",
       "figma": "Grouped (boolean)"
+    },
+    {
+      "prop": "children",
+      "figma": "_option (repeated ListItem)",
+      "note": "Children: DropdownMenu sets nothing on each ListItem; the Figma examples are the default."
     }
   ],
   "notes": [

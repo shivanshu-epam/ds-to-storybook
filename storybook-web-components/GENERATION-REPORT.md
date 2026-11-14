@@ -2502,6 +2502,7 @@ Figma: DropdownMenu (400:1970)
 | State (variant) | `state` |  |
 | Show Search (boolean) | `showSearch` |  |
 | Grouped (boolean) | `grouped` |  |
+| _option (repeated ListItem) | `children` | Children: DropdownMenu sets nothing on each ListItem; the Figma examples are the default. |
 
 **Not from Figma (archetype defaults or decisions):**
 

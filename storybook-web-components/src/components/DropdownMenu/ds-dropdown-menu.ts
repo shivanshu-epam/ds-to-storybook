@@ -31,6 +31,24 @@ export class DsDropdownMenu extends LitElement {
     this.grouped = false;
   }
 
+  /** Sets what DropdownMenu drives on slotted children (the ones the page provides instead of the Figma examples). */
+  private applyRepeated = () => {
+    const slots = [...(this.renderRoot.querySelectorAll('slot') ?? [])] as HTMLSlotElement[];
+    {
+      const slot = slots.find((s) => s.name === "");
+      const items = (slot?.assignedElements() ?? []).filter((el) => el.localName === "ds-list-item");
+      items.forEach((el, i) => {
+        const item = el as unknown as Record<string, unknown>;
+
+        void i;
+      });
+    }
+  };
+
+  override updated() {
+    this.applyRepeated();
+  }
+
   override render() {
     return html`<div class="root" part="root" data-state=${this.state} data-force-state=${this.forceState ?? nothing}>
         ${this.showSearch ? html`<div class="searchRow">
@@ -41,10 +59,12 @@ export class DsDropdownMenu extends LitElement {
           <span class="groupLabel">${"Group label"}</span>
         </div>` : nothing}
         <div class="optionsList">
-          <span class="option"><ds-list-item .state=${"selected"} .hasTrailingControl=${true}></ds-list-item></span>
-          <span class="option"><ds-list-item></ds-list-item></span>
-          <span class="option"><ds-list-item data-force-state="hover"></ds-list-item></span>
-          <span class="option"><ds-list-item .disabled=${true}></ds-list-item></span>
+          <slot @slotchange=${this.applyRepeated}>
+            <span class="option"><ds-list-item .state=${"selected"} .hasTrailingControl=${true}></ds-list-item></span>
+                      <span class="option"><ds-list-item></ds-list-item></span>
+                      <span class="option"><ds-list-item data-force-state="hover"></ds-list-item></span>
+                      <span class="option"><ds-list-item .disabled=${true}></ds-list-item></span>
+          </slot>
         </div>
         <div class="loadingRow">
           <span class="loadingIcon" aria-hidden="true">${icon("statusLoading16")}</span>

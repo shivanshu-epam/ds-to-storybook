@@ -139,6 +139,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
   const textFor = (figma?: string) => texts.find((t) => t.p.name === figma)?.prop;
   const children = (parent: string) => core.layers.filter((l) => l.parent === parent);
   const dis = core.disclosure;
+  const responsiveWc = new Set((core.responsive ?? []).map(wcProp));
   const disProp = dis ? wcProp(dis.prop) : undefined;
   const byPathWc = new Map(core.layers.map((l) => [l.path, l]));
   const inHeader = (l: LayerInfo): boolean => Boolean(dis) && (l.path === dis!.headerPath || (l.parent !== '' && byPathWc.has(l.parent) && inHeader(byPathWc.get(l.parent)!)));
@@ -161,7 +162,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
         imports.add(`import '../${nested.component}/${ntag}';`);
         const props = nested.props
           .map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}`
-            : x.prop === 'aria-label' ? (nested.kind === 'switch' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`)
+            : x.prop === 'aria-label' ? (nested.kind === 'switch' || nested.kind === 'button' || nested.kind === 'link' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`)
             : x.prop === 'defaultChecked' ? '?checked=${true}'
             : `.${wcProp(x.prop)}=\${${wcVal(x)}}`))
           .join(' ');
@@ -173,10 +174,15 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
         for (const copy of l.copies ?? []) {
           const n = instance(copy);
           if (!n) continue;
-          const cp = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? (n.kind === 'switch' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`) : x.prop === 'defaultChecked' ? '?checked=${true}' : `.${wcProp(x.prop)}=\${${wcVal(x)}}`)).join(' ');
+          const cp = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? (n.kind === 'switch' || n.kind === 'button' || n.kind === 'link' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`) : x.prop === 'defaultChecked' ? '?checked=${true}' : `.${wcProp(x.prop)}=\${${wcVal(x)}}`)).join(' ');
           const one = `<span ${c}><${ntag}${cp ? ' ' + cp : ''}>${n.text !== undefined ? `\${${wcText(l, js(n.text))}}` : ''}</${ntag}></span>`;
           const b = boolFor(copy.refs?.visible);
           el += `\n${indent}${b ? `\${this.${b} ? html\`${one}\` : nothing}` : one}`;
+        }
+        const rp = core.repeats?.find((r) => r.path === l.path);
+        if (rp) {
+          const slotName = rp.prop === 'children' ? '' : ` name="${attrFor(rp.prop)}"`;
+          return `${indent}<slot${slotName} @slotchange=\${this.applyRepeated}>\n${indent}  ${el.split('\n').join(`\n${indent}  `)}\n${indent}</slot>`;
         }
         if (l.copies?.length) return `${indent}${el}`;
       } else {
@@ -193,7 +199,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
       el = `<span ${c} aria-hidden="true"></span>`;
     } else {
       const kids = children(l.path);
-      const box = sw || inHeader(l) ? 'span' : 'div'; // a <button> may only hold phrasing content
+      const box = sw || inHeader(l) || core.rootTag ? 'span' : 'div'; // a <button> or <a> may only hold phrasing content
       if (dis && l.path === dis.headerPath) {
         const btn = `<button type="button" ${c} aria-expanded=\${this.${disProp} ? 'true' : 'false'} aria-controls="panel" @click=\${this.toggleExpanded}${hasDisabled ? ' ?disabled=\${this.disabled}' : ''}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</button>`;
         const b0 = boolFor(p.refs?.visible);
@@ -217,16 +223,21 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
       { prop: 'name', type: 'string | undefined', init: 'undefined', decl: '{ type: String, reflect: true }' },
       { prop: 'value', type: 'string', init: "'on'", decl: '{ type: String }' },
     ] : []),
-    ...enumAxes.map((a) => ({ prop: a.prop, type: axisType(a, js), init: axisDefault(a, js), decl: `{ type: ${a.boolean ? 'Boolean' : 'String'}, reflect: true, attribute: ${js(attrFor(a.prop))} }` })),
+    ...enumAxes.map((a) => ({ prop: a.prop, type: responsiveWc.has(a.prop) ? `${axisType(a, js)} | undefined` : axisType(a, js), init: responsiveWc.has(a.prop) ? 'undefined' : axisDefault(a, js), decl: `{ type: ${a.boolean ? 'Boolean' : 'String'}, reflect: true, attribute: ${js(attrFor(a.prop))} }` })),
     ...(hasDisabled ? [{ prop: 'disabled', type: 'boolean', init: 'false', decl: '{ type: Boolean, reflect: true }' }] : []),
+    ...(core.rootTag === 'a' ? [{ prop: 'href', type: 'string | undefined', init: 'undefined', decl: '{ type: String }' }] : []),
+    ...(core.rootTag ? [{ prop: 'accessibleLabel', type: 'string | undefined', init: 'undefined', decl: "{ type: String, attribute: 'accessible-label' }" }] : []),
     ...booleans.map((b) => ({ prop: b.prop, type: 'boolean', init: String(String(b.p.default) === 'true'), decl: `{ type: Boolean, attribute: ${js(attrFor(b.prop))} }` })),
     ...texts.map((t) => ({ prop: t.prop, type: 'string', init: js(String(t.p.default)), decl: `{ type: String, attribute: ${js(attrFor(t.prop))} }` })),
     ...exposed.map((e) => ({ prop: e.prop, type: e.axis ? axisType(e.axis, js) : e.type, init: (e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default)), decl: `{ type: ${e.type === 'boolean' ? 'Boolean' : 'String'}, attribute: ${js(attrFor(e.prop))} }` })),
   ];
   const dataAttrs = [
     ...(sw ? [`data-${sw.axis.attr}=\${this.checked ? ${js(sw.on)} : ${js(sw.off)}}`] : []),
-    ...enumAxes.map((a) => `data-${a.attr}=\${${axisData(a, `this.${a.prop}`)}}`),
-    ...(hasDisabled ? ['?data-disabled=${this.disabled}', sw ? '?disabled=${this.disabled}' : "aria-disabled=${this.disabled ? 'true' : nothing}"] : []),
+    ...enumAxes.map((a) => (responsiveWc.has(a.prop) ? `data-${a.attr}=\${this.${a.prop} ?? 'responsive'}` : `data-${a.attr}=\${${axisData(a, `this.${a.prop}`)}}`)),
+    ...(hasDisabled ? ['?data-disabled=${this.disabled}', sw || core.rootTag === 'button' ? '?disabled=${this.disabled}' : "aria-disabled=${this.disabled ? 'true' : nothing}"] : []),
+    ...(core.busyProp ? [`aria-busy=\${this.${wcProp(core.busyProp)} ? 'true' : nothing}`] : []),
+    ...(core.rootTag === 'a' ? ['href=${this.href ?? nothing}'] : []),
+    ...(core.rootTag ? ['aria-label=${this.accessibleLabel ?? nothing}'] : []),
     ...(busyProp ? [`aria-busy=\${this.${busyProp} === 'loading' ? 'true' : nothing}`] : []),
     'data-force-state=${this.forceState ?? nothing}',
   ];
@@ -244,7 +255,7 @@ ${props.map((p) => `    ${p.prop}: ${p.decl},`).join('\n')}
     forceState: { type: String, attribute: 'data-force-state' },
   };
 
-${props.map((p) => `  /** ${swDocs[p.prop] && sw ? swDocs[p.prop] : `Figma: ${figmaOf(p.prop)}`} */\n  declare ${p.prop}: ${p.type};`).join('\n')}
+${props.map((p) => `  /** ${swDocs[p.prop] && (sw || p.prop === 'accessibleLabel') ? swDocs[p.prop] : `Figma: ${figmaOf(p.prop)}`} */\n  declare ${p.prop}: ${p.type};`).join('\n')}
   /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */
   declare forceState: string | undefined;
 
@@ -253,7 +264,21 @@ ${props.map((p) => `  /** ${swDocs[p.prop] && sw ? swDocs[p.prop] : `Figma: ${fi
 ${props.map((p) => `    this.${p.prop} = ${p.init};`).join('\n')}
   }
 
-${dis ? `  private toggleExpanded() {
+${core.repeats?.length ? `  /** Sets what ${name} drives on slotted children (the ones the page provides instead of the Figma examples). */
+  private applyRepeated = () => {
+    const slots = [...(this.renderRoot.querySelectorAll('slot') ?? [])] as HTMLSlotElement[];
+${core.repeats.map((r) => `    {
+      const slot = slots.find((s) => s.name === ${js(r.prop === 'children' ? '' : attrFor(r.prop))});
+      const items = (slot?.assignedElements() ?? []).filter((el) => el.localName === ${js(tagOf(r.component))});
+      items.forEach((el, i) => {
+        const item = el as unknown as Record<string, unknown>;
+${r.driven.filter((d) => d.numbered || (d.same && d.same.kind !== 'icon' && d.same.kind !== 'force-state')).map((d) => `        if (!el.hasAttribute(${js(attrFor(wcProp(d.prop)))})) item[${js(wcProp(d.prop))}] = ${d.numbered ? `\`${d.numbered.prefix}\${i + ${d.numbered.start}}${d.numbered.suffix}\`` : d.same!.kind === 'expr' ? d.same!.expr((p) => (p === '$checked' ? 'this.checked' : `this.${wcProp(p)}`)) : JSON.stringify(d.same!.value)};`).join('\n')}
+        void i;
+      });
+    }`).join('\n')}
+  };
+
+${sw ? '' : '  override updated() {\n    this.applyRepeated();\n  }\n\n'}` : ''}${dis ? `  private toggleExpanded() {
     ${hasDisabled ? 'if (this.disabled) return;\n    ' : ''}this.${disProp} = !this.${disProp};
     this.dispatchEvent(new CustomEvent('expanded-change', { detail: this.${disProp}, bubbles: true, composed: true }));
   }
@@ -276,9 +301,9 @@ ${body}
       </button>\`;
   }
 }` : `  override render() {
-    return html\`<div class="root" part="root" ${dataAttrs.join(' ')}>
+    return html\`<${core.rootTag ?? 'div'}${core.rootTag === 'button' ? ' type="button"' : ''} class="root" part="root" ${dataAttrs.join(' ')}>
 ${body}
-      </div>\`;
+      </${core.rootTag ?? 'div'}>\`;
   }
 }`}
 
@@ -295,6 +320,8 @@ declare global {
   type Bind = string | boolean | { force: string };
   const baseBinds = (): Map<string, Bind> => new Map<string, Bind>([
     ...(sw ? [['checked', 'args.checked'], ['accessibleLabel', 'args.accessibleLabel']] as [string, Bind][] : []),
+    ...(core.storyLabel ? [['accessibleLabel', 'args.accessibleLabel']] as [string, Bind][] : []),
+    ...(core.rootTag === 'a' ? [['href', 'args.href']] as [string, Bind][] : []),
     ...enumAxes.map((a) => [a.prop, `args.${a.prop}`] as [string, Bind]),
     ...(hasDisabled ? [['disabled', 'args.disabled'] as [string, Bind]] : []),
     ...booleans.map((b) => [b.prop, `args.${b.prop}`] as [string, Bind]),
@@ -419,6 +446,23 @@ ${booleans.map((b) => `    labelled(${js(`${b.p.name}: ${String(b.p.default) ===
 };`);
     sections.push({ heading: 'Options', story: n });
   }
+  if (core.rootTag === 'button') {
+    stories.push(`/** WAI-ARIA button: a native button that activates with a click, Enter and Space (test only). */
+export const Activates: Story = {
+  name: 'Activates',
+  play: async ({ canvasElement }) => {
+    const host = canvasElement.querySelector('${tag}')!;
+    const onClick = fn();
+    host.addEventListener('click', onClick);
+    const button = within(shadowOf(canvasElement, '${tag}') as unknown as HTMLElement).getByRole('button');
+    await userEvent.click(button);
+    await expect(onClick).toHaveBeenCalledTimes(1);
+    button.focus();
+    await userEvent.keyboard('{Enter}');
+    await expect(onClick).toHaveBeenCalledTimes(2);
+  },
+};`);
+  }
   if (dis) {
     stories.push(`/** WAI-ARIA disclosure: the header button toggles the panel (test only). */
 export const ExpandsAndCollapses: Story = {
@@ -441,13 +485,13 @@ export const ExpandsAndCollapses: Story = {
   const layoutImports = ['matrix', 'row', 'labelled', 'shadowOf'].filter((f) => stories.some((st) => st.includes(`${f}(`)));
   const storiesFile = `${header(js(set.name), sw ? 'switch template' : 'generic template')}import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
-${sw || dis ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}
+${sw || dis || core.rootTag === 'button' ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}
 ${layoutImports.length ? `import { ${layoutImports.join(', ')} } from '../../storybook/layout';\n` : ''}import './${tag}';
 
 const meta = {
   title: ${js(core.title)},
   component: '${tag}',
-  args: { ${[...(sw ? ['checked: false', ...(sw.labelled ? [] : [`accessibleLabel: ${js(sw.label)}`])] : []), ...enumAxes.map((a) => `${a.prop}: ${axisDefault(a, js)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`), ...exposed.map((e) => `${e.prop}: ${(e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default))}`)].join(', ')} },
+  args: { ${[...(sw ? ['checked: false', ...(sw.labelled ? [] : [`accessibleLabel: ${js(sw.label)}`])] : []), ...(core.storyLabel ? [`accessibleLabel: ${js(core.storyLabel)}`] : []), ...(core.rootTag === 'a' ? ["href: '#'"] : []), ...enumAxes.map((a) => `${a.prop}: ${axisDefault(a, js)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`), ...exposed.map((e) => `${e.prop}: ${(e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default))}`)].join(', ')} },
   argTypes: {
 ${[
     ...(sw ? [`    checked: { control: 'boolean', description: ${js(`On or off. Figma: ${sw.axis.figma}`)} },`, `    accessibleLabel: { control: 'text', description: 'Accessible name (Figma has no label)' },`] : []),

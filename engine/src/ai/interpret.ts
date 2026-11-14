@@ -14,7 +14,7 @@ export const PLUGIN_DIR = join(ENGINE, 'claude-plugin');
 export const PROPOSAL_SCHEMA = join(ENGINE, 'schemas', 'proposal.schema.json');
 
 export interface Proposal {
-  sets: { set: string; description?: string; confidence: number; evidence: string[]; questions?: string[]; props?: ({ figma: string } & PropDecision)[] }[];
+  sets: { set: string; archetype?: SetDecision['archetype']; description?: string; confidence: number; evidence: string[]; questions?: string[]; props?: ({ figma: string } & PropDecision)[] }[];
 }
 
 /** Runs one Claude call; returns stdout. Injectable for tests. */
@@ -97,6 +97,7 @@ export function toDecisions(item: ReviewItem, proposal: Proposal, by: string): {
     }
     decisions[s.set] = {
       status: 'proposed', by, confidence: s.confidence, evidence: s.evidence, setHash: set.hash,
+      ...(s.archetype ? { archetype: s.archetype } : {}),
       ...(s.description && !set.description.trim() ? { description: s.description } : {}),
       ...(s.questions?.length ? { questions: s.questions } : {}),
       ...(Object.keys(props).length ? { props } : {}),

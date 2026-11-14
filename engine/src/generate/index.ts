@@ -14,7 +14,7 @@ import { projectFiles } from './project.ts';
 import { accordionTemplate } from './templates/accordion.ts';
 import { actionTemplate } from './templates/action.ts';
 import { checkboxTemplate } from './templates/checkbox.ts';
-import { genericTemplate, instanceRef, propPlan, type RegistryEntry } from './templates/generic.ts';
+import { genericTemplate, instanceRef, propPlan, setBreakpoints, type RegistryEntry } from './templates/generic.ts';
 import type { Overrides } from '../discover/discover.ts';
 import type { ComponentReport, GeneratedFile, TemplateContext, TemplateResult } from './templates/common.ts';
 import { exportFromRest, loadTokens, setFontStacks, TokenResolver, tokensCss, tokensDtcg, tokensTs } from './tokens.ts';
@@ -50,6 +50,12 @@ export interface GenerateConfig {
    * file defaults to ds-sync.decisions.json next to the config; apply defaults to "accepted".
    */
   decisions?: { file?: string; apply?: ApplyLevel };
+  /**
+   * Viewport values of Figma "Screen Size" / "Device" / "Breakpoint" axes -> CSS media conditions, e.g.
+   * { "Mobile": "(max-width: 767px)" }. Such an axis then follows the viewport when its prop is not set.
+   * Figma does not say at which width a layout changes, so nothing is assumed without this.
+   */
+  breakpoints?: Record<string, string>;
   /** Output directory for the default target, relative to the config file. */
   outDir: string;
   /** Default output target (react: React + TypeScript + CSS Modules; web-components: Lit, works in any framework). */
@@ -79,7 +85,7 @@ export interface GenerateConfig {
 
 export interface PlannedComponent {
   name: string;
-  template: 'action' | 'checkbox' | 'checkbox-single' | 'disclosure' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
+  template: 'action' | 'checkbox' | 'checkbox-single' | 'disclosure' | 'button' | 'link' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
   sets: Record<string, string>;
   /** Storybook title; default Components/<name>. */
   title?: string;
@@ -192,6 +198,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   // Fonts: loaded from npm packages; system and missing families are reported.
   const fonts = await planFonts(usedFonts(ir), gen.fonts === false ? undefined : httpFontSource(join(config.baseDir, '.ds-sync', 'fonts.json')), gen.fonts || {});
   setFontStacks(Object.fromEntries(fonts.filter((f) => f.family !== 'Inter').map((f) => [f.family, f.stack])));
+  setBreakpoints(gen.breakpoints);
   const fontPackages = fonts.filter((f) => f.package && f.package !== '@fontsource-variable/inter');
   const fontDeps = Object.fromEntries(fontPackages.filter((f) => f.version).map((f) => [f.package!, f.version!]));
   const fontImports = [...new Set(fontPackages.flatMap((f) => f.imports ?? []))];
