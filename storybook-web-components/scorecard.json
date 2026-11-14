@@ -801,8 +801,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "warn",
+          "value": "15/30 designed variants match Figma (worst 5.9%)"
         },
         {
           "name": "Variants",
@@ -1041,8 +1041,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "warn",
+          "value": "373/540 designed variants match Figma (worst 6.7%)"
         },
         {
           "name": "Variants",

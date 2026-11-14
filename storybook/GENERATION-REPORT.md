@@ -63,7 +63,7 @@ Details are in `token-map.json`.
 
 ## Scorecards
 
-One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured. No overall score: each measure is gated on its own. Public components: 27; 105 ✓, 77 ⚠, 0 ✗. Full detail in `scorecard.json`; building blocks are in the file, not this table.
+One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured. No overall score: each measure is gated on its own. Public components: 27; 105 ✓, 79 ⚠, 0 ✗. Full detail in `scorecard.json`; building blocks are in the file, not this table.
 
 | Component | Visual fidelity | Variants | Properties | Nested consistency | Interaction | Tokens | Accessibility | Documentation | Open decisions |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -80,11 +80,11 @@ One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a 
 | AvatarIdentity | – | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ |
 | AvatarGlyph | – | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
 | Alert | – | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
-| Dialog | – | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ | ⚠ |
+| Dialog | ⚠ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ | ⚠ |
 | RadioControl | – | ✓ | ✓ | – | ✓ | ⚠ | ✓ | ⚠ | ✓ |
 | RadioField | – | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
 | RadioGroup | – | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
-| Divider | – | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
+| Divider | ⚠ | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
 | DatePicker | – | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
 | Switch | – | ✓ | ✓ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
 | Input | – | ✓ | ⚠ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
@@ -1540,15 +1540,13 @@ Figma: Divider (697:1083)
 - `root.flex-wrap`: none (same in every variant)
 - `root.opacity`: State
 - `line.background`: Orientation, Style, Size, Color
-- `line.border-color`: Style
-- `line.border-style`: Style
-- `line.border-width`: Orientation, Style, State
 - `line.box-shadow`: Style, Color, State
 - `line.display`: none (same in every variant)
 - `line.flex-shrink`: Orientation
 - `line.height`: Orientation, Style, Size, State
 - `line.margin`: Orientation, Style, State
 - `line.opacity`: Color
+- `line.padding`: Orientation, Style, State
 - `line.width`: Orientation, Style, Size, State
 
 </details>

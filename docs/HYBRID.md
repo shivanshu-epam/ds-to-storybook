@@ -277,7 +277,35 @@ Checks:
 - the Blade failures are colour contrast only;
 - Blade audit, Interaction: 17 ✓, 2 ⚠, 0 ✗.
 
-## 13. Reproduce
+## 13. Divider: from 0 to 42 of 48 variants matching (14 Nov 2026)
+
+The audit's visual failure for Blade's Divider had three causes. One was in the measuring tool, two in the generator:
+
+1. **The visual check never measured it.** It waited for each variant's wrapper to become *visible*. A divider is a Figma frame 120 × 0, and an element with no height is never "visible", so all 48 variants timed out as "did not render". It now waits for the wrapper to exist.
+2. **Hairlines are thinner than a screenshot allows.**
+   - Chrome cannot capture an area under one CSS pixel.
+   - Playwright rounds a screenshot's clip to whole CSS pixels.
+   - So a 1.5px line came back 1px tall.
+
+   The check now captures the enclosing whole-pixel area and crops it to Figma's exact device-pixel window. For a render at most 4 device pixels across, it also compares one device pixel either side across the line and keeps the best. Figma and Chrome snap a hairline's sub-pixel position differently, and that is not a visible difference.
+3. **The generator drew lines with sub-pixel borders and shadows.** Chrome rounds 0.25px borders up to a whole device pixel, and blurs fractional shadow spreads.
+
+   A line is now a box painted with a background (a solid colour, or the Figma dash pattern), made as thick as the stroke with padding, which stays exact. For a line with no thickness of its own, the box is placed where Figma's render bounds say it paints: Blade's lines paint entirely above their position, not centred. A negative margin takes the space back, so the layout does not move.
+
+Results:
+- **Blade Divider:** 42 of 48 variants match (was 0 of 48).
+- **Blade sample of 12 components:** 182 of 277 variants match (was 140), with no variant worse.
+- **Design System AI:** Divider and Dialog match exactly as before (373 of 540 and 15 of 30). The first version of the fix regressed its dotted and dashed dividers, the comparison caught it, and it was corrected: lines with a thickness of their own keep growing by their stroke.
+
+The 6 remaining Divider variants are Chrome rasterisation, not placement:
+- Chrome fills a 1.5px box with two device pixels instead of three.
+- Chrome does not draw a dash gradient on a box half a CSS pixel tall.
+
+The geometry matches Figma's render bounds in both cases.
+
+Checks: 111 engine tests; Design System AI 306 of 306 in both outputs; Blade React 266 of 415 and Web Components 264 of 413, failures colour contrast only.
+
+## 14. Reproduce
 
 - Blade Storybook inventory: `fetch('https://blade.razorpay.com/index.json')`.
 - Blade source: `git clone --depth 1 --filter=blob:none --sparse https://github.com/razorpay/blade`, with sparse paths `packages/blade/src/components` and `packages/blade-plugin`.

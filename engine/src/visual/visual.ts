@@ -60,13 +60,16 @@ export const verdict = (r: VariantResult) => (r.error ? 'error' : r.diff <= 2 &&
 const sizeOk = (r: VariantResult) => Math.abs(r.figmaSize[0] - r.codeSize[0]) <= 1 && Math.abs(r.figmaSize[1] - r.codeSize[1]) <= 1;
 
 /** Draws a PNG on white at the top left of a w×h canvas. */
-function onWhite(img: PNG, w: number, h: number): PNG {
+function onWhite(img: PNG, w: number, h: number, dx = 0, dy = 0): PNG {
   const out = new PNG({ width: w, height: h });
   out.data.fill(255);
   for (let y = 0; y < img.height; y++) {
     for (let x = 0; x < img.width; x++) {
+      const tx = x + dx;
+      const ty = y + dy;
+      if (tx < 0 || ty < 0 || tx >= w || ty >= h) continue;
       const i = (y * img.width + x) * 4;
-      const o = (y * w + x) * 4;
+      const o = (ty * w + tx) * 4;
       const a = img.data[i + 3]! / 255;
       for (let c = 0; c < 3; c++) out.data[o + c] = Math.round(img.data[i + c]! * a + 255 * (1 - a));
       out.data[o + 3] = 255;
@@ -74,6 +77,9 @@ function onWhite(img: PNG, w: number, h: number): PNG {
   }
   return out;
 }
+
+/** Device pixels: a render this thin is a hairline, whose sub-pixel position Figma and Chrome snap differently. */
+const HAIRLINE = 4;
 
 export function compare(figmaPng: Buffer, codePng: Buffer): { diff: number; diffPng: Buffer; figma: PNG; code: PNG } {
   const figma = PNG.sync.read(figmaPng);
@@ -121,7 +127,8 @@ export async function runVisual(source: VisualSource, o: VisualOptions): Promise
         throw new Error(`Cannot open ${storyUrl}. Start the Storybook first (npm run storybook in ${o.dir}) or pass --url.`);
       }
       try {
-        await page.waitForSelector('[data-figma-variant]', { timeout: 15000 });
+        // "attached", not "visible": a divider or a line is a Figma frame with no height, and still a rendered variant.
+        await page.waitForSelector('[data-figma-variant]', { state: 'attached', timeout: 15000 });
       } catch {
         for (const v of c.variants) results.push({ component: c.name, nodeId: v.nodeId, name: v.name, diff: 100, figmaSize: [v.width, v.height], codeSize: [0, 0], error: 'Story did not render (regenerate, then restart Storybook).' });
         continue;
@@ -151,8 +158,33 @@ export async function runVisual(source: VisualSource, o: VisualOptions): Promise
           const dy = pb ? pb[1] : Math.max(0, (fig.height / scale - v.height) / 2);
           // Clip of the Figma frame's size on whole device pixels: a fractional position would smear edges over an extra pixel.
           // A code element larger or smaller than the frame shows up in the size check instead.
-          const codePng: Buffer = await page.screenshot({ animations: 'disabled', clip: { x: Math.round((box.x - dx) * scale) / scale, y: Math.round((box.y - dy) * scale) / scale, width: fig.width / scale, height: fig.height / scale } });
-          const r = compare(figmaPng, codePng);
+          // The exact device-pixel window of the Figma render. Playwright rounds a clip to whole CSS pixels, so capture
+          // the enclosing whole-pixel area (at least one pixel) and crop it to the window on device pixels.
+          const cx = Math.round((box.x - dx) * scale) / scale;
+          const cy = Math.round((box.y - dy) * scale) / scale;
+          // One CSS pixel of margin all round, so a hairline can be cropped one device pixel either side.
+          const x0 = Math.floor(cx) - 1;
+          const y0 = Math.floor(cy) - 1;
+          const wide = Math.max(1, Math.ceil(cx + fig.width / scale) - x0) + 1;
+          const high = Math.max(1, Math.ceil(cy + fig.height / scale) - y0) + 1;
+          const raw = PNG.sync.read(await page.screenshot({ animations: 'disabled', clip: { x: x0, y: y0, width: wide, height: high } }));
+          const ox = Math.round((cx - x0) * scale);
+          const oy = Math.round((cy - y0) * scale);
+          const crop = (sx: number, sy: number) => {
+            const cut = new PNG({ width: Math.min(fig.width, raw.width - (ox + sx)), height: Math.min(fig.height, raw.height - (oy + sy)) });
+            PNG.bitblt(raw, cut, ox + sx, oy + sy, cut.width, cut.height, 0, 0);
+            return PNG.sync.write(cut);
+          };
+          // A hairline (a few device pixels across): Figma and Chrome may snap its sub-pixel position to different
+          // pixel rows, so compare the window and the window one device pixel either side across the line, keep the best.
+          const across = fig.height <= HAIRLINE ? 'y' : fig.width <= HAIRLINE ? 'x' : undefined;
+          let codePng = crop(0, 0);
+          let r = compare(figmaPng, codePng);
+          for (const shift of across ? [-1, 1] : []) {
+            const alt = crop(across === 'x' ? shift : 0, across === 'y' ? shift : 0);
+            const ra = compare(figmaPng, alt);
+            if (ra.diff < r.diff) { r = ra; codePng = alt; }
+          }
           const file = v.nodeId.replace(/[^\w-]/g, '_');
           writeFileSync(join(dir, `${file}-figma.png`), figmaPng);
           writeFileSync(join(dir, `${file}-code.png`), codePng);

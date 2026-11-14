@@ -223,28 +223,38 @@ function declarations(role: RoleDef, found: Found, variant: IRVariant, r: TokenR
   const stroke = color(r, s.strokes[0], ['border', 'focus', ...roleHint], weak);
   const w = s.strokeWeight?.value ?? 1;
   const dashes = s.dashes?.length ? s.dashes : undefined;
-  const thin = dashes && s.width !== undefined && s.height !== undefined && Math.min(s.width, s.height) <= w * 2;
-  if (stroke && dashes && thin) {
-    // A dashed line: repeat the exact Figma dash and gap along its long side.
-    const [dash = w, gap = dash] = dashes;
+  // A line: a stroked shape with no thickness of its own (Figma LINE, or a frame 0 high), or a thin dashed one.
+  const zero = s.width !== undefined && s.height !== undefined && Math.min(s.width, s.height) === 0;
+  const thin = (dashes || zero) && s.width !== undefined && s.height !== undefined && Math.min(s.width, s.height) <= w * 2;
+  if (stroke && thin) {
     const horizontal = s.width! >= s.height!;
-    // Figma spreads the dashes evenly: a whole number of periods fits the length, scaled to fit,
-    // with a dash centred on each period boundary (so the line starts and ends on half a dash).
-    const length = horizontal ? s.width! : s.height!;
-    const periods = Math.max(1, Math.round(length / (dash + gap)));
-    const period = length / periods;
-    const half = (dash * period) / (dash + gap) / 2;
+    if (dashes) {
+      // Repeat the exact Figma dash and gap along the long side. Figma spreads the dashes evenly: a whole number of
+      // periods fits the length, scaled to fit, with a dash centred on each period boundary (half a dash at each end).
+      const [dash = w, gap = dash] = dashes;
+      const length = horizontal ? s.width! : s.height!;
+      const periods = Math.max(1, Math.round(length / (dash + gap)));
+      const period = length / periods;
+      const half = (dash * period) / (dash + gap) / 2;
+      out.background = `repeating-linear-gradient(${horizontal ? '90deg' : '180deg'}, ${stroke} 0 ${px(half)}, transparent ${px(half)} ${px(period - half)}, ${stroke} ${px(period - half)} ${px(period)})`;
+    } else out.background = stroke;
+    // A centred or outside stroke is thicker than the shape: grow the box with padding (fractional padding stays exact,
+    // where sub-pixel borders and shadow spreads are rounded or blurred), paint it, and take the space back with a
+    // negative margin, so the line is as thick as in Figma and centred where Figma draws it.
+    // Where it paints: Figma's own render bounds when known (a line can paint above, below or across its position),
+    // else by stroke alignment. "before" is how far the paint starts above (left of) the line; "thick" its thickness.
+    // Only when the paint covers the line's own position (padding cannot be negative); otherwise use the alignment.
+    const pb = zero && s.paintBox && (horizontal ? s.paintBox[1] >= 0 && s.paintBox[3] >= s.paintBox[1] : s.paintBox[0] >= 0 && s.paintBox[2] >= s.paintBox[0]) ? s.paintBox : undefined;
+    // A zero-thickness line takes Figma's render bounds; a shape with its own thickness grows by its stroke
+    // (centred: half on each side; outside: all of it on each side).
     const ext = s.strokeAlign === 'OUTSIDE' ? w : s.strokeAlign === 'INSIDE' ? 0 : w / 2;
-    // "border-box" inside the shorthand: a separate background-origin rule would be reset by it.
-    out.background = `repeating-linear-gradient(${horizontal ? '90deg' : '180deg'}, ${stroke} 0 ${px(half)}, transparent ${px(half)} ${px(period - half)}, ${stroke} ${px(period - half)} ${px(period)})${ext ? ' border-box' : ''}`;
-    // A centred or outside stroke is thicker than the shape: paint into a transparent border and take the
-    // extra space back with a negative margin, so the line is as thick as in Figma without moving anything.
-    if (ext) {
-      out['border-style'] = 'solid';
-      out['border-color'] = 'transparent';
-      out['border-width'] = horizontal ? `${px(ext)} 0` : `0 ${px(ext)}`;
-      out.margin = horizontal ? `${px(-ext)} 0` : `0 ${px(-ext)}`;
-      out[horizontal ? '--grow-h' : '--grow-w'] = String(2 * ext);
+    const before = pb ? (horizontal ? pb[1] : pb[0]) : ext;
+    const extra = pb ? (horizontal ? pb[3] : pb[2]) : 2 * ext;
+    if (extra > 0) {
+      const after = extra - before;
+      out.padding = horizontal ? `${px(before)} 0 ${px(after)}` : `0 ${px(after)} 0 ${px(before)}`;
+      out.margin = horizontal ? `${px(-before || 0)} 0 ${px(-after || 0)}` : `0 ${px(-after || 0)} 0 ${px(-before || 0)}`;
+      out[horizontal ? '--grow-h' : '--grow-w'] = String(extra);
     }
   } else if (stroke && dashes) {
     // A dashed box: CSS cannot set the dash length; dotted when dashes are as short as the stroke.
