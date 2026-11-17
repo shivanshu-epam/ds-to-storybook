@@ -46,21 +46,21 @@ export function RadioGroup({ state = 'enabled', horizontal = false, disabled = f
       data-horizontal={horizontal ? 'true' : 'false'}
       {...rest}
     >
-      <span className={styles.groupLabel} id={labelId}>{label ?? "Delivery speed"}</span>
-      <div className={styles.items}>
+      <span className={styles.groupLabel} data-layer="groupLabel" id={labelId}>{label ?? "Delivery speed"}</span>
+      <div className={styles.items} data-layer="items">
         {children ?? (
           <>
             <>
-              <span className={styles.radioField}><RadioField /></span>
-              <span className={styles.radioField}><RadioField /></span>
-              <span className={styles.radioField}><RadioField /></span>
+              <span className={styles.radioField} data-layer="radioField"><RadioField /></span>
+              <span className={styles.radioField} data-layer="radioField"><RadioField /></span>
+              <span className={styles.radioField} data-layer="radioField"><RadioField /></span>
             </>
           </>
         )}
       </div>
-      <div className={styles.groupStatus}>
-        <span className={styles.pleaseSelectADeliveryOption}>{"Please select a delivery option"}</span>
-        <span className={styles.deliveryEstimateMayVaryByRegion}>{"Delivery estimate may vary by region"}</span>
+      <div className={styles.groupStatus} data-layer="groupStatus">
+        <span className={styles.pleaseSelectADeliveryOption} data-layer="pleaseSelectADeliveryOption">{"Please select a delivery option"}</span>
+        <span className={styles.deliveryEstimateMayVaryByRegion} data-layer="deliveryEstimateMayVaryByRegion">{"Delivery estimate may vary by region"}</span>
       </div>
     </div>
   );

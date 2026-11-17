@@ -128,9 +128,9 @@ describe('select-only combobox', () => {
   const tsx = file(r, /SelectInput\.tsx$/);
 
   it('makes the field a combobox that controls the popup, named by the visible label', () => {
-    expect(tsx).toContain('<div {...comboboxProps} className={styles.field}>');
-    expect(tsx).toMatch(/<span id=\{popupId\} className=\{styles\.dropdownMenu\}>/);
-    expect(tsx).toMatch(/<span id=\{labelId\} className=\{styles\.header\}>/);
+    expect(tsx).toContain('<div {...comboboxProps} className={styles.field} data-layer="field">');
+    expect(tsx).toMatch(/<span id=\{popupId\} className=\{styles\.dropdownMenu\} data-layer="dropdownMenu">/);
+    expect(tsx).toMatch(/<span id=\{labelId\} className=\{styles\.header\} data-layer="header">/);
     expect(tsx).toContain("'aria-labelledby': showLabel ? labelId : undefined, 'aria-label': showLabel ? undefined : ariaLabel ?? \"Select input\"");
     expect(tsx).toContain('role: "combobox"');
     expect(tsx).toContain("'aria-haspopup': \"listbox\" as const");

@@ -30,27 +30,27 @@ export interface ListItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'chi
 export function ListItem({ type = 'default', state = 'default', size = 'sm', disabled = false, hasLeadingControl = false, hasTrailingControl = false, leadingControl, trailingControl, className, ...rest }: ListItemProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-type={type} data-state={state} data-size={size} data-disabled={disabled ? '' : undefined} aria-disabled={disabled || undefined} {...rest}>
-      <div className={styles.interactionWrapper}>
-        <div className={styles.visualContainer}>
-          <div className={styles.contentContainer}>
+      <div className={styles.interactionWrapper} data-layer="interactionWrapper">
+        <div className={styles.visualContainer} data-layer="visualContainer">
+          <div className={styles.contentContainer} data-layer="contentContainer">
             {hasLeadingControl && (
-              <span className={styles.leadingControl}>{leadingControl ?? null}</span>
+              <span className={styles.leadingControl} data-layer="leadingControl">{leadingControl ?? null}</span>
             )}
-            <div className={styles.textColumn}>
-              <span className={styles.headline}>{(({"menu":"Menu item","file":"Document.pdf","setting":"Notifications"} as Record<string, string>)[String(type)] ?? "List item")}</span>
-              <span className={styles.supportingText}>{(({"setting":"Manage alert preferences"} as Record<string, string>)[String(type)] ?? "2.4 MB · Edited 2d ago")}</span>
+            <div className={styles.textColumn} data-layer="textColumn">
+              <span className={styles.headline} data-layer="headline">{(({"menu":"Menu item","file":"Document.pdf","setting":"Notifications"} as Record<string, string>)[String(type)] ?? "List item")}</span>
+              <span className={styles.supportingText} data-layer="supportingText">{(({"setting":"Manage alert preferences"} as Record<string, string>)[String(type)] ?? "2.4 MB · Edited 2d ago")}</span>
             </div>
             {hasTrailingControl && (
-              <span className={styles.trailingControl}>{trailingControl ?? null}</span>
+              <span className={styles.trailingControl} data-layer="trailingControl">{trailingControl ?? null}</span>
             )}
-            <span className={styles.trailingIcon} aria-hidden="true"><Icon name={(({"md":"navChevronRight20","lg":"navChevronRight24"} as Record<string, IconName>)[String(size)] ?? "navChevronRight16")} /></span>
-            <span className={styles.leadingIcon} aria-hidden="true"><Icon name="layoutList16" /></span>
-            <span className={styles.metadata}>{"12"}</span>
+            <span className={styles.trailingIcon} data-layer="trailingIcon" aria-hidden="true"><Icon name={(({"md":"navChevronRight20","lg":"navChevronRight24"} as Record<string, IconName>)[String(size)] ?? "navChevronRight16")} /></span>
+            <span className={styles.leadingIcon} data-layer="leadingIcon" aria-hidden="true"><Icon name="layoutList16" /></span>
+            <span className={styles.metadata} data-layer="metadata">{"12"}</span>
           </div>
-          <div className={styles.skLeading} />
-          <div className={styles.skText}>
-            <div className={styles.skBar1} />
-            <div className={styles.skBar2} />
+          <div className={styles.skLeading} data-layer="skLeading" />
+          <div className={styles.skText} data-layer="skText">
+            <div className={styles.skBar1} data-layer="skBar1" />
+            <div className={styles.skBar2} data-layer="skBar2" />
           </div>
         </div>
       </div>

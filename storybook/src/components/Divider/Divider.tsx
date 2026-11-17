@@ -24,7 +24,7 @@ export interface DividerProps extends Omit<HTMLAttributes<HTMLDivElement>, 'chil
 export function Divider({ orientation = 'horizontal', styleVariant = 'solid', size = 'sm', color = 'light', state = 'default', disabled = false, className, ...rest }: DividerProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-orientation={orientation} data-style={styleVariant} data-size={size} data-color={color} data-state={state} data-disabled={disabled ? '' : undefined} aria-disabled={disabled || undefined} {...rest}>
-      <div className={styles.line} />
+      <div className={styles.line} data-layer="line" />
     </div>
   );
 }

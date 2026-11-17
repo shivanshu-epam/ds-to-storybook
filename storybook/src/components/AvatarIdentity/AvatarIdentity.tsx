@@ -28,17 +28,17 @@ export interface AvatarIdentityProps extends Omit<HTMLAttributes<HTMLDivElement>
 export function AvatarIdentity({ state = 'default', disabled = false, hasName = true, hasEmail = false, hasTrailingIcon = false, name = 'Alex Johnson', email = 'alex.johnson@acme.com', className, ...rest }: AvatarIdentityProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-state={state} data-disabled={disabled ? '' : undefined} aria-disabled={disabled || undefined} {...rest}>
-      <span className={styles.avatar}><AvatarGlyph size="md" /></span>
-      <div className={styles.textCol}>
+      <span className={styles.avatar} data-layer="avatar"><AvatarGlyph size="md" /></span>
+      <div className={styles.textCol} data-layer="textCol">
         {hasName && (
-          <span className={styles.name}>{name}</span>
+          <span className={styles.name} data-layer="name">{name}</span>
         )}
         {hasEmail && (
-          <span className={styles.email}>{email}</span>
+          <span className={styles.email} data-layer="email">{email}</span>
         )}
       </div>
       {hasTrailingIcon && (
-        <span className={styles.trailing} aria-hidden="true"><Icon name="navChevronDown16" /></span>
+        <span className={styles.trailing} data-layer="trailing" aria-hidden="true"><Icon name="navChevronDown16" /></span>
       )}
     </div>
   );

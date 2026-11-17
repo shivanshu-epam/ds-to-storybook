@@ -9,6 +9,7 @@ import type { ComponentTarget } from '../config.ts';
 import type { FigmaReader } from '../figma/client.ts';
 import type { FigmaNode, FileResponse } from '../figma/types.ts';
 import { looseKey } from '../util/core.ts';
+import { asComponentSet, isIconNode } from '../ir/build.ts';
 
 export type FrameKind = 'documentation' | 'example' | 'page-text' | 'other';
 export type PageKind = 'components' | 'icons' | 'parts' | 'patterns' | 'skip' | 'empty';
@@ -429,6 +430,43 @@ export async function discover(client: FigmaReader, fileKey: string, overrides: 
     const res = await client.nodes(fileKey, topIds.slice(i, i + 25), file.version);
     for (const [id, e] of Object.entries(res.nodes)) if (e) fullNodes.set(id, e.document);
   }
+
+  // Dependencies: local sets that the found components place as instances but that live where discovery does not look
+  // (internal pages, "_" frames). Without them those layers render as empty boxes (Blade's focus rings and icon sizes).
+  let added = 0;
+  for (let round = 0; round < 3; round++) {
+    const known = new Set(sets.flatMap((s) => (fullNodes.get(s.id)?.children ?? []).map((v) => v.id)));
+    const wanted = new Map<string, FigmaNode>();
+    const walk = (n: FigmaNode) => { if (n.type === 'INSTANCE' && n.componentId && !known.has(n.componentId) && !wanted.has(n.componentId)) wanted.set(n.componentId, n); n.children?.forEach(walk); };
+    for (const s of sets) fullNodes.get(s.id)?.children?.forEach(walk);
+    if (!wanted.size) break;
+    const setIds = new Set<string>();
+    const ids = [...wanted.keys()];
+    for (let i = 0; i < ids.length; i += 50) {
+      const res = await client.nodes(fileKey, ids.slice(i, i + 50), file.version, 1);
+      for (const [id, e] of Object.entries(res.nodes)) {
+        const c = e?.components?.[id] as { name: string; componentSetId?: string; remote?: boolean } | undefined;
+        if (!e || !c || c.remote) continue;
+        if (c.componentSetId) { if (!sets.some((s) => s.id === c.componentSetId)) setIds.add(c.componentSetId); continue; }
+        // A standalone component (no variants) that is not an icon: icons are exported as SVG, not generated.
+        const names = Object.fromEntries(Object.entries(e.components ?? {}).map(([k, v]) => [k, v.name]));
+        if (e.document.type === 'COMPONENT' && e.document.children?.length && !isIconNode(wanted.get(id)!, names)) setIds.add(id);
+      }
+    }
+    if (!setIds.size) break;
+    const list = [...setIds];
+    for (let i = 0; i < list.length; i += 25) {
+      const res = await client.nodes(fileKey, list.slice(i, i + 25), file.version);
+      for (const [id, e] of Object.entries(res.nodes)) {
+        const doc = e ? asComponentSet(e.document) : undefined;
+        if (!doc || doc.type !== 'COMPONENT_SET' || !doc.children?.some((v) => v.type === 'COMPONENT')) continue;
+        fullNodes.set(id, doc);
+        sets.push({ id, name: doc.name, page: located.get(id)?.page || 'Dependencies', path: located.get(id)?.path ?? [] });
+        added++;
+      }
+    }
+  }
+  if (added) log(`Discovery: added ${added} set(s) that other components use but that live outside the component pages`);
 
   const proposals = propose(sets, fullNodes, overrides).map((p) => ({
     ...p,

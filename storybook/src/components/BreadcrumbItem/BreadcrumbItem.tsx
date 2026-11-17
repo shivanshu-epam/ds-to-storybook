@@ -22,10 +22,10 @@ export function BreadcrumbItem({ type = 'link', disabled = false, hasIcon = fals
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-type={type} data-disabled={disabled ? '' : undefined} aria-disabled={disabled || undefined} {...rest}>
       {hasIcon && (
-        <span className={styles.leadingIcon} aria-hidden="true"><Icon name="navHome16" /></span>
+        <span className={styles.leadingIcon} data-layer="leadingIcon" aria-hidden="true"><Icon name="navHome16" /></span>
       )}
-      <span className={styles.label}>{label}</span>
-      <span className={styles.moreIcon} aria-hidden="true"><Icon name="actionMore16" /></span>
+      <span className={styles.label} data-layer="label">{label}</span>
+      <span className={styles.moreIcon} data-layer="moreIcon" aria-hidden="true"><Icon name="actionMore16" /></span>
     </div>
   );
 }

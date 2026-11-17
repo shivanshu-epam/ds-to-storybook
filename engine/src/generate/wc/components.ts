@@ -178,7 +178,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
 
   const render = (l: LayerInfo, indent: string): string => {
     const p = l.part;
-    const c = `class="${l.role}"`;
+    const c = `class="${l.role}" part="${l.role}"`;
     let el: string;
     if (p.type === 'TEXT') {
       const t = textFor(p.refs?.characters);
@@ -289,7 +289,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     ...(cb ? [{ prop: 'accessibleLabel', type: 'string | undefined', init: 'undefined', decl: "{ type: String, attribute: 'accessible-label' }", doc: `Accessible name when no label is shown. Default ${js(cb.defaultLabel)}.` }] : []),
     ...booleans.map((b) => ({ prop: b.prop, type: 'boolean', init: String(String(b.p.default) === 'true'), decl: `{ type: Boolean, attribute: ${js(attrFor(b.prop))} }` })),
     ...texts.map((t) => ({ prop: t.prop, type: 'string', init: js(String(t.p.default)), decl: `{ type: String, attribute: ${js(attrFor(t.prop))} }` })),
-    ...exposed.map((e) => ({ prop: e.prop, type: e.axis ? axisType(e.axis, js) : e.type, init: (e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default)), decl: `{ type: ${e.type === 'boolean' ? 'Boolean' : 'String'}, attribute: ${js(attrFor(e.prop))} }` })),
+    ...exposed.map((e) => ({ prop: e.prop, type: `${e.axis ? axisType(e.axis, js) : e.type}${e.derived ? ' | undefined' : ''}`, init: e.derived ? 'undefined' : (e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default)), decl: `{ type: ${e.type === 'boolean' ? 'Boolean' : 'String'}, attribute: ${js(attrFor(e.prop))} }` })),
   ];
   const dataAttrs = [
     ...(sw ? [`data-${sw.axis.attr}=\${this.checked ? ${js(sw.on)} : ${js(sw.off)}}`] : []),
@@ -758,7 +758,7 @@ ${layoutImports.length ? `import { ${layoutImports.join(', ')} } from '../../sto
 const meta = {
   title: ${js(core.title)},
   component: '${tag}',
-  args: { ${[...(sw ? ['checked: false', ...(sw.labelled ? [] : [`accessibleLabel: ${js(sw.label)}`])] : []), ...(core.storyLabel ? [`accessibleLabel: ${js(core.storyLabel)}`] : []), ...(core.rootTag === 'a' ? ["href: '#'"] : []), ...enumAxes.map((a) => `${a.prop}: ${axisDefault(a, js)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`), ...exposed.map((e) => `${e.prop}: ${(e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default))}`)].join(', ')} },
+  args: { ${[...(sw ? ['checked: false', ...(sw.labelled ? [] : [`accessibleLabel: ${js(sw.label)}`])] : []), ...(core.storyLabel ? [`accessibleLabel: ${js(core.storyLabel)}`] : []), ...(core.rootTag === 'a' ? ["href: '#'"] : []), ...enumAxes.map((a) => `${a.prop}: ${axisDefault(a, js)}`), ...(hasDisabled ? ['disabled: false'] : []), ...booleans.map((b) => `${b.prop}: ${String(String(b.p.default) === 'true')}`), ...texts.map((t) => `${t.prop}: ${js(String(t.p.default))}`), ...exposed.filter((e) => !e.derived).map((e) => `${e.prop}: ${(e.axis ? axisDefault({ ...e.axis, defaultValue: String(e.default) }, js) : js(e.default))}`)].join(', ')} },
   argTypes: {
 ${[
     ...(sw ? [`    checked: { control: 'boolean', description: ${js(`On or off. Figma: ${sw.axis.figma}`)} },`, `    accessibleLabel: { control: 'text', description: 'Accessible name (Figma has no label)' },`] : []),

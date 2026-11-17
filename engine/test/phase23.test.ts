@@ -57,7 +57,7 @@ describe('phase 2: slots', () => {
   const tsx = file(badge, /Badge\.tsx$/);
   it('turns an instance swap bound to a layer into a content prop with the Figma instance as default', () => {
     expect(tsx).toContain('leadingIcon?: ReactNode;');
-    expect(tsx).toMatch(/\{showLeadingIcon && \(\s*<span className=\{styles\.leadingIcon\}>\{leadingIcon \?\? \(<Glyph \/>\)\}<\/span>/);
+    expect(tsx).toMatch(/\{showLeadingIcon && \(\s*<span className=\{styles\.leadingIcon\} data-layer="leadingIcon">\{leadingIcon \?\? \(<Glyph \/>\)\}<\/span>/);
     expect(badge.report.props.find((x) => x.prop === 'leadingIcon')?.note).toMatch(/Slot/);
     expect(badge.report.gaps.join(' ')).not.toMatch(/Instance swap properties not exposed/);
   });
@@ -100,8 +100,8 @@ describe('phase 3: behaviour from structure', () => {
     expect(tsx).toContain("import { useId, useState, type HTMLAttributes } from 'react';");
     expect(tsx).toContain('isExpanded: isExpandedProp');
     expect(tsx).toContain('const isExpanded = isExpandedProp ?? innerExpanded;');
-    expect(tsx).toMatch(/<button type="button" className=\{styles\.header\} aria-expanded=\{isExpanded\} aria-controls=\{panelId\} onClick=\{toggleExpanded\}>/);
-    expect(tsx).toMatch(/className=\{styles\.body\} id=\{panelId\}/);
+    expect(tsx).toMatch(/<button type="button" className=\{styles\.header\} data-layer="header" aria-expanded=\{isExpanded\} aria-controls=\{panelId\} onClick=\{toggleExpanded\}>/);
+    expect(tsx).toMatch(/className=\{styles\.body\} data-layer="body" id=\{panelId\}/);
     // Inside the button only phrasing content.
     expect(tsx.slice(tsx.indexOf('<button'), tsx.indexOf('</button>'))).not.toContain('<div');
     expect(file(r, /stories\.tsx$/)).toContain("name: 'Expands and collapses'");
@@ -197,7 +197,7 @@ describe('phase 2: repeated children with parent context', () => {
     const tsx = file(r, /List\.tsx$/);
     expect(tsx).toContain("import { Children, cloneElement, isValidElement } from 'react';");
     expect(tsx).toContain('children?: ReactNode;');
-    expect(tsx).toMatch(/Children\.map\(children, \(child, i\) => <span className=\{styles\.item\} key=\{i\}>\{isValidElement\(child\) && child\.type === Item \? cloneElement\(child, \{ \.\.\.\{ "size": size, "number": `\$\{i \+ 1\}\.` \}, \.\.\.\(child\.props as object\) \}\) : child\}<\/span>\)/);
+    expect(tsx).toMatch(/Children\.map\(children, \(child, i\) => <span className=\{styles\.item\} data-layer="item" key=\{i\}>\{isValidElement\(child\) && child\.type === Item \? cloneElement\(child, \{ \.\.\.\{ "size": size, "number": `\$\{i \+ 1\}\.` \}, \.\.\.\(child\.props as object\) \}\) : child\}<\/span>\)/);
     // The Figma examples stay the default.
     expect(tsx).toMatch(/<Item size=\{size\} number="2\." \/>/);
     expect(r.report.props.find((x) => x.prop === 'children')?.note).toMatch(/size, number \(numbered\)/);

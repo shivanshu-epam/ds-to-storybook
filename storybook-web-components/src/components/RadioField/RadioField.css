@@ -42,6 +42,7 @@
   font-weight: 400;
   line-height: 15.73px;
   min-height: 16px;
+  opacity: 1;
   white-space: normal;
 }
 
@@ -149,6 +150,7 @@
   font-weight: 400;
   line-height: 14.52px;
   min-height: 15px;
+  opacity: 1;
   white-space: normal;
 }
 
@@ -162,5 +164,6 @@
   font-weight: 400;
   line-height: 14.52px;
   min-height: 15px;
+  opacity: 1;
   white-space: normal;
 }

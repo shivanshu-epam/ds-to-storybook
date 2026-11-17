@@ -44,23 +44,23 @@ export class DsListItem extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-type=${this.type} data-state=${this.state} data-size=${this.size} ?data-disabled=${this.disabled} aria-disabled=${this.disabled ? 'true' : nothing} data-force-state=${this.forceState ?? nothing}>
-        <div class="interactionWrapper">
-          <div class="visualContainer">
-            <div class="contentContainer">
-              ${this.hasLeadingControl ? html`<span class="leadingControl"><slot name="leading-control"></slot></span>` : nothing}
-              <div class="textColumn">
-                <span class="headline">${(({"menu":"Menu item","file":"Document.pdf","setting":"Notifications"} as Record<string, string>)[String(this.type)] ?? "List item")}</span>
-                <span class="supportingText">${(({"setting":"Manage alert preferences"} as Record<string, string>)[String(this.type)] ?? "2.4 MB · Edited 2d ago")}</span>
+        <div class="interactionWrapper" part="interactionWrapper">
+          <div class="visualContainer" part="visualContainer">
+            <div class="contentContainer" part="contentContainer">
+              ${this.hasLeadingControl ? html`<span class="leadingControl" part="leadingControl"><slot name="leading-control"></slot></span>` : nothing}
+              <div class="textColumn" part="textColumn">
+                <span class="headline" part="headline">${(({"menu":"Menu item","file":"Document.pdf","setting":"Notifications"} as Record<string, string>)[String(this.type)] ?? "List item")}</span>
+                <span class="supportingText" part="supportingText">${(({"setting":"Manage alert preferences"} as Record<string, string>)[String(this.type)] ?? "2.4 MB · Edited 2d ago")}</span>
               </div>
-              ${this.hasTrailingControl ? html`<span class="trailingControl"><slot name="trailing-control"></slot></span>` : nothing}
-              <span class="trailingIcon" aria-hidden="true">${icon((({"md":"navChevronRight20","lg":"navChevronRight24"} as Record<string, string>)[String(this.size)] ?? "navChevronRight16"))}</span>
-              <span class="leadingIcon" aria-hidden="true">${icon("layoutList16")}</span>
-              <span class="metadata">${"12"}</span>
+              ${this.hasTrailingControl ? html`<span class="trailingControl" part="trailingControl"><slot name="trailing-control"></slot></span>` : nothing}
+              <span class="trailingIcon" part="trailingIcon" aria-hidden="true">${icon((({"md":"navChevronRight20","lg":"navChevronRight24"} as Record<string, string>)[String(this.size)] ?? "navChevronRight16"))}</span>
+              <span class="leadingIcon" part="leadingIcon" aria-hidden="true">${icon("layoutList16")}</span>
+              <span class="metadata" part="metadata">${"12"}</span>
             </div>
-            <div class="skLeading"></div>
-            <div class="skText">
-              <div class="skBar1"></div>
-              <div class="skBar2"></div>
+            <div class="skLeading" part="skLeading"></div>
+            <div class="skText" part="skText">
+              <div class="skBar1" part="skBar1"></div>
+              <div class="skBar2" part="skBar2"></div>
             </div>
           </div>
         </div>

@@ -78,27 +78,27 @@ export class DsDropdownMenu extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-state=${this.state} role=${!["loading","empty"].includes(String(this.state)) ? "menu" : nothing} tabindex=${!["loading","empty"].includes(String(this.state)) ? '0' : nothing} aria-activedescendant=${!["loading","empty"].includes(String(this.state)) && this.active >= 0 ? `item-${this.active}` : nothing} aria-labelledby=${!["loading","empty"].includes(String(this.state)) ? 'group-label' : nothing} aria-busy=${this.state === "loading" ? 'true' : nothing} data-force-state=${this.forceState ?? nothing}>
-        ${this.showSearch ? html`<div class="searchRow">
-          <span class="searchIcon" aria-hidden="true">${icon("actionSearch16")}</span>
-          <span class="searchPlaceholder">${"Search…"}</span>
+        ${this.showSearch ? html`<div class="searchRow" part="searchRow">
+          <span class="searchIcon" part="searchIcon" aria-hidden="true">${icon("actionSearch16")}</span>
+          <span class="searchPlaceholder" part="searchPlaceholder">${"Search…"}</span>
         </div>` : nothing}
-        ${this.grouped ? html`<div class="groupLabelWrap">
-          <span id="group-label" class="groupLabel">${"Group label"}</span>
+        ${this.grouped ? html`<div class="groupLabelWrap" part="groupLabelWrap">
+          <span id="group-label" class="groupLabel" part="groupLabel">${"Group label"}</span>
         </div>` : nothing}
-        <div class="optionsList">
+        <div class="optionsList" part="optionsList">
           <slot @slotchange=${this.applyRepeated}>
-            <span class="option"><ds-list-item style="display: block" role="menuitem" id="item-0" data-ds-item data-ds-index="0" data-force-state=${this.active === 0 ? 'focus' : nothing} .state=${"selected"} .hasTrailingControl=${true}></ds-list-item></span>
-                      <span class="option"><ds-list-item style="display: block" role="menuitem" id="item-1" data-ds-item data-ds-index="1" data-force-state=${this.active === 1 ? 'focus' : nothing}></ds-list-item></span>
-                      <span class="option"><ds-list-item style="display: block" role="menuitem" id="item-2" data-ds-item data-ds-index="2" data-force-state=${this.active === 2 ? 'focus' : nothing}></ds-list-item></span>
-                      <span class="option"><ds-list-item style="display: block" role="menuitem" id="item-3" data-ds-item data-ds-index="3" data-force-state=${this.active === 3 ? 'focus' : nothing} .disabled=${true}></ds-list-item></span>
+            <span class="option" part="option"><ds-list-item style="display: block" role="menuitem" id="item-0" data-ds-item data-ds-index="0" data-force-state=${this.active === 0 ? 'focus' : nothing} .state=${"selected"} .hasTrailingControl=${true}></ds-list-item></span>
+                      <span class="option" part="option"><ds-list-item style="display: block" role="menuitem" id="item-1" data-ds-item data-ds-index="1" data-force-state=${this.active === 1 ? 'focus' : nothing}></ds-list-item></span>
+                      <span class="option" part="option"><ds-list-item style="display: block" role="menuitem" id="item-2" data-ds-item data-ds-index="2" data-force-state=${this.active === 2 ? 'focus' : nothing}></ds-list-item></span>
+                      <span class="option" part="option"><ds-list-item style="display: block" role="menuitem" id="item-3" data-ds-item data-ds-index="3" data-force-state=${this.active === 3 ? 'focus' : nothing} .disabled=${true}></ds-list-item></span>
           </slot>
         </div>
-        <div class="loadingRow">
-          <span class="loadingIcon" aria-hidden="true">${icon("statusLoading16")}</span>
-          <span class="loadingText">${"Loading options…"}</span>
+        <div class="loadingRow" part="loadingRow">
+          <span class="loadingIcon" part="loadingIcon" aria-hidden="true">${icon("statusLoading16")}</span>
+          <span class="loadingText" part="loadingText">${"Loading options…"}</span>
         </div>
-        <div class="emptyRow">
-          <span class="emptyText">${"No results found"}</span>
+        <div class="emptyRow" part="emptyRow">
+          <span class="emptyText" part="emptyText">${"No results found"}</span>
         </div>
       </div>`;
   }

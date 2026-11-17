@@ -28,9 +28,9 @@ export class DsInputControl extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-state=${this.state} ?data-disabled=${this.disabled} aria-disabled=${this.disabled ? 'true' : nothing} data-force-state=${this.forceState ?? nothing}>
-        <span class="value">${(({"filled":"jordan@company.com","error":"jordan@company.com","success":"jordan@company.com"} as Record<string, string>)[String(this.state)] ?? "Enter your email")}</span>
-        <span class="errorIcon" aria-hidden="true">${icon("statusError16")}</span>
-        <span class="successIcon" aria-hidden="true">${icon("formCheck16")}</span>
+        <span class="value" part="value">${(({"filled":"jordan@company.com","error":"jordan@company.com","success":"jordan@company.com"} as Record<string, string>)[String(this.state)] ?? "Enter your email")}</span>
+        <span class="errorIcon" part="errorIcon" aria-hidden="true">${icon("statusError16")}</span>
+        <span class="successIcon" part="successIcon" aria-hidden="true">${icon("formCheck16")}</span>
       </div>`;
   }
 }

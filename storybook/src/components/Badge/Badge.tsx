@@ -28,11 +28,11 @@ export function Badge({ status = 'success', styleVariant = 'filled', type = 'tex
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-status={status} data-style={styleVariant} data-type={type} data-size={size} {...rest}>
       {hasLeadingIcon && (
-        <span className={styles.leadingIcon} aria-hidden="true"><Icon name="feedbackStar16" /></span>
+        <span className={styles.leadingIcon} data-layer="leadingIcon" aria-hidden="true"><Icon name="feedbackStar16" /></span>
       )}
-      <span className={styles.label}>{label}</span>
+      <span className={styles.label} data-layer="label">{label}</span>
       {isDismissible && (
-        <span className={styles.dismissIcon} aria-hidden="true"><Icon name="actionClose16" /></span>
+        <span className={styles.dismissIcon} data-layer="dismissIcon" aria-hidden="true"><Icon name="actionClose16" /></span>
       )}
     </div>
   );

@@ -40,9 +40,9 @@ export class DsDropdownTrigger extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-size=${this.size} data-state=${this.state} data-expanded=${this.expanded ? 'true' : 'false'} ?data-disabled=${this.disabled} aria-disabled=${this.disabled ? 'true' : nothing} data-force-state=${this.forceState ?? nothing}>
-        <span class="value">${"Select an option"}</span>
-        ${this.clearable ? html`<span class="clearIcon" aria-hidden="true">${icon("actionClose16")}</span>` : nothing}
-        <span class="chevron" aria-hidden="true">${icon("navChevronDown16")}</span>
+        <span class="value" part="value">${"Select an option"}</span>
+        ${this.clearable ? html`<span class="clearIcon" part="clearIcon" aria-hidden="true">${icon("actionClose16")}</span>` : nothing}
+        <span class="chevron" part="chevron" aria-hidden="true">${icon("navChevronDown16")}</span>
       </div>`;
   }
 }

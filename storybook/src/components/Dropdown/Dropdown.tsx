@@ -51,8 +51,8 @@ export function Dropdown({ size = 'small', state: stateProp = 'collapsed', open,
   const comboboxProps = { id: fieldId, role: "button", tabIndex: 0, 'aria-expanded': isOpen, 'aria-haspopup': "menu" as const, 'aria-controls': popupId, 'aria-label': ariaLabel, onClick: () => setOpen(!isOpen), onKeyDown: comboboxKeyDown };
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-size={size} data-state={state} onKeyDown={closeOnEscape} {...rest}>
-      <span {...comboboxProps} className={styles.trigger}><DropdownTrigger size={size} expanded={(({ "expanded": true } as Record<string, boolean>)[String(state)] ?? false)} /></span>
-      <span id={popupId} className={styles.menu}><DropdownMenu /></span>
+      <span {...comboboxProps} className={styles.trigger} data-layer="trigger"><DropdownTrigger size={size} expanded={(({ "expanded": true } as Record<string, boolean>)[String(state)] ?? false)} /></span>
+      <span id={popupId} className={styles.menu} data-layer="menu"><DropdownMenu /></span>
     </div>
   );
 }

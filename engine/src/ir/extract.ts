@@ -5,7 +5,7 @@ import type { LoadedConfig } from '../config.ts';
 import { FigmaHttpError, type FigmaReader } from '../figma/client.ts';
 import type { FigmaNode } from '../figma/types.ts';
 import { readJson } from '../util/core.ts';
-import { buildComponentSet, emptyVariables, variablesFromExport } from './build.ts';
+import { asComponentSet, buildComponentSet, emptyVariables, variablesFromExport } from './build.ts';
 import type { FigmaIR, IRVariable } from './types.ts';
 
 const norm = (s: string) => s.trim().toLowerCase();
@@ -108,7 +108,8 @@ export async function extractIR(client: FigmaReader, config: LoadedConfig, log: 
 
   const components = plan.flatMap((p) => {
     const target = config.components[p.targetIndex]!;
-    const set = nodes[p.setId];
+    // A standalone component (discovery adds the ones other components use) is a set of one variant.
+    const set = nodes[p.setId] ? asComponentSet(nodes[p.setId]!) : undefined;
     if (!set) {
       missing.push({ targetId: target.id, reason: `Component set "${target.figma.componentSet.name}" (${p.setId}) not found in the file.` });
       return [];

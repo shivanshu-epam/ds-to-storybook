@@ -31,14 +31,14 @@ export function RadioField({ state = 'enabled', position = 'left', disabled = fa
   const control = { name, value, checked, defaultChecked, onChange, disabled, state: (["enabled","skeleton","read-only","invalid","warning"] as string[]).includes(state) ? (state as RadioControlProps['state']) : undefined };
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-state={state} data-position={position} data-disabled={disabled ? '' : undefined} {...rest}>
-      <label className={styles.radioRow}>
-        <span className={styles.radioControl}><RadioControl {...control} /></span>
-        <span className={styles.value}>{label ?? "Radio label"}</span>
+      <label className={styles.radioRow} data-layer="radioRow">
+        <span className={styles.radioControl} data-layer="radioControl"><RadioControl {...control} /></span>
+        <span className={styles.value} data-layer="value">{label ?? "Radio label"}</span>
       </label>
-      <div className={styles.statusRow}>
-        <span className={styles.statusIcon} aria-hidden="true"><Icon name={(({"warning":"statusWarning16"} as Record<string, IconName>)[String(state)] ?? "statusError16")} /></span>
-        <span className={styles.errorText}>{"Please select an option"}</span>
-        <span className={styles.warningText}>{"This selection may need review"}</span>
+      <div className={styles.statusRow} data-layer="statusRow">
+        <span className={styles.statusIcon} data-layer="statusIcon" aria-hidden="true"><Icon name={(({"warning":"statusWarning16"} as Record<string, IconName>)[String(state)] ?? "statusError16")} /></span>
+        <span className={styles.errorText} data-layer="errorText">{"Please select an option"}</span>
+        <span className={styles.warningText} data-layer="warningText">{"This selection may need review"}</span>
       </div>
     </div>
   );

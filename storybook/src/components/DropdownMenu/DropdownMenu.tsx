@@ -50,34 +50,34 @@ export function DropdownMenu({ state = 'default', showSearch = false, grouped = 
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-state={state} {...listProps} {...rest}>
       {showSearch && (
-        <div className={styles.searchRow}>
-          <span className={styles.searchIcon} aria-hidden="true"><Icon name="actionSearch16" /></span>
-          <span className={styles.searchPlaceholder}>{"Search…"}</span>
+        <div className={styles.searchRow} data-layer="searchRow">
+          <span className={styles.searchIcon} data-layer="searchIcon" aria-hidden="true"><Icon name="actionSearch16" /></span>
+          <span className={styles.searchPlaceholder} data-layer="searchPlaceholder">{"Search…"}</span>
         </div>
       )}
       {grouped && (
-        <div className={styles.groupLabelWrap}>
-          <span id={labelId} className={styles.groupLabel}>{"Group label"}</span>
+        <div className={styles.groupLabelWrap} data-layer="groupLabelWrap">
+          <span id={labelId} className={styles.groupLabel} data-layer="groupLabel">{"Group label"}</span>
         </div>
       )}
-      <div className={styles.optionsList}>
+      <div className={styles.optionsList} data-layer="optionsList">
         {children !== undefined
-          ? Children.map(children, (child, i) => <span className={styles.option} key={i}>{isValidElement(child) && child.type === ListItem ? cloneElement(child, { ...{  }, ...(child.props as object), ...(itemProps(i, (child.props as { selected?: boolean }).selected, 'item') as object) }) : child}</span>)
+          ? Children.map(children, (child, i) => <span className={styles.option} data-layer="option" key={i}>{isValidElement(child) && child.type === ListItem ? cloneElement(child, { ...{  }, ...(child.props as object), ...(itemProps(i, (child.props as { selected?: boolean }).selected, 'item') as object) }) : child}</span>)
           : (
             <>
-              <span className={styles.option}><ListItem state="selected" hasTrailingControl {...(itemProps(0, false, "item") as object)} /></span>
-              <span className={styles.option}><ListItem {...(itemProps(1, false, "item") as object)} /></span>
-              <span className={styles.option}><ListItem data-force-state="hover" {...(itemProps(2, false, "item") as object)} /></span>
-              <span className={styles.option}><ListItem disabled {...(itemProps(3, false, "item") as object)} /></span>
+              <span className={styles.option} data-layer="option"><ListItem state="selected" hasTrailingControl {...(itemProps(0, false, "item") as object)} /></span>
+              <span className={styles.option} data-layer="option"><ListItem {...(itemProps(1, false, "item") as object)} /></span>
+              <span className={styles.option} data-layer="option"><ListItem data-force-state="hover" {...(itemProps(2, false, "item") as object)} /></span>
+              <span className={styles.option} data-layer="option"><ListItem disabled {...(itemProps(3, false, "item") as object)} /></span>
             </>
           )}
       </div>
-      <div className={styles.loadingRow}>
-        <span className={styles.loadingIcon} aria-hidden="true"><Icon name="statusLoading16" /></span>
-        <span className={styles.loadingText}>{"Loading options…"}</span>
+      <div className={styles.loadingRow} data-layer="loadingRow">
+        <span className={styles.loadingIcon} data-layer="loadingIcon" aria-hidden="true"><Icon name="statusLoading16" /></span>
+        <span className={styles.loadingText} data-layer="loadingText">{"Loading options…"}</span>
       </div>
-      <div className={styles.emptyRow}>
-        <span className={styles.emptyText}>{"No results found"}</span>
+      <div className={styles.emptyRow} data-layer="emptyRow">
+        <span className={styles.emptyText} data-layer="emptyText">{"No results found"}</span>
       </div>
     </div>
   );

@@ -256,6 +256,7 @@ Figma: ListItem (520:3110)
 - `headline.font-weight`: State
 - `headline.line-height`: Size, State
 - `headline.min-height`: Size, State
+- `headline.opacity`: State
 - `headline.white-space`: State
 - `trailingControl.background`: State
 - `trailingControl.box-shadow`: State
@@ -320,6 +321,7 @@ Figma: ListItem (520:3110)
 - `supportingText.font-weight`: Type, State
 - `supportingText.line-height`: Type, Size, State
 - `supportingText.min-height`: Type, Size, +4 variant overrides
+- `supportingText.opacity`: Type, State
 - `supportingText.white-space`: Type, State
 - `metadata.color`: Type, State
 - `metadata.display`: Type, +3 variant overrides
@@ -329,6 +331,7 @@ Figma: ListItem (520:3110)
 - `metadata.font-weight`: Type, +3 variant overrides
 - `metadata.line-height`: Type, Size, +3 variant overrides
 - `metadata.min-height`: Type, Size, +2 variant overrides
+- `metadata.opacity`: Type, +3 variant overrides
 - `metadata.order`: Type, +3 variant overrides
 - `metadata.white-space`: Type, +3 variant overrides
 
@@ -553,6 +556,7 @@ Figma: Badge (211:1961)
 - `label.font-weight`: Type, Size
 - `label.letter-spacing`: Type, Size
 - `label.line-height`: Type, Size
+- `label.opacity`: Type
 - `label.white-space`: Type
 - `dismissIcon.color`: Status, Style, Type
 - `dismissIcon.display`: Type
@@ -610,6 +614,7 @@ Figma: BreadcrumbItem (224:1461)
 - `label.font-weight`: Type
 - `label.letter-spacing`: Type
 - `label.line-height`: Type
+- `label.opacity`: Type
 - `label.white-space`: Type
 - `moreIcon.color`: Type, +1 variant override
 - `moreIcon.display`: Type
@@ -649,6 +654,7 @@ Figma: Separator (224:1467)
 - `glyph.font-weight`: Type
 - `glyph.letter-spacing`: Type
 - `glyph.line-height`: Type
+- `glyph.opacity`: Type
 - `glyph.white-space`: Type
 - `glyph2.color`: Type
 - `glyph2.display`: Type
@@ -862,6 +868,7 @@ Figma: AvatarIdentity (274:1803)
 - `name.font-size`: none (same in every variant)
 - `name.font-weight`: none (same in every variant)
 - `name.line-height`: none (same in every variant)
+- `name.opacity`: none (same in every variant)
 - `name.white-space`: none (same in every variant)
 - `email.color`: +1 variant override
 - `email.display`: none (same in every variant)
@@ -870,6 +877,7 @@ Figma: AvatarIdentity (274:1803)
 - `email.font-size`: none (same in every variant)
 - `email.font-weight`: none (same in every variant)
 - `email.line-height`: none (same in every variant)
+- `email.opacity`: none (same in every variant)
 - `email.white-space`: none (same in every variant)
 - `email.width`: none (same in every variant)
 - `trailing.color`: +1 variant override
@@ -924,6 +932,7 @@ Figma: AvatarGlyph (276:1716)
 - `initials.font-weight`: Type, Size
 - `initials.letter-spacing`: Type, Size
 - `initials.line-height`: Type, Size
+- `initials.opacity`: Type
 - `initials.text-align`: Type
 - `initials.white-space`: Type
 - `icon.color`: Type
@@ -1007,6 +1016,7 @@ Figma: Alert (516:2837)
 - `headline.font-weight`: none (same in every variant)
 - `headline.line-height`: none (same in every variant)
 - `headline.min-height`: none (same in every variant)
+- `headline.opacity`: none (same in every variant)
 - `headline.white-space`: none (same in every variant)
 - `supportingText.align-self`: none (same in every variant)
 - `supportingText.color`: Sentiment
@@ -1017,6 +1027,7 @@ Figma: Alert (516:2837)
 - `supportingText.font-weight`: none (same in every variant)
 - `supportingText.line-height`: none (same in every variant)
 - `supportingText.min-height`: none (same in every variant)
+- `supportingText.opacity`: none (same in every variant)
 - `supportingText.white-space`: none (same in every variant)
 - `actionButton.display`: State
 - `actionButton.flex-shrink`: State
@@ -1105,6 +1116,7 @@ Figma: Dialog (348:627)
 - `title.font-size`: none (same in every variant)
 - `title.font-weight`: none (same in every variant)
 - `title.line-height`: none (same in every variant)
+- `title.opacity`: none (same in every variant)
 - `title.white-space`: none (same in every variant)
 - `closeIcon.color`: Type
 - `closeIcon.display`: Type
@@ -1139,6 +1151,7 @@ Figma: Dialog (348:627)
 - `bodyContent.font-size`: Type, +1 variant override
 - `bodyContent.font-weight`: Type, +1 variant override
 - `bodyContent.line-height`: Type, +1 variant override
+- `bodyContent.opacity`: Type, +1 variant override
 - `bodyContent.order`: Type, +1 variant override
 - `bodyContent.white-space`: Type, +1 variant override
 - `dividerBottom.background`: none (same in every variant)
@@ -1172,6 +1185,7 @@ Figma: Dialog (348:627)
 - `subtitle.font-size`: Type, +1 variant override
 - `subtitle.font-weight`: Type, +1 variant override
 - `subtitle.line-height`: Type, +1 variant override
+- `subtitle.opacity`: Type, +1 variant override
 - `subtitle.white-space`: Type, +1 variant override
 - `subtitle.width`: Type, Size, +1 variant override
 - `formField.align-self`: Type, +1 variant override
@@ -1193,6 +1207,7 @@ Figma: Dialog (348:627)
 - `fieldLabel.font-weight`: Type, +1 variant override
 - `fieldLabel.letter-spacing`: Type, +1 variant override
 - `fieldLabel.line-height`: Type, +1 variant override
+- `fieldLabel.opacity`: Type, +1 variant override
 - `fieldLabel.white-space`: Type, +1 variant override
 - `fieldInput.align-items`: Type, +1 variant override
 - `fieldInput.align-self`: Type, +1 variant override
@@ -1215,6 +1230,7 @@ Figma: Dialog (348:627)
 - `fieldPlaceholder.font-size`: Type, +1 variant override
 - `fieldPlaceholder.font-weight`: Type, +1 variant override
 - `fieldPlaceholder.line-height`: Type, +1 variant override
+- `fieldPlaceholder.opacity`: Type, +1 variant override
 - `fieldPlaceholder.white-space`: Type, +1 variant override
 - `formField2.align-self`: Type, +1 variant override
 - `formField2.background`: Type, +1 variant override
@@ -1235,6 +1251,7 @@ Figma: Dialog (348:627)
 - `fieldLabel2.font-weight`: Type, +1 variant override
 - `fieldLabel2.letter-spacing`: Type, +1 variant override
 - `fieldLabel2.line-height`: Type, +1 variant override
+- `fieldLabel2.opacity`: Type, +1 variant override
 - `fieldLabel2.white-space`: Type, +1 variant override
 - `fieldInput2.align-items`: Type, +1 variant override
 - `fieldInput2.align-self`: Type, +1 variant override
@@ -1257,6 +1274,7 @@ Figma: Dialog (348:627)
 - `fieldPlaceholder2.font-size`: Type, +1 variant override
 - `fieldPlaceholder2.font-weight`: Type, +1 variant override
 - `fieldPlaceholder2.line-height`: Type, +1 variant override
+- `fieldPlaceholder2.opacity`: Type, +1 variant override
 - `fieldPlaceholder2.white-space`: Type, +1 variant override
 - `errorBanner.align-items`: State
 - `errorBanner.align-self`: State
@@ -1286,6 +1304,7 @@ Figma: Dialog (348:627)
 - `errorText.font-size`: State
 - `errorText.font-weight`: State
 - `errorText.line-height`: State
+- `errorText.opacity`: State
 - `errorText.white-space`: State
 
 </details>
@@ -1397,6 +1416,7 @@ Figma: RadioField (522:125)
 - `value.font-weight`: none (same in every variant)
 - `value.line-height`: none (same in every variant)
 - `value.min-height`: none (same in every variant)
+- `value.opacity`: none (same in every variant)
 - `value.order`: Position
 - `value.white-space`: none (same in every variant)
 - `statusRow.align-items`: State
@@ -1425,6 +1445,7 @@ Figma: RadioField (522:125)
 - `errorText.font-weight`: State
 - `errorText.line-height`: State
 - `errorText.min-height`: State
+- `errorText.opacity`: State
 - `errorText.white-space`: State
 - `warningText.color`: State
 - `warningText.display`: State
@@ -1435,6 +1456,7 @@ Figma: RadioField (522:125)
 - `warningText.font-weight`: State
 - `warningText.line-height`: State
 - `warningText.min-height`: State
+- `warningText.opacity`: State
 - `warningText.white-space`: State
 
 </details>
@@ -1472,6 +1494,7 @@ Figma: RadioGroup (529:749)
 - `groupLabel.font-weight`: none (same in every variant)
 - `groupLabel.line-height`: none (same in every variant)
 - `groupLabel.min-height`: none (same in every variant)
+- `groupLabel.opacity`: none (same in every variant)
 - `groupLabel.white-space`: none (same in every variant)
 - `items.background`: none (same in every variant)
 - `items.box-shadow`: none (same in every variant)
@@ -1501,6 +1524,7 @@ Figma: RadioGroup (529:749)
 - `pleaseSelectADeliveryOption.font-weight`: State
 - `pleaseSelectADeliveryOption.line-height`: State
 - `pleaseSelectADeliveryOption.min-height`: State
+- `pleaseSelectADeliveryOption.opacity`: State
 - `pleaseSelectADeliveryOption.white-space`: State
 - `deliveryEstimateMayVaryByRegion.color`: State
 - `deliveryEstimateMayVaryByRegion.display`: State
@@ -1510,6 +1534,7 @@ Figma: RadioGroup (529:749)
 - `deliveryEstimateMayVaryByRegion.font-weight`: State
 - `deliveryEstimateMayVaryByRegion.line-height`: State
 - `deliveryEstimateMayVaryByRegion.min-height`: State
+- `deliveryEstimateMayVaryByRegion.opacity`: State
 - `deliveryEstimateMayVaryByRegion.white-space`: State
 
 </details>
@@ -1605,6 +1630,7 @@ Figma: Date Picker (660:4998)
 - `mMDDYYYY.font-size`: Type, State
 - `mMDDYYYY.font-weight`: Type, State
 - `mMDDYYYY.line-height`: Type, State
+- `mMDDYYYY.opacity`: Type, State
 - `mMDDYYYY.order`: Type, State
 - `mMDDYYYY.white-space`: Type, State
 - `iconFormCalendar16.color`: Type, State
@@ -1738,6 +1764,7 @@ Figma: Date Picker (660:4998)
 - `l07302026.font-size`: Type, State
 - `l07302026.font-weight`: Type, State
 - `l07302026.line-height`: Type, State
+- `l07302026.opacity`: Type, State
 - `l07302026.order`: Type, State
 - `l07302026.white-space`: Type, State
 - `l13452026.color`: +1 variant override
@@ -1748,6 +1775,7 @@ Figma: Date Picker (660:4998)
 - `l13452026.font-size`: +1 variant override
 - `l13452026.font-weight`: +1 variant override
 - `l13452026.line-height`: +1 variant override
+- `l13452026.opacity`: +1 variant override
 - `l13452026.order`: +1 variant override
 - `l13452026.white-space`: +1 variant override
 - `fieldsRow.background`: Type
@@ -1785,6 +1813,7 @@ Figma: Date Picker (660:4998)
 - `mMDDYYYY2.font-size`: Type, State
 - `mMDDYYYY2.font-weight`: Type, State
 - `mMDDYYYY2.line-height`: Type, State
+- `mMDDYYYY2.opacity`: Type, State
 - `mMDDYYYY2.order`: Type, State
 - `mMDDYYYY2.white-space`: Type, State
 - `iconFormCalendar162.color`: Type, State
@@ -1819,6 +1848,7 @@ Figma: Date Picker (660:4998)
 - `mMDDYYYY3.font-size`: Type, State
 - `mMDDYYYY3.font-weight`: Type, State
 - `mMDDYYYY3.line-height`: Type, State
+- `mMDDYYYY3.opacity`: Type, State
 - `mMDDYYYY3.order`: Type, State
 - `mMDDYYYY3.white-space`: Type, State
 - `iconFormCalendar163.color`: Type, State
@@ -2063,6 +2093,7 @@ Figma: Date Picker (660:4998)
 - `l07202026.font-size`: Type, State
 - `l07202026.font-weight`: Type, State
 - `l07202026.line-height`: Type, State
+- `l07202026.opacity`: Type, State
 - `l07202026.order`: Type, State
 - `l07202026.white-space`: Type, State
 - `l08052026.color`: Type, State
@@ -2073,6 +2104,7 @@ Figma: Date Picker (660:4998)
 - `l08052026.font-size`: Type, State
 - `l08052026.font-weight`: Type, State
 - `l08052026.line-height`: Type, State
+- `l08052026.opacity`: Type, State
 - `l08052026.order`: Type, State
 - `l08052026.white-space`: Type, State
 - `l134520262.color`: +1 variant override
@@ -2083,6 +2115,7 @@ Figma: Date Picker (660:4998)
 - `l134520262.font-size`: +1 variant override
 - `l134520262.font-weight`: +1 variant override
 - `l134520262.line-height`: +1 variant override
+- `l134520262.opacity`: +1 variant override
 - `l134520262.order`: +1 variant override
 - `l134520262.white-space`: +1 variant override
 - `l134520263.color`: +1 variant override
@@ -2093,6 +2126,7 @@ Figma: Date Picker (660:4998)
 - `l134520263.font-size`: +1 variant override
 - `l134520263.font-weight`: +1 variant override
 - `l134520263.line-height`: +1 variant override
+- `l134520263.opacity`: +1 variant override
 - `l134520263.order`: +1 variant override
 - `l134520263.white-space`: +1 variant override
 - `mMDDYYYYHhMm.color`: Type, State
@@ -2103,6 +2137,7 @@ Figma: Date Picker (660:4998)
 - `mMDDYYYYHhMm.font-size`: Type, State
 - `mMDDYYYYHhMm.font-weight`: Type, State
 - `mMDDYYYYHhMm.line-height`: Type, State
+- `mMDDYYYYHhMm.opacity`: Type, State
 - `mMDDYYYYHhMm.order`: Type, State
 - `mMDDYYYYHhMm.white-space`: Type, State
 - `calendar.display`: none (same in every variant)
@@ -2232,6 +2267,7 @@ Figma: Date Picker (660:4998)
 - `l07302026230PM.font-size`: Type, State
 - `l07302026230PM.font-weight`: Type, State
 - `l07302026230PM.line-height`: Type, State
+- `l07302026230PM.opacity`: Type, State
 - `l07302026230PM.order`: Type, State
 - `l07302026230PM.white-space`: Type, State
 - `l134520264.color`: +1 variant override
@@ -2242,6 +2278,7 @@ Figma: Date Picker (660:4998)
 - `l134520264.font-size`: +1 variant override
 - `l134520264.font-weight`: +1 variant override
 - `l134520264.line-height`: +1 variant override
+- `l134520264.opacity`: +1 variant override
 - `l134520264.order`: +1 variant override
 - `l134520264.white-space`: +1 variant override
 
@@ -2376,6 +2413,7 @@ Figma: Input (836:4005)
 - `label.font-weight`: none (same in every variant)
 - `label.letter-spacing`: Size
 - `label.line-height`: Size
+- `label.opacity`: none (same in every variant)
 - `label.white-space`: none (same in every variant)
 - `requiredIndicator.color`: none (same in every variant)
 - `requiredIndicator.display`: none (same in every variant)
@@ -2385,6 +2423,7 @@ Figma: Input (836:4005)
 - `requiredIndicator.font-weight`: none (same in every variant)
 - `requiredIndicator.letter-spacing`: Size
 - `requiredIndicator.line-height`: Size
+- `requiredIndicator.opacity`: none (same in every variant)
 - `requiredIndicator.white-space`: none (same in every variant)
 - `container.align-items`: none (same in every variant)
 - `container.align-self`: Type
@@ -2415,6 +2454,7 @@ Figma: Input (836:4005)
 - `value.font-size`: Size
 - `value.font-weight`: none (same in every variant)
 - `value.line-height`: Size
+- `value.opacity`: none (same in every variant)
 - `value.white-space`: none (same in every variant)
 - `clearIcon.color`: none (same in every variant)
 - `clearIcon.display`: none (same in every variant)
@@ -2452,6 +2492,7 @@ Figma: Input (836:4005)
 - `helperText.font-size`: Type, Size
 - `helperText.font-weight`: Type
 - `helperText.line-height`: Type, Size
+- `helperText.opacity`: Type
 - `helperText.white-space`: Type
 - `counterText.color`: none (same in every variant)
 - `counterText.display`: none (same in every variant)
@@ -2460,6 +2501,7 @@ Figma: Input (836:4005)
 - `counterText.font-size`: Size
 - `counterText.font-weight`: none (same in every variant)
 - `counterText.line-height`: Size
+- `counterText.opacity`: none (same in every variant)
 - `counterText.white-space`: none (same in every variant)
 - `counterText.width`: Size
 
@@ -2509,6 +2551,7 @@ Figma: DropdownTrigger (396:1799)
 - `value.font-size`: none (same in every variant)
 - `value.font-weight`: none (same in every variant)
 - `value.line-height`: none (same in every variant)
+- `value.opacity`: none (same in every variant)
 - `value.white-space`: none (same in every variant)
 - `clearIcon.color`: none (same in every variant)
 - `clearIcon.display`: none (same in every variant)
@@ -2621,6 +2664,7 @@ Figma: DropdownMenu (400:1970)
 - `loadingText.font-size`: State
 - `loadingText.font-weight`: State
 - `loadingText.line-height`: State
+- `loadingText.opacity`: State
 - `loadingText.white-space`: State
 - `emptyRow.align-self`: State
 - `emptyRow.background`: State
@@ -2641,6 +2685,7 @@ Figma: DropdownMenu (400:1970)
 - `emptyText.font-size`: State
 - `emptyText.font-weight`: State
 - `emptyText.line-height`: State
+- `emptyText.opacity`: State
 - `emptyText.text-align`: State
 - `emptyText.white-space`: State
 
@@ -2725,6 +2770,7 @@ Figma: InputControl (427:2001)
 - `value.font-size`: none (same in every variant)
 - `value.font-weight`: none (same in every variant)
 - `value.line-height`: none (same in every variant)
+- `value.opacity`: none (same in every variant)
 - `value.white-space`: none (same in every variant)
 - `errorIcon.color`: +1 variant override
 - `errorIcon.display`: +1 variant override
@@ -2795,6 +2841,7 @@ Figma: InputField (428:2042)
 - `label.font-weight`: none (same in every variant)
 - `label.letter-spacing`: none (same in every variant)
 - `label.line-height`: none (same in every variant)
+- `label.opacity`: none (same in every variant)
 - `label.white-space`: none (same in every variant)
 - `required.color`: none (same in every variant)
 - `required.display`: none (same in every variant)
@@ -2804,6 +2851,7 @@ Figma: InputField (428:2042)
 - `required.font-weight`: none (same in every variant)
 - `required.letter-spacing`: none (same in every variant)
 - `required.line-height`: none (same in every variant)
+- `required.opacity`: none (same in every variant)
 - `required.white-space`: none (same in every variant)
 - `required.width`: none (same in every variant)
 - `control.align-self`: none (same in every variant)
@@ -2816,6 +2864,7 @@ Figma: InputField (428:2042)
 - `helperText.font-size`: none (same in every variant)
 - `helperText.font-weight`: none (same in every variant)
 - `helperText.line-height`: none (same in every variant)
+- `helperText.opacity`: none (same in every variant)
 - `helperText.white-space`: none (same in every variant)
 - `helperText.width`: none (same in every variant)
 - `statusRow.align-items`: State
@@ -2843,6 +2892,7 @@ Figma: InputField (428:2042)
 - `errorText.font-size`: +1 variant override
 - `errorText.font-weight`: +1 variant override
 - `errorText.line-height`: +1 variant override
+- `errorText.opacity`: +1 variant override
 - `errorText.white-space`: +1 variant override
 - `successIcon.color`: +1 variant override
 - `successIcon.display`: +1 variant override
@@ -2858,6 +2908,7 @@ Figma: InputField (428:2042)
 - `successText.font-size`: +1 variant override
 - `successText.font-weight`: +1 variant override
 - `successText.line-height`: +1 variant override
+- `successText.opacity`: +1 variant override
 - `successText.white-space`: +1 variant override
 
 </details>
@@ -2902,6 +2953,7 @@ Figma: Form (435:8)
 - `sectionHeading.font-size`: none (same in every variant)
 - `sectionHeading.font-weight`: none (same in every variant)
 - `sectionHeading.line-height`: none (same in every variant)
+- `sectionHeading.opacity`: none (same in every variant)
 - `sectionHeading.order`: State
 - `sectionHeading.white-space`: none (same in every variant)
 - `fields.align-self`: none (same in every variant)
@@ -2939,6 +2991,7 @@ Figma: Form (435:8)
 - `label.font-weight`: none (same in every variant)
 - `label.letter-spacing`: none (same in every variant)
 - `label.line-height`: none (same in every variant)
+- `label.opacity`: none (same in every variant)
 - `label.white-space`: none (same in every variant)
 - `control.align-self`: none (same in every variant)
 - `control.display`: none (same in every variant)

@@ -717,6 +717,8 @@ export interface ChildProp {
   axis?: AxisInfo;
   /** Set for a prop that comes from one of the component's exposed nested instances. */
   exposed?: { path: string; name: string; entry: RegistryEntry; child: ChildProp };
+  /** An exposed property that Figma sets per variant: no fixed default, it follows the variant unless passed. */
+  derived?: boolean;
 }
 
 export function defaultVariantOf(set: IRComponentSet): IRVariant | undefined {
@@ -911,6 +913,13 @@ export function layers(set: IRComponentSet, defaultVariant: IRVariant): LayerInf
     return { path: part.path, parent: part.parent, part, role, ...(same.length > 1 && part.type === 'INSTANCE' ? { copies: same.slice(1) } : {}), ...(splitType ? { splitType } : {}) };
   });
 }
+
+/** CSS properties a Figma instance override sets on a layer inside the placed component. */
+const INNER_PROPS = (field: string, text: boolean): string[] =>
+  /^fontSize$/.test(field) ? ['font-size'] : /^(fontWeight|fontPostScriptName|fontStyle)$/.test(field) ? ['font-weight'] : field === 'fontFamily' ? ['font-family']
+    : /^lineHeight/.test(field) ? ['line-height'] : field === 'letterSpacing' ? ['letter-spacing'] : field === 'fills' ? (text ? ['color'] : ['background', 'background-color'])
+      : field === 'inheritTextStyleId' ? ['font-size', 'font-weight', 'font-family', 'line-height', 'letter-spacing'] : field === 'inheritFillStyleId' ? (text ? ['color'] : ['background', 'background-color'])
+      : field === 'textCase' ? ['text-transform'] : field === 'textDecoration' ? ['text-decoration'] : field === 'visible' ? ['display'] : field === 'opacity' ? ['opacity'] : [];
 
 export const isIcon = (p: IRPart) => p.type === 'INSTANCE' && Boolean(p.icon || (p.instanceOf && /^icons?\//i.test(p.instanceOf)));
 export const SHAPES = new Set(['VECTOR', 'BOOLEAN_OPERATION', 'STAR', 'LINE', 'POLYGON', 'REGULAR_POLYGON']);
@@ -1157,14 +1166,21 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
       const props: InstanceProp[] = ref.props.filter((x) => !names.has(x.prop));
       for (const { cp, read } of api) {
         const pass = p0.exposed && !cp.exposed ? exposedProps.find((e) => e.exposed!.path === l.path && e.exposed!.child.prop === cp.prop) : undefined;
-        if (pass) {
-          props.push({ prop: cp.prop, kind: 'expr', value: pass.prop, expr: (r) => r(pass.prop), from: [pass.prop] });
-          continue;
-        }
         const rows = baseVariants.flatMap((v) => { const x = inVariant(v)[k]; return x ? [[v, JSON.stringify(read(x))] as const] : []; });
         const own = read(part);
         const fallback = JSON.stringify(own);
         const lk = new Set(rows.map(([, t]) => t)).size > 1 ? lookupBy(rows, fallback) : undefined;
+        if (pass) {
+          // An exposed property that Figma sets per variant (Amount's suffix=Humanise sets Amount Base to Humanise):
+          // by default it follows that variant; a value passed in still wins.
+          const type = cp.axis ? cp.tsType(q) : cp.type;
+          if (lk && rows.every(([v, t]) => lookupValue(lk, v) === t)) {
+            pass.derived = true;
+            props.push({ prop: cp.prop, kind: 'expr', value: pass.prop, expr: (r) => `${r(pass.prop)} ?? ${lookupValueExpr(lk, r, type)}`, from: [pass.prop, lk.prop, ...(lk.override ? [lk.override.prop] : [])] });
+            for (const [v, t] of rows) { nestedCheck.checked++; if (lookupValue(lk, v) === t) nestedCheck.matched++; else nestedCheck.mismatches.push({ layer: l.path, variant: v.name, prop: cp.prop, code: lookupValue(lk, v), figma: t }); }
+          } else props.push({ prop: cp.prop, kind: 'expr', value: pass.prop, expr: (r) => r(pass.prop), from: [pass.prop] });
+          continue;
+        }
         // A table that maps each value of one of this component's props to the same value is a pass-through.
         const same = lk && !lk.override ? propAxes.find((a) => a.prop === lk.prop) : undefined;
         const identity = Boolean(same && !same.boolean && cp.type === 'string' && same.options.every((o) => (lk!.values[o] ?? lk!.fallback) === JSON.stringify(o) && (!cp.axis || cp.axis.options.includes(o))));
@@ -1292,6 +1308,51 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
       return seq.join('|') !== dom.filter((p) => seq.includes(p)).join('|');
     });
   }));
+  /**
+   * Layers inside nested components that a variant restyles (Figma instance overrides): Blade's Amount sets the size
+   * of Amount Base's digits per variant. Each becomes a role that sets only the overridden properties.
+   */
+  function innerRoles(): RoleDef[] {
+    const out: RoleDef[] = [];
+    for (const l of all) {
+      if (l.part.type !== 'INSTANCE' || isIcon(l.part) || !l.part.instanceComponentId) continue;
+      const entry = opts.lookup?.(l.part.instanceComponentId);
+      if (!entry || entry.component === name) continue;
+      const restyled = new Map<string, Set<string>>();
+      for (const v of set!.variants) for (const x of partIn(v, l.path)?.inner ?? []) restyled.set(x.path, new Set([...(restyled.get(x.path) ?? []), ...x.fields]));
+      if (!restyled.size) continue;
+      const childDefault = defaultVariantOf(entry.set);
+      const childRoles = new Map((childDefault ? layers(entry.set, childDefault) : []).map((c) => [c.path, c]));
+      for (const [path, fields] of restyled) {
+        const child = childRoles.get(path);
+        if (!child) continue;
+        const text = child.part.type === 'TEXT';
+        const props = [...new Set([...fields].flatMap((f) => INNER_PROPS(f, text)))];
+        if (!props.length) continue;
+        out.push({
+          role: `${l.role}__${child.role}`,
+          kind: 'node',
+          display: text ? 'block' : child.part.style.layoutMode ? 'flex' : 'block',
+          parent: l.role,
+          inner: { host: l.role, layer: child.role, props },
+          find: (v): Found | undefined => {
+            const x = partIn(v, l.path)?.inner?.find((i) => i.path === path);
+            return x ? { style: x.style, part: { path, parent: '', name: path, type: x.type, style: x.style, ...(x.hidden ? { hidden: true } : {}) } } : undefined;
+          },
+        });
+      }
+    }
+    return out;
+  }
+  /** Nested components placed over the layout (a focus ring): Figma stretches them with constraints, so they fill their box. */
+  function overlayFill(): string {
+    const over = all.filter((l) => l.part.type === 'INSTANCE' && !isIcon(l.part) && l.part.instanceComponentId && inst(l.part) && set!.variants.some((v) => {
+      const p = partIn(v, l.path);
+      const parent = l.parent ? partIn(v, l.parent)?.style : v.style;
+      return p && !p.hidden && (p.style.absolute || !parent?.layoutMode);
+    }));
+    return over.map((l) => `\n.root .${l.role} > *, .root .${l.role} ::part(root) {\n  height: 100%;\n  width: 100%;\n}\n`).join('');
+  }
   const roles: RoleDef[] = [
     { role: 'root', kind: 'node', display: rootDisplay, find: (v): Found => ({ style: v.style }) },
     ...all.map<RoleDef>((l) => {
@@ -1317,6 +1378,7 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
         },
       };
     }),
+    ...innerRoles(),
   ];
   const focusNative = radio?.kind === 'control' ? ':has(> .input:focus-visible)' : radio || opts.behavior === 'input' ? ':focus-within' : ':focus-visible';
   const model: StyleModel = {
@@ -1405,7 +1467,8 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   const inHeader = (l: LayerInfo): boolean => Boolean(disclosure) && (l.path === disclosure!.header || (l.parent !== '' && byPath.has(l.parent) && inHeader(byPath.get(l.parent)!)));
   const render = (l: LayerInfo, indent: string): string => {
     const p = l.part;
-    const cls = `className={styles.${l.role}}`;
+    // data-layer: a stable hook on every layer, so a component that places this one can restyle a layer as Figma does.
+    const cls = `className={styles.${l.role}} data-layer="${l.role}"`;
     let el: string;
     const ir = inputRole(l);
     if (dialog && l.role === dialog.title && p.type === 'TEXT') {
@@ -1553,7 +1616,7 @@ ${indent}/>`;
     ...(hasDisabled ? ['  /** Figma: State=Disabled. */\n  disabled?: boolean;'] : []),
     ...booleans.map((b) => `  /** ${b.description ? `${b.description} ` : ''}Figma: ${b.p.name} (boolean). Default ${b.p.default}. */\n  ${b.prop}?: boolean;`),
     ...texts.map((t) => `  /** ${t.description ? `${t.description} ` : ''}Figma: ${t.p.name} (text). */\n  ${t.prop}?: ReactNode;`),
-    ...exposedProps.map((e) => `  /** Figma: ${e.exposed!.name} › ${e.figma} (exposed nested instance). Default ${String(e.default)}. */\n  ${e.prop}?: ${e.tsType(q)};`),
+    ...exposedProps.map((e) => `  /** Figma: ${e.exposed!.name} › ${e.figma} (exposed nested instance). Default ${e.derived ? 'follows the variant, as in Figma' : String(e.default)}. */\n  ${e.prop}?: ${e.tsType(q)};`),
     ...repeatList.map((r) => `  /** Your own ${r.component} items instead of the Figma examples. ${name} sets ${r.driven.length ? r.driven.map((d) => d.prop).join(', ') : 'nothing'} on each one you do not set yourself${r.driven.some((d) => d.numbered) ? ' (numbered by position)' : ''}. */\n  ${r.prop}?: ReactNode;`),
     ...slotList.map((x) => `  /** ${x.description ? `${x.description} ` : ''}Content for ${x.kind === 'swap' ? `the "${x.figma}" slot (Figma instance swap)` : `the "${x.figma}" placeholder`}; the Figma default when not set. */\n  ${x.prop}?: ReactNode;`),
     ...(collection?.item === 'option' ? [
@@ -1595,7 +1658,7 @@ ${indent}/>`;
     ...booleans.map((b) => (b === trig?.bool ? `${b.prop}: ${b.prop}Prop` : `${b.prop} = ${String(b.p.default) === 'true'}`)),
     ...(trig ? [`defaultExpanded = ${trig.defaultOpen}`, 'onExpandedChange'] : []),
     ...texts.map((t) => `${t.prop} = ${q(String(t.p.default))}`),
-    ...exposedProps.map((e) => `${e.prop} = ${(e.axis ? axisLiteral(e.axis, String(e.default), q) : typeof e.default === 'boolean' ? String(e.default) : q(String(e.default)))}`),
+    ...exposedProps.map((e) => (e.derived ? e.prop : `${e.prop} = ${(e.axis ? axisLiteral(e.axis, String(e.default), q) : typeof e.default === 'boolean' ? String(e.default) : q(String(e.default)))}`)),
     ...slotList.map((x) => x.prop),
     ...repeatList.map((r) => r.prop),
     ...(collection?.item === 'option' ? ['selected', 'defaultSelected', 'onSelectedChange'] : []),
@@ -1996,7 +2059,7 @@ ${typeAxis?.options.includes('side-drawer') ? `.root:modal[data-${typeAxis.attr}
 ${input.clear ? `:where(.${input.clear}) { appearance: none; border: 0; padding: 0; margin: 0; background: none; color: inherit; cursor: pointer; }\n` : ''}` : ''}${radio?.kind === 'field' && labelLayer ? `
 .root:not([data-disabled]) label { cursor: pointer; }
 ` : ''}
-${styles.css}`;
+${styles.css}${overlayFill()}`;
 
   // Stories
   const multi = axes.filter((a) => a.values.length > 1);

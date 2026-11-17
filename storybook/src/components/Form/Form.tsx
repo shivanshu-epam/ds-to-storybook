@@ -19,21 +19,21 @@ export interface FormProps extends Omit<HTMLAttributes<HTMLDivElement>, 'childre
 export function Form({ state = 'default', disabled = false, className, ...rest }: FormProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-state={state} data-disabled={disabled ? '' : undefined} aria-disabled={disabled || undefined} {...rest}>
-      <span className={styles.sectionHeading}>{"Personal information"}</span>
-      <div className={styles.fields}>
-        <span className={styles.fieldName}><InputField required labelText="Full name" valueText="Jordan Lee" /></span>
-        <span className={styles.fieldEmail}><InputField required /></span>
-        <div className={styles.fieldCountry}>
-          <span className={styles.label}>{"Country"}</span>
-          <span className={styles.control}><DropdownTrigger size="medium" /></span>
+      <span className={styles.sectionHeading} data-layer="sectionHeading">{"Personal information"}</span>
+      <div className={styles.fields} data-layer="fields">
+        <span className={styles.fieldName} data-layer="fieldName"><InputField required labelText="Full name" valueText="Jordan Lee" /></span>
+        <span className={styles.fieldEmail} data-layer="fieldEmail"><InputField required /></span>
+        <div className={styles.fieldCountry} data-layer="fieldCountry">
+          <span className={styles.label} data-layer="label">{"Country"}</span>
+          <span className={styles.control} data-layer="control"><DropdownTrigger size="medium" /></span>
         </div>
-        <span className={styles.fieldTerms} aria-hidden="true" />
+        <span className={styles.fieldTerms} data-layer="fieldTerms" aria-hidden="true" />
       </div>
-      <div className={styles.actions}>
-        <span className={styles.secondaryButton}><Button variant="secondary" size="md" children="Cancel" /></span>
-        <span className={styles.primaryButton}><Button size="md" children={(({"submitting":"Submitting..."} as Record<string, string>)[String(state)] ?? "Submit")} /></span>
+      <div className={styles.actions} data-layer="actions">
+        <span className={styles.secondaryButton} data-layer="secondaryButton"><Button variant="secondary" size="md" children="Cancel" /></span>
+        <span className={styles.primaryButton} data-layer="primaryButton"><Button size="md" children={(({"submitting":"Submitting..."} as Record<string, string>)[String(state)] ?? "Submit")} /></span>
       </div>
-      <span className={styles.statusBanner} aria-hidden="true" />
+      <span className={styles.statusBanner} data-layer="statusBanner" aria-hidden="true" />
     </div>
   );
 }

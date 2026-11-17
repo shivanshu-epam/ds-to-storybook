@@ -39,8 +39,10 @@ export interface FigmaNode {
   componentId?: string;
   /** An instance inside a component whose properties Figma shows on the component's own panel ("expose nested instance"). */
   isExposedInstance?: boolean;
+  /** Instances: the nodes this instance overrides and which fields. */
+  overrides?: { id: string; overriddenFields: string[] }[];
   characters?: string;
-  style?: { fontFamily?: string; fontSize?: number; fontWeight?: number; lineHeightPx?: number; letterSpacing?: number; textCase?: string; textDecoration?: string; textAlignHorizontal?: string };
+  style?: { fontFamily?: string; fontStyle?: string; fontSize?: number; fontWeight?: number; lineHeightPx?: number; letterSpacing?: number; textCase?: string; textDecoration?: string; textAlignHorizontal?: string };
   opacity?: number;
   strokeAlign?: 'INSIDE' | 'OUTSIDE' | 'CENTER';
   individualStrokeWeights?: { top: number; right: number; bottom: number; left: number } | null;
@@ -51,6 +53,8 @@ export interface FigmaNode {
   primaryAxisAlignItems?: 'MIN' | 'CENTER' | 'MAX' | 'SPACE_BETWEEN';
   counterAxisAlignItems?: 'MIN' | 'CENTER' | 'MAX' | 'BASELINE';
   layoutPositioning?: 'AUTO' | 'ABSOLUTE';
+  /** How a layer outside auto layout follows its parent's size. */
+  constraints?: { horizontal?: string; vertical?: string };
   layoutWrap?: 'NO_WRAP' | 'WRAP';
   clipsContent?: boolean;
   componentPropertyReferences?: { visible?: string; characters?: string; mainComponent?: string };

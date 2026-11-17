@@ -32,21 +32,21 @@ export interface InputFieldProps extends Omit<HTMLAttributes<HTMLDivElement>, 'c
 export function InputField({ state = 'default', disabled = false, required = false, helperMessage = false, labelText = 'Email address', valueText = 'Enter your email', helperText = 'We\'ll never share your email', errorText = 'Enter a valid email address', successText = 'Email verified', className, ...rest }: InputFieldProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-state={state} data-disabled={disabled ? '' : undefined} aria-disabled={disabled || undefined} {...rest}>
-      <div className={styles.labelRow}>
-        <span className={styles.label}>{labelText}</span>
+      <div className={styles.labelRow} data-layer="labelRow">
+        <span className={styles.label} data-layer="label">{labelText}</span>
         {required && (
-          <span className={styles.required}>{"*"}</span>
+          <span className={styles.required} data-layer="required">{"*"}</span>
         )}
       </div>
-      <span className={styles.control}><InputControl /></span>
+      <span className={styles.control} data-layer="control"><InputControl /></span>
       {helperMessage && (
-        <span className={styles.helperText}>{helperText}</span>
+        <span className={styles.helperText} data-layer="helperText">{helperText}</span>
       )}
-      <div className={styles.statusRow}>
-        <span className={styles.errorIcon} aria-hidden="true"><Icon name="statusError16" /></span>
-        <span className={styles.errorText}>{errorText}</span>
-        <span className={styles.successIcon} aria-hidden="true"><Icon name="formCheck16" /></span>
-        <span className={styles.successText}>{successText}</span>
+      <div className={styles.statusRow} data-layer="statusRow">
+        <span className={styles.errorIcon} data-layer="errorIcon" aria-hidden="true"><Icon name="statusError16" /></span>
+        <span className={styles.errorText} data-layer="errorText">{errorText}</span>
+        <span className={styles.successIcon} data-layer="successIcon" aria-hidden="true"><Icon name="formCheck16" /></span>
+        <span className={styles.successText} data-layer="successText">{successText}</span>
       </div>
     </div>
   );

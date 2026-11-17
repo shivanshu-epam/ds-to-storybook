@@ -44,6 +44,7 @@
   display: block;
   flex-shrink: 1;
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  opacity: 1;
   text-align: center;
   white-space: nowrap;
 }

@@ -68,6 +68,11 @@ export interface RoleDef {
   inheritColor?: boolean;
   /** Position among its siblings in a variant, when Figma reorders them between variants (CSS order). */
   order?: (v: IRVariant) => number | undefined;
+  /**
+   * A layer inside a nested component that this component restyles: the selector after the host's role
+   * (" [data-layer=…]" in React, a ::part in Web Components), and the only CSS properties it may set.
+   */
+  inner?: { host: string; layer: string; props: string[] };
 }
 
 export interface StyleModel {
@@ -163,18 +168,40 @@ function nodeDeclarations(role: RoleDef, found: Found, variant: IRVariant, r: To
     out.left = px(s.x ?? 0);
     out.top = px(s.y ?? 0);
   }
+  // Figma constraints: a layer outside auto layout that stretches, sticks to the far side, centres or scales with its
+  // parent (the inside of a focus ring stretched over a button) follows the parent's size instead of a fixed box.
+  const pin = role.role !== 'root' && parent && !inFlow && s.constraints ? s.constraints : undefined;
+  const pinned = { w: false, h: false };
+  if (pin) {
+    const pct = (n: number, of?: number) => (of ? `${Math.round((n / of) * 10000) / 100}%` : px(n));
+    const along = (c: string | undefined, pos: number, size: number | undefined, of: number | undefined, start: 'left' | 'top', end: 'right' | 'bottom', dim: 'width' | 'height') => {
+      if (!c || size === undefined || of === undefined) return false;
+      if (c === 'LEFT_RIGHT' || c === 'TOP_BOTTOM') { out[start] = px(pos); out[end] = px(of - pos - size); return true; }
+      if (c === 'RIGHT' || c === 'BOTTOM') { delete out[start]; out[end] = px(of - pos - size); return false; }
+      if (c === 'CENTER') { out[start] = `calc(50% - ${px(of / 2 - pos)})`; return false; }
+      if (c === 'SCALE') { out[start] = pct(pos, of); out[dim] = pct(size, of); return true; }
+      return false;
+    };
+    pinned.w = along(pin.h, s.x ?? 0, s.width, parent?.width, 'left', 'right', 'width');
+    pinned.h = along(pin.v, s.y ?? 0, s.height, parent?.height, 'top', 'bottom', 'height');
+  }
   const fixedW = s.sizingH === 'FIXED' || (!s.sizingH && !s.layoutMode && type !== 'TEXT') || (!inFlow && role.role !== 'root' && type !== 'TEXT');
   const fixedH = s.sizingV === 'FIXED' || (!s.sizingV && !s.layoutMode && type !== 'TEXT') || (!inFlow && role.role !== 'root' && type !== 'TEXT');
   if (s.sizingH === 'FILL' && inFlow) {
     if (parentRow) out.flex = '1 1 0';
     else out['align-self'] = 'stretch';
-  } else if (fixedW && s.width !== undefined && !(type === 'INSTANCE' && found.part?.instanceOf && !(found.part.icon || /^icons?\//i.test(found.part.instanceOf)))) {
+  } else if (pinned.w) {
+    // The constraint sets the width (stretch or scale).
+  } else if (fixedW && s.width !== undefined && (!inFlow || !(type === 'INSTANCE' && found.part?.instanceOf && !(found.part.icon || /^icons?\//i.test(found.part.instanceOf))))) {
+    // A nested component sizes itself in the flow; an overlay one (a focus ring) takes Figma's size, set by its constraints.
     out.width = px(s.width);
   }
   if (s.sizingV === 'FILL' && inFlow) {
     if (!parentRow) out.flex = '1 1 0';
     else out['align-self'] = 'stretch';
-  } else if (fixedH && s.height !== undefined && type !== 'TEXT' && !(type === 'INSTANCE' && found.part?.instanceOf && !(found.part.icon || /^icons?\//i.test(found.part.instanceOf)))) {
+  } else if (pinned.h) {
+    // The constraint sets the height.
+  } else if (fixedH && s.height !== undefined && type !== 'TEXT' && (!inFlow || !(type === 'INSTANCE' && found.part?.instanceOf && !(found.part.icon || /^icons?\//i.test(found.part.instanceOf))))) {
     out.height = px(s.height);
   }
   if (inFlow) out['flex-shrink'] = s.sizingH === 'FIXED' && parentRow ? '0' : out['flex-shrink'] ?? '1';
@@ -188,6 +215,8 @@ function nodeDeclarations(role: RoleDef, found: Found, variant: IRVariant, r: To
   }
   const order = role.order?.(variant);
   if (order !== undefined) out.order = String(order);
+  // Layer opacity on any layer, text included (Blade hides Amount Base's currency code with opacity 0).
+  if (out.opacity === undefined && type === 'TEXT') out.opacity = s.opacity !== undefined ? String(s.opacity) : '1';
   return out;
 }
 
@@ -305,6 +334,15 @@ export function generateStyles(variants: IRVariant[], model: StyleModel, resolve
   for (const role of model.roles) {
     table.set(role.role, usable.map((v) => {
       const found = role.find(v);
+      // A restyled layer inside a nested component: only the properties this component overrides, nothing where it does not.
+      if (role.inner) {
+        if (!found) return {};
+        if (found.part?.hidden) return role.inner.props.includes('display') ? { display: 'none' } : {};
+        const d = declarations(role, found, v, resolver);
+        const picked = Object.fromEntries(Object.entries(d).filter(([k]) => role.inner!.props.includes(k)));
+        if (role.inner.props.includes('display')) picked.display = role.display ?? 'block';
+        return picked;
+      }
       // A layer missing from a variant is hidden there. Generic layers bound to a boolean property (includeHidden)
       // are hidden too when absent: the property can show a hidden layer, but not one the variant does not have.
       if (!found) return role.presence || (role.includeHidden && role.kind === 'node') ? { display: 'none' } : {};
@@ -410,6 +448,12 @@ export function generateStyles(variants: IRVariant[], model: StyleModel, resolve
     const others = conds.filter((c) => c.target !== 'root');
     const root = `.${rootClass}${where(attrs + onRoot)}`;
     if (rule.role === 'root') return root + where(others.map((c) => `:has(.${c.target}${c.selector})`).join(''));
+    const innerOf = model.roles.find((x) => x.role === rule.role)?.inner;
+    if (innerOf) {
+      // React: the nested component marks its layers with data-layer. Web Components: with part, reached through ::part.
+      const base = root + where(others.map((c) => `:has(.${c.target}${c.selector})`).join('')) + ` .${innerOf.host}`;
+      return `${base} [data-layer="${innerOf.layer}"], ${base} ::part(${innerOf.layer})`;
+    }
     const chain = [...ancestors(rule.role)].reverse();
     const inChain = others.filter((c) => c.target === rule.role || chain.includes(c.target));
     const outside = others.filter((c) => !inChain.includes(c));

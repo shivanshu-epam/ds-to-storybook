@@ -76,8 +76,8 @@ export class DsDropdown extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-size=${this.size} data-state=${this.state} data-force-state=${this.forceState ?? nothing}>
-        <span id="combobox" role="button" tabindex=${false ? '-1' : '0'} aria-expanded=${this.open ? 'true' : 'false'} aria-haspopup="menu" aria-controls="popup" aria-label=${this.accessibleLabel ?? nothing} @click=${() => this.setOpen(!this.open)} @keydown=${this.comboboxKeyDown} class="trigger"><ds-dropdown-trigger .size=${this.size} .expanded=${(({ "expanded": true } as Record<string, boolean>)[String(this.state)] ?? false)}></ds-dropdown-trigger></span>
-        <span id="popup" class="menu"><ds-dropdown-menu></ds-dropdown-menu></span>
+        <span id="combobox" role="button" tabindex=${false ? '-1' : '0'} aria-expanded=${this.open ? 'true' : 'false'} aria-haspopup="menu" aria-controls="popup" aria-label=${this.accessibleLabel ?? nothing} @click=${() => this.setOpen(!this.open)} @keydown=${this.comboboxKeyDown} class="trigger" part="trigger"><ds-dropdown-trigger .size=${this.size} .expanded=${(({ "expanded": true } as Record<string, boolean>)[String(this.state)] ?? false)}></ds-dropdown-trigger></span>
+        <span id="popup" class="menu" part="menu"><ds-dropdown-menu></ds-dropdown-menu></span>
       </div>`;
   }
 }

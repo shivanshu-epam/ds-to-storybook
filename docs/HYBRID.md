@@ -345,7 +345,29 @@ Second run, the same day: `ds-sync interpret --only <the 25> --budget 0.5` answe
 - **Failing measures overall:** 20 (was 68 before the descriptions): 17 Accessibility (Blade's palette contrast) and 3 Visual fidelity.
 - API match is unchanged at 76 of 207: these runs added descriptions, not renames.
 
-## 17. Reproduce
+## 17. Visual fidelity across Blade (17 Nov 2026)
+
+The first full visual check of Blade (50 components, 2,060 variants, each compared with Figma's own render) found 875 matching, 528 to check and 657 different. The failures were sorted into generator bugs and things code cannot match, and the generator bugs fixed:
+
+| Cause | Fix | Effect |
+| --- | --- | --- |
+| Sets other components use but that live outside the component pages (internal pages, "_" frames), and standalone components (no variants), rendered as empty boxes: Blade's focus rings, input focus rings, tooltip and popover arrows | Discovery adds every local set or standalone component that a found component places (icons excepted); a standalone component is a set of one variant | 75 empty boxes → 23 (16 of them a Figma component that is itself empty) |
+| A nested component placed over the layout (a focus ring) kept its own Figma size (66 × 32) instead of the size Figma stretched it to | Such an instance's box takes Figma's size and the component fills it; layers outside auto layout now follow Figma constraints (left-right, right, centre, scale) | Focus states match |
+| Layers inside a nested component that a variant restyles (Figma instance overrides: Amount sets the size of Amount Base's digits per variant, and swaps text styles) were ignored | The IR records restyled inner layers; generated components mark every layer with `data-layer` (React) and `part` (Web Components); the parent sets only the overridden properties through them | Amount: 0 → 94 variants matching or close |
+| Exposed nested properties that Figma sets per variant (Amount's suffix sets Amount Base's "don't edit" suffix) had a fixed default | They follow the variant by default; a value passed in still wins | Amount's layouts per suffix and currency |
+| Text with opacity 0 (Amount Base's hidden currency code) was drawn | Text layers carry their opacity | |
+| Figma's API reports some "Medium" text styles as weight 400 | The weight comes from the style name when it names one | Display, Heading, Amount |
+| Invisible overflow (a transparent layer wider than its parent) widened the page and shifted captures by a pixel | The visual check clips horizontal overflow | |
+
+Result: **1,042 of 2,060 matching** (was 875), 647 to check, 371 different (was 657); 311 variants better, 1 worse. Button 443 of 600 (was 351), Link 148 of 168 (was 112), no Button or Link variant differs any more.
+
+What is left is mostly not the generator's:
+- **Fonts:** Blade's Display and Heading use "TASA Orbiter Display", which is not published; the published "TASA Orbiter" has other metrics, so 275 Amount, Display and Heading variants differ in size. Supplying the font would fix them.
+- **"To check" (2–10%):** text anti-aliasing between Figma and Chrome on small text.
+
+Design System AI is unchanged: 990 of 1,390 variants matching before and after, none worse, and 312 of 312 story tests in both outputs.
+
+## 18. Reproduce
 
 - Blade Storybook inventory: `fetch('https://blade.razorpay.com/index.json')`.
 - Blade source: `git clone --depth 1 --filter=blob:none --sparse https://github.com/razorpay/blade`, with sparse paths `packages/blade/src/components` and `packages/blade-plugin`.

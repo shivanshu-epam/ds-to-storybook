@@ -43,6 +43,8 @@ export interface IRStyle {
   clips?: boolean;
   /** Absolutely positioned inside an auto-layout parent. */
   absolute?: boolean;
+  /** Figma constraints, when not the default left/top: LEFT_RIGHT, RIGHT, CENTER, SCALE (and TOP_BOTTOM, BOTTOM, CENTER, SCALE). */
+  constraints?: { h?: string; v?: string };
   /** Position relative to the parent node (px). */
   x?: number;
   y?: number;
@@ -92,6 +94,18 @@ export interface IRPart {
   exposed?: boolean;
   /** Exposed nested instances inside this instance, with the configuration this instance gives them. */
   exposedInstances?: IRExposedInstance[];
+  /** Layers inside this instance that this placement restyles (text size, colour, visibility): path in the component, the Figma fields, the style. */
+  inner?: IRInnerOverride[];
+}
+
+export interface IRInnerOverride {
+  /** Path of the layer inside the placed component, as that component names its own parts. */
+  path: string;
+  type: string;
+  /** Figma's overriddenFields for the layer. */
+  fields: string[];
+  style: IRStyle;
+  hidden?: boolean;
 }
 
 /** An exposed nested instance inside a placed instance (Accordion -> item -> Leading Item). */

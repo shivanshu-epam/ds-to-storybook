@@ -134,7 +134,7 @@ export async function runVisual(source: VisualSource, o: VisualOptions): Promise
         continue;
       }
       await page.evaluate('document.fonts.ready');
-      await page.addStyleTag({ content: 'html, body, #storybook-root { background: #ffffff !important; } *, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }' });
+      await page.addStyleTag({ content: 'html, body { overflow-x: clip !important; } html, body, #storybook-root { background: #ffffff !important; } *, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }' });
       const dir = join(o.outDir, c.name);
       mkdirSync(dir, { recursive: true });
       for (const v of c.variants) {

@@ -58,6 +58,7 @@
   font-size: 16px;
   font-weight: 600;
   line-height: 24px;
+  opacity: 1;
   white-space: normal;
 }
 
@@ -223,6 +224,7 @@
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
+  opacity: 1;
   order: 0;
   white-space: normal;
 }
@@ -236,6 +238,7 @@
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
+  opacity: 1;
   order: 0;
   white-space: normal;
 }
@@ -249,6 +252,7 @@
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
+  opacity: 1;
   order: 0;
   white-space: normal;
 }
@@ -262,6 +266,7 @@
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
+  opacity: 1;
   order: 0;
   white-space: normal;
 }
@@ -318,6 +323,7 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
+  opacity: 1;
   white-space: normal;
 }
 
@@ -375,6 +381,7 @@
   font-weight: 500;
   letter-spacing: 0.03px;
   line-height: 16px;
+  opacity: 1;
   white-space: nowrap;
 }
 
@@ -434,6 +441,7 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
+  opacity: 1;
   white-space: normal;
 }
 
@@ -491,6 +499,7 @@
   font-weight: 500;
   letter-spacing: 0.03px;
   line-height: 16px;
+  opacity: 1;
   white-space: nowrap;
 }
 
@@ -551,6 +560,7 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
+  opacity: 1;
   white-space: normal;
 }
 
@@ -621,6 +631,7 @@
   font-size: 11px;
   font-weight: 400;
   line-height: 16px;
+  opacity: 1;
   white-space: normal;
 }
 
@@ -808,6 +819,7 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
+  opacity: 1;
   white-space: normal;
   width: 1212px;
 }
@@ -834,6 +846,7 @@
   font-weight: 500;
   letter-spacing: 0.03px;
   line-height: 16px;
+  opacity: 1;
   white-space: nowrap;
 }
 
@@ -861,6 +874,7 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
+  opacity: 1;
   white-space: normal;
 }
 
@@ -886,6 +900,7 @@
   font-weight: 500;
   letter-spacing: 0.03px;
   line-height: 16px;
+  opacity: 1;
   white-space: nowrap;
 }
 
@@ -914,5 +929,6 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
+  opacity: 1;
   white-space: normal;
 }

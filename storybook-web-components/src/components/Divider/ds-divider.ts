@@ -43,7 +43,7 @@ export class DsDivider extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-orientation=${this.orientation} data-style=${this.styleVariant} data-size=${this.size} data-color=${this.color} data-state=${this.state} ?data-disabled=${this.disabled} aria-disabled=${this.disabled ? 'true' : nothing} data-force-state=${this.forceState ?? nothing}>
-        <div class="line"></div>
+        <div class="line" part="line"></div>
       </div>`;
   }
 }

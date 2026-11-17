@@ -36,9 +36,9 @@ export class DsBreadcrumbItem extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-type=${this.type} ?data-disabled=${this.disabled} aria-disabled=${this.disabled ? 'true' : nothing} data-force-state=${this.forceState ?? nothing}>
-        ${this.hasIcon ? html`<span class="leadingIcon" aria-hidden="true">${icon("navHome16")}</span>` : nothing}
-        <span class="label">${this.label}</span>
-        <span class="moreIcon" aria-hidden="true">${icon("actionMore16")}</span>
+        ${this.hasIcon ? html`<span class="leadingIcon" part="leadingIcon" aria-hidden="true">${icon("navHome16")}</span>` : nothing}
+        <span class="label" part="label">${this.label}</span>
+        <span class="moreIcon" part="moreIcon" aria-hidden="true">${icon("actionMore16")}</span>
       </div>`;
   }
 }
