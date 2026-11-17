@@ -2,8 +2,9 @@
 import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
 import { inModes } from '../../storybook/modes';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
-import { matrix } from '../../storybook/layout';
+import { matrix, shadowOf } from '../../storybook/layout';
 import './ds-dropdown';
 
 const meta = {
@@ -43,4 +44,26 @@ export const SizeAndState: Story = {
       if (r === "Large" && c === "Expanded") return html`<ds-dropdown size="large" state="expanded"></ds-dropdown>`;
       return html``;
     }),
+};
+
+/** WAI-ARIA combobox (select-only): opens with a click, Enter, Space or ArrowDown; Escape closes (test only). */
+export const OpensAndCloses: Story = {
+  tags: ['!dev'],
+  name: 'Opens and closes',
+  play: async ({ canvasElement }) => {
+    const host = canvasElement.querySelector('ds-dropdown')!;
+    const onChange = fn();
+    host.addEventListener('open-change', onChange);
+    const box = (shadowOf(canvasElement, 'ds-dropdown') as unknown as HTMLElement).querySelector<HTMLElement>('#combobox')!;
+    await expect(box).toHaveAttribute('role', 'button');
+    await expect(box).toHaveAttribute('aria-expanded', 'false');
+    await userEvent.click(box);
+    await expect(box).toHaveAttribute('aria-expanded', 'true');
+    await expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ detail: true }));
+    await userEvent.keyboard('{Escape}');
+    await expect(box).toHaveAttribute('aria-expanded', 'false');
+    box.focus();
+    await userEvent.keyboard('{ArrowDown}');
+    await expect(box).toHaveAttribute('aria-expanded', 'true');
+  },
 };

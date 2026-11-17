@@ -87,7 +87,7 @@ export interface GenerateConfig {
 
 export interface PlannedComponent {
   name: string;
-  template: 'action' | 'checkbox' | 'checkbox-single' | 'radio-single' | 'disclosure' | 'button' | 'link' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
+  template: 'action' | 'checkbox' | 'checkbox-single' | 'radio-single' | 'combobox' | 'disclosure' | 'button' | 'link' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
   sets: Record<string, string>;
   /** Storybook title; default Components/<name>. */
   title?: string;
@@ -281,16 +281,21 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   const modeNames = [...new Set(Object.values(tokens.modes).flat())];
   // Scorecards (QUALITY.md section 3): per component, one status per measure.
   const issueCount = (i: string | Record<string, string> | undefined) => (!i ? 0 : typeof i === 'string' ? 1 : Object.keys(i).length);
+  // Effective behaviour per component: a template, a collection the generic template recognised, or a trigger disclosure.
+  const effectiveOf = (c: PlannedComponent, core?: GenericCore) => (core?.collection ? `collection:${core.collection.role}` : core?.trigger ? 'disclosure' : c.template === 'combobox' ? (core?.combo ? (core.combo.kind === 'combobox' ? 'combobox' : 'menu-button') : 'generic') : c.template);
+  const effective = new Map(results.map(({ c, result }) => [c.name, effectiveOf(c, result.core as GenericCore | undefined)]));
   const cards = results.map(({ c, ctx, result }) => {
     const sets = Object.values(ctx.sets);
     const docs = decisionDocs(sets);
     const core = result.core as GenericCore | undefined;
-    // Effective behaviour: a template, a collection the generic template recognised, or a trigger disclosure.
-    const template = core?.collection ? `collection:${core.collection.role}` : core?.trigger ? 'disclosure' : c.template;
-    const itemTemplate = core?.repeats?.length ? plan.find((p) => p.name === core.repeats![0]!.component)?.template : undefined;
+    const template = effective.get(c.name)!;
+    // A composite gets its behaviour from its parts: repeated items, or a nested component with a behaviour (a menu holding a listbox).
+    const itemTemplate = core?.repeats?.length ? effective.get(core.repeats[0]!.component) : undefined;
+    const nestedTemplate = (core?.layers ?? []).map((l) => (l.part.type === 'INSTANCE' && l.part.instanceComponentId ? registry.get(l.part.instanceComponentId)?.component : undefined)).map((n) => (n && n !== c.name ? effective.get(n) : undefined)).find((t) => t && BEHAVIOUR[t]);
     const itemBehaviour = itemTemplate ? BEHAVIOUR[itemTemplate] : undefined;
+    const nestedBehaviour = nestedTemplate ? BEHAVIOUR[nestedTemplate] : undefined;
     return buildScorecard({
-      name: c.name, template, sets, report: result.report, ...(itemBehaviour ? { itemBehaviour } : {}),
+      name: c.name, template, sets, report: result.report, ...(itemBehaviour ? { itemBehaviour } : {}), ...(nestedBehaviour ? { nestedBehaviour } : {}),
       css: (result.core as GenericCore | undefined)?.css ?? result.files.find((f) => f.path.endsWith('.module.css'))?.content ?? '',
       buildingBlock: blockOf(c), ...(visual[c.name] ? { visual: visual[c.name] } : {}),
       knownIssues: issueCount(gen.overrides?.knownIssues?.[c.name]),

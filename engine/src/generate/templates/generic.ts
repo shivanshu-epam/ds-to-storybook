@@ -230,7 +230,24 @@ export interface DialogLayers {
   backdrop: string;
 }
 
-export type Behavior = 'switch' | 'checkbox-single' | 'radio-single' | 'disclosure' | 'button' | 'link' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog';
+export type Behavior = 'switch' | 'checkbox-single' | 'radio-single' | 'disclosure' | 'button' | 'link' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'combobox';
+
+/** Combobox pack: the axis whose value shows the popup, the field that becomes the combobox, the popup and its label. */
+export interface Combo {
+  axis: AxisInfo;
+  /** Axis value when open, and the one used when closed. */
+  open: string;
+  closed: string;
+  field: string;
+  popup: string;
+  label?: string;
+  /** Boolean prop that shows the label layer, when one does. */
+  labelShown?: string;
+  /** Accessible name when no label is shown. */
+  defaultLabel: string;
+  /** combobox: the popup holds selectable options (listbox). menu-button: it holds actions (menu). */
+  kind: 'combobox' | 'menu-button';
+}
 
 export function switchAxis(axes: AxisInfo[]): { axis: AxisInfo; on: string; off: string } | undefined {
   // Prefer an axis named for the on/off state; never one that names another state (expanded, loading, error, mixed).
@@ -286,6 +303,8 @@ export interface GenericCore {
   rootTag?: 'button' | 'a';
   /** Disclosure with a nested trigger button: the boolean prop, the trigger layer and the panel layer. */
   trigger?: { prop: string; trigger: string; panel: string };
+  /** Combobox pack (select-only): field, popup and the open axis. */
+  combo?: Combo;
   /** Collection pack: group role, item semantics and selection. */
   collection?: Collection;
   /** Repeated children the parent configures: the layer, the prop that replaces Figma's examples, what it sets on each. */
@@ -339,7 +358,7 @@ export interface GenericCore {
 export interface RegistryEntry {
   component: string;
   importPath: string;
-  kind: 'action' | 'generic' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'disclosure' | 'button' | 'link';
+  kind: 'action' | 'generic' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'disclosure' | 'button' | 'link' | 'combobox';
   set: IRComponentSet;
 }
 
@@ -398,8 +417,18 @@ export function reactAttrs(props: InstanceProp[], text?: string): string[] {
  * - items with a checked axis but no behaviour (chips) -> group, multiple selection, items become checkboxes.
  */
 export interface Collection {
-  role: 'group' | 'radiogroup' | 'tablist';
-  item: 'own' | 'own-radio' | 'tab' | 'checkbox';
+  role: 'group' | 'radiogroup' | 'tablist' | 'listbox' | 'menu';
+  item: 'own' | 'own-radio' | 'tab' | 'checkbox' | 'option' | 'menuitem';
+  /** Listbox: the axis value that allows several selected options (Selection Type = Multi). None: one. */
+  multiple?: { prop: string; value: string };
+  /** Items that are not options or menu items (separators, section headings): the item's axis and each Figma copy's kind. */
+  kinds?: { prop: string; separator: string[]; heading: string[]; copies: ItemKind[] };
+  /** Listbox: each Figma copy's own selected value as code (given how a prop is referenced), kept until the user selects. */
+  copySelected?: ((ref: (prop: string) => string) => string)[];
+  /** Accessible name when no label layer names the group. */
+  defaultLabel?: string;
+  /** Listbox and menu: the axis values in which Figma shows no items (loading, empty). The role is dropped there. */
+  hiddenWhen?: { prop: string; values: string[] };
   selection: 'none' | 'single' | 'multi';
   /** The item's state prop the group sets (isSelected, isChecked), when items have no behaviour of their own. */
   stateProp?: string;
@@ -411,8 +440,126 @@ export interface Collection {
   orientation?: AxisInfo;
 }
 
+export type ItemKind = 'item' | 'separator' | 'heading';
+
+/** Listbox and menu (WAI-ARIA): one tab stop, arrow keys move the active item (aria-activedescendant). */
+const listy = (c?: Collection) => c?.item === 'option' || c?.item === 'menuitem';
+
+/** React body for a listbox or menu: active item, selection (listbox) and keyboard. */
+function listBody(c: Collection): string {
+  const lines = [
+    '  const labelId = useId();',
+    '  const [active, setActive] = useState(-1);',
+  ];
+  if (c.kinds) lines.push(`  const kindOf = (value: unknown) => (${JSON.stringify(c.kinds.separator)}.includes(String(value)) ? 'separator' : ${JSON.stringify(c.kinds.heading)}.includes(String(value)) ? 'heading' : 'item');`);
+  if (c.item === 'option') lines.push(
+    "  // Undefined until the user selects: each option keeps the selection Figma gives it.",
+    '  const [innerSelected, setInnerSelected] = useState<number[] | undefined>(defaultSelected);',
+    '  const selectedIndexes = selected ?? innerSelected;',
+    `  const multiple = ${c.multiple ? `${c.multiple.prop} === ${JSON.stringify(c.multiple.value)}` : 'false'};`,
+    '  const toggle = (i: number, list: Element | null) => {',
+    "    const current = selectedIndexes ?? [...(list?.querySelectorAll<HTMLElement>('[data-ds-item][aria-selected=true]') ?? [])].map((x) => Number(x.dataset.dsIndex));",
+    '    const next = current.includes(i) ? (multiple ? current.filter((x) => x !== i) : current) : multiple ? [...current, i].sort((a, b) => a - b) : [i];',
+    '    if (selected === undefined) setInnerSelected(next);',
+    '    onSelectedChange?.(next);',
+    '  };',
+    "  const itemProps = (i: number, figmaSelected?: boolean, kind: string = 'item') => {",
+    "    if (kind === 'separator') return { 'aria-hidden': true };",
+    "    if (kind === 'heading') return { role: 'presentation' };",
+    '    const on = selectedIndexes ? selectedIndexes.includes(i) : Boolean(figmaSelected);',
+    `    return { role: 'option', id: \`\${labelId}-\${i}\`, 'aria-selected': on, ${c.stateProp}: on, 'data-ds-item': '', 'data-ds-index': i, ...(i === active ? { 'data-force-state': 'focus' } : {}), onClick: (event: { currentTarget: Element }) => { setActive(i); toggle(i, event.currentTarget.closest('[role=listbox]')); } };`,
+    '  };',
+  )
+  else lines.push(
+    "  const itemProps = (i: number, _figma?: boolean, kind: string = 'item') => {",
+    "    if (kind === 'separator') return { role: 'separator' };",
+    "    if (kind === 'heading') return { role: 'presentation' };",
+    "    return { role: 'menuitem', id: `${labelId}-${i}`, 'data-ds-item': '', 'data-ds-index': i, ...(i === active ? { 'data-force-state': 'focus' } : {}) };",
+    '  };',
+  )
+  lines.push(
+    '  /** Arrow keys, Home and End move the active item; Enter and Space choose it. */',
+    '  const moveActive = (event: KeyboardEvent<HTMLDivElement>) => {',
+    '    onKeyDown?.(event);',
+    "    const items = [...event.currentTarget.querySelectorAll<HTMLElement>('[data-ds-item]')];",
+    '    if (!items.length) return;',
+    '    const at = items.findIndex((x) => Number(x.dataset.dsIndex) === active);',
+    "    const step = ({ ArrowDown: 1, ArrowUp: -1 } as Record<string, number>)[event.key];",
+    "    const to = step !== undefined ? (at < 0 ? (step > 0 ? 0 : items.length - 1) : (at + step + items.length) % items.length) : event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : -1;",
+    '    if (to >= 0) {',
+    '      event.preventDefault();',
+    '      setActive(Number(items[to]!.dataset.dsIndex));',
+    "      items[to]!.scrollIntoView?.({ block: 'nearest' });",
+    "    } else if ((event.key === ' ' || event.key === 'Enter') && at >= 0) {",
+    '      event.preventDefault();',
+    '      items[at]!.click();',
+    '    }',
+    '  };',
+  )
+  // An empty list or menu is not one: where Figma shows no items (loading, empty), the role and its keyboard go.
+  const h = c.hiddenWhen;
+  const busy = h?.values.find((v) => /load|busy|pending/.test(v));
+  const name = c.labelPath ? "'aria-labelledby': labelId" : `'aria-label': ${JSON.stringify(c.defaultLabel ?? 'List')}`;
+  lines.push(
+    ...(h ? [`  const listed = !${JSON.stringify(h.values)}.includes(String(${h.prop}));`] : []),
+    `  const listProps = ${h ? 'listed ? ' : ''}{ role: '${c.role}', tabIndex: 0, 'aria-activedescendant': active >= 0 ? \`\${labelId}-\${active}\` : undefined, ${name}, ${c.item === 'option' ? "'aria-multiselectable': multiple || undefined, " : ''}onKeyDown: moveActive }${h ? ` : { onKeyDown${busy ? `, 'aria-busy': ${h.prop} === ${JSON.stringify(busy)} || undefined` : ''} }` : ''};`,
+  );
+  return lines.join('\n') + '\n';
+}
+
+/** Which WAI-ARIA pattern a generic component follows, if any (the file header and the docs say so). */
+export function packName(x: { combo?: Combo; collection?: Collection; disclosure?: boolean; rootTag?: string }): string | undefined {
+  if (x.combo) return x.combo.kind === 'combobox' ? 'combobox (select-only)' : 'menu button';
+  if (x.collection) return ({ tablist: 'tabs', radiogroup: 'radio group', listbox: 'listbox', menu: 'menu', group: x.collection.item === 'checkbox' ? 'checkbox' : undefined } as Record<string, string | undefined>)[x.collection.role];
+  if (x.disclosure) return 'disclosure';
+  return x.rootTag === 'button' ? 'button' : x.rootTag === 'a' ? 'link' : undefined;
+}
+export const behaviourLine = (pack?: string) => (pack ? `Behaviour: WAI-ARIA ${pack} pattern, recognised from the Figma structure (see the notes in the docs page).` : 'Behaviour (keyboard, focus, ARIA role) is not specified in Figma and is not generated.');
+
+/** React body for a select-only combobox: open state, ids, the field's props and keyboard. */
+function comboBody(c: Combo, hasDisabled: boolean): string {
+  const p = c.axis.prop;
+  const disabled = hasDisabled ? 'disabled' : undefined;
+  const derived = c.axis.boolean ? `  const ${p} = isOpen;` : `  const ${p} = isOpen ? ${JSON.stringify(c.open)} : ${p}Prop === ${JSON.stringify(c.open)} ? ${JSON.stringify(c.closed)} : ${p}Prop;`;
+  // A combobox needs a name: the label layer, or a default. A menu button is named by its content unless one is given.
+  const fallback = c.kind === 'combobox' ? ` ?? ${JSON.stringify(c.defaultLabel)}` : '';
+  const named = c.label ? (c.labelShown ? `'aria-labelledby': ${c.labelShown} ? labelId : undefined, 'aria-label': ${c.labelShown} ? undefined : ariaLabel${fallback}` : `'aria-labelledby': labelId, 'aria-label': ariaLabel`) : `'aria-label': ariaLabel${fallback}`;
+  return [
+    `  const [innerOpen, setInnerOpen] = useState(defaultOpen ?? ${c.axis.boolean ? `${p}Prop === true` : `${p}Prop === ${JSON.stringify(c.open)}`});`,
+    '  const isOpen = open ?? innerOpen;',
+    derived,
+    '  const popupId = useId();',
+    '  const fieldId = useId();',
+    '  const labelId = useId();',
+    '  const setOpen = (next: boolean) => {',
+    ...(disabled ? [`    if (${disabled}) return;`] : []),
+    '    if (open === undefined) setInnerOpen(next);',
+    '    onOpenChange?.(next);',
+    '  };',
+    '  /** Enter, Space and ArrowDown open the popup; ArrowDown again moves focus into it (its list or menu). */',
+    '  const comboboxKeyDown = (event: KeyboardEvent<HTMLElement>) => {',
+    "    if (event.key !== 'ArrowDown' && event.key !== 'Enter' && event.key !== ' ') return;",
+    '    event.preventDefault();',
+    '    if (!isOpen) setOpen(true);',
+    "    else if (event.key === 'ArrowDown') document.getElementById(popupId)?.querySelector<HTMLElement>('[role=listbox], [role=menu], [tabindex]')?.focus();",
+    '    else setOpen(false);',
+    '  };',
+    '  /** Escape closes the popup from the field or from inside it, and focus returns to the field. */',
+    '  const closeOnEscape = (event: KeyboardEvent<HTMLDivElement>) => {',
+    '    onKeyDown?.(event);',
+    "    if (event.key !== 'Escape' || !isOpen) return;",
+    '    event.preventDefault();',
+    '    setOpen(false);',
+    '    document.getElementById(fieldId)?.focus();',
+    '  };',
+    `  const comboboxProps = { id: fieldId, role: ${JSON.stringify(c.kind === 'combobox' ? 'combobox' : 'button')}, tabIndex: ${disabled ? `${disabled} ? -1 : 0` : '0'}, 'aria-expanded': isOpen, 'aria-haspopup': ${JSON.stringify(c.kind === 'combobox' ? 'listbox' : 'menu')} as const, 'aria-controls': popupId, ${named}, onClick: () => setOpen(!isOpen), onKeyDown: comboboxKeyDown };`,
+    '',
+  ].join('\n');
+}
+
 /** Component-body code for a collection: label id, selection state, item props and arrow-key navigation (React). */
 function collectionBody(c: Collection): string {
+  if (listy(c)) return listBody(c);
   const lines = ['  const labelId = useId();'];
   if (c.selection === 'single') {
     lines.push(
@@ -847,7 +994,7 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   // An instance-swap property bound to a layer's main component is a slot; so is a placeholder instance of a
   // component named "Slot" (a common Figma convention for "content goes here"). Packs with their own children skip it.
   const slotList: SlotInfo[] = [];
-  const slotsEnabled = !opts.behavior || opts.behavior === 'switch' || opts.behavior === 'checkbox-single' || opts.behavior === 'disclosure' || opts.behavior === 'button' || opts.behavior === 'link';
+  const slotsEnabled = !opts.behavior || opts.behavior === 'switch' || opts.behavior === 'checkbox-single' || opts.behavior === 'disclosure' || opts.behavior === 'button' || opts.behavior === 'link' || opts.behavior === 'combobox';
   if (slotsEnabled) {
     const taken = new Set<string>([...axes.map((a) => a.prop), ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop), 'disabled', 'checked', 'className', 'style', 'children']);
     const claim = (base: string) => { let n = base || 'slot'; if (taken.has(n)) n = `${n}Slot`; for (let i = 2; taken.has(n); i++) n = `${base}Slot${i}`; taken.add(n); return n; };
@@ -877,6 +1024,39 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   const boundSwaps = new Set(slotList.filter((x) => x.kind === 'swap').map((x) => x.figma));
   const unboundSwaps = swaps.filter((x) => !boundSwaps.has(x.name));
   // Disclosure with a trigger (phase 3): a boolean about being expanded that shows a panel, and a nested button.
+  // Combobox (select-only, WAI-ARIA): an axis value that shows a popup holding a list or menu, and a field that opens it.
+  const combo: Combo | undefined = (() => {
+    if (opts.behavior !== 'combobox') return undefined;
+    const axis = axes.find((a) => !a.boolean && a.options.length > 1 && a.options.some((o) => /^(is-)?(open|opened|expanded)$/.test(o))) ?? axes.find((a) => a.boolean && /open|expand/i.test(a.figma));
+    if (!axis) return undefined;
+    const open = axis.boolean ? 'true' : axis.options.find((o) => /^(is-)?(open|opened|expanded)$/.test(o))!;
+    const closed = axis.boolean ? 'false' : axis.defaultValue !== open ? axis.defaultValue : axis.options.find((o) => o !== open)!;
+    const setName = (l: LayerInfo) => (l.part.instanceComponentId ? opts.lookup?.(l.part.instanceComponentId)?.set.name ?? '' : '');
+    const popupText = (l: LayerInfo) => `${l.part.name} ${l.part.instanceOf ?? ''} ${setName(l)}`;
+    const popup = all.find((l) => l.part.type === 'INSTANCE' && !isIcon(l.part) && /menu|list|dropdown|popover|option/i.test(popupText(l)) && !/trigger|button|field|input|header|label|footer/i.test(popupText(l)));
+    if (!popup) return undefined;
+    // The field: a frame named for it, or a nested trigger component that has no behaviour of its own.
+    const fieldName = /^(field|input|control|trigger|select|box|input ?field|text ?field|dropdown ?trigger|select ?trigger)$/i;
+    const field = all.find((l) => l.part.type !== 'INSTANCE' && l.part.type !== 'TEXT' && !popup.path.startsWith(`${l.path}/`) && fieldName.test(l.part.name.replace(/^[_.\s]+/, '').trim()))
+      ?? all.find((l) => l.part.type === 'INSTANCE' && l !== popup && !isIcon(l.part) && (fieldName.test(l.part.name.replace(/^[_.\s]+/, '').trim()) || /trigger/i.test(setName(l))) && l.part.instanceComponentId && opts.lookup?.(l.part.instanceComponentId)?.kind === 'generic');
+    if (!field) return undefined;
+    // Options or actions: the popup (or something inside it) repeats an item with a selected True/False axis.
+    const holdsOptions = (id: string | undefined, depth: number): boolean => {
+      const entry = id ? opts.lookup?.(id) : undefined;
+      if (!entry || depth > 3) return false;
+      if (propPlan(entry.set).axes.some((a) => a.boolean && a.kind === 'variant' && /selected|checked/i.test(a.figma))) return true;
+      return (entry.set.variants[0]?.parts ?? []).some((x) => x.type === 'INSTANCE' && x.instanceComponentId !== id && holdsOptions(x.instanceComponentId, depth + 1));
+    };
+    const kind = holdsOptions(popup.part.instanceComponentId, 0) ? 'combobox' as const : 'menu-button' as const;
+    const label = all.find((l) => !l.path.startsWith(`${field.path}/`) && !l.path.startsWith(`${popup.path}/`) && ((l.part.type === 'TEXT' && /^label$/i.test(l.part.refs?.characters ?? l.part.name)) || (l.part.type === 'INSTANCE' && /header|label/i.test(setName(l)))));
+    const labelShown = label ? booleans.find((b) => b.p.name === label.part.refs?.visible)?.prop : undefined;
+    return { kind, axis, open, closed, field: field.path, popup: popup.path, ...(label ? { label: label.path } : {}), ...(labelShown ? { labelShown } : {}), defaultLabel: humanize(set.name.replace(/\(.*\)/g, '').replace(/([a-z])([A-Z])/g, '$1 $2').trim()) };
+  })();
+  if (opts.behavior === 'combobox') {
+    if (combo) assumptions.push(`Behaviour from the WAI-ARIA ${combo.kind === 'combobox' ? 'combobox pattern (select-only)' : 'menu button pattern'}, recognised from the ${combo.axis.figma} = ${combo.open} variant and the "${combo.popup.split('/').pop()}" popup${combo.kind === 'combobox' ? ', which holds selectable options' : ', which holds actions (no selected state)'}: the "${combo.field.split('/').pop()}" layer is ${combo.kind === 'combobox' ? 'role="combobox"' : 'a button with aria-haspopup="menu"'} with aria-expanded and aria-controls; a click, Enter, Space or ArrowDown opens it, ArrowDown again moves focus into the popup, Escape closes it. open / defaultOpen / onOpenChange control it; ${combo.axis.prop}="${combo.open}" still opens it for docs and visual tests.`);
+    else gaps.push(`Combobox: no ${'"open"'} variant value with a list or menu popup and a field layer (field, input, control or trigger) was found, so no combobox behaviour was generated.`);
+    if (combo?.kind === 'combobox') gaps.push('Combobox: typing to filter (autocomplete) is not generated, and choosing an option does not change the value text: connect the popup list to your value in your app.');
+  }
   const trig = (() => {
     if (opts.behavior !== 'disclosure' || disclosure) return undefined;
     const bool = booleans.find((b) => /expand|open/i.test(b.p.name));
@@ -1055,6 +1235,31 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
     const words = name.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().split(/[^a-z0-9]+/);
     if (sel && words.some((x) => x === 'tab' || x === 'tabs')) return { ...base, role: 'tablist', item: 'tab', selection: 'single', stateProp: sel.prop, initial: on(sel.prop) };
     if (chk && r.entry.kind === 'generic') return { ...base, role: 'group', item: 'checkbox', selection: 'multi', stateProp: chk.prop, initial: on(chk.prop) };
+    // Listbox and menu: named as a list, menu or options (this set or its item). Figma has no marker for either.
+    const itemWords = r.component.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().split(/[^a-z0-9]+/);
+    const listWords = ['list', 'listbox', 'options', 'option', 'dropdown', 'select', 'menu'];
+    if (r.entry.kind !== 'generic' || ![...words, ...itemWords].some((x) => listWords.includes(x))) return undefined;
+    const variantOf = (x: IRPart) => r.entry!.set.variants.find((v) => v.nodeId === x.instanceComponentId)?.values ?? {};
+    const kindAxis = childAxes.find((a) => !a.boolean && a.options.length > 1 && a.options.some((o) => /separator|divider|heading|header|title/.test(o)));
+    const kindOfValue = (v: string): ItemKind => (/separator|divider/.test(v) ? 'separator' : /heading|header|title/.test(v) ? 'heading' : 'item');
+    const kinds = kindAxis ? { prop: kindAxis.prop, separator: kindAxis.options.filter((o) => kindOfValue(o) === 'separator'), heading: kindAxis.options.filter((o) => kindOfValue(o) === 'heading'), copies: r.parts.map((x) => kindOfValue(kebab(variantOf(x)[kindAxis.figma] ?? kindAxis.defaultValue))) } : undefined;
+    // Variants that show none of the items (Loading, Empty): which values of one axis they are.
+    const empty = set.variants.filter((v) => !v.parts.some((x) => x.path === path && !x.hidden));
+    const hiddenAxis = empty.length && empty.length < set.variants.length ? axes.find((a) => { const vals = new Set(empty.map((v) => v.values[a.figma])); return set.variants.every((v) => vals.has(v.values[a.figma]) === empty.includes(v)); }) : undefined;
+    const hiddenWhen = hiddenAxis ? { prop: hiddenAxis.prop, values: [...new Set(empty.map((v) => (hiddenAxis.boolean ? String(/^true$/i.test(v.values[hiddenAxis.figma] ?? '')) : kebab(v.values[hiddenAxis.figma] ?? ''))))] } : undefined;
+    const label = { defaultLabel: humanize(set.name.replace(/^[_.\s]+/, '').replace(/([a-z])([A-Z])/g, '$1 $2')), ...(hiddenWhen ? { hiddenWhen } : {}) };
+    if (sel) {
+      // The set can switch between one and several selected options (Selection Type = Single / Multi).
+      const multiAxis = axes.find((a) => !a.boolean && /select|type|mode/i.test(a.figma) && a.options.some((o) => /multi/.test(o)));
+      const multiValue = multiAxis?.options.find((o) => /multi/.test(o));
+      const multiple = multiAxis && multiValue ? { prop: multiAxis.prop, value: multiValue } : undefined;
+      const copySelected = r.parts.map((x) => {
+        const v = inst(x)?.props.find((y) => y.prop === sel.prop);
+        return (ref: (prop: string) => string) => (v?.kind === 'expr' ? v.expr(ref) : String(v?.kind === 'boolean' && v.value === true));
+      });
+      return { ...base, ...label, role: 'listbox', item: 'option', selection: 'multi', stateProp: sel.prop, initial: on(sel.prop), ...(multiple ? { multiple } : {}), copySelected, ...(kinds ? { kinds } : {}) };
+    }
+    if (!sel && !chk && [...words, ...itemWords].includes('menu')) return { ...base, ...label, role: 'menu', item: 'menuitem', selection: 'none', initial: [], ...(kinds ? { kinds } : {}) };
     return undefined;
   })();
   if (collection) assumptions.push(collection.role === 'tablist'
@@ -1063,8 +1268,12 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
       ? 'Behaviour from the WAI-ARIA radio group pattern: role="radiogroup"; the group selects one radio, only the selected one is focusable, and arrow keys move the selection. selected / defaultSelected / onSelectedChange control it.'
       : collection.item === 'checkbox'
         ? `Behaviour from the WAI-ARIA checkbox pattern for each item, recognised from the items' ${collection.stateProp} axis: role="group" with checkbox items (Space or Enter toggles one). selected / defaultSelected / onSelectedChange hold the selected indexes.`
-        : 'role="group" around items that have their own behaviour.');
-  if (collection && !collection.labelPath) gaps.push(`${name}: no label layer found for the group; name it with aria-label or aria-labelledby.`);
+        : collection.role === 'listbox'
+          ? `Behaviour from the WAI-ARIA listbox pattern, recognised from the items' ${collection.stateProp} axis and the name: role="listbox" with option items and aria-selected. One tab stop; arrow keys, Home and End move the active option (aria-activedescendant, shown with the Figma focus style); Enter, Space or a click selects. ${collection.multiple ? `Several options can be selected when ${collection.multiple.prop} is "${collection.multiple.value}". ` : ''}${collection.kinds ? 'Separators are hidden from assistive technology and section headings are plain text (they do not group options). ' : ''}selected / defaultSelected / onSelectedChange hold the selected indexes; until then each option shows the selection Figma gives it.`
+          : collection.role === 'menu'
+            ? 'Behaviour from the WAI-ARIA menu pattern, recognised from the name: role="menu" with menuitem items. One tab stop; arrow keys, Home and End move the active item; Enter or Space activates it (a click). Opening and closing the menu belongs to its trigger.'
+            : 'role="group" around items that have their own behaviour.');
+  if (collection && !collection.labelPath && !collection.defaultLabel) gaps.push(`${name}: no label layer found for the group; name it with aria-label or aria-labelledby.`);
   /** JSX expression for a layer's text: the Figma text, or a lookup when a variant property changes it. */
   const reactRef = (p: string) => (p === '$checked' ? 'on' : p);
   const textExpr = (l: LayerInfo, plain: string) => (l.textByAxis ? lookupExpr(l.textByAxis, reactRef, 'string') : plain);
@@ -1275,8 +1484,11 @@ ${indent}/>`;
             };
             const driven = `{ ${rp.driven.map((d) => `${JSON.stringify(d.prop)}: ${value(d)}`).join(', ')} }`;
             const items = collection?.repeatPath === l.path && collection.item !== 'own';
-            const own = (k: number, x: string) => (items ? x.replace(/ \/><\/span>$/, ` {...(itemProps(${k}) as object)} /></span>`) : x);
-            return `${indent}{${rp.prop} !== undefined\n${indent}  ? Children.map(${rp.prop}, (child, i) => <span ${cls} key={i}>{isValidElement(child) && child.type === ${rp.component} ? cloneElement(child, { ...${driven}, ...(child.props as object)${items ? ', ...(itemProps(i) as object)' : ''} }) : child}</span>)\n${indent}  : (\n${indent}    <>\n${all2.map(([part, n], k) => `${indent}      ${guard(part, own(k, one(n)))}`).join('\n')}\n${indent}    </>\n${indent}  )}`;
+            const lc = listy(collection) ? collection : undefined;
+            const args = (k: number) => (lc ? `${k}, ${lc.copySelected?.[k]?.(reactRef) ?? 'false'}, ${JSON.stringify(lc.kinds?.copies[k] ?? 'item')}` : String(k));
+            const own = (k: number, x: string) => (items ? x.replace(/ \/><\/span>$/, ` {...(itemProps(${args(k)}) as object)} /></span>`) : x);
+            const childArgs = lc ? `i, (child.props as { ${lc.stateProp ?? 'selected'}?: boolean }).${lc.stateProp ?? 'selected'}, ${lc.kinds ? `kindOf((child.props as { ${lc.kinds.prop}?: string }).${lc.kinds.prop})` : "'item'"}` : 'i';
+            return `${indent}{${rp.prop} !== undefined\n${indent}  ? Children.map(${rp.prop}, (child, i) => <span ${cls} key={i}>{isValidElement(child) && child.type === ${rp.component} ? cloneElement(child, { ...${driven}, ...(child.props as object)${items ? `, ...(itemProps(${childArgs}) as object)` : ''} }) : child}</span>)\n${indent}  : (\n${indent}    <>\n${all2.map(([part, n], k) => `${indent}      ${guard(part, own(k, one(n)))}`).join('\n')}\n${indent}    </>\n${indent}  )}`;
           }
           return `${indent}<>\n${all2.map(([part, n]) => `${indent}  ${guard(part, one(n))}`).join('\n')}\n${indent}</>`;
         }
@@ -1311,6 +1523,9 @@ ${indent}/>`;
     }
     if (collection?.labelPath === l.path) el = el.replace(/^<(\w+) /, '<$1 id={labelId} ');
     if (trig?.panel === l.path) el = el.replace(/^<(\w+) /, '<$1 id={panelId} ');
+    if (combo?.field === l.path) el = el.replace(/^<(\w+) /, '<$1 {...comboboxProps} ');
+    if (combo?.popup === l.path) el = el.replace(/^<(\w+) /, '<$1 id={popupId} ');
+    if (combo?.label === l.path) el = el.replace(/^<(\w+) /, '<$1 id={labelId} ');
     // The trigger may be a plain nested button or the default of a slot (an instance swap): add the attributes to its tag.
     if (trig?.trigger === l.path) el = el.replace(/ \/>(\)\})?<\/span>$/, (_m, slot: string | undefined) => ` aria-expanded={${trig.prop}} aria-controls={${trig.prop} ? panelId : undefined} onClick={toggleExpanded} />${slot ?? ''}</span>`);
     const b = boolFor(p.refs?.visible);
@@ -1341,7 +1556,12 @@ ${indent}/>`;
     ...exposedProps.map((e) => `  /** Figma: ${e.exposed!.name} › ${e.figma} (exposed nested instance). Default ${String(e.default)}. */\n  ${e.prop}?: ${e.tsType(q)};`),
     ...repeatList.map((r) => `  /** Your own ${r.component} items instead of the Figma examples. ${name} sets ${r.driven.length ? r.driven.map((d) => d.prop).join(', ') : 'nothing'} on each one you do not set yourself${r.driven.some((d) => d.numbered) ? ' (numbered by position)' : ''}. */\n  ${r.prop}?: ReactNode;`),
     ...slotList.map((x) => `  /** ${x.description ? `${x.description} ` : ''}Content for ${x.kind === 'swap' ? `the "${x.figma}" slot (Figma instance swap)` : `the "${x.figma}" placeholder`}; the Figma default when not set. */\n  ${x.prop}?: ReactNode;`),
-    ...(collection && collection.selection !== 'none' ? (collection.selection === 'single' ? [
+    ...(collection?.item === 'option' ? [
+      '  /** Indexes of the selected options (controlled). */\n  selected?: number[];',
+      '  /** Initial selection when selected is not set. Not set: each option keeps the selection Figma gives it. */\n  defaultSelected?: number[];',
+      '  /** Called with the selected indexes when the user selects an option. */\n  onSelectedChange?: (indexes: number[]) => void;',
+    ] : []),
+    ...(collection && collection.selection !== 'none' && !listy(collection) ? (collection.selection === 'single' ? [
       '  /** Index of the selected item (controlled). */\n  selected?: number;',
       `  /** Initial selection when selected is not set. Default ${collection.initial[0] ?? 'none'} (Figma). */\n  defaultSelected?: number;`,
       '  /** Called with the index the user selects. */\n  onSelectedChange?: (index: number) => void;',
@@ -1350,6 +1570,11 @@ ${indent}/>`;
       `  /** Initial selection when selected is not set. Default [${collection.initial.join(', ')}] (Figma). */\n  defaultSelected?: number[];`,
       '  /** Called with the selected indexes when the user toggles an item. */\n  onSelectedChange?: (indexes: number[]) => void;',
     ]) : []),
+    ...(combo ? [
+      '  /** Whether the popup is open (controlled). */\n  open?: boolean;',
+      `  /** Initial state when open is not set. Default: ${combo.axis.prop} is "${combo.open}". */\n  defaultOpen?: boolean;`,
+      '  /** Called with the new state when the user opens or closes the popup. */\n  onOpenChange?: (open: boolean) => void;',
+    ] : []),
     ...(trig ? [
       `  /** Initial state when ${trig.prop} is not set (uncontrolled). Default ${trig.defaultOpen}. */\n  defaultExpanded?: boolean;`,
       '  /** Called with the new state when the user toggles it. */\n  onExpandedChange?: (expanded: boolean) => void;',
@@ -1360,10 +1585,11 @@ ${indent}/>`;
     ] : []),
     `  /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */\n  'data-force-state'?: string;`,
   ];
-  const ownProps = [...(sw ? ['checked', 'defaultChecked', 'value', 'onChange'] : []), ...propAxes.map((a) => a.prop), ...(hasDisabled ? ['disabled'] : []), ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop), ...exposedProps.map((e) => e.prop), ...slotList.map((x) => x.prop), ...repeatList.map((r) => r.prop), ...(collection && collection.selection !== 'none' ? ['selected', 'defaultSelected', 'onSelectedChange'] : []), ...(trig ? ['defaultExpanded', 'onExpandedChange'] : []), ...(disclosure ? ['defaultExpanded', 'onExpandedChange'] : [])];
+  const ownProps = [...(sw ? ['checked', 'defaultChecked', 'value', 'onChange'] : []), ...propAxes.map((a) => a.prop), ...(hasDisabled ? ['disabled'] : []), ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop), ...exposedProps.map((e) => e.prop), ...slotList.map((x) => x.prop), ...repeatList.map((r) => r.prop), ...(collection && collection.selection !== 'none' ? ['selected', 'defaultSelected', 'onSelectedChange'] : []), ...(trig ? ['defaultExpanded', 'onExpandedChange'] : []), ...(disclosure ? ['defaultExpanded', 'onExpandedChange'] : []), ...(combo ? ['open', 'defaultOpen', 'onOpenChange'] : [])];
   const destructure = [
     ...(sw ? ['checked', 'defaultChecked = false', 'onCheckedChange', 'onClick', ...(sw.role !== 'switch' ? ['onKeyDown'] : [])] : []),
-    ...propAxes.map((a) => (a === disclosure?.axis ? `${a.prop}: ${a.prop}Prop` : responsive.has(a) ? a.prop : `${a.prop} = ${axisDefault(a, q)}`)),
+    ...propAxes.map((a) => (a === disclosure?.axis ? `${a.prop}: ${a.prop}Prop` : a === combo?.axis ? `${a.prop}: ${a.prop}Prop = ${axisDefault(a, q)}` : responsive.has(a) ? a.prop : `${a.prop} = ${axisDefault(a, q)}`)),
+    ...(combo ? ['open', 'defaultOpen', 'onOpenChange', 'onKeyDown', "'aria-label': ariaLabel"] : []),
     ...(disclosure ? [`defaultExpanded = ${disclosure.axis.defaultValue === 'true'}`, 'onExpandedChange'] : []),
     ...(hasDisabled ? ['disabled = false'] : []),
     ...booleans.map((b) => (b === trig?.bool ? `${b.prop}: ${b.prop}Prop` : `${b.prop} = ${String(b.p.default) === 'true'}`)),
@@ -1372,7 +1598,9 @@ ${indent}/>`;
     ...exposedProps.map((e) => `${e.prop} = ${(e.axis ? axisLiteral(e.axis, String(e.default), q) : typeof e.default === 'boolean' ? String(e.default) : q(String(e.default)))}`),
     ...slotList.map((x) => x.prop),
     ...repeatList.map((r) => r.prop),
-    ...(collection && collection.selection !== 'none' ? ['selected', `defaultSelected = ${collection.selection === 'single' ? (collection.initial[0] ?? -1) : `[${collection.initial.join(', ')}]`}`, 'onSelectedChange', 'onKeyDown'] : []),
+    ...(collection?.item === 'option' ? ['selected', 'defaultSelected', 'onSelectedChange'] : []),
+    ...(listy(collection) ? ['onKeyDown'] : []),
+    ...(collection && collection.selection !== 'none' && !listy(collection) ? ['selected', `defaultSelected = ${collection.selection === 'single' ? (collection.initial[0] ?? -1) : `[${collection.initial.join(', ')}]`}`, 'onSelectedChange', 'onKeyDown'] : []),
     'className',
     '...rest',
   ];
@@ -1382,8 +1610,10 @@ ${indent}/>`;
     ...(hasDisabled ? ["data-disabled={disabled ? '' : undefined}", sw || rootTag === 'button' ? 'disabled={disabled}' : 'aria-disabled={disabled || undefined}'] : []),
     ...(sw?.busy ? ['aria-busy={busy || undefined}'] : []),
     ...(busyAxis ? [`aria-busy={${busyAxis.prop} || undefined}`] : []),
-    ...(collection ? [`role="${collection.role}"`, ...(collection.labelPath ? ['aria-labelledby={labelId}'] : []), ...(collection.orientation && collection.role !== 'group' ? [`aria-orientation={${collection.orientation.prop} === 'vertical' ? 'vertical' : 'horizontal'}`] : [])] : []),
+    ...(collection && !listy(collection) ? [`role="${collection.role}"`, ...(collection.labelPath ? ['aria-labelledby={labelId}'] : []), ...(collection.orientation && collection.role !== 'group' ? [`aria-orientation={${collection.orientation.prop} === 'vertical' ? 'vertical' : 'horizontal'}`] : [])] : []),
     ...(collection?.selection === 'single' ? ['onKeyDown={moveSelection}'] : []),
+    ...(combo ? ['onKeyDown={closeOnEscape}'] : []),
+    ...(listy(collection) ? ['{...listProps}'] : []),
   ];
 
   const exposedNode = exposedProps.some((e) => !e.axis && e.type === 'string');
@@ -1428,17 +1658,17 @@ ${body}
   );
 }
 ` : `// Generated by ds-sync (generic template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
-// Visuals come from Figma. Behaviour (keyboard, focus, ARIA role) is not specified in Figma and is not generated.
-${disclosure || trig ? `import { useId, useState, type ${rootAttrs}${texts.length || exposedNode || slotList.length || repeatList.length ? ', type ReactNode' : ''} } from 'react';` : `import type { ${rootAttrs}${texts.length || exposedNode || slotList.length || repeatList.length ? ', ReactNode' : ''}${collection && collection.selection !== 'none' ? ', KeyboardEvent' : ''} } from 'react';`}
+// Visuals come from Figma. ${behaviourLine(packName({ combo, collection, disclosure: Boolean(disclosure || trig), rootTag }))}
+${disclosure || trig || combo ? `import { useId, useState, type ${rootAttrs}${combo ? ', type KeyboardEvent' : ''}${texts.length || exposedNode || slotList.length || repeatList.length ? ', type ReactNode' : ''} } from 'react';` : `import type { ${rootAttrs}${texts.length || exposedNode || slotList.length || repeatList.length ? ', ReactNode' : ''}${collection && (collection.selection !== 'none' || listy(collection)) ? ', KeyboardEvent' : ''} } from 'react';`}
 
-${usesRepeat ? `import { Children, cloneElement, isValidElement${collection ? ', useId' : ''}${collection && collection.selection !== 'none' ? ', useState' : ''} } from 'react';\n` : ''}${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${all.some((l) => l.iconByAxis) ? `import type { IconName } from '../../icons/icons';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
+${usesRepeat ? `import { Children, cloneElement, isValidElement${collection ? ', useId' : ''}${collection && (collection.selection !== 'none' || listy(collection)) ? ', useState' : ''} } from 'react';\n` : ''}${usesIcon ? `import { Icon } from '../../icons/Icon';\n` : ''}${all.some((l) => l.iconByAxis) ? `import type { IconName } from '../../icons/icons';\n` : ''}${[...imports].join('\n')}${imports.size ? '\n' : ''}import styles from './${name}.module.css';
 
 export interface ${name}Props extends Omit<${rootAttrs}<${rootElement}>, 'children'${ownProps.filter((p) => p !== 'children').map((p) => ` | '${p}'`).join('')}> {
 ${propLines.join('\n')}
 }
 
 export function ${name}({ ${destructure.join(', ')} }: ${name}Props) {
-${collection ? collectionBody(collection) : ''}${trig ? `  const [innerExpanded, setInnerExpanded] = useState(defaultExpanded);
+${collection ? collectionBody(collection) : ''}${combo ? comboBody(combo, hasDisabled) : ''}${trig ? `  const [innerExpanded, setInnerExpanded] = useState(defaultExpanded);
   const ${trig.prop} = ${trig.prop}Prop ?? innerExpanded;
   const panelId = useId();
   const toggleExpanded = () => {
@@ -2071,7 +2301,66 @@ ${booleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.defa
     ...slotList.map((x) => `    ${x.prop}: { control: false, description: ${q(figmaNote(x.kind === 'swap' ? `${x.figma} (instance swap)` : `${x.figma} (placeholder)`, x.description))} },`),
     `    'data-force-state': { table: { disable: true } },`,
   ];
-  if (collection && collection.selection !== 'none') {
+  if (combo) {
+    stories.push(`export const OpensAndCloses: Story = {
+  name: 'Opens and closes',
+  args: { onOpenChange: fn() },
+  play: async ({ canvasElement, args }) => {
+    const box = canvasElement.querySelector<HTMLElement>('[aria-haspopup][aria-controls]')!;
+    await expect(box).toHaveAttribute('role', '${combo.kind === 'combobox' ? 'combobox' : 'button'}');
+    await expect(box).toHaveAttribute('aria-expanded', 'false');
+    await userEvent.click(box);
+    await expect(box).toHaveAttribute('aria-expanded', 'true');
+    await expect(args.onOpenChange).toHaveBeenCalledWith(true);
+    await expect(document.getElementById(box.getAttribute('aria-controls')!)).not.toBeNull();
+    await userEvent.keyboard('{Escape}');
+    await expect(box).toHaveAttribute('aria-expanded', 'false');
+    box.focus();
+    await userEvent.keyboard('{ArrowDown}');
+    await expect(box).toHaveAttribute('aria-expanded', 'true');
+  },
+};`);
+  }
+  if (collection?.item === 'option') {
+    stories.push(`export const Selects: Story = {
+  name: 'Selects',
+  args: { onSelectedChange: fn() },
+  play: async ({ canvasElement, args }) => {
+    const list = within(canvasElement).getByRole('listbox');
+    const options = within(list).getAllByRole('option');
+    await expect(options.length).toBeGreaterThan(1);
+    // An option that is not selected in the Figma default, so the click changes the selection.
+    const target = options.find((x) => x.getAttribute('aria-selected') !== 'true') ?? options[0]!;
+    await userEvent.click(target);
+    await expect(target).toHaveAttribute('aria-selected', 'true');
+    await expect(args.onSelectedChange).toHaveBeenCalled();
+    // One tab stop: arrow keys move the active option, Space selects it.
+    list.focus();
+    await userEvent.keyboard('{Home}');
+    await expect(list).toHaveAttribute('aria-activedescendant', options[0]!.id);
+    await userEvent.keyboard('{ArrowDown}');
+    await expect(list).toHaveAttribute('aria-activedescendant', options[1]!.id);
+    await userEvent.keyboard(' ');
+    await expect(options[1]).toHaveAttribute('aria-selected', 'true');
+  },
+};`);
+  }
+  if (collection?.item === 'menuitem') {
+    stories.push(`export const MovesFocus: Story = {
+  name: 'Moves between items',
+  play: async ({ canvasElement }) => {
+    const menu = within(canvasElement).getByRole('menu');
+    const items = within(menu).getAllByRole('menuitem');
+    await expect(items.length).toBeGreaterThan(1);
+    menu.focus();
+    await userEvent.keyboard('{ArrowDown}');
+    await expect(menu).toHaveAttribute('aria-activedescendant', items[0]!.id);
+    await userEvent.keyboard('{End}');
+    await expect(menu).toHaveAttribute('aria-activedescendant', items[items.length - 1]!.id);
+  },
+};`);
+  }
+  if (collection && collection.selection !== 'none' && !listy(collection)) {
     const attr = collection.item === 'tab' ? 'aria-selected' : 'aria-checked';
     // An item that is not selected in the Figma default, so clicking it changes the selection.
     const t = [1, 2, 0].find((i) => !collection.initial.includes(i)) ?? 1;
@@ -2158,7 +2447,7 @@ ${booleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.defa
   stories.push(figmaVariantsStory);
   const storiesFile = `// Generated by ds-sync (${sw ? (sw.role === 'checkbox' ? 'checkbox' : 'switch') : radio ? 'radio' : input ? 'input' : dialog ? 'dialog' : 'generic'} template) from Figma "${set.name}" (${set.nodeId}). Do not edit by hand.
 import type { Meta, StoryObj } from '@storybook/react-vite';
-${dialog ? "import { useState } from 'react';\nimport { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}${sw || radio?.kind === 'control' || radio?.kind === 'field' || input || disclosure || rootTag !== 'div' || (collection && collection.selection !== 'none') || trig ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : radio ? "import { expect, userEvent, within } from 'storybook/test';\n" : ''}
+${dialog ? "import { useState } from 'react';\nimport { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}${sw || radio?.kind === 'control' || radio?.kind === 'field' || input || disclosure || rootTag !== 'div' || (collection && (collection.selection !== 'none' || listy(collection))) || trig || combo ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : radio ? "import { expect, userEvent, within } from 'storybook/test';\n" : ''}
 import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { ${name}, type ${name}Props } from './${name}';
 
@@ -2204,7 +2493,7 @@ ${stories.join('\n\n')}
   ];
   const uniqueGaps = [...new Set(gaps)];
   if (responsive.size) css = [...responsive].reduce((c, a) => makeResponsive(c, a.attr, a.options), css);
-  const core: GenericCore = { ...(trig ? { trigger: { prop: trig.prop, trigger: trig.trigger, panel: trig.panel } } : {}), ...(collection ? { collection } : {}), ...(repeatList.length ? { repeats: repeatList } : {}), ...(responsive.size ? { responsive: [...responsive].map((a) => a.prop) } : {}), ...(rootTag !== 'div' ? { rootTag, ...(busyAxis ? { busyProp: busyAxis.prop } : {}), ...(needsName ? { storyLabel: humanize(name.replace(/([a-z])([A-Z])/g, '$1 $2')) } : {}) } : {}), ...(disclosure ? { disclosure: { prop: disclosure.axis.prop, header: byPath.get(disclosure.header)!.role, panel: byPath.get(disclosure.panel)!.role, headerPath: disclosure.header } } : {}), slots: slotList, set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, nestedProps, exposed: exposedProps, nestedCheck, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(dialog ? { dialog } : {}), visual, ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
+  const core: GenericCore = { ...(combo ? { combo } : {}), ...(trig ? { trigger: { prop: trig.prop, trigger: trig.trigger, panel: trig.panel } } : {}), ...(collection ? { collection } : {}), ...(repeatList.length ? { repeats: repeatList } : {}), ...(responsive.size ? { responsive: [...responsive].map((a) => a.prop) } : {}), ...(rootTag !== 'div' ? { rootTag, ...(busyAxis ? { busyProp: busyAxis.prop } : {}), ...(needsName ? { storyLabel: humanize(name.replace(/([a-z])([A-Z])/g, '$1 $2')) } : {}) } : {}), ...(disclosure ? { disclosure: { prop: disclosure.axis.prop, header: byPath.get(disclosure.header)!.role, panel: byPath.get(disclosure.panel)!.role, headerPath: disclosure.header } } : {}), slots: slotList, set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, nestedProps, exposed: exposedProps, nestedCheck, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(dialog ? { dialog } : {}), visual, ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
   const files = [
     { path: `${dir}/${name}.tsx`, content: tsx },
     { path: `${dir}/${name}.module.css`, content: css },

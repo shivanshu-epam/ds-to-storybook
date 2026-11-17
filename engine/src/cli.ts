@@ -346,7 +346,7 @@ async function main() {
         }));
         // Archetype decisions choose the behaviour template where structure and names cannot tell (single-set components only).
         const archetypes = activeDecisions(loadDecisions(resolve(config.baseDir, config.generate.decisions?.file ?? DECISIONS_FILE)), config.generate.decisions?.apply ?? 'accepted');
-        const TEMPLATE = { generic: 'generic', button: 'button', link: 'link', checkbox: 'checkbox-single', switch: 'switch', disclosure: 'disclosure' } as const;
+        const TEMPLATE = { generic: 'generic', button: 'button', link: 'link', checkbox: 'checkbox-single', switch: 'switch', disclosure: 'disclosure', combobox: 'combobox' } as const;
         for (const c of plan) {
           const setName = c.sets.main ? ir.components.find((x) => x.targetId === c.sets.main)?.name : undefined;
           const a = setName ? archetypes.get(setName)?.archetype : undefined;

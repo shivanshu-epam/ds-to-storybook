@@ -60,8 +60,8 @@ declare module 'react' {
       'ds-switch': El<DsSwitch, { checked?: boolean; accessibleLabel?: string | undefined; name?: string | undefined; value?: string; interaction?: "default" | "loading"; size?: "medium" | "small"; disabled?: boolean; showInnerContent?: boolean }>;
       'ds-input': El<DsInput, { value?: string; type?: string; name?: string | undefined; maxlength?: number | undefined; autocomplete?: string | undefined; invalid?: boolean; appearance?: "outlined" | "filled" | "borderless" | "inline"; size?: "sm" | "md" | "lg"; state?: "default" | "error"; disabled?: boolean; required?: boolean; showLeadingIcon?: boolean; showTrailingIcon?: boolean; clearable?: boolean; showCharacterCount?: boolean; label?: string; placeholder?: string; helperText?: string; characterCount?: string }>;
       'ds-dropdown-trigger': El<DsDropdownTrigger, { size?: "small" | "medium" | "large"; state?: "default" | "error" | "read-only"; expanded?: boolean; disabled?: boolean; clearable?: boolean }>;
-      'ds-dropdown-menu': El<DsDropdownMenu, { state?: "default" | "loading" | "empty"; showSearch?: boolean; grouped?: boolean }>;
-      'ds-dropdown': El<DsDropdown, { size?: "small" | "medium" | "large"; state?: "collapsed" | "expanded" }>;
+      'ds-dropdown-menu': El<DsDropdownMenu, { state?: "default" | "loading" | "empty"; active?: number; showSearch?: boolean; grouped?: boolean }>;
+      'ds-dropdown': El<DsDropdown, { size?: "small" | "medium" | "large"; state?: "collapsed" | "expanded"; accessibleLabel?: string | undefined }>;
       'ds-input-control': El<DsInputControl, { state?: "default" | "filled" | "read-only" | "error" | "success" | "state9"; disabled?: boolean }>;
       'ds-input-field': El<DsInputField, { state?: "default" | "invalid" | "success" | "read-only"; disabled?: boolean; required?: boolean; helperMessage?: boolean; labelText?: string; valueText?: string; helperText?: string; errorText?: string; successText?: string }>;
       'ds-form': El<DsForm, { state?: "default" | "submitting" | "success" | "error"; disabled?: boolean }>;

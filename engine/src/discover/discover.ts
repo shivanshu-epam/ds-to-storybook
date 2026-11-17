@@ -34,7 +34,7 @@ export interface DiscoveredFrame {
 export interface Proposal {
   /** Generated component name (PascalCase). */
   name: string;
-  template: 'action' | 'checkbox' | 'checkbox-single' | 'radio-single' | 'disclosure' | 'button' | 'link' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
+  template: 'action' | 'checkbox' | 'checkbox-single' | 'radio-single' | 'combobox' | 'disclosure' | 'button' | 'link' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
   /** Template role -> component set id. */
   sets: Record<string, string>;
   page: string;
@@ -180,6 +180,30 @@ function disclosureStructure(node?: FigmaNode): string | undefined {
   return undefined;
 }
 
+/**
+ * A select or combobox: a variant value that means open (State=Opened, isOpen=True) and a nested list, menu or dropdown
+ * instance as the popup, in a set named as a select, combobox, dropdown, picker or autocomplete (or one holding a list).
+ */
+function comboStructure(node: FigmaNode | undefined, name: string, nodes: Map<string, FigmaNode>): string | undefined {
+  const defs = Object.entries(node?.componentPropertyDefinitions ?? {}) as [string, { type?: string; variantOptions?: string[] }][];
+  const axis = defs.find(([k, d]) => d.type === 'VARIANT' && (d.variantOptions?.some((o) => /^(is[ _-]?)?(open|opened|expanded)$/i.test(o.trim())) || (/open|expand/i.test(k) && d.variantOptions?.every((o) => /^(true|false)$/i.test(o)))))?.[0];
+  if (!axis || !node?.children?.length || /^[_.]|base$/i.test(name.trim()) || /accordion|collapsible|dialog|modal|drawer/i.test(name)) return undefined;
+  let popup: string | undefined;
+  const walk = (n: FigmaNode) => {
+    if (popup) return;
+    if (n.type === 'INSTANCE') {
+      const main = n.componentId ? nodes.get(n.componentId) : undefined;
+      const label = `${n.name} ${main?.name ?? ''}`;
+      if (/menu|list|dropdown|popover|option/i.test(label) && !/icon|trigger|button|field|input|header|label|footer/i.test(label)) popup = n.name;
+      return;
+    }
+    n.children?.forEach(walk);
+  };
+  node.children.forEach(walk);
+  if (!popup || !/select|combo ?box|dropdown|picker|autocomplete/i.test(name)) return undefined;
+  return `${axis.replace(/#[\d:]+$/, '')} opens the "${popup}" popup`;
+}
+
 /** A True/False variant axis about being checked (isChecked, Checked=On/Off). */
 function checkedAxis(node?: FigmaNode): string | undefined {
   const defs = Object.entries(node?.componentPropertyDefinitions ?? {}) as [string, { type?: string; variantOptions?: string[] }][];
@@ -234,6 +258,10 @@ function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides
         template = radioTemplate;
         reason = radioTemplate === 'radio' ? 'Radio control with a selected axis: radio archetype (native radio, WAI-ARIA radio group).' : radioTemplate === 'radio-field' ? 'Radio field: the row with the radio becomes its <label>.' : 'Radio group: role="radiogroup" with a shared name and value.';
         confidence = 0.85;
+      } else if (comboStructure(nodes.get(s.id), s.name, nodes)) {
+        template = 'combobox';
+        reason = `${comboStructure(nodes.get(s.id), s.name, nodes)}: select-only combobox archetype (WAI-ARIA combobox), recognised from structure.`;
+        confidence = 0.75;
       } else if (/^button$/i.test(s.name) && p.includes('Variant') && p.some((x) => /^state$/i.test(x))) {
         template = 'action';
         reason = 'Named Button with Variant and State axes: action archetype (WAI-ARIA button).';

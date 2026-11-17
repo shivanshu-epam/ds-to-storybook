@@ -264,6 +264,8 @@ The first Blade audit listed 12 components with "visuals only, but the name sugg
 
   Both still show ⚠ in the audit.
 
+  Section 15 adds both (17 Nov 2026).
+
 Found while testing:
 - **Web Component items need a box.** Generated Web Components use `display: contents` on the host, which can take neither focus nor clicks, so items a group manages get a box.
 - **Key events in the shadow DOM.** Keyboard listeners sit on the host, where events from inside the shadow root arrive.
@@ -305,7 +307,29 @@ The geometry matches Figma's render bounds in both cases.
 
 Checks: 111 engine tests; Design System AI 306 of 306 in both outputs; Blade React 266 of 415 and Web Components 264 of 413, failures colour contrast only.
 
-## 14. Reproduce
+## 15. Combobox, menu button, listbox and menu (17 Nov 2026)
+
+The two components section 12 left out now have behaviour, and the same rules cover other design systems. Figma has no marker for any of these patterns, so each is recognised from structure plus a name, and says which evidence it used.
+
+| Pattern | Recognised from | Behaviour |
+| --- | --- | --- |
+| Listbox | repeated items with a selected True/False axis, in a set (or an item) named as a list, options, dropdown, select or menu | `role="listbox"`, items `role="option"` with `aria-selected`. One tab stop; arrow keys, Home and End move the active option (`aria-activedescendant`, drawn with the item's Figma focus style); Enter, Space or a click selects. A Selection Type axis with a Multi value allows several (`aria-multiselectable`). Separators are hidden from assistive technology; section headings stay plain text. Until the user selects, each option keeps the selection Figma gives it, so the designed variants still match |
+| Menu | repeated items without a selected axis, in a set named Menu | `role="menu"`, items `role="menuitem"`; same keyboard; Enter or Space activates |
+| Combobox (select-only) | a set named as a select, combobox, dropdown, picker or autocomplete, with an Open/Opened/Expanded variant value and a nested list or menu as popup, whose items have a selected axis | the field layer gets `role="combobox"`, `aria-expanded`, `aria-controls` and the visible label as its name; a click, Enter, Space or ArrowDown opens, ArrowDown again moves focus into the list, Escape closes and returns focus. `open` / `defaultOpen` / `onOpenChange`; the Figma open value still opens it for docs and visual tests |
+| Menu button | the same, when the popup's items have no selected state (actions) | the trigger is a button with `aria-haspopup="menu"`, named by its content |
+| A composite holding one | a nested component with one of these behaviours (Blade's Dropdown Menu holds the listbox) | the scorecard credits it, only where the name says it is interactive (an Alert with a close button stays a display component) |
+
+Where Figma shows no items at all (a Loading or Empty state), the list is not one: the role and its keyboard are dropped there, and Loading sets `aria-busy`. Design System AI's Dropdown Menu showed why: axe rejects a menu with no items.
+
+Not generated, and said so in each component's notes: typing to filter (autocomplete), and writing the chosen option into the field.
+
+Results:
+- **Blade audit, Interaction:** 19 pass, 0 warnings, 0 failures (was 17, 2, 0). Select Input with Autocomplete is a select-only combobox; Dropdown Menu passes through the listbox inside it.
+- **Blade tests:** React 266 of 417 and Web Components 264 of 415 (two new behaviour stories each). Every failure is still colour contrast in Blade's palette; with that rule switched off locally, the Action List, Dropdown Menu and Select Input stories pass in both outputs (14 of 14 each).
+- **Design System AI:** 312 of 312 in both outputs (306 before, plus the new stories). Its Dropdown is now a menu button and its Dropdown Menu a menu.
+- **Engine:** 122 tests.
+
+## 16. Reproduce
 
 - Blade Storybook inventory: `fetch('https://blade.razorpay.com/index.json')`.
 - Blade source: `git clone --depth 1 --filter=blob:none --sparse https://github.com/razorpay/blade`, with sparse paths `packages/blade/src/components` and `packages/blade-plugin`.

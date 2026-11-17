@@ -1328,7 +1328,7 @@
     },
     {
       "component": "DropdownMenu",
-      "template": "generic",
+      "template": "collection:menu",
       "figma": {
         "sets": [
           "DropdownMenu"
@@ -1361,8 +1361,8 @@
         },
         {
           "name": "Interaction",
-          "status": "warn",
-          "value": "visuals only: the name suggests behaviour that no template provides (add an archetype decision)"
+          "status": "pass",
+          "value": "WAI-ARIA menu pattern, tested in the stories"
         },
         {
           "name": "Tokens",
@@ -1388,7 +1388,7 @@
     },
     {
       "component": "Dropdown",
-      "template": "generic",
+      "template": "menu-button",
       "figma": {
         "sets": [
           "Dropdown"
@@ -1421,8 +1421,8 @@
         },
         {
           "name": "Interaction",
-          "status": "warn",
-          "value": "visuals only: the name suggests behaviour that no template provides (add an archetype decision)"
+          "status": "pass",
+          "value": "WAI-ARIA menu button pattern, tested in the stories"
         },
         {
           "name": "Tokens",

@@ -89,7 +89,8 @@
               "link",
               "checkbox",
               "switch",
-              "disclosure"
+              "disclosure",
+              "combobox"
             ],
             "description": "Only when the evidence shows what the component does (for example, a set named and drawn as a button)."
           }

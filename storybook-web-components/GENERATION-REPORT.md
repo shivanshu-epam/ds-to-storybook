@@ -63,7 +63,7 @@ Details are in `token-map.json`.
 
 ## Scorecards
 
-One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured. No overall score: each measure is gated on its own. Public components: 27; 105 ✓, 79 ⚠, 0 ✗. Full detail in `scorecard.json`; building blocks are in the file, not this table.
+One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured. No overall score: each measure is gated on its own. Public components: 27; 107 ✓, 77 ⚠, 0 ✗. Full detail in `scorecard.json`; building blocks are in the file, not this table.
 
 | Component | Visual fidelity | Variants | Properties | Nested consistency | Interaction | Tokens | Accessibility | Documentation | Open decisions |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -89,8 +89,8 @@ One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a 
 | Switch | – | ✓ | ✓ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
 | Input | – | ✓ | ⚠ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
 | DropdownTrigger | – | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
-| DropdownMenu | – | ✓ | ✓ | ✓ | ⚠ | ⚠ | ⚠ | ⚠ | ⚠ |
-| Dropdown | – | ✓ | ✓ | ✓ | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| DropdownMenu | – | ✓ | ✓ | ✓ | ✓ | ⚠ | ⚠ | ⚠ | ⚠ |
+| Dropdown | – | ✓ | ✓ | ✓ | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
 | InputControl | – | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
 | InputField | – | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
 | Form | – | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ |
@@ -2539,6 +2539,7 @@ Figma: DropdownMenu (400:1970)
 **Not from Figma (archetype defaults or decisions):**
 
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
+- Behaviour from the WAI-ARIA menu pattern, recognised from the name: role="menu" with menuitem items. One tab stop; arrow keys, Home and End move the active item; Enter or Space activates it (a click). Opening and closing the menu belongs to its trigger.
 
 **Gaps:**
 
@@ -2657,6 +2658,7 @@ Figma: Dropdown (401:2471)
 **Not from Figma (archetype defaults or decisions):**
 
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
+- Behaviour from the WAI-ARIA menu button pattern, recognised from the State = expanded variant and the "_menu" popup, which holds actions (no selected state): the "_trigger" layer is a button with aria-haspopup="menu" with aria-expanded and aria-controls; a click, Enter, Space or ArrowDown opens it, ArrowDown again moves focus into the popup, Escape closes it. open / defaultOpen / onOpenChange control it; state="expanded" still opens it for docs and visual tests.
 
 **Gaps:**
 

@@ -2,8 +2,9 @@
 import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
 import { inModes } from '../../storybook/modes';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
-import { row, labelled } from '../../storybook/layout';
+import { row, labelled, shadowOf } from '../../storybook/layout';
 import './ds-dropdown-menu';
 
 const meta = {
@@ -49,4 +50,21 @@ export const Options: Story = {
     labelled("Show Search: on", html`<ds-dropdown-menu state=${args.state} ?show-search=${true} ?grouped=${args.grouped}></ds-dropdown-menu>`),
     labelled("Grouped: on", html`<ds-dropdown-menu state=${args.state} ?show-search=${args.showSearch} ?grouped=${true}></ds-dropdown-menu>`),
   ]),
+};
+
+/** WAI-ARIA menu: one tab stop; arrow keys move the active item (test only). */
+export const MovesFocus: Story = {
+  tags: ['!dev'],
+  name: 'Moves between items',
+  play: async ({ canvasElement }) => {
+    const root = shadowOf(canvasElement, 'ds-dropdown-menu') as unknown as HTMLElement;
+    const list = within(root).getByRole('menu');
+    const items = [...root.querySelectorAll<HTMLElement>('[data-ds-item]')];
+    await expect(items.length).toBeGreaterThan(1);
+    list.focus();
+    await userEvent.keyboard('{Home}');
+    await expect(list).toHaveAttribute('aria-activedescendant', items[0]!.id);
+    await userEvent.keyboard('{ArrowDown}');
+    await expect(list).toHaveAttribute('aria-activedescendant', items[1]!.id);
+  },
 };

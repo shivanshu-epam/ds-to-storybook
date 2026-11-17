@@ -20,7 +20,7 @@ export interface PropDecision {
 }
 
 /** Behaviour templates a decision can choose for a component set (when structure and names cannot tell). */
-export const ARCHETYPES = ['generic', 'button', 'link', 'checkbox', 'switch', 'disclosure'] as const;
+export const ARCHETYPES = ['generic', 'button', 'link', 'checkbox', 'switch', 'disclosure', 'combobox'] as const;
 export type Archetype = (typeof ARCHETYPES)[number];
 
 export interface SetDecision {

@@ -101,7 +101,8 @@
               "link",
               "checkbox",
               "switch",
-              "disclosure"
+              "disclosure",
+              "combobox"
             ],
             "description": "Behaviour template for this set, when structure and names cannot tell."
           }

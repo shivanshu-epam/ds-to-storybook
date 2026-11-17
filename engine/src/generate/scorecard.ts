@@ -38,12 +38,14 @@ export interface ScorecardInput {
   describedProps: number;
   /** A composite whose repeated items have a behaviour template: that behaviour. */
   itemBehaviour?: string;
+  /** A nested component with a behaviour (a menu holding a listbox): counts only where the name says interactive. */
+  nestedBehaviour?: string;
 }
 
 const BEHAVIOUR: Record<string, string> = {
   action: 'WAI-ARIA button', button: 'WAI-ARIA button', link: 'WAI-ARIA link', checkbox: 'WAI-ARIA checkbox', 'checkbox-single': 'WAI-ARIA checkbox',
   switch: 'WAI-ARIA switch', 'radio-single': 'WAI-ARIA radio', accordion: 'WAI-ARIA accordion', disclosure: 'WAI-ARIA disclosure', radio: 'WAI-ARIA radio', 'radio-field': 'WAI-ARIA radio (label)',
-  'radio-group': 'WAI-ARIA radio group', 'collection:tablist': 'WAI-ARIA tabs', 'collection:radiogroup': 'WAI-ARIA radio group', 'collection:group': 'WAI-ARIA group', input: 'native input', dialog: 'WAI-ARIA dialog',
+  'radio-group': 'WAI-ARIA radio group', 'collection:tablist': 'WAI-ARIA tabs', 'collection:radiogroup': 'WAI-ARIA radio group', 'collection:group': 'WAI-ARIA group', 'collection:listbox': 'WAI-ARIA listbox', 'collection:menu': 'WAI-ARIA menu', combobox: 'WAI-ARIA combobox (select-only)', 'menu-button': 'WAI-ARIA menu button', input: 'native input', dialog: 'WAI-ARIA dialog',
 };
 const INTERACTIVE_NAME = /button|link|\btabs?\b|tabs?(item)?$|menu|select|dropdown|toggle|switch|checkbox|radio|accordion|collapsible|input|slider|chip|pagination/i;
 
@@ -73,6 +75,7 @@ export function buildScorecard(x: ScorecardInput): Scorecard {
   const behaviour = BEHAVIOUR[x.template];
   if (behaviour) m.push({ name: 'Interaction', status: 'pass', value: `${behaviour} pattern, tested in the stories` });
   else if (x.itemBehaviour) m.push({ name: 'Interaction', status: 'pass', value: `behaviour comes from its items (${x.itemBehaviour})` });
+  else if (x.nestedBehaviour && INTERACTIVE_NAME.test(x.name)) m.push({ name: 'Interaction', status: 'pass', value: `behaviour comes from a nested component (${x.nestedBehaviour})` });
   else m.push({ name: 'Interaction', status: INTERACTIVE_NAME.test(x.name) && !x.buildingBlock ? 'warn' : 'n/a', value: INTERACTIVE_NAME.test(x.name) && !x.buildingBlock ? 'visuals only: the name suggests behaviour that no template provides (add an archetype decision)' : 'visuals only (display component)' });
   // 6. Tokens: raw colours left in the component CSS (outside var()).
   const raw = (x.css.replace(/var\([^)]*\)/g, '').match(/#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)/g) ?? []).length;
