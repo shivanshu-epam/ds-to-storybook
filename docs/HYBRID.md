@@ -329,7 +329,16 @@ Results:
 - **Design System AI:** 312 of 312 in both outputs (306 before, plus the new stories). Its Dropdown is now a menu button and its Dropdown Menu a menu.
 - **Engine:** 122 tests.
 
-## 16. Reproduce
+## 16. Blade descriptions accepted (17 Nov 2026)
+
+The 28 descriptions Claude proposed in section 9 were reviewed (they validate against the current Figma version, and none claims behaviour that is not generated) and accepted with `ds-sync decisions accept --only all --by <name>`. The generator now applies them: component descriptions on the docs pages and plain-language prop descriptions in the props tables.
+
+- **Blade audit, Documentation:** 10 pass, 14 warnings, 25 failures (was 0, 1, 48).
+  - The 14 warnings have a description, but not every prop is described: the AI wrote descriptions only for the props it was sure of.
+  - The 25 failures had no proposal at all: the first interpret run covered 28 sets. They are mostly inputs, buttons, typography and groups.
+- **API match with Blade's code:** 76 of 207 reference props (37%), up from 75 without decisions and 66 of 197 (34%) at the start.
+
+## 17. Reproduce
 
 - Blade Storybook inventory: `fetch('https://blade.razorpay.com/index.json')`.
 - Blade source: `git clone --depth 1 --filter=blob:none --sparse https://github.com/razorpay/blade`, with sparse paths `packages/blade/src/components` and `packages/blade-plugin`.
