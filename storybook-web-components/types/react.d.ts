@@ -36,7 +36,7 @@ type El<T, P> = React.DetailedHTMLProps<React.HTMLAttributes<T>, T> & P;
 declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
-      'ds-button': El<DsButton, { variant?: "primary" | "secondary" | "ghost" | "danger"; size?: "sm" | "md" | "lg"; radius?: "default" | "rounded" | "none"; disabled?: boolean; type?: 'button' | 'submit' | 'reset'; leadingIcon?: string | undefined; trailingIcon?: string | undefined; label?: string | undefined }>;
+      'ds-button': El<DsButton, { variant?: "primary" | "secondary" | "ghost" | "danger"; size?: "sm" | "md" | "lg"; radius?: "default" | "rounded" | "none"; disabled?: boolean; type?: 'button' | 'submit' | 'reset'; leadingIcon?: string | undefined; trailingIcon?: string | undefined; label?: string | undefined; accessibleExpanded?: string | undefined }>;
       'ds-list-item': El<DsListItem, { type?: "default" | "menu" | "file" | "setting"; state?: "default" | "selected" | "activated" | "dragged" | "skeleton"; size?: "sm" | "md" | "lg"; disabled?: boolean; hasLeadingControl?: boolean; hasTrailingControl?: boolean }>;
       'ds-checkbox': El<DsCheckbox, { size?: "sm" | "md" | "lg"; label?: string; heading?: string; checked?: boolean; indeterminate?: boolean; error?: string; invalid?: boolean; warning?: string; readOnly?: boolean; disabled?: boolean; name?: string; value?: string; accessibleLabel?: string }>;
       'ds-checkbox-group': El<DsCheckboxGroup, { legend?: string; orientation?: string; error?: string; warning?: string; readOnly?: boolean; disabled?: boolean }>;

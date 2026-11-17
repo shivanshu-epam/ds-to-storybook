@@ -17,8 +17,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "warn",
+          "value": "123/180 designed variants match Figma (worst 4.2%)"
         },
         {
           "name": "Variants",
@@ -77,8 +77,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "warn",
+          "value": "74/108 designed variants match Figma (worst 7.0%)"
         },
         {
           "name": "Variants",
@@ -141,8 +141,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "warn",
+          "value": "80/116 designed variants match Figma (worst 4.1%)"
         },
         {
           "name": "Variants",
@@ -201,8 +201,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "warn",
+          "value": "108/135 designed variants match Figma (worst 5.1%)"
         },
         {
           "name": "Variants",
@@ -261,8 +261,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "warn",
+          "value": "6/8 designed variants match Figma (worst 2.8%)"
         },
         {
           "name": "Variants",
@@ -321,8 +321,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "pass",
+          "value": "2/2 designed variants match Figma (worst 0.3%)"
         },
         {
           "name": "Variants",
@@ -381,8 +381,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "pass",
+          "value": "10/10 designed variants match Figma (worst 1.0%)"
         },
         {
           "name": "Variants",
@@ -441,8 +441,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "pass",
+          "value": "8/8 designed variants match Figma (worst 0.0%)"
         },
         {
           "name": "Variants",
@@ -501,8 +501,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "pass",
+          "value": "2/2 designed variants match Figma (worst 0.0%)"
         },
         {
           "name": "Variants",
@@ -561,8 +561,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "pass",
+          "value": "2/2 designed variants match Figma (worst 0.0%)"
         },
         {
           "name": "Variants",
@@ -621,8 +621,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "pass",
+          "value": "6/6 designed variants match Figma (worst 0.3%)"
         },
         {
           "name": "Variants",
@@ -681,8 +681,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "pass",
+          "value": "21/21 designed variants match Figma (worst 1.0%)"
         },
         {
           "name": "Variants",
@@ -741,8 +741,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "fail",
+          "value": "19/40 designed variants match Figma (worst 3.0%)"
         },
         {
           "name": "Variants",
@@ -861,8 +861,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "pass",
+          "value": "17/17 designed variants match Figma (worst 0.0%)"
         },
         {
           "name": "Variants",
@@ -921,8 +921,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "fail",
+          "value": "6/14 designed variants match Figma (worst 4.2%)"
         },
         {
           "name": "Variants",
@@ -981,8 +981,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "fail",
+          "value": "0/8 designed variants match Figma (worst 3.7%)"
         },
         {
           "name": "Variants",
@@ -1101,8 +1101,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "warn",
+          "value": "17/21 designed variants match Figma (worst 2.4%)"
         },
         {
           "name": "Variants",
@@ -1161,8 +1161,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "pass",
+          "value": "12/12 designed variants match Figma (worst 1.9%)"
         },
         {
           "name": "Variants",
@@ -1221,8 +1221,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "pass",
+          "value": "57/60 designed variants match Figma (worst 2.1%)"
         },
         {
           "name": "Variants",
@@ -1281,8 +1281,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "pass",
+          "value": "21/21 designed variants match Figma (worst 0.4%)"
         },
         {
           "name": "Variants",
@@ -1341,8 +1341,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "fail",
+          "value": "0/3 designed variants match Figma (worst 8.0%)"
         },
         {
           "name": "Variants",
@@ -1401,8 +1401,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "warn",
+          "value": "3/6 designed variants match Figma (worst 2.6%)"
         },
         {
           "name": "Variants",
@@ -1461,8 +1461,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "warn",
+          "value": "7/9 designed variants match Figma (worst 3.2%)"
         },
         {
           "name": "Variants",
@@ -1521,8 +1521,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "fail",
+          "value": "1/6 designed variants match Figma (worst 5.2%)"
         },
         {
           "name": "Variants",
@@ -1581,8 +1581,8 @@
       "measures": [
         {
           "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
+          "status": "fail",
+          "value": "0/5 designed variants match Figma (worst 7.0%)"
         },
         {
           "name": "Variants",

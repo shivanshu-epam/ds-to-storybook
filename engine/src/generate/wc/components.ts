@@ -261,7 +261,8 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     }
     if (cb?.popup === l.path) el = el.replace(/^<([\w-]+) /, '<$1 id="popup" ');
     if (cb?.label === l.path) el = el.replace(/^<([\w-]+) /, '<$1 id="label" ');
-    if (core.trigger?.trigger === l.path) el = el.replace(/<(ds-[\w-]+)(?=[ >])/, '<$1 @click=${this.toggleExpanded}');
+    // The trigger's own button reports the state (aria-controls cannot point across shadow roots).
+    if (core.trigger?.trigger === l.path) el = el.replace(/<(ds-[\w-]+)(?=[ >])/, `<$1 @click=\${this.toggleExpanded} .accessibleExpanded=\${this.${wcProp(core.trigger.prop)} ? 'true' : 'false'}`);
     const b = boolFor(p.refs?.visible);
     return b ? `${indent}\${this.${b} ? html\`${el}\` : nothing}` : `${indent}${el}`;
   };
@@ -281,6 +282,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     ...(hasDisabled ? [{ prop: 'disabled', type: 'boolean', init: 'false', decl: '{ type: Boolean, reflect: true }' }] : []),
     ...(core.rootTag === 'a' ? [{ prop: 'href', type: 'string | undefined', init: 'undefined', decl: '{ type: String }' }] : []),
     ...(core.rootTag ? [{ prop: 'accessibleLabel', type: 'string | undefined', init: 'undefined', decl: "{ type: String, attribute: 'accessible-label' }" }] : []),
+    ...(core.rootTag === 'button' ? [{ prop: 'accessibleExpanded', type: 'string | undefined', init: 'undefined', decl: "{ type: String, attribute: 'accessible-expanded' }", doc: 'aria-expanded for the inner button ("true" / "false"), when this button opens something (a disclosure trigger).' }] : []),
     ...(col?.selection === 'single' ? [{ prop: 'selected', type: 'number', init: String(col.initial[0] ?? -1), decl: '{ type: Number, reflect: true }' }] : []),
     ...(col?.selection === 'multi' && !lc ? [{ prop: 'selected', type: 'number[]', init: `[${col.initial.join(', ')}]`, decl: '{ type: Array }' }] : []),
     ...(lc?.item === 'option' ? [{ prop: 'selected', type: 'number[] | undefined', init: 'undefined', decl: '{ type: Array }', doc: 'Indexes of the selected options. Not set: each option keeps the selection Figma gives it.' }] : []),
@@ -298,6 +300,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     ...(core.busyProp ? [`aria-busy=\${this.${wcProp(core.busyProp)} ? 'true' : nothing}`] : []),
     ...(core.rootTag === 'a' ? ['href=${this.href ?? nothing}'] : []),
     ...(core.rootTag ? ['aria-label=${this.accessibleLabel ?? nothing}'] : []),
+    ...(core.rootTag === 'button' ? ['aria-expanded=${this.accessibleExpanded ?? nothing}'] : []),
     ...(lc ? (() => {
       // Where Figma shows no items (loading, empty), the list is not one: no role, no keyboard, aria-busy while loading.
       const on = (v: string) => (listed ? `\${${listed} ? ${v} : nothing}` : `\${${v}}`);
@@ -730,6 +733,21 @@ export const Activates: Story = {
   },
 };`);
   }
+  if (core.trigger) {
+    const role = core.layers.find((l) => l.path === core.trigger!.trigger)?.role;
+    stories.push(`/** WAI-ARIA disclosure: the nested button toggles the panel and reports it with aria-expanded (test only). */
+export const ExpandsAndCollapses: Story = {
+  name: 'Expands and collapses',
+  play: async ({ canvasElement }) => {
+    const root = shadowOf(canvasElement, '${tag}') as unknown as HTMLElement;
+    const host = [...root.querySelectorAll<HTMLElement>('.${role} *')].find((e) => e.shadowRoot)!;
+    const button = host.shadowRoot!.querySelector<HTMLElement>('button')!;
+    const before = button.getAttribute('aria-expanded') === 'true';
+    await userEvent.click(button);
+    await expect(button).toHaveAttribute('aria-expanded', String(!before));
+  },
+};`);
+  }
   if (dis) {
     stories.push(`/** WAI-ARIA disclosure: the header button toggles the panel (test only). */
 export const ExpandsAndCollapses: Story = {
@@ -752,7 +770,7 @@ export const ExpandsAndCollapses: Story = {
   const layoutImports = ['matrix', 'row', 'labelled', 'shadowOf'].filter((f) => stories.some((st) => st.includes(`${f}(`)));
   const storiesFile = `${header(js(set.name), sw ? 'switch template' : 'generic template')}import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
-${sw || dis || core.rootTag === 'button' || (col && col.selection !== 'none') || lc || cb ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}
+${sw || dis || core.trigger || core.rootTag === 'button' || (col && col.selection !== 'none') || lc || cb ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}
 ${layoutImports.length ? `import { ${layoutImports.join(', ')} } from '../../storybook/layout';\n` : ''}import './${tag}';
 
 const meta = {
@@ -814,6 +832,8 @@ export function wcAction(ctx: TemplateContext, name: string, core: ActionCore, o
     { prop: 'type', type: "'button' | 'submit' | 'reset'", init: "'button'", decl: '{ type: String }' },
     ...core.slots.map((s) => ({ prop: s.prop, type: 'string | undefined', init: 'undefined', decl: `{ type: String, attribute: ${js(attrFor(s.prop))} }` })),
     { prop: 'label', type: 'string | undefined', init: 'undefined', decl: '{ type: String }' },
+    // aria-expanded for the inner button when this button opens something (a disclosure trigger).
+    { prop: 'accessibleExpanded', type: 'string | undefined', init: 'undefined', decl: "{ type: String, attribute: 'accessible-expanded' }" },
   ];
   const slotProp = (re: RegExp) => core.slots.find((s) => re.test(s.prop))?.prop;
   const leading = slotProp(/leading/);
@@ -859,7 +879,7 @@ ${props.map((p) => `    this.${p.prop} = ${p.init};`).join('\n')}
   }
 
   override render() {
-    return html\`<button class="root" part="button" type="button" ${enumProps.map((a) => `data-${kebab(a.figma)}=\${this.${a.prop}}`).join(' ')} ?disabled=\${this.disabled} aria-label=\${this.label ?? nothing} data-force-state=\${this.forceState ?? nothing} @click=\${this.onClick}>
+    return html\`<button class="root" part="button" type="button" ${enumProps.map((a) => `data-${kebab(a.figma)}=\${this.${a.prop}}`).join(' ')} ?disabled=\${this.disabled} aria-label=\${this.label ?? nothing} aria-expanded=\${this.accessibleExpanded ?? nothing} data-force-state=\${this.forceState ?? nothing} @click=\${this.onClick}>
 ${leading ? `      \${this.${leading} ? html\`<span class="leadingIcon" aria-hidden="true">\${icon(this.${leading})}</span>\` : nothing}\n` : ''}      <span class="label" ?hidden=\${!this.hasLabel}><slot @slotchange=\${this.onSlotChange}></slot></span>
 ${trailing ? `      \${this.${trailing}${leading ? ` && !this.${leading}` : ''} ? html\`<span class="trailingIcon" aria-hidden="true">\${icon(this.${trailing})}</span>\` : nothing}\n` : ''}    </button>\`;
   }

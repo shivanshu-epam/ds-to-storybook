@@ -63,37 +63,37 @@ Details are in `token-map.json`.
 
 ## Scorecards
 
-One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured. No overall score: each measure is gated on its own. Public components: 27; 107 ✓, 77 ⚠, 0 ✗. Full detail in `scorecard.json`; building blocks are in the file, not this table.
+One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured. No overall score: each measure is gated on its own. Public components: 27; 118 ✓, 85 ⚠, 6 ✗. Full detail in `scorecard.json`; building blocks are in the file, not this table.
 
 | Component | Visual fidelity | Variants | Properties | Nested consistency | Interaction | Tokens | Accessibility | Documentation | Open decisions |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Button | – | ✓ | ⚠ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
-| ListItem | – | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
-| Checkbox | – | ✓ | ✓ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
-| Badge | – | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
-| BreadcrumbItem | – | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
-| Separator | – | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
-| Accordion | – | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
-| NavControl | – | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
-| PaginationDot | – | ✓ | ✓ | – | ⚠ | ✓ | ✓ | ✓ | ✓ |
-| AutoplayToggle | – | ✓ | ✓ | – | ⚠ | ✓ | ✓ | ⚠ | ✓ |
-| AvatarIdentity | – | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ |
-| AvatarGlyph | – | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
-| Alert | – | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
+| Button | ⚠ | ✓ | ⚠ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| ListItem | ⚠ | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
+| Checkbox | ⚠ | ✓ | ✓ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| Badge | ⚠ | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
+| BreadcrumbItem | ⚠ | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
+| Separator | ✓ | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
+| Accordion | ✓ | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
+| NavControl | ✓ | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
+| PaginationDot | ✓ | ✓ | ✓ | – | ⚠ | ✓ | ✓ | ✓ | ✓ |
+| AutoplayToggle | ✓ | ✓ | ✓ | – | ⚠ | ✓ | ✓ | ⚠ | ✓ |
+| AvatarIdentity | ✓ | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ |
+| AvatarGlyph | ✓ | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
+| Alert | ✗ | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
 | Dialog | ⚠ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ | ⚠ |
-| RadioControl | – | ✓ | ✓ | – | ✓ | ⚠ | ✓ | ⚠ | ✓ |
-| RadioField | – | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
-| RadioGroup | – | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
+| RadioControl | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ✓ | ⚠ | ✓ |
+| RadioField | ✗ | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
+| RadioGroup | ✗ | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
 | Divider | ⚠ | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
-| DatePicker | – | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
-| Switch | – | ✓ | ✓ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
-| Input | – | ✓ | ⚠ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
-| DropdownTrigger | – | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
-| DropdownMenu | – | ✓ | ✓ | ✓ | ✓ | ⚠ | ⚠ | ⚠ | ⚠ |
-| Dropdown | – | ✓ | ✓ | ✓ | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
-| InputControl | – | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
-| InputField | – | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
-| Form | – | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ |
+| DatePicker | ⚠ | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
+| Switch | ✓ | ✓ | ✓ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| Input | ✓ | ✓ | ⚠ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| DropdownTrigger | ✓ | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| DropdownMenu | ✗ | ✓ | ✓ | ✓ | ✓ | ⚠ | ⚠ | ⚠ | ⚠ |
+| Dropdown | ⚠ | ✓ | ✓ | ✓ | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| InputControl | ⚠ | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| InputField | ✗ | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| Form | ✗ | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ |
 
 ## Nested consistency
 

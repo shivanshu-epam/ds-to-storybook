@@ -216,7 +216,7 @@ Checks after these: engine 100 tests; Design System AI unchanged, 306 of 306 in 
 
 Checks after these: engine 102 tests; Design System AI 306 of 306 in both outputs (Dropdown Menu gains `children`); Blade React 264 of 410 and Web Components 263 of 409, failures colour contrast only, no timeouts.
 
-Still open: a single radio without a group (it needs group semantics to be useful).
+Still open at the time: a single radio without a group. Section 12 added it (a radio pattern selected by its Radio Group).
 
 ## 11. Phase 4, first increment: scorecards and audit (14 Nov 2026)
 
@@ -256,7 +256,7 @@ The first Blade audit listed 12 components with "visuals only, but the name sugg
 | Tabs | repeated items with an `isSelected` axis, in a set named Tabs | `role="tablist"` (`aria-orientation` from the orientation axis), items become `role="tab"` with `aria-selected`; one in the tab order; arrow keys select. Figma has no tab panels; the report says to connect them |
 | Chip Group | repeated chips with an `isChecked` axis and no behaviour of their own | `role="group"`, chips become checkboxes (`aria-checked`, Space or Enter toggles); `selected` holds the indexes |
 | Checkbox Group | repeated Checkbox items that already behave | `role="group"` named by its label; each checkbox keeps its own state |
-| Collapsible | a boolean `isExpanded` that shows a panel, and a nested Button | the Button gets `aria-expanded`, `aria-controls` and toggles it; controlled or uncontrolled. Web Components: the trigger toggles, but `aria-expanded` is not forwarded into the Lit button yet |
+| Collapsible | a boolean `isExpanded` that shows a panel, and a nested Button | the Button gets `aria-expanded`, `aria-controls` and toggles it; controlled or uncontrolled. Web Components: the trigger's inner button gets `aria-expanded` through its `accessible-expanded` attribute (added 17 Nov 2026); `aria-controls` cannot point across shadow roots |
 
 - **Two are deliberately left out:**
   - Select Input with Autocomplete is a combobox, which needs the full WAI-ARIA combobox contract (popup, active descendant, filtering). Guessing it would be worse than saying so.

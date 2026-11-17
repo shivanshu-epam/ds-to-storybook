@@ -18,6 +18,7 @@ export class DsButton extends LitElement {
     leadingIcon: { type: String, attribute: "leading-icon" },
     trailingIcon: { type: String, attribute: "trailing-icon" },
     label: { type: String },
+    accessibleExpanded: { type: String, attribute: 'accessible-expanded' },
     forceState: { type: String, attribute: 'data-force-state' },
     hasLabel: { state: true },
   };
@@ -30,6 +31,7 @@ export class DsButton extends LitElement {
   declare leadingIcon: string | undefined;
   declare trailingIcon: string | undefined;
   declare label: string | undefined;
+  declare accessibleExpanded: string | undefined;
   /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */
   declare forceState: string | undefined;
   declare hasLabel: boolean;
@@ -45,6 +47,7 @@ export class DsButton extends LitElement {
     this.leadingIcon = undefined;
     this.trailingIcon = undefined;
     this.label = undefined;
+    this.accessibleExpanded = undefined;
     this.hasLabel = false;
   }
 
@@ -60,7 +63,7 @@ export class DsButton extends LitElement {
   }
 
   override render() {
-    return html`<button class="root" part="button" type="button" data-variant=${this.variant} data-size=${this.size} data-radius=${this.radius} ?disabled=${this.disabled} aria-label=${this.label ?? nothing} data-force-state=${this.forceState ?? nothing} @click=${this.onClick}>
+    return html`<button class="root" part="button" type="button" data-variant=${this.variant} data-size=${this.size} data-radius=${this.radius} ?disabled=${this.disabled} aria-label=${this.label ?? nothing} aria-expanded=${this.accessibleExpanded ?? nothing} data-force-state=${this.forceState ?? nothing} @click=${this.onClick}>
       ${this.leadingIcon ? html`<span class="leadingIcon" aria-hidden="true">${icon(this.leadingIcon)}</span>` : nothing}
       <span class="label" ?hidden=${!this.hasLabel}><slot @slotchange=${this.onSlotChange}></slot></span>
       ${this.trailingIcon && !this.leadingIcon ? html`<span class="trailingIcon" aria-hidden="true">${icon(this.trailingIcon)}</span>` : nothing}
