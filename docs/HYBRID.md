@@ -338,6 +338,13 @@ The 28 descriptions Claude proposed in section 9 were reviewed (they validate ag
   - The 25 failures had no proposal at all: the first interpret run covered 28 sets. They are mostly inputs, buttons, typography and groups.
 - **API match with Blade's code:** 76 of 207 reference props (37%), up from 75 without decisions and 66 of 197 (34%) at the start.
 
+Second run, the same day: `ds-sync interpret --only <the 25> --budget 0.5` answered all 25 (0 failed, about $5.93), with 171 prop descriptions and 72 open questions. One proposal was edited before acceptance: Select Input's description said users "type to filter", which is designed but not generated, so it now says so. All 53 decisions are accepted.
+
+- **Blade audit, Documentation:** 23 pass, 26 warnings, 0 failures. Every public component has a description; the warnings are props the AI left undescribed.
+- **Open decisions:** 49 warnings. The open questions are now in the decisions file and need a person's answers.
+- **Failing measures overall:** 20 (was 68 before the descriptions): 17 Accessibility (Blade's palette contrast) and 3 Visual fidelity.
+- API match is unchanged at 76 of 207: these runs added descriptions, not renames.
+
 ## 17. Reproduce
 
 - Blade Storybook inventory: `fetch('https://blade.razorpay.com/index.json')`.
