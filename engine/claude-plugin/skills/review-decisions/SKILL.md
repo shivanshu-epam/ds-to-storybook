@@ -9,10 +9,10 @@ allowed-tools: Read Bash(npx ds-sync decisions *) Bash(ds-sync decisions *) Bash
 Proposals change the generated API: a renamed prop is a breaking change for anyone already using the component. A person decides; you make the decision easy and safe.
 
 1. Run `ds-sync decisions validate` and stop on errors: fix the file first.
-2. Read `ds-sync.decisions.json` and list the sets with `"status": "proposed"`. Start with the lowest confidence and the ones with `questions`.
+2. Read `ds-sync.decisions.json` and list the sets with `"status": "proposed"`, and the accepted sets whose properties carry a `revision` (a change proposed after acceptance; the accepted name stays in force until the revision is accepted). Start with the lowest confidence and the ones with `questions`.
 3. Show a few sets at a time, as a table: Figma property → proposed name → description → confidence → evidence in a few words. Put each set's questions under its table.
 4. For each set the user decides on:
-   - **Accept as is**: `ds-sync decisions accept --only "<Figma set>" --by "<their name>"`.
+   - **Accept as is**: `ds-sync decisions accept --only "<Figma set>" --by "<their name>"`. For an accepted set this accepts its revisions; rejecting them keeps the accepted names.
    - **Edit**: change the entry in the file as they say, then accept it.
    - **Reject**: `ds-sync decisions reject --only "<Figma set>" --by "<their name>"`. Rejected entries are kept, so the next interpret run does not propose them again.
    Never accept on your own judgement, and never use `--only all` unless the user asked for exactly that.

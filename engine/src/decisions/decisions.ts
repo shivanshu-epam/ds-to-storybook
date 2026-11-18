@@ -14,6 +14,9 @@ export interface PropDecision {
   description?: string;
   /** Overrides the set's status for this property. */
   status?: DecisionStatus;
+  /** A change an AI proposed after this property was accepted. The accepted fields stay in force until a person
+   * accepts the revision. */
+  revision?: { name?: string; description?: string; confidence?: number; evidence?: string[] };
   confidence?: number;
   /** What in the source supports the decision (Figma names, layers, docs text). */
   evidence?: string[];
@@ -103,6 +106,14 @@ export function validateDecisions(file: unknown, ir?: FigmaIR): DecisionProblem[
         names.set(pd.name, prop);
       }
       if (pd.confidence !== undefined && !(pd.confidence >= 0 && pd.confidence <= 1)) err(setName, 'confidence must be between 0 and 1.', prop);
+      const rn = pd.revision?.name;
+      if (rn !== undefined && (!IDENT.test(rn) || RESERVED.has(rn))) err(setName, `Revision "${rn}" is not a usable camelCase name.`, prop);
+    }
+    // Once revisions are accepted, names must still be unique.
+    const finalNames = Object.entries(d.props ?? {}).map(([prop, pd]) => ({ prop, name: pd.revision?.name ?? pd.name, revised: Boolean(pd.revision?.name) }));
+    for (const x of finalNames.filter((f) => f.revised)) {
+      const other = finalNames.find((f) => f.prop !== x.prop && f.name === x.name);
+      if (other) err(setName, `Revision "${x.name}" is also the name for "${other.prop}".`, x.prop);
     }
   }
   return out;
@@ -125,8 +136,13 @@ export function activeDecisions(file: DecisionsFile | undefined, level: ApplyLev
   for (const [setName, d] of Object.entries(file.sets)) {
     const props = new Map<string, { name?: string; description?: string }>();
     for (const [prop, pd] of Object.entries(d.props ?? {})) {
-      if (!ok(pd.status ?? d.status)) continue;
-      props.set(prop, { ...(pd.name ? { name: pd.name } : {}), ...(pd.description ? { description: pd.description } : {}) });
+      // Previewing proposals shows pending revisions too.
+      const rev = level === 'proposed' ? pd.revision : undefined;
+      const base = ok(pd.status ?? d.status);
+      const name = rev?.name ?? (base ? pd.name : undefined);
+      const description = (base ? pd.description : undefined) ?? rev?.description;
+      if (!name && !description) continue;
+      props.set(prop, { ...(name ? { name } : {}), ...(description ? { description } : {}) });
     }
     const description = ok(d.status) ? d.description : undefined;
     const archetype = ok(d.status) ? d.archetype : undefined;
@@ -154,12 +170,47 @@ export function decidedSetDescription(set: Pick<IRComponentSet, 'name'>): string
   return ACTIVE.get(set.name)?.description;
 }
 
-/** Merges one AI proposal into the file. Accepted or rejected entries are never overwritten. */
-export function mergeProposal(file: DecisionsFile, setName: string, proposal: SetDecision): 'added' | 'updated' | 'kept' {
+/** Merges one AI proposal into the file. A proposed set is replaced. An accepted set is never overwritten: a name
+ * or description that differs from what was accepted is added as a revision of that property, for a person to
+ * accept. A rejected set is kept as it is. */
+export function mergeProposal(file: DecisionsFile, setName: string, proposal: SetDecision): 'added' | 'updated' | 'revised' | 'kept' {
   const current = file.sets[setName];
-  if (current && current.status !== 'proposed') return 'kept';
-  file.sets[setName] = { ...proposal, status: 'proposed' };
-  return current ? 'updated' : 'added';
+  if (!current) { file.sets[setName] = { ...proposal, status: 'proposed' }; return 'added'; }
+  if (current.status === 'proposed') { file.sets[setName] = { ...proposal, status: 'proposed' }; return 'updated'; }
+  if (current.status === 'rejected') return 'kept';
+  let revised = false;
+  for (const [figma, pd] of Object.entries(proposal.props ?? {})) {
+    const cur = current.props?.[figma];
+    if ((cur?.status ?? current.status) === 'rejected') continue;
+    const name = pd.name && pd.name !== cur?.name ? pd.name : undefined;
+    // Accepted wording stays: only a missing description is proposed.
+    const description = pd.description && !cur?.description ? pd.description : undefined;
+    if (!name && !description) { if (cur?.revision) { delete cur.revision; } continue; }
+    current.props = { ...current.props, [figma]: { ...cur, revision: { ...(name ? { name } : {}), ...(description ? { description } : {}), ...(pd.confidence !== undefined ? { confidence: pd.confidence } : {}), evidence: pd.evidence ?? [] } } };
+    revised = true;
+  }
+  if (revised && proposal.setHash) current.setHash = proposal.setHash;
+  return revised ? 'revised' : 'kept';
+}
+
+/** Sets with something waiting for a person: a proposed set, or revisions of properties in an accepted set. */
+export function hasProposals(d: SetDecision): boolean {
+  return d.status === 'proposed' || Object.values(d.props ?? {}).some((p) => p.revision);
+}
+
+/** Accepts or rejects a set's proposals: the set itself when proposed, otherwise the revisions in it. */
+export function decide(d: SetDecision, action: 'accept' | 'reject'): void {
+  if (d.status === 'proposed') d.status = action === 'accept' ? 'accepted' : 'rejected';
+  for (const p of Object.values(d.props ?? {})) {
+    if (!p.revision) continue;
+    if (action === 'accept') {
+      if (p.revision.name) p.name = p.revision.name;
+      if (p.revision.description) p.description = p.revision.description;
+      if (p.revision.confidence !== undefined) p.confidence = p.revision.confidence;
+      if (p.revision.evidence?.length) p.evidence = p.revision.evidence;
+    }
+    delete p.revision;
+  }
 }
 
 /** Lines for GENERATION-REPORT.md. */

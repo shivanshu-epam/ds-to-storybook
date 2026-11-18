@@ -6,14 +6,14 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { claudeArgs, interpret, PLUGIN_DIR, toDecisions, type ClaudeRunner } from '../src/ai/interpret.ts';
-import { activeDecisions, setActiveDecisions, validateDecisions, type DecisionsFile } from '../src/decisions/decisions.ts';
+import { activeDecisions, decide, hasProposals, mergeProposal, setActiveDecisions, validateDecisions, type DecisionsFile } from '../src/decisions/decisions.ts';
 import { referenceProps } from '../src/eval/eval.ts';
 import type { FigmaNode } from '../src/figma/types.ts';
 import { genericTemplate, propPlan } from '../src/generate/templates/generic.ts';
 import { loadTokens, TokenResolver } from '../src/generate/tokens.ts';
 import { buildComponentSet } from '../src/ir/build.ts';
 import type { FigmaIR } from '../src/ir/types.ts';
-import { buildReview, writeReview } from '../src/review/review.ts';
+import { buildReview, vocabularyFor, writeReview, type ReviewSet } from '../src/review/review.ts';
 import type { Discovery } from '../src/discover/discover.ts';
 
 const box = (w: number, h: number) => ({ x: 0, y: 0, width: w, height: h });
@@ -130,11 +130,53 @@ describe('decisions (hybrid phase 1)', () => {
     saved.sets.Checkbox!.props!.isIntermediate!.name = 'isMixed';
     writeFileSync(decisionsPath, JSON.stringify(saved));
     await interpret({ reviewDir: join(dir, 'review'), decisionsPath, ir, cwd: dir, log: () => {}, runner, only: ['Checkbox'] });
-    expect((JSON.parse(readFileSync(decisionsPath, 'utf8')) as DecisionsFile).sets.Checkbox!.props!.isIntermediate!.name).toBe('isMixed');
+    const after = (JSON.parse(readFileSync(decisionsPath, 'utf8')) as DecisionsFile).sets.Checkbox!;
+    // The accepted name stays in force; the AI's different name waits as a revision.
+    expect(after.props!.isIntermediate).toMatchObject({ name: 'isMixed', revision: { name: 'isIndeterminate' } });
+    expect(activeDecisions({ version: 1, sets: { Checkbox: after } }, 'accepted').get('Checkbox')!.props.get('isIntermediate')!.name).toBe('isMixed');
 
     const failing: ClaudeRunner = async () => ({ code: 1, stdout: JSON.stringify({ is_error: true, result: 'Not logged in' }), stderr: '' });
     const f = await interpret({ reviewDir: join(dir, 'review'), decisionsPath, ir, cwd: dir, log: () => {}, runner: failing, only: ['Checkbox'] });
     expect(f.failed).toEqual([{ component: 'Checkbox', reason: 'Not logged in' }]);
+  });
+
+  it('shows each property where the rest of the system has the same concept, and what it is called there', () => {
+    const rs = (name: string, props: [string, ReviewSet['properties'][number]['type'], string, string[]?][]): ReviewSet => ({
+      name, role: 'main', nodeId: name, hash: name, description: '', variants: 1, layers: [],
+      properties: props.map(([figma, type, generatedName, options]) => ({ figma, type, default: '', generatedName, generatedAs: type === 'VARIANT' ? 'variant' : 'boolean', ...(options ? { options } : {}) })),
+    });
+    const tones = ['Positive', 'Negative', 'Notice', 'Neutral'];
+    const chip = rs('Chip', [['intent', 'VARIANT', 'intent', tones], ['Show Leading Icon', 'BOOLEAN', 'showLeadingIcon'], ['isChecked', 'VARIANT', 'isChecked', ['False', 'True']]]);
+    const all = [chip, rs('Badge', [['color', 'VARIANT', 'color', [...tones, 'Primary']], ['leadingIcon', 'BOOLEAN', 'leadingIcon']]), rs('Alert', [['color', 'VARIANT', 'color', tones], ['isDismissible', 'VARIANT', 'isDismissible', ['False', 'True']]]), rs('Button', [['size', 'VARIANT', 'size', ['Small', 'Large']]])];
+    const d: DecisionsFile = { version: 1, sets: { Badge: { status: 'accepted', props: { leadingIcon: { name: 'hasLeadingIcon' } } } } };
+    const v = vocabularyFor({ sets: [chip] }, all, d);
+    expect(v.find((x) => x.figma === 'intent')).toMatchObject({ names: { intent: 1, color: 2 }, alsoIn: [{ set: 'Badge', name: 'color' }, { set: 'Alert', name: 'color' }] });
+    // Same words without the show/has prefix; the accepted name is the one reported.
+    expect(v.find((x) => x.figma === 'Show Leading Icon')!.alsoIn).toEqual([{ set: 'Badge', figma: 'leadingIcon', name: 'hasLeadingIcon' }]);
+    // True/False axes are not a shared concept just because their options match.
+    expect(v.find((x) => x.figma === 'isChecked')).toBeUndefined();
+  });
+
+  it('adds revisions to an accepted set without overwriting it; accepting or rejecting resolves them', () => {
+    const file: DecisionsFile = { version: 1, sets: { Chip: { status: 'accepted', props: { intent: { description: 'Sets the tone.' }, size: { name: 'chipSize' } } } } };
+    const proposal = { status: 'proposed' as const, props: { intent: { name: 'color', description: 'Other words.', confidence: 0.9, evidence: ['Badge and Alert use color'] }, size: { name: 'chipSize' } } };
+    expect(mergeProposal(file, 'Chip', proposal)).toBe('revised');
+    const chip = file.sets.Chip!;
+    expect(chip.status).toBe('accepted');
+    expect(chip.props!.intent).toEqual({ description: 'Sets the tone.', revision: { name: 'color', confidence: 0.9, evidence: ['Badge and Alert use color'] } });
+    expect(chip.props!.size!.revision).toBeUndefined();
+    expect(hasProposals(chip)).toBe(true);
+    expect(activeDecisions(file, 'accepted').get('Chip')!.props.get('intent')).toEqual({ description: 'Sets the tone.' });
+    expect(activeDecisions(file, 'proposed').get('Chip')!.props.get('intent')).toEqual({ name: 'color', description: 'Sets the tone.' });
+    expect(validateDecisions({ version: 1, sets: { Chip: { status: 'accepted', props: { a: { name: 'x' }, b: { revision: { name: 'x' } } } } } }).map((p) => p.message)).toEqual(['Revision "x" is also the name for "a".']);
+
+    const rejected = structuredClone(chip);
+    decide(rejected, 'reject');
+    expect(rejected.props!.intent).toEqual({ description: 'Sets the tone.' });
+    decide(chip, 'accept');
+    expect(chip.props!.intent).toEqual({ name: 'color', description: 'Sets the tone.', confidence: 0.9, evidence: ['Badge and Alert use color'] });
+    expect(hasProposals(chip)).toBe(false);
+    expect(mergeProposal({ version: 1, sets: { Chip: { status: 'rejected' } } }, 'Chip', proposal)).toBe('kept');
   });
 
   it('reads reference props from the syntax, following local types', () => {

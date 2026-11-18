@@ -43,6 +43,15 @@ export interface ReviewSet {
   layers: ReviewLayer[];
 }
 
+export interface VocabularyEntry {
+  /** Figma property of this component (sets[].properties[].figma). */
+  figma: string;
+  set: string;
+  /** How many sets of the system use each code name for this concept, this one included. */
+  names: Record<string, number>;
+  alsoIn: { set: string; figma: string; name: string; options?: string[] }[];
+}
+
 export interface ReviewItem {
   schema: 'ds-sync/review@1';
   component: string;
@@ -56,14 +65,64 @@ export interface ReviewItem {
   contains: string[];
   /** Deterministic hints: patterns worth a decision. Hints, not answers. */
   hints: string[];
+  /** The same concept elsewhere in this design system: other sets whose property shares this one's options or
+   * words, with the code name each uses today (accepted decision, else generated). For consistent naming. */
+  vocabulary: VocabularyEntry[];
   /** What a decision may and may not contain. */
   contract: string[];
+}
+
+const STOP = new Set(['show', 'has', 'is', 'with', 'enable', 'enabled', 'visible']);
+const conceptWords = (s: string) => s.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w && !STOP.has(w) && !/^\d+$/.test(w));
+const lowerSet = (xs: string[] | undefined) => new Set((xs ?? []).map((x) => x.toLowerCase()));
+
+/** Two properties name the same concept: variant axes with mostly the same options, or (for booleans, texts and
+ * swaps) the same words once show/has/is prefixes are dropped. */
+function sameConcept(a: ReviewProperty, b: ReviewProperty): boolean {
+  if (a.generatedAs === 'state' || b.generatedAs === 'state') return false;
+  if (a.type === 'VARIANT' && b.type === 'VARIANT') {
+    const x = lowerSet(a.options), y = lowerSet(b.options);
+    // True/False or plain numbers match across unrelated concepts (isChecked and isOpen; maxLines and itemCount).
+    if ([...x].every((o) => o === 'true' || o === 'false' || /^\d+$/.test(o))) return false;
+    const shared = [...x].filter((o) => y.has(o)).length;
+    return shared >= 2 && shared >= 0.5 * Math.min(x.size, y.size);
+  }
+  // A visibility toggle and a text are different concepts even when the words match (showLabel vs label).
+  if (a.type !== b.type) return false;
+  const wa = conceptWords(a.figma), wb = conceptWords(b.figma);
+  return wa.length > 0 && wa.join(' ') === wb.join(' ');
+}
+
+/** For every property of an item, where the rest of the system has the same concept and what it is called. */
+export function vocabularyFor(item: Pick<ReviewItem, 'sets'>, all: ReviewSet[], decisions?: DecisionsFile): VocabularyEntry[] {
+  const nameOf = (set: string, p: ReviewProperty) => {
+    const d = decisions?.sets[set];
+    const pd = d?.props?.[p.figma];
+    const ok = (pd?.status ?? d?.status) === 'accepted';
+    return (ok && pd?.name) || p.generatedName;
+  };
+  const out: VocabularyEntry[] = [];
+  const own = new Set(item.sets.map((s) => s.name));
+  for (const s of item.sets) {
+    for (const p of s.properties) {
+      if (p.generatedAs === 'state' || p.generatedName === '—') continue;
+      const alsoIn = all.filter((o) => !own.has(o.name)).flatMap((o) => o.properties.filter((q) => q.generatedName !== '—' && sameConcept(p, q)).map((q) => ({ set: o.name, figma: q.figma, name: nameOf(o.name, q), ...(q.options ? { options: q.options.slice(0, 12) } : {}) })));
+      if (!alsoIn.length) continue;
+      const names: Record<string, number> = { [nameOf(s.name, p)]: 1 };
+      for (const a of alsoIn) names[a.name] = (names[a.name] ?? 0) + 1;
+      // Only where the system disagrees with itself: one name everywhere needs no decision.
+      if (Object.keys(names).length < 2) continue;
+      out.push({ figma: p.figma, set: s.name, names, alsoIn: alsoIn.slice(0, 12) });
+    }
+  }
+  return out;
 }
 
 const CONTRACT = [
   'Answer with one decision object per Figma set (sets[].name), in the JSON shape of the decisions schema.',
   'props keys must be Figma property names from sets[].properties[].figma; leave out properties whose generated name is already right.',
   'name: the camelCase prop name a design-system engineer would use in code (React conventions: isDisabled, isChecked, size, variant). Only rename when the evidence supports it.',
+  'vocabulary shows the same concept in other sets of this system and the code name each uses: one concept gets one name across the system, so prefer the name most sets use unless the options show a different concept.',
   'description: one plain sentence saying what the property does, from the evidence. No marketing words, no guesses about behaviour Figma does not show.',
   'description (set level): one or two sentences on what the component is for, only when Figma has no description.',
   'Every name and description needs evidence: quote the Figma names, layers or docs text it rests on.',
@@ -91,7 +150,7 @@ function hintsFor(set: IRComponentSet, props: ReviewProperty[]): string[] {
   return out;
 }
 
-export function buildReview(ir: FigmaIR, discovery: Discovery): ReviewItem[] {
+export function buildReview(ir: FigmaIR, discovery: Discovery, decisions?: DecisionsFile): ReviewItem[] {
   // Evidence shows what the generator does without decisions.
   setActiveDecisions(new Map());
   const byNode = new Map(ir.components.map((s) => [s.nodeId, s]));
@@ -138,9 +197,12 @@ export function buildReview(ir: FigmaIR, discovery: Discovery): ReviewItem[] {
       docsText: sets.flatMap(({ set }) => set.docFrames.flatMap((f) => [`# ${f.name}`, ...f.blocks.map((b) => b.text)])).join('\n').slice(0, 4000),
       contains,
       hints: sets.flatMap(({ set }, i) => hintsFor(set, reviewSets[i]!.properties)),
+      vocabulary: [],
       contract: CONTRACT,
     });
   }
+  const all = items.flatMap((it) => it.sets);
+  for (const it of items) it.vocabulary = vocabularyFor(it, all, decisions);
   return items;
 }
 

@@ -367,9 +367,39 @@ What is left is mostly not the generator's:
 
 Design System AI is unchanged: 990 of 1,390 variants matching before and after, none worse, and 312 of 312 story tests in both outputs.
 
-## 18. Reproduce
+## 18. Consistent names across the system (18 Nov 2026)
+
+The AI used to see one component at a time, so the same concept got different names in different components: Chip, Indicator and ProgressBar said `intent` where Button, Badge and Alert said `color` for the same Positive/Negative/Notice options, and Button said `hasLeadingIcon` where five other sets said `showLeadingIcon`. Three changes:
+
+- **`vocabulary` in every review file.** For each property, it lists the other sets of the system that have the same concept and the code name each uses today, with counts. Matching is deterministic:
+  - variant axes match on at least two shared options, and at least half of the smaller set (True/False and numeric options excluded);
+  - other properties match on the same words once `show`, `has` or `is` is dropped, and only properties of the same kind (a `showLabel` toggle is not the `label` text).
+  - Entries where the whole system already agrees are left out. Blade has 63 entries across 50 public components.
+- **The skill prefers the system's majority name** for one concept, and keeps a different name only when the options show a different concept.
+- **Re-running on accepted components proposes revisions instead of overwriting.** An accepted property gets a `revision` field. The accepted name stays in force until a person accepts the revision with `ds-sync decisions accept`; `reject` drops it. `--decisions proposed` previews revisions.
+
+Blade run: 50 components, 0 failures, $12.10. It proposed 11 revisions to accepted sets and 2 new sets. Among them: `intent` becomes `color` on Indicator and ProgressBar, and Button `has…Icon` becomes `show…Icon`. These are not yet accepted.
+
+Measured against Blade's code (fresh `master`, 519c533; 29 components, 216 comparable props):
+
+| Decisions applied | Same name as Blade |
+| --- | --- |
+| Accepted only | 78 (36%) |
+| Accepted plus these proposals | 80 (37%) |
+
+Naming consistency is not what limits this number. The 136 unmatched props, sorted by hand:
+
+| Cause | Props | What could fix it |
+| --- | --- | --- |
+| Figma has no such concept: form fields (`name`, `value`, `isRequired`), runtime state (`isOpen`, `initialFocusRef`, `isLazy`) and Table, Card, Carousel and Pagination options | 103 | Nothing from Figma. These need a person or the team's own conventions. |
+| Present in Figma as a visibility toggle plus an instance swap, where Blade has one content prop (`icon`, `leading`, `title`, `content`) | 14 | Merge each toggle-and-swap pair into one optional slot prop in the generator (roadmap step 10). |
+| Present in Figma under another word (`lineStyle` vs `dividerStyle`, `message` vs `description`, `currencyCode` vs `currency`) | 19 | Mostly a matter of taste. The Figma evidence doesn't decide them. |
+
+So at most about 113 of the 216 props are reachable from Figma, and the generated API matches 80 of them, about 71%. The 37% headline compares against everything Blade's engineers added beyond the design. From now on we report both numbers.
+
+## 19. Reproduce
 
 - Blade Storybook inventory: `fetch('https://blade.razorpay.com/index.json')`.
 - Blade source: `git clone --depth 1 --filter=blob:none --sparse https://github.com/razorpay/blade`, with sparse paths `packages/blade/src/components` and `packages/blade-plugin`.
 - Prop comparison: `ds-sync eval --reference <blade>/packages/blade/src/components --decisions none|proposed` (section 7).
-- AI run: `ds-sync review`, then `ds-sync interpret --budget 0.5`, then `ds-sync eval … --decisions proposed`.
+- AI run: `ds-sync review`, then `ds-sync interpret --budget 0.5` (`--all` to revise accepted sets too), then `ds-sync eval … --decisions proposed`.

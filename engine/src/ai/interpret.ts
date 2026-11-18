@@ -140,8 +140,12 @@ export async function interpret(o: InterpretOptions): Promise<{ done: string[]; 
   const problems = validateDecisions(file, o.ir).filter((p) => p.severity === 'error');
   for (const p of problems) {
     // A proposal that fails validation is removed, not written: the file stays valid.
-    if (file.sets[p.set]?.status !== 'proposed') continue;
-    if (p.prop) delete file.sets[p.set]!.props?.[p.prop];
+    const d = file.sets[p.set];
+    const pd = p.prop ? d?.props?.[p.prop] : undefined;
+    // A revision of an accepted set is dropped; the accepted entry stays.
+    if (pd?.revision && d?.status !== 'proposed') delete pd.revision;
+    else if (d?.status !== 'proposed') continue;
+    else if (p.prop) delete d.props?.[p.prop];
     else delete file.sets[p.set];
     o.log(`Interpret: removed invalid proposal ${p.set}${p.prop ? ` › ${p.prop}` : ''}: ${p.message}`);
   }

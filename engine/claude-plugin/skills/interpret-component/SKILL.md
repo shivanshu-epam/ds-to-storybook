@@ -18,12 +18,15 @@ For each Figma set in `sets[]`:
    - the Figma name is a sentence or a label (`Show Leading Icon`, `noOfButtons`, `donTEditSuffix`), or is misspelled (`isIntermediate` where the options and layers show an indeterminate checkbox);
    - a True/False variant that should read as a boolean (`isExpanded`, `isSelected`, `hasError`);
    - the name repeats the component name (`buttonSize` on Button → `size`);
-   - the name clashes with a common convention for the same concept (`intent` vs `color`, `type` vs `variant`): keep Figma's word unless the evidence shows the convention is meant. When in doubt, keep Figma's word.
+   - **the same concept has another name elsewhere in this design system.** `vocabulary` lists, for each property, the other sets whose property has the same options or the same words, and the code name each uses today; `names` counts them. One concept gets one name across the system: use the name most sets use (`intent` on three sets and `color` on six, with the same Positive/Negative/Notice options, becomes `color`). Also apply it to the prefix of visibility booleans (`showLeadingIcon` everywhere, not `hasLeadingIcon` on one set). Keep a different name only when the options or layers show a different concept, and say why in `evidence`;
+   - the name clashes with a common convention for the same concept (`type` vs `variant`) and the vocabulary does not settle it: keep Figma's word unless the evidence shows the convention is meant. When in doubt, keep Figma's word.
    Leave a property out when its generated name is fine. Never rename an interaction-state axis (`generatedAs: "state"`): it is not a prop.
 2. **A description** for every property you are confident about: one plain sentence on what it changes, from the options, the layers it is bound to (`layers[].boundTo`) and the docs text. "Shows the leading icon." beats "Controls the visibility of the leading icon element in the component." Do not describe behaviour the evidence does not show (no "fires an event", no "is keyboard accessible").
 3. **A set description**, only when `sets[].description` is empty: one or two sentences on what the component is for, taken from the docs text or the structure.
 4. **An archetype**, only when the evidence shows what the component does and the `template` in the review file is wrong: `button` (an action), `link` (navigation), `checkbox`, `switch`, `disclosure` (shows and hides a panel), `combobox` (a field that opens a list or menu popup) or `generic` (no behaviour). Leave it out when the template is right or you are unsure.
 5. **Questions** for what the evidence cannot settle, written for a designer to answer.
+
+You may be re-run on a component a person already accepted. Propose only what you would change; accepted names you leave out stay as they are, and anything you propose comes back to the person as a revision.
 
 The `hints` are patterns the engine noticed. Use them as leads, not answers. Properties with `generatedAs: "slot"` are content props (an instance swap bound to a layer): name them for what goes in them (`icon`, `trailing`), not for Figma's layer. Patterns you cannot express yet as a name or description, such as a viewport axis that should be responsive, go in `questions` or `evidence`.
 

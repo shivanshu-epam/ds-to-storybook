@@ -22,7 +22,7 @@ import { existsSync as exists, readFileSync } from 'node:fs';
 import { extractIR } from './ir/extract.ts';
 import { loadIR, paths, stepAnalyze, stepExtract, stepReport, stepSpecs } from './pipeline.ts';
 import { loadDotEnv, writeJson, writeText } from './util/core.ts';
-import { activeDecisions, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel } from './decisions/decisions.ts';
+import { decide, hasProposals, activeDecisions, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel } from './decisions/decisions.ts';
 import { buildReview, writeReview } from './review/review.ts';
 import { claudeAvailable, interpret } from './ai/interpret.ts';
 import { evalMarkdown, evaluate } from './eval/eval.ts';
@@ -231,7 +231,7 @@ async function main() {
     case 'review': {
       const { ir, discovery } = lastRun(p.out);
       const decisionsPath = resolve(config.baseDir, config.generate?.decisions?.file ?? DECISIONS_FILE);
-      const index = writeReview(p.out, buildReview(ir, discovery), loadDecisions(decisionsPath));
+      const index = writeReview(p.out, buildReview(ir, discovery, loadDecisions(decisionsPath)), loadDecisions(decisionsPath));
       const open = index.filter((x) => !x.decided);
       log(`Review: ${index.length} component(s), ${open.length} without a current decision (${open.filter((x) => !x.buildingBlock).length} public) → ${join(p.out, 'review')}`);
       break;
@@ -267,11 +267,11 @@ async function main() {
         if (problems.some((x) => x.severity === 'error')) process.exitCode = 1;
       } else if (action === 'accept' || action === 'reject') {
         if (!values.only) throw new Error('Name the sets: --only "<Figma set>,<Figma set>" (or --only all).');
-        const names = values.only === 'all' ? Object.keys(file.sets).filter((n) => file.sets[n]!.status === 'proposed') : values.only.split(',').map((x) => x.trim());
+        const names = values.only === 'all' ? Object.keys(file.sets).filter((n) => hasProposals(file.sets[n]!)) : values.only.split(',').map((x) => x.trim());
         for (const n of names) {
           const d = file.sets[n];
           if (!d) { log(`Not in the file: ${n}`); continue; }
-          d.status = action === 'accept' ? 'accepted' : 'rejected';
+          decide(d, action);
           if (values.by) d.by = `${d.by ? `${d.by}; ` : ''}${action}ed by ${values.by}`;
         }
         writeText(decisionsPath, JSON.stringify(file, null, 2) + '\n');
