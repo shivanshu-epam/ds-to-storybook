@@ -128,14 +128,22 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
   const cls = classFor(o.prefix, name);
   const dir = `src/components/${name}`;
   const { set, axes, hasDisabled } = core;
-  const booleans = core.booleans.map((b) => ({ ...b, prop: wcProp(b.prop) }));
+  // Toggles merged into a slot in React stay booleans here (a Figma default needs one); slotted content also shows the part.
+  const toggles = (core.toggles ?? []).map((t) => ({ figma: t.b.p.name, prop: wcProp(t.b.prop), slot: t.slot.name, getter: `${wcProp(t.slot.prop)}Shown` }));
+  const booleans = [...core.booleans, ...(core.toggles ?? []).map((t) => t.b)].map((b) => ({ ...b, prop: wcProp(b.prop) }));
   const texts = core.texts.map((t) => ({ ...t, prop: wcProp(t.prop) }));
   const sw = core.behavior;
   const enumAxes = axes.filter((a) => a.options.length > 1 && a !== sw?.axis).map((a) => ({ ...a, prop: wcProp(a.prop) }));
   const busyProp = sw?.busy ? wcProp(sw.busy.prop) : undefined;
   const imports = new Set<string>();
   let usesIcon = false;
-  const boolFor = (figma?: string) => booleans.find((b) => b.p.name === figma)?.prop;
+  const boolFor = (figma?: string) => toggles.find((t) => t.figma === figma)?.getter ?? booleans.find((b) => b.p.name === figma)?.prop;
+  // A nested toggle turned on with an icon: the icon goes into the child's slot, in a box of Figma's size.
+  const slottedIcons = (n: InstanceRef) => n.props.map((x) => {
+    if (x.kind !== 'toggle' || !x.value || !x.icon) return '';
+    usesIcon = true;
+    return `<span slot="${kebab(x.slot)}" style="display:flex${x.size ? `;width:${x.size[0]}px;height:${x.size[1]}px` : ''}">\${icon(${js(x.icon)})}</span>`;
+  }).join('');
   const textFor = (figma?: string) => texts.find((t) => t.p.name === figma)?.prop;
   const children = (parent: string) => core.layers.filter((l) => l.parent === parent);
   const dis = core.disclosure;
@@ -198,7 +206,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
             : x.prop === 'defaultChecked' ? '?checked=${true}'
             : `.${wcProp(x.prop)}=\${${wcVal(x)}}`))
           .join(' ');
-        el = `<span ${c}><${ntag}${props ? ' ' + props : ''}>${nested.text !== undefined ? `\${${wcText(l, js(nested.text))}}` : ''}</${ntag}></span>`;
+        el = `<span ${c}><${ntag}${props ? ' ' + props : ''}>${nested.text !== undefined ? `\${${wcText(l, js(nested.text))}}` : ''}${slottedIcons(nested)}</${ntag}></span>`;
         // Repeated instances: one element each (the React output does the same).
         // Each copy keeps its own boolean.
         const own = boolFor(p.refs?.visible);
@@ -207,7 +215,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
           const n = instance(copy);
           if (!n) continue;
           const cp = n.props.map((x) => (x.kind === 'force-state' ? `data-force-state=${js(x.value)}` : x.prop === 'aria-label' ? (n.kind === 'switch' || n.kind === 'button' || n.kind === 'link' ? `accessible-label=${js(x.value)}` : `.label=\${${js(x.value)}}`) : x.prop === 'defaultChecked' ? '?checked=${true}' : `.${wcProp(x.prop)}=\${${wcVal(x)}}`)).join(' ');
-          const one = `<span ${c}><${ntag}${cp ? ' ' + cp : ''}>${n.text !== undefined ? `\${${wcText(l, js(n.text))}}` : ''}</${ntag}></span>`;
+          const one = `<span ${c}><${ntag}${cp ? ' ' + cp : ''}>${n.text !== undefined ? `\${${wcText(l, js(n.text))}}` : ''}${slottedIcons(n)}</${ntag}></span>`;
           const b = boolFor(copy.refs?.visible);
           el += `\n${indent}${b ? `\${this.${b} ? html\`${one}\` : nothing}` : one}`;
         }
@@ -330,7 +338,21 @@ ${props.map((p) => `  /** ${(p as { doc?: string }).doc ?? (swDocs[p.prop] && (s
   /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */
   declare forceState: string | undefined;
 
-  constructor() {
+${toggles.length ? `${toggles.map((t) => `  /** The "${t.slot}" slot shows when ${t.prop} is set or content is slotted into it. */\n  private get ${t.getter}() {\n    return this.${t.prop} || this.querySelector(':scope > [slot="${t.slot}"]') !== null;\n  }\n`).join('\n')}
+  // Slotted content shows its part: re-render when the light DOM children change.
+  private slotWatch = new MutationObserver(() => this.requestUpdate());
+
+  override connectedCallback() {
+    super.connectedCallback();
+    this.slotWatch.observe(this, { childList: true, attributes: true, attributeFilter: ['slot'], subtree: true });
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    this.slotWatch.disconnect();
+  }
+
+` : ''}  constructor() {
     super();
 ${props.map((p) => `    this.${p.prop} = ${p.init};`).join('\n')}${col?.selection === 'single' ? '\n    // On the host: key events from inside the shadow root bubble here, and so do events sent to the focused host.\n    this.addEventListener(\'keydown\', this.moveSelection);' : ''}${lc ? "\n    this.addEventListener('keydown', this.moveActive);" : ''}${cb ? "\n    this.addEventListener('keydown', this.closeOnEscape);" : ''}
   }

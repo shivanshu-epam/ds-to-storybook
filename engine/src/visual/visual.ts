@@ -8,7 +8,7 @@
  * elements in Chromium). Figma's transparent PNG is drawn on white too, then both are compared with pixelmatch.
  */
 import { createRequire } from 'node:module';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 import pixelmatch from 'pixelmatch';
@@ -209,7 +209,8 @@ export async function runVisual(source: VisualSource, o: VisualOptions): Promise
 
   const report = join(o.outDir, 'report.html');
   writeFileSync(report, reportHtml(manifest, results));
-  writeFileSync(join(o.outDir, 'summary.json'), JSON.stringify({ fileKey: manifest.fileKey, version: manifest.version, results: results.map(({ files: _f, ...r }) => ({ ...r, verdict: verdict(r) })) }, null, 2) + '\n');
+  const fresh = results.map(({ files: _f, ...r }) => ({ ...r, verdict: verdict(r) }));
+  writeFileSync(join(o.outDir, 'summary.json'), JSON.stringify({ fileKey: manifest.fileKey, version: manifest.version, results: mergeSummary(join(o.outDir, 'summary.json'), manifest, fresh, o.only) }, null, 2) + '\n');
   o.log(`Report → ${relative(process.cwd(), report)}`);
   return { results, report };
 }
@@ -249,4 +250,18 @@ td img { max-width: 360px; background: #fff; border: 1px solid var(--line); } .n
 ${byComponent.map((c) => `<details${c.worst > 10 ? ' open' : ''}><summary>${esc(c.name)}: ${c.matching}/${c.rs.length} match, worst ${c.worst}%</summary><div class="wrap"><table>${c.rs.map(row).join('')}</table></div></details>`).join('\n')}
 </body></html>
 `;
+}
+
+/** A run limited to some components (--only) updates their results and keeps the others from the last run of the
+ * same Figma version, so the docs and scorecards of the other components keep their numbers. */
+export function mergeSummary<T extends { component: string }>(file: string, m: { fileKey: string; version: string }, fresh: T[], only?: string[]): T[] {
+  if (!only?.length || !existsSync(file)) return fresh;
+  try {
+    const prev = JSON.parse(readFileSync(file, 'utf8')) as { fileKey?: string; version?: string; results?: T[] };
+    if (prev.fileKey !== m.fileKey || prev.version !== m.version || !Array.isArray(prev.results)) return fresh;
+    const redone = new Set(fresh.map((r) => r.component).concat(only));
+    return [...prev.results.filter((r) => !redone.has(r.component)), ...fresh];
+  } catch {
+    return fresh;
+  }
 }

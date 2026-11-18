@@ -84,8 +84,8 @@ export function toDecisions(item: ReviewItem, proposal: Proposal, by: string): {
     for (const p of s.props ?? []) {
       if (!known.has(p.figma)) { dropped.push(`${s.set} › "${p.figma}" is not a Figma property`); continue; }
       const prop = set.properties.find((x) => x.figma === p.figma)!;
-      // Instance swaps are not props yet, and state axes are CSS states: only their descriptions apply.
-      const nameable = prop.generatedAs !== 'instance swap' && prop.generatedAs !== 'state';
+      // Unbound instance swaps are not props, state axes are CSS states and slot toggles are merged into their slot: only descriptions apply.
+      const nameable = prop.generatedAs !== 'instance swap' && prop.generatedAs !== 'state' && prop.generatedAs !== 'slot toggle';
       if (p.name && !nameable) dropped.push(`${s.set} › name for "${p.figma}" (${prop.generatedAs}, not a prop)`);
       const entry: PropDecision = {
         ...(p.name && nameable && p.name !== prop.generatedName ? { name: p.name } : {}),

@@ -25,22 +25,14 @@
       "figma": "Size (variant)"
     },
     {
-      "prop": "hasLeadingControl",
-      "figma": "has-leading-control (boolean)"
-    },
-    {
-      "prop": "hasTrailingControl",
-      "figma": "has-trailing-control (boolean)"
-    },
-    {
       "prop": "leadingControl",
-      "figma": "leading-control (instance swap)",
-      "note": "Slot: any content; the Figma instance is the default."
+      "figma": "leading-control (instance swap) + has-leading-control (boolean)",
+      "note": "Slot with its visibility toggle: content shows it, null hides it; not set: hidden."
     },
     {
       "prop": "trailingControl",
-      "figma": "trailing-control (instance swap)",
-      "note": "Slot: any content; the Figma instance is the default."
+      "figma": "trailing-control (instance swap) + has-trailing-control (boolean)",
+      "note": "Slot with its visibility toggle: content shows it, null hides it; not set: hidden."
     }
   ],
   "notes": [

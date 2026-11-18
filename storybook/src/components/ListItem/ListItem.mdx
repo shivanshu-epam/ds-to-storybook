@@ -28,19 +28,11 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.Size} />
 
-### Optional parts
-
-<Canvas of={Stories.Options} />
-
 ## Properties
 
 ### Appearance
 
 <table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Type"}</td><td><code>{"type"}</code></td><td>{"Type (variant)"}</td><td>{""}</td></tr><tr><td>{"Size"}</td><td><code>{"size"}</code></td><td>{"Size (variant)"}</td><td>{""}</td></tr></tbody></table>
-
-### Content
-
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"With leading control"}</td><td><code>{"hasLeadingControl"}</code></td><td>{"has-leading-control (boolean)"}</td><td>{""}</td></tr><tr><td>{"With trailing control"}</td><td><code>{"hasTrailingControl"}</code></td><td>{"has-trailing-control (boolean)"}</td><td>{""}</td></tr></tbody></table>
 
 ### State
 
@@ -48,7 +40,7 @@ The default configuration (every property at its Figma default).
 
 ### Composition
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Leading control"}</td><td><code>{"leadingControl"}</code></td><td>{"leading-control (instance swap)"}</td><td>{"Slot: any content; the Figma instance is the default."}</td></tr><tr><td>{"Trailing control"}</td><td><code>{"trailingControl"}</code></td><td>{"trailing-control (instance swap)"}</td><td>{"Slot: any content; the Figma instance is the default."}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Leading control"}</td><td><code>{"leadingControl"}</code></td><td>{"leading-control (instance swap) + has-leading-control (boolean)"}</td><td>{"Slot with its visibility toggle: content shows it, null hides it; not set: hidden."}</td></tr><tr><td>{"Trailing control"}</td><td><code>{"trailingControl"}</code></td><td>{"trailing-control (instance swap) + has-trailing-control (boolean)"}</td><td>{"Slot with its visibility toggle: content shows it, null hides it; not set: hidden."}</td></tr></tbody></table>
 
 ### Try it
 
@@ -71,6 +63,6 @@ Each story shows its code under "Show code".
 ### Scorecard
 
 <p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"⚠ Visual fidelity: 74/108 designed variants match Figma (worst 7.0%)"}</li><li>{"✓ Variants: 108 designed variants shown"}</li><li>{"✓ Properties: 7/7 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"– Interaction: visuals only (display component)"}</li><li>{"⚠ Tokens: 1 raw colour value (not bound to a variable in Figma)"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 2 accepted known issues"}</li><li>{"⚠ Documentation: description; 0/7 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 2 generator notes"}</li></ul>
+<ul><li>{"⚠ Visual fidelity: 74/108 designed variants match Figma (worst 7.0%)"}</li><li>{"✓ Variants: 108 designed variants shown"}</li><li>{"✓ Properties: 5/5 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"– Interaction: visuals only (display component)"}</li><li>{"⚠ Tokens: 1 raw colour value (not bound to a variable in Figma)"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 2 accepted known issues"}</li><li>{"⚠ Documentation: description; 0/5 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 2 generator notes"}</li></ul>
 
 <FigmaDocs docs={docs} only="tabs" />

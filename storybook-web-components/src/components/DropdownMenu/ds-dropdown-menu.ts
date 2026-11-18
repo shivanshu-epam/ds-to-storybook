@@ -87,7 +87,7 @@ export class DsDropdownMenu extends LitElement {
         </div>` : nothing}
         <div class="optionsList" part="optionsList">
           <slot @slotchange=${this.applyRepeated}>
-            <span class="option" part="option"><ds-list-item style="display: block" role="menuitem" id="item-0" data-ds-item data-ds-index="0" data-force-state=${this.active === 0 ? 'focus' : nothing} .state=${"selected"} .hasTrailingControl=${true}></ds-list-item></span>
+            <span class="option" part="option"><ds-list-item style="display: block" role="menuitem" id="item-0" data-ds-item data-ds-index="0" data-force-state=${this.active === 0 ? 'focus' : nothing} .state=${"selected"} .hasTrailingControl=${true}><span slot="trailing-control" style="display:flex;width:20px;height:20px">${icon("formCheck16")}</span></ds-list-item></span>
                       <span class="option" part="option"><ds-list-item style="display: block" role="menuitem" id="item-1" data-ds-item data-ds-index="1" data-force-state=${this.active === 1 ? 'focus' : nothing}></ds-list-item></span>
                       <span class="option" part="option"><ds-list-item style="display: block" role="menuitem" id="item-2" data-ds-item data-ds-index="2" data-force-state=${this.active === 2 ? 'focus' : nothing}></ds-list-item></span>
                       <span class="option" part="option"><ds-list-item style="display: block" role="menuitem" id="item-3" data-ds-item data-ds-index="3" data-force-state=${this.active === 3 ? 'focus' : nothing} .disabled=${true}></ds-list-item></span>

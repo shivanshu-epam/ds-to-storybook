@@ -65,7 +65,7 @@ export function DropdownMenu({ state = 'default', showSearch = false, grouped = 
           ? Children.map(children, (child, i) => <span className={styles.option} data-layer="option" key={i}>{isValidElement(child) && child.type === ListItem ? cloneElement(child, { ...{  }, ...(child.props as object), ...(itemProps(i, (child.props as { selected?: boolean }).selected, 'item') as object) }) : child}</span>)
           : (
             <>
-              <span className={styles.option} data-layer="option"><ListItem state="selected" hasTrailingControl {...(itemProps(0, false, "item") as object)} /></span>
+              <span className={styles.option} data-layer="option"><ListItem state="selected" trailingControl={<span style={{ display: 'flex', width: 20, height: 20 }}><Icon name="formCheck16" /></span>} {...(itemProps(0, false, "item") as object)} /></span>
               <span className={styles.option} data-layer="option"><ListItem {...(itemProps(1, false, "item") as object)} /></span>
               <span className={styles.option} data-layer="option"><ListItem data-force-state="hover" {...(itemProps(2, false, "item") as object)} /></span>
               <span className={styles.option} data-layer="option"><ListItem disabled {...(itemProps(3, false, "item") as object)} /></span>

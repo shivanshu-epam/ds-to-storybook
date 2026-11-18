@@ -397,7 +397,45 @@ Naming consistency is not what limits this number. The 136 unmatched props, sort
 
 So at most about 113 of the 216 props are reachable from Figma, and the generated API matches 80 of them, about 71%. The 37% headline compares against everything Blade's engineers added beyond the design. From now on we report both numbers.
 
-## 19. Reproduce
+## 19. One prop per slot: visibility toggles merged (18 Nov 2026)
+
+Figma often pairs a boolean with an instance swap: `showLeadingIcon` shows a frame, and `leadingIcon` picks the icon inside it. We generated both as props. Code libraries have one: pass an icon to show it, pass none to hide it.
+
+**Detection (structure only, no names).** A boolean and a swap are paired when, in the default variant:
+
+- the boolean controls the visibility of exactly one layer;
+- that layer holds the only instance the swap is bound to, and no text property or other toggle;
+- the swap is bound nowhere else.
+
+There are 16 pairs in Blade and 2 in Design System AI (ListItem's `has-leading-control` and `has-trailing-control`).
+
+**What is generated:**
+
+- **React.** The boolean leaves the API. The slot prop decides: content shows it, `null` hides it, and not set follows Figma's default. The visibility guard is an expression on the slot prop, so layout and CSS are unchanged.
+- **Web Components.** The boolean attribute stays, because a custom element needs it to show the Figma default content. Content slotted into the slot also shows the part; a light-DOM observer re-renders when children change.
+- **Nested instances.** A parent that turns a child's toggle on now passes the icon Figma shows there, in a box of the slot's Figma size, because icons fill their parent. React gets slot content; Web Components gets the boolean plus an icon slotted into the child.
+  - Example: Design System AI's DropdownMenu used to set `hasTrailingControl` with nothing in the slot. It now passes the check icon.
+- **Review files** mark these booleans `slot toggle`. The interpret step names the slot, never the toggle.
+
+**Results:**
+
+| Measure | Before | After |
+| --- | --- | --- |
+| Design System AI story tests | 312 / 312 (both) | React 309 / 309 (ListItem's Options story is gone: its slots have no default content to show), Web Components 312 / 312 |
+| Blade story tests | React 294 / 463, WC 293 / 462 | Same; all failures colour contrast |
+| Blade visual, the 2,060 variants of the last full run | 1,042 match | No verdict changed, and no difference moved by more than 0.3%: Figma variants show toggles at their defaults |
+| Blade visual, all 4,001 variants now covered | — | 2,185 match, 1,251 to check, 565 differ |
+| Design System AI DropdownMenu, selected item | Check mark missing (2.56% different) | Check mark drawn at Figma's size (4.18%). The rest of the difference is item labels: nested items show "List item" where Figma overrides the text, a gap that was already there |
+| Prop match with Blade's code | 80 / 216 | 80 / 216 |
+
+**Two related fixes.**
+
+- `ds-sync visual --only` used to replace the whole summary, so every other component's docs then said "not measured". A limited run now keeps the other components' results from the last run of the same Figma version.
+- Open item: merged toggles are no longer part of the nested child's prop API, so the nested consistency check does not verify them per variant. In Design System AI's DropdownMenu that check now covers 8 values instead of 16. The values are still passed, as fixed values per instance.
+
+Duplicate props are gone: `showLeadingIcon` on Badge, Tag, Chip and Card, and `hasLeadingIcon`/`hasTrailingIcon` on Collapsible. The match count does not move because Blade calls the remaining prop `icon` where we call it `leadingIcon`. With one icon slot left, that rename is now a clean AI decision; the skill says so.
+
+## 20. Reproduce
 
 - Blade Storybook inventory: `fetch('https://blade.razorpay.com/index.json')`.
 - Blade source: `git clone --depth 1 --filter=blob:none --sparse https://github.com/razorpay/blade`, with sparse paths `packages/blade/src/components` and `packages/blade-plugin`.

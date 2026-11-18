@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { FigmaNode } from '../src/figma/types.ts';
-import { disclosureLayers, drivenProps, genericTemplate, instanceRef, propPlan, type GenericCore, type RegistryEntry } from '../src/generate/templates/generic.ts';
+import { childApi, disclosureLayers, drivenProps, genericTemplate, instanceRef, propPlan, type GenericCore, type RegistryEntry } from '../src/generate/templates/generic.ts';
 import { loadTokens, TokenResolver } from '../src/generate/tokens.ts';
 import { wcGeneric } from '../src/generate/wc/components.ts';
 import { buildComponentSet } from '../src/ir/build.ts';
@@ -57,9 +57,32 @@ describe('phase 2: slots', () => {
   const tsx = file(badge, /Badge\.tsx$/);
   it('turns an instance swap bound to a layer into a content prop with the Figma instance as default', () => {
     expect(tsx).toContain('leadingIcon?: ReactNode;');
-    expect(tsx).toMatch(/\{showLeadingIcon && \(\s*<span className=\{styles\.leadingIcon\} data-layer="leadingIcon">\{leadingIcon \?\? \(<Glyph \/>\)\}<\/span>/);
+    // The showLeadingIcon toggle is merged into the slot: content shows it, null hides it, unset follows Figma (on).
+    expect(tsx).toMatch(/\{\(leadingIcon !== null && leadingIcon !== false\) && \(\s*<span className=\{styles\.leadingIcon\} data-layer="leadingIcon">\{leadingIcon \?\? \(<Glyph \/>\)\}<\/span>/);
+    // Only the doc comment names the Figma boolean.
+    expect(tsx.split('\n').filter((l) => l.includes('showLeadingIcon') && !l.trim().startsWith('/**'))).toEqual([]);
+    expect(badge.report.props.find((x) => x.prop === 'leadingIcon')?.figma).toMatch(/\+ .* \(boolean\)/);
     expect(badge.report.props.find((x) => x.prop === 'leadingIcon')?.note).toMatch(/Slot/);
     expect(badge.report.gaps.join(' ')).not.toMatch(/Instance swap properties not exposed/);
+  });
+  it('keeps the toggle as a boolean in Web Components, and shows the part when content is slotted', () => {
+    const wc = wcGeneric(ctx((badge.core as GenericCore).set) as never, 'Badge', badge.core as GenericCore, { prefix: 'ds', packageName: 'p' }, instance as never, (c) => `ds-${c.toLowerCase()}`);
+    const code = wc.files.find((f) => /ds-badge\.ts$/.test(f.path))!.content;
+    expect(code).toContain('showLeadingIcon: { type: Boolean, attribute: "show-leading-icon" }');
+    expect(code).toContain(`return this.showLeadingIcon || this.querySelector(':scope > [slot="leading-icon"]') !== null;`);
+    expect(code).toContain('${this.leadingIconShown ? html`');
+    expect(code).toContain('this.slotWatch.observe(this');
+  });
+  it('passes a nested toggle as slot content in React and as the boolean in Web Components', () => {
+    const entry = { component: 'Badge', importPath: '../Badge/Badge', kind: 'generic' as const, template: 'generic', set: build(badgeNode, { 'G:2': 'Default' }) };
+    const icons = new Map([['Star', { name: 'star' }]]) as never;
+    const off = instanceRef(entry, { path: 'b', name: 'b', type: 'INSTANCE', style: {}, instanceComponentId: 'B:1', instanceProps: { showLeadingIcon: false } } as never, icons);
+    expect(off.props).toEqual([{ prop: 'showLeadingIcon', kind: 'toggle', value: false, slot: 'leadingIcon' }]);
+    expect(off.attrs).toEqual(['leadingIcon={null}']);
+    const swapped = instanceRef(entry, { path: 'b', name: 'b', type: 'INSTANCE', style: {}, instanceComponentId: 'B:1', instanceSwaps: { leadingIcon: 'Star' } } as never, icons);
+    // Icons fill their parent: the slot content gets the size Figma gives the slot.
+    expect(swapped.attrs).toEqual([`leadingIcon={<span style={{ display: 'flex', width: 60, height: 20 }}><Icon name="star" /></span>}`]);
+    expect(childApi(entry).map((c) => c.prop)).not.toContain('showLeadingIcon');
   });
   it('turns a placeholder "Slot" instance into children', () => {
     expect(tsx).toMatch(/\{children \?\? \(<Slot \/>\)\}/);

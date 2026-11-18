@@ -32,6 +32,29 @@ export class DsListItem extends LitElement {
   /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */
   declare forceState: string | undefined;
 
+  /** The "leading-control" slot shows when hasLeadingControl is set or content is slotted into it. */
+  private get leadingControlShown() {
+    return this.hasLeadingControl || this.querySelector(':scope > [slot="leading-control"]') !== null;
+  }
+
+  /** The "trailing-control" slot shows when hasTrailingControl is set or content is slotted into it. */
+  private get trailingControlShown() {
+    return this.hasTrailingControl || this.querySelector(':scope > [slot="trailing-control"]') !== null;
+  }
+
+  // Slotted content shows its part: re-render when the light DOM children change.
+  private slotWatch = new MutationObserver(() => this.requestUpdate());
+
+  override connectedCallback() {
+    super.connectedCallback();
+    this.slotWatch.observe(this, { childList: true, attributes: true, attributeFilter: ['slot'], subtree: true });
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    this.slotWatch.disconnect();
+  }
+
   constructor() {
     super();
     this.type = "default";
@@ -47,12 +70,12 @@ export class DsListItem extends LitElement {
         <div class="interactionWrapper" part="interactionWrapper">
           <div class="visualContainer" part="visualContainer">
             <div class="contentContainer" part="contentContainer">
-              ${this.hasLeadingControl ? html`<span class="leadingControl" part="leadingControl"><slot name="leading-control"></slot></span>` : nothing}
+              ${this.leadingControlShown ? html`<span class="leadingControl" part="leadingControl"><slot name="leading-control"></slot></span>` : nothing}
               <div class="textColumn" part="textColumn">
                 <span class="headline" part="headline">${(({"menu":"Menu item","file":"Document.pdf","setting":"Notifications"} as Record<string, string>)[String(this.type)] ?? "List item")}</span>
                 <span class="supportingText" part="supportingText">${(({"setting":"Manage alert preferences"} as Record<string, string>)[String(this.type)] ?? "2.4 MB · Edited 2d ago")}</span>
               </div>
-              ${this.hasTrailingControl ? html`<span class="trailingControl" part="trailingControl"><slot name="trailing-control"></slot></span>` : nothing}
+              ${this.trailingControlShown ? html`<span class="trailingControl" part="trailingControl"><slot name="trailing-control"></slot></span>` : nothing}
               <span class="trailingIcon" part="trailingIcon" aria-hidden="true">${icon((({"md":"navChevronRight20","lg":"navChevronRight24"} as Record<string, string>)[String(this.size)] ?? "navChevronRight16"))}</span>
               <span class="leadingIcon" part="leadingIcon" aria-hidden="true">${icon("layoutList16")}</span>
               <span class="metadata" part="metadata">${"12"}</span>

@@ -13,8 +13,6 @@ const meta = {
     state: { control: 'inline-radio', options: ['default', 'selected', 'activated', 'dragged', 'skeleton'], description: 'Figma: State' },
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'], description: 'Figma: Size' },
     disabled: { control: 'boolean', description: 'Figma: State=Disabled' },
-    hasLeadingControl: { control: 'boolean', description: 'Figma: has-leading-control' },
-    hasTrailingControl: { control: 'boolean', description: 'Figma: has-trailing-control' },
     leadingControl: { control: false, description: 'Figma: leading-control (instance swap)' },
     trailingControl: { control: false, description: 'Figma: trailing-control (instance swap)' },
     'data-force-state': { table: { disable: true } },
@@ -66,19 +64,6 @@ export const Size: Story = {
       </Row>
     );
   },
-};
-
-/** Figma boolean properties, each switched from its default. */
-export const Options: Story = {
-  name: "Optional parts",
-  parameters: { controls: { disable: true } },
-  render: (args) => (
-    <Row>
-      <Labelled label="Default"><ListItem {...args} /></Labelled>
-      <Labelled label='has-leading-control: on'><ListItem {...args} hasLeadingControl={true} /></Labelled>
-      <Labelled label='has-trailing-control: on'><ListItem {...args} hasTrailingControl={true} /></Labelled>
-    </Row>
-  ),
 };
 
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */

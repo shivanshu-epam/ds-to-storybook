@@ -218,7 +218,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     if (c.template === 'checkbox' || c.template === 'accordion') continue;
     const set = setsById.get(c.sets.main ?? '');
     if (!set) continue;
-    const entry: RegistryEntry = { component: c.name, importPath: `../${c.name}/${c.name}`, kind: c.template === 'checkbox-single' || c.template === 'radio-single' ? 'switch' : c.template, set };
+    const entry: RegistryEntry = { component: c.name, importPath: `../${c.name}/${c.name}`, kind: c.template === 'checkbox-single' || c.template === 'radio-single' ? 'switch' : c.template, set, template: c.template };
     for (const v of set.variants) registry.set(v.nodeId, entry);
   }
   const lookupEntry = (id: string) => registry.get(id);

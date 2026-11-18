@@ -88,7 +88,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "7/7 Figma properties mapped"
+          "value": "5/5 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -113,7 +113,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/7 props described"
+          "value": "description; 0/5 props described"
         },
         {
           "name": "Open decisions",
@@ -1357,7 +1357,7 @@
         {
           "name": "Nested consistency",
           "status": "pass",
-          "value": "16/16 nested values match Figma (1 nested layers)"
+          "value": "8/8 nested values match Figma (1 nested layers)"
         },
         {
           "name": "Interaction",

@@ -28,7 +28,7 @@ For each Figma set in `sets[]`:
 
 You may be re-run on a component a person already accepted. Propose only what you would change; accepted names you leave out stay as they are, and anything you propose comes back to the person as a revision.
 
-The `hints` are patterns the engine noticed. Use them as leads, not answers. Properties with `generatedAs: "slot"` are content props (an instance swap bound to a layer): name them for what goes in them (`icon`, `trailing`), not for Figma's layer. Patterns you cannot express yet as a name or description, such as a viewport axis that should be responsive, go in `questions` or `evidence`.
+The `hints` are patterns the engine noticed. Use them as leads, not answers. Properties with `generatedAs: "slot"` are content props (an instance swap bound to a layer): name them for what goes in them (`icon`, `trailing`), not for Figma's layer. A boolean with `generatedAs: "slot toggle"` shows one of those slots and is merged into it (the slot prop shows the content when set and hides it when null): give it no name, only a description if useful, and name the slot. When a set has a single icon slot, `icon` is usually the right name. Patterns you cannot express yet as a name or description, such as a viewport axis that should be responsive, go in `questions` or `evidence`.
 
 ## Rules
 

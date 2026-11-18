@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { setActiveDecisions, type DecisionsFile } from '../decisions/decisions.ts';
 import type { Discovery } from '../discover/discover.ts';
 import { isBuildingBlock } from '../generate/docs.ts';
-import { camel, propPlan } from '../generate/templates/generic.ts';
+import { camel, propPlan, SLOT_TEMPLATES } from '../generate/templates/generic.ts';
 import type { FigmaIR, IRComponentSet } from '../ir/types.ts';
 import { writeJson, writeText } from '../util/core.ts';
 
@@ -17,7 +17,7 @@ export interface ReviewProperty {
   /** Name the generator uses today without a decision ("—" for instance swaps, which are not props yet). */
   generatedName: string;
   /** How the generator reads it: a variant prop, a CSS state, a boolean or a text. */
-  generatedAs: 'variant' | 'state' | 'boolean' | 'text' | 'slot' | 'instance swap';
+  generatedAs: 'variant' | 'state' | 'boolean' | 'text' | 'slot' | 'slot toggle' | 'instance swap';
 }
 
 export interface ReviewLayer {
@@ -137,8 +137,10 @@ function hintsFor(set: IRComponentSet, props: ReviewProperty[]): string[] {
   for (const b of props.filter((p) => p.type === 'BOOLEAN')) {
     const w = words(b.figma).filter((x) => !['show', 'has', 'with', 'is'].includes(x));
     const pair = swaps.find((s) => w.length && w.every((x) => words(s.figma).includes(x)));
+    if (b.generatedAs === 'slot toggle') continue;
     if (pair) out.push(`"${b.figma}" (boolean) and "${pair.figma}" (instance swap) look like one slot: a visibility toggle and its content.`);
   }
+  for (const p of props.filter((x) => x.generatedAs === 'slot toggle')) out.push(`"${p.figma}" shows a content slot and is merged into it: the slot prop shows the content when set and hides it when null. Name the slot, not the toggle.`);
   for (const p of props) {
     if (p.type === 'VARIANT' && /screen|device|breakpoint|viewport|platform/i.test(p.figma)) out.push(`"${p.figma}" (${(p.options ?? []).join(', ')}) looks like a viewport or platform, not a component option.`);
     if (p.generatedAs === 'state' && p.generatedName === 'disabled') out.push(`"${p.figma}" is the disabled state: the generator makes it the \`disabled\` prop.`);
@@ -160,6 +162,8 @@ export function buildReview(ir: FigmaIR, discovery: Discovery, decisions?: Decis
     if (!sets.length) continue;
     const reviewSets = sets.map<ReviewSet>(({ role, set }) => {
       const plan = propPlan(set);
+      // A visibility toggle merged into its slot is not a prop of its own: the slot prop shows and hides it.
+      const toggled = new Set(SLOT_TEMPLATES.has(prop.template) ? plan.toggles.map((t) => t.bool) : []);
       // An instance swap bound to a layer is a slot prop (content); unbound swaps are not exposed.
       const bound = new Set(set.variants.flatMap((v) => v.parts.map((x) => x.refs?.mainComponent).filter(Boolean)) as string[]);
       const properties = set.properties.map<ReviewProperty>((p) => {
@@ -168,8 +172,8 @@ export function buildReview(ir: FigmaIR, discovery: Discovery, decisions?: Decis
         const t = plan.texts.find((x) => x.p.name === p.name);
         return {
           figma: p.name, type: p.type, default: p.default, ...(p.options ? { options: p.options } : {}),
-          generatedName: axis?.values.some((v) => v.role === 'disabled') ? 'disabled' : axis?.prop ?? b?.prop ?? t?.prop ?? (bound.has(p.name) ? camel(p.name.replace(/[^A-Za-z0-9 _-]+/g, ' ').trim()) : '—'),
-          generatedAs: axis ? axis.kind : b ? 'boolean' : t ? 'text' : bound.has(p.name) ? 'slot' : 'instance swap',
+          generatedName: toggled.has(p.name) ? '—' : axis?.values.some((v) => v.role === 'disabled') ? 'disabled' : axis?.prop ?? b?.prop ?? t?.prop ?? (bound.has(p.name) ? camel(p.name.replace(/[^A-Za-z0-9 _-]+/g, ' ').trim()) : '—'),
+          generatedAs: toggled.has(p.name) ? 'slot toggle' : axis ? axis.kind : b ? 'boolean' : t ? 'text' : bound.has(p.name) ? 'slot' : 'instance swap',
         };
       });
       const dv = set.variants.find((v) => set.properties.filter((p) => p.type === 'VARIANT').every((p) => v.values[p.name] === String(p.default))) ?? set.variants[0];

@@ -6,7 +6,7 @@ import { Icon } from '../../icons/Icon';
 import type { IconName } from '../../icons/icons';
 import styles from './ListItem.module.css';
 
-export interface ListItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'type' | 'state' | 'size' | 'disabled' | 'hasLeadingControl' | 'hasTrailingControl' | 'leadingControl' | 'trailingControl'> {
+export interface ListItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'type' | 'state' | 'size' | 'disabled' | 'leadingControl' | 'trailingControl'> {
   /** Figma: Type. Default default. */
   type?: 'default' | 'menu' | 'file' | 'setting';
   /** Figma: State. Default default. */
@@ -15,32 +15,28 @@ export interface ListItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'chi
   size?: 'sm' | 'md' | 'lg';
   /** Figma: State=Disabled. */
   disabled?: boolean;
-  /** Figma: has-leading-control (boolean). Default false. */
-  hasLeadingControl?: boolean;
-  /** Figma: has-trailing-control (boolean). Default false. */
-  hasTrailingControl?: boolean;
-  /** Content for the "leading-control" slot (Figma instance swap); the Figma default when not set. */
+  /** Content for the "leading-control" slot, shown by Figma's "has-leading-control" boolean: pass content to show it, null to hide it. Not set: hidden, as in Figma. */
   leadingControl?: ReactNode;
-  /** Content for the "trailing-control" slot (Figma instance swap); the Figma default when not set. */
+  /** Content for the "trailing-control" slot, shown by Figma's "has-trailing-control" boolean: pass content to show it, null to hide it. Not set: hidden, as in Figma. */
   trailingControl?: ReactNode;
   /** Renders a pseudo state statically for docs and visual tests: "hover", "pressed" or "focus". */
   'data-force-state'?: string;
 }
 
-export function ListItem({ type = 'default', state = 'default', size = 'sm', disabled = false, hasLeadingControl = false, hasTrailingControl = false, leadingControl, trailingControl, className, ...rest }: ListItemProps) {
+export function ListItem({ type = 'default', state = 'default', size = 'sm', disabled = false, leadingControl, trailingControl, className, ...rest }: ListItemProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-type={type} data-state={state} data-size={size} data-disabled={disabled ? '' : undefined} aria-disabled={disabled || undefined} {...rest}>
       <div className={styles.interactionWrapper} data-layer="interactionWrapper">
         <div className={styles.visualContainer} data-layer="visualContainer">
           <div className={styles.contentContainer} data-layer="contentContainer">
-            {hasLeadingControl && (
+            {(leadingControl != null && leadingControl !== false) && (
               <span className={styles.leadingControl} data-layer="leadingControl">{leadingControl ?? null}</span>
             )}
             <div className={styles.textColumn} data-layer="textColumn">
               <span className={styles.headline} data-layer="headline">{(({"menu":"Menu item","file":"Document.pdf","setting":"Notifications"} as Record<string, string>)[String(type)] ?? "List item")}</span>
               <span className={styles.supportingText} data-layer="supportingText">{(({"setting":"Manage alert preferences"} as Record<string, string>)[String(type)] ?? "2.4 MB · Edited 2d ago")}</span>
             </div>
-            {hasTrailingControl && (
+            {(trailingControl != null && trailingControl !== false) && (
               <span className={styles.trailingControl} data-layer="trailingControl">{trailingControl ?? null}</span>
             )}
             <span className={styles.trailingIcon} data-layer="trailingIcon" aria-hidden="true"><Icon name={(({"md":"navChevronRight20","lg":"navChevronRight24"} as Record<string, IconName>)[String(size)] ?? "navChevronRight16")} /></span>

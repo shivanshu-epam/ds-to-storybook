@@ -99,12 +99,12 @@ One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a 
 
 For each nested component and each parent variant in its base state, the props the generated parent gives the nested component, compared with the Figma instance (its variant, booleans, texts and exposed nested instances).
 
-Overall: 72/72 values match (100%).
+Overall: 64/64 values match (100%).
 
 | Component | Nested layers | Match | Not compared (state variants) |
 | --- | --- | --- | --- |
 | AvatarIdentity | 1 | 3/3 | 5 |
-| DropdownMenu | 1 | 16/16 | 0 |
+| DropdownMenu | 1 | 8/8 | 0 |
 | Dropdown | 2 | 36/36 | 0 |
 | Form | 3 | 17/17 | 4 |
 
@@ -173,10 +173,8 @@ Figma: ListItem (520:3110)
 | Type (variant) | `type` |  |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Pressed → :pressed (CSS), Focused → :focus (CSS), Disabled → disabled, Selected → state="selected", Activated → state="activated", Dragged → state="dragged", Skeleton → state="skeleton" |
 | Size (variant) | `size` |  |
-| has-leading-control (boolean) | `hasLeadingControl` |  |
-| has-trailing-control (boolean) | `hasTrailingControl` |  |
-| leading-control (instance swap) | `leadingControl` | Slot: any content; the Figma instance is the default. |
-| trailing-control (instance swap) | `trailingControl` | Slot: any content; the Figma instance is the default. |
+| leading-control (instance swap) + has-leading-control (boolean) | `leadingControl` | Slot with its visibility toggle: content shows it, null hides it; not set: hidden. |
+| trailing-control (instance swap) + has-trailing-control (boolean) | `trailingControl` | Slot with its visibility toggle: content shows it, null hides it; not set: hidden. |
 
 **Not from Figma (archetype defaults or decisions):**
 
