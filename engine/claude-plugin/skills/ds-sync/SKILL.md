@@ -10,12 +10,7 @@ ds-sync does the work; this skill runs it and handles what needs a person's judg
 ## 1. Prerequisites
 
 - Node 22 or newer: `node --version`.
-- The CLI. Use `npx ds-sync` if the package is installed. Until it is published, build it once from the repository:
-  ```bash
-  git clone https://github.com/shivanshu-epam/ds-to-storybook.git ~/.ds-sync-tool
-  cd ~/.ds-sync-tool/engine && npm ci && npm run build
-  ```
-  Then use `node ~/.ds-sync-tool/engine/dist/cli.js` wherever this skill says `ds-sync`.
+- The CLI: `npx ds-sync` (the npm package; `npx ds-sync --version` checks it). If the project pins a version (a `ds-sync` dev dependency, or `DS_SYNC_VERSION` in `.github/workflows/ds-sync.yml`), use that version: `npx ds-sync@<version>`. If npm cannot reach the registry, build it from the repository instead (`git clone https://github.com/shivanshu-epam/ds-to-storybook.git ~/.ds-sync-tool`, then `cd ~/.ds-sync-tool/engine && npm ci && npm run build`) and use `node ~/.ds-sync-tool/engine/dist/cli.js` wherever this skill says `ds-sync`.
 - A Figma personal access token with `file_content:read`. Ask the user to put it in `.env` as `FIGMA_TOKEN=...` themselves. Do not ask them to paste it into the chat. If they already did, use it, write it only to `.env`, and recommend rotating it.
 
 ## 2. Set up (once per project)

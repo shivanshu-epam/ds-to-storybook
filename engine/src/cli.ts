@@ -25,6 +25,7 @@ import { loadDotEnv, writeJson, writeText } from './util/core.ts';
 import { decide, hasProposals, activeDecisions, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel } from './decisions/decisions.ts';
 import { buildReview, writeReview } from './review/review.ts';
 import { lintDocs, lintMarkdown } from './docs/lint.ts';
+import { VERSION } from './version.ts';
 import { claudeAvailable, interpret } from './ai/interpret.ts';
 import { evalMarkdown, evaluate } from './eval/eval.ts';
 import { auditMarkdown, loadScorecards, testTallies, withTests, withVisual } from './audit/audit.ts';
@@ -60,6 +61,7 @@ Commands:
             (--tests <vitest json report> adds real test results; --strict fails on any ✗)
 
 Options:
+  --version, -v     Print the ds-sync version
   --config <file>   Config file (default: ds-sync.config.json)
   --out <dir>       Working directory for reports and cache (default: .ds-sync)
   --figma-version <id>  Read this Figma version instead of the latest (discover, generate)
@@ -158,9 +160,14 @@ async function main() {
       ci: { type: 'boolean', default: false },
       refresh: { type: 'boolean', default: false },
       help: { type: 'boolean', default: false },
+      version: { type: 'boolean', short: 'v', default: false },
     },
   });
   const command = positionals[0];
+  if (values.version) {
+    process.stdout.write(`${VERSION}\n`);
+    return;
+  }
   if (values.help || !command) {
     process.stdout.write(USAGE);
     return;

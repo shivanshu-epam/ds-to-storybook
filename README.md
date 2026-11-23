@@ -8,21 +8,16 @@
 
 ## Quick start
 
-Until ds-sync is published to npm, build it once from this repo:
+In your own project folder (Node 22 or newer):
 
 ```bash
-git clone https://github.com/shivanshu-epam/ds-to-storybook.git ds-sync-tool
-cd ds-sync-tool/engine && npm ci && npm run build && npm link   # gives you the ds-sync command
+npx ds-sync init --figma "https://www.figma.com/design/<file-key>/..."   # asks for a Figma token, detects your stack
+npx ds-sync discover                                                     # review what was found: .ds-sync/discovery.md
+npx ds-sync generate                                                     # writes ./storybook
+cd storybook && npm install && npm run storybook                         # http://localhost:6006
 ```
 
-Then, in your own project folder:
-
-```bash
-ds-sync init --figma "https://www.figma.com/design/<file-key>/..."   # asks for a Figma token, detects your stack
-ds-sync discover                                                     # review what was found: .ds-sync/discovery.md
-ds-sync generate                                                     # writes ./storybook
-cd storybook && npm install && npm run storybook                     # http://localhost:6006
-```
+To work on ds-sync itself, build it from this repository instead: `cd engine && npm ci && npm run build && npm link` gives you the `ds-sync` command. Releases: [docs/RELEASING.md](docs/RELEASING.md) and [engine/CHANGELOG.md](engine/CHANGELOG.md).
 
 Step-by-step guide: [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md). Prefer a guided run? Use the **Claude Code plugin** in [`engine/claude-plugin`](engine/claude-plugin/README.md). It runs these steps, asks the questions only a person can answer (for example, what a component should do), and explains the results. It also proposes code names and descriptions for Figma properties as reviewed decisions (`ds-sync review`, `interpret`, `decisions`, `eval`). AI is optional: the engine never needs it. Design and benchmark: [docs/HYBRID.md](docs/HYBRID.md).
 

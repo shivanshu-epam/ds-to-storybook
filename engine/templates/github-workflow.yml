@@ -24,14 +24,15 @@ jobs:
         with:
           node-version: 22
 
-      # Until ds-sync is published to npm, build it from its repository.
+      # The ds-sync version that wrote this workflow: the same engine generates the same code. Upgrading is a
+      # deliberate change (edit DS_SYNC_VERSION), and it regenerates everything once.
       - name: Install ds-sync
         id: engine
+        env:
+          DS_SYNC_VERSION: '__DS_SYNC_VERSION__'
         run: |
-          git clone --filter=blob:none https://github.com/shivanshu-epam/ds-to-storybook.git "$RUNNER_TEMP/ds-sync"
-          # The last change to the engine itself (not docs or examples): a new engine may generate different code.
-          echo "sha=$(git -C "$RUNNER_TEMP/ds-sync" log -1 --format=%h -- engine)" >> "$GITHUB_OUTPUT"
-          cd "$RUNNER_TEMP/ds-sync/engine" && npm ci && npm run build
+          npm install --global --no-audit --no-fund "ds-sync@$DS_SYNC_VERSION"
+          echo "sha=$DS_SYNC_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Check the FIGMA_TOKEN secret
         env:
@@ -53,7 +54,7 @@ jobs:
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
         run: |
-          node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" status >> "$GITHUB_OUTPUT"
+          ds-sync status >> "$GITHUB_OUTPUT"
           if grep -q '^changed=false' "$GITHUB_OUTPUT"; then
             echo "::notice title=ds-sync::Figma has not changed since the last generation."
           fi
@@ -85,12 +86,12 @@ jobs:
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
         # Also writes .ds-sync/changes.md (what changed in Figma) and before/after renders in .ds-sync/changes/.
-        run: node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" generate
+        run: ds-sync generate
 
       - name: Find the output folders
         id: out
         if: steps.go.outputs.run == 'true'
-        run: node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" outputs >> "$GITHUB_OUTPUT"
+        run: ds-sync outputs >> "$GITHUB_OUTPUT"
 
       - name: Check for design changes
         id: changes
@@ -142,7 +143,7 @@ jobs:
           (cd "$dir" && npm run build-storybook -- --quiet)
           python3 -m http.server 6006 --directory "$dir/storybook-static" > /dev/null 2>&1 &
           for i in $(seq 1 30); do curl -sf http://localhost:6006/iframe.html > /dev/null && break; sleep 1; done
-          node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" visual --url http://localhost:6006 --dir "$dir" | tee "$RUNNER_TEMP/visual.txt"
+          ds-sync visual --url http://localhost:6006 --dir "$dir" | tee "$RUNNER_TEMP/visual.txt"
           echo "summary=$(grep '^· Visual:' "$RUNNER_TEMP/visual.txt" | sed 's/^· Visual: //')" >> "$GITHUB_OUTPUT"
 
       # Scorecards of the React output with the real test and visual results: one status per fidelity measure.
@@ -153,7 +154,7 @@ jobs:
         run: |
           dir="${{ steps.out.outputs.react_dir }}"
           tests="$RUNNER_TEMP/tests-$(basename "$dir").json"
-          node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" audit --dir "$dir" $( [ -f "$tests" ] && echo --tests "$tests" )
+          ds-sync audit --dir "$dir" $( [ -f "$tests" ] && echo --tests "$tests" )
 
       - name: Keep the change images and visual report
         if: steps.changes.outputs.changed == 'true'

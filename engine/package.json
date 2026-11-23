@@ -1,7 +1,7 @@
 {
   "name": "ds-sync",
-  "version": "0.1.0",
-  "description": "Generate and sync a tested Storybook from a Figma design system.",
+  "version": "0.2.0",
+  "description": "Generate and sync a tested Storybook (React or Web Components) from any Figma design system, with optional Claude Code skills for the judgement calls.",
   "keywords": [
     "figma",
     "storybook",
@@ -33,6 +33,7 @@
     "archetypes",
     "templates",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE",
     "claude-plugin",
     "schemas"
@@ -48,7 +49,8 @@
     "prepack": "npm run build",
     "ds-sync": "tsx src/cli.ts",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm test"
   },
   "dependencies": {
     "pixelmatch": "7.2.0",

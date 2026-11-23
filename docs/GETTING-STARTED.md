@@ -28,9 +28,13 @@ From one Figma file, ds-sync writes a complete Storybook project (or two):
 
 ## 3. Install
 
-Once ds-sync is published to npm, nothing needs installing: every command below runs with `npx ds-sync …`.
+Nothing needs installing: every command below runs with `npx ds-sync …`, which downloads the published package. Check with `npx ds-sync --version`.
 
-Until then, build it once from the repository:
+To pin a version in a project, add it as a development dependency (`npm install --save-dev ds-sync`) and run `npx ds-sync …` there. The GitHub workflow that `init --ci` writes pins the version that wrote it.
+
+When you install the generated Storybook's dependencies (`npm install` in `storybook/`), recent npm versions may say that some packages have install scripts and ask you to review them (`npm install-scripts ls`). The Storybook works without approving them; approve only what you recognise.
+
+To work on ds-sync itself, build it from the repository instead:
 
 ```bash
 git clone https://github.com/shivanshu-epam/ds-to-storybook.git ~/ds-sync-tool
@@ -40,7 +44,7 @@ git clone https://github.com/shivanshu-epam/ds-to-storybook.git ~/ds-sync-tool
 cd ~/ds-sync-tool/engine && npm ci && npm run build && npm link
 ```
 
-`npm link` puts a `ds-sync` command on your PATH. In the steps below, use `ds-sync …` instead of `npx ds-sync …`.
+`npm link` puts your build's `ds-sync` command on your PATH; use `ds-sync …` instead of `npx ds-sync …`.
 
 ## 4. Set up a project
 
