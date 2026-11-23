@@ -20,6 +20,8 @@ The default configuration (every property at its Figma default).
 
 ## Variants
 
+<p>{"Figma designs 8 of the 12 possible combinations of these properties. The stories below show designed variants only; other combinations set in the controls are computed from the nearest designed styles and are not reviewed designs."}</p>
+
 ### Type and state
 
 <Canvas of={Stories.TypeAndState} />
@@ -32,11 +34,15 @@ The default configuration (every property at its Figma default).
 
 ### Appearance
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Type"}</td><td><code>{"type"}</code></td><td>{"Type (variant)"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Type"}</td><td><code>{"type"}</code></td><td><code>{"'link' | 'current' | 'collapse'"}</code></td><td><code>{"'link'"}</code></td><td>{""}</td><td>{"Type (variant)"}</td></tr></tbody></table>
 
 ### Content
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"With icon"}</td><td><code>{"hasIcon"}</code></td><td>{"Has icon (boolean)"}</td><td>{""}</td></tr><tr><td>{"Label"}</td><td><code>{"label"}</code></td><td>{"Label (text)"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"With icon"}</td><td><code>{"hasIcon"}</code></td><td><code>{"boolean"}</code></td><td><code>{"false"}</code></td><td>{""}</td><td>{"Has icon (boolean)"}</td></tr><tr><td>{"Label"}</td><td><code>{"label"}</code></td><td><code>{"ReactNode"}</code></td><td><code>{"'Breadcrumb'"}</code></td><td>{""}</td><td>{"Label (text)"}</td></tr></tbody></table>
+
+### State
+
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Disabled"}</td><td><code>{"disabled"}</code></td><td><code>{"boolean"}</code></td><td><code>{"false"}</code></td><td>{""}</td><td>{"State=Disabled"}</td></tr></tbody></table>
 
 ### Try it
 
@@ -48,12 +54,17 @@ The default configuration (every property at its Figma default).
 
 ## Code
 
-<Source language="tsx" dark code={"import { BreadcrumbItem } from 'figma-design-system-storybook';\nimport 'figma-design-system-storybook/tokens.css';\n\n<BreadcrumbItem />"} />
+<Source language="tsx" dark code={"import { BreadcrumbItem } from 'figma-design-system-storybook';\nimport 'figma-design-system-storybook/tokens.css';\n\n<BreadcrumbItem label=\"Breadcrumb\" />"} />
 
 Each story shows its code under "Show code".
 
 ## Design reference
 
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=224-1461">{"BreadcrumbItem"}</a> · version 2420998788157412873 · 8 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
+<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=224-1461">{"BreadcrumbItem"}</a> · version 2420998788157412873 · 8 designed variants</li><li>{"Visual check: 6/8 variants match Figma (worst difference 2.78%)."}</li></ul>
+
+### Scorecard
+
+<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
+<ul><li>{"⚠ Visual fidelity: 6/8 designed variants match Figma (worst 2.8%)"}</li><li>{"✓ Variants: 8 designed variants shown; 4 computed combinations labelled"}</li><li>{"✓ Properties: 5/5 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"– Interaction: visuals only (display component)"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 1 accepted known issue"}</li><li>{"⚠ Documentation: description; 0/4 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 1 generator note"}</li></ul>
 
 <FigmaDocs docs={docs} only="tabs" />

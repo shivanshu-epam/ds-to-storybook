@@ -30,21 +30,21 @@ export class DsForm extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-state=${this.state} ?data-disabled=${this.disabled} aria-disabled=${this.disabled ? 'true' : nothing} data-force-state=${this.forceState ?? nothing}>
-        <span class="sectionHeading">${"Personal information"}</span>
-        <div class="fields">
-          <span class="fieldName"><ds-input-field .required=${true} .labelText=${"Full name"} .valueText=${"Jordan Lee"}></ds-input-field></span>
-          <span class="fieldEmail"><ds-input-field .required=${true}></ds-input-field></span>
-          <div class="fieldCountry">
-            <span class="label">${"Country"}</span>
-            <span class="control"><ds-dropdown-trigger .size=${"medium"}></ds-dropdown-trigger></span>
+        <span class="sectionHeading" part="sectionHeading">${"Personal information"}</span>
+        <div class="fields" part="fields">
+          <span class="fieldName" part="fieldName"><ds-input-field .required=${true} .labelText=${"Full name"} .valueText=${"Jordan Lee"}></ds-input-field></span>
+          <span class="fieldEmail" part="fieldEmail"><ds-input-field .required=${true}></ds-input-field></span>
+          <div class="fieldCountry" part="fieldCountry">
+            <span class="label" part="label">${"Country"}</span>
+            <span class="control" part="control"><ds-dropdown-trigger .size=${"medium"}></ds-dropdown-trigger></span>
           </div>
-          <span class="fieldTerms" aria-hidden="true"></span>
+          <span class="fieldTerms" part="fieldTerms" aria-hidden="true"></span>
         </div>
-        <div class="actions">
-          <span class="secondaryButton"><ds-button .variant=${"secondary"} .size=${"md"}>${"Cancel"}</ds-button></span>
-          <span class="primaryButton"><ds-button .size=${"md"}>${(({"submitting":"Submitting..."} as Record<string, string>)[String(this.state)] ?? "Submit")}</ds-button></span>
+        <div class="actions" part="actions">
+          <span class="secondaryButton" part="secondaryButton"><ds-button .variant=${"secondary"} .size=${"md"}>${"Cancel"}</ds-button></span>
+          <span class="primaryButton" part="primaryButton"><ds-button .size=${"md"}>${(({"submitting":"Submitting..."} as Record<string, string>)[String(this.state)] ?? "Submit")}</ds-button></span>
         </div>
-        <span class="statusBanner" aria-hidden="true"></span>
+        <span class="statusBanner" part="statusBanner" aria-hidden="true"></span>
       </div>`;
   }
 }

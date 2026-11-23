@@ -1,19 +1,23 @@
 /** Scenario 2: Figma design system -> a fresh, tested Storybook project. */
 import { composition, docsPage, isBuildingBlock, polishStories, templateSections } from './docs.ts';
-import { fontsReport, httpFontSource, planFonts, usedFonts, type FontOverride, type FontPlan } from './fonts.ts';
-import { existsSync, rmSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { activeDecisions, decidedSetDescription, decisionsReport, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel, type DecisionsFile } from '../decisions/decisions.ts';
+import { BEHAVIOUR, buildScorecard, scorecardLines, scorecardReport } from './scorecard.ts';
+import { leadSentence } from './templates/common.ts';
+import { fontFaceCss, fontsReport, httpFontSource, planFonts, usedFonts, type FontOverride, type FontPlan } from './fonts.ts';
+import { copyFileSync, existsSync, mkdirSync, rmSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 
 import type { LoadedConfig } from '../config.ts';
 import type { FigmaReader, FigmaRenderer } from '../figma/client.ts';
 import type { FigmaIR, IRComponentSet } from '../ir/types.ts';
 import { expandHome, readJson, writeText } from '../util/core.ts';
 import { exportIcons, exportShapes, iconRefs, type IconAsset } from './icons.ts';
+import { addStyles, foundationPages, fromTokens, type StyleNodes } from './foundations.ts';
 import { projectFiles } from './project.ts';
 import { accordionTemplate } from './templates/accordion.ts';
 import { actionTemplate } from './templates/action.ts';
 import { checkboxTemplate } from './templates/checkbox.ts';
-import { genericTemplate, instanceRef, type RegistryEntry } from './templates/generic.ts';
+import { genericTemplate, instanceRef, propPlan, setBreakpoints, type RegistryEntry } from './templates/generic.ts';
 import type { Overrides } from '../discover/discover.ts';
 import type { ComponentReport, GeneratedFile, TemplateContext, TemplateResult } from './templates/common.ts';
 import { exportFromRest, loadTokens, setFontStacks, TokenResolver, tokensCss, tokensDtcg, tokensTs } from './tokens.ts';
@@ -44,6 +48,17 @@ export interface GenerateConfig {
    * Map a family to your own package ({ package, family?, imports? }) or to false; false for the whole setting skips the lookup.
    */
   fonts?: Record<string, FontOverride> | false;
+  /**
+   * Interpretation decisions (code names and descriptions for Figma properties), see docs/HYBRID.md.
+   * file defaults to ds-sync.decisions.json next to the config; apply defaults to "accepted".
+   */
+  decisions?: { file?: string; apply?: ApplyLevel };
+  /**
+   * Viewport values of Figma "Screen Size" / "Device" / "Breakpoint" axes -> CSS media conditions, e.g.
+   * { "Mobile": "(max-width: 767px)" }. Such an axis then follows the viewport when its prop is not set.
+   * Figma does not say at which width a layout changes, so nothing is assumed without this.
+   */
+  breakpoints?: Record<string, string>;
   /** Output directory for the default target, relative to the config file. */
   outDir: string;
   /** Default output target (react: React + TypeScript + CSS Modules; web-components: Lit, works in any framework). */
@@ -73,7 +88,7 @@ export interface GenerateConfig {
 
 export interface PlannedComponent {
   name: string;
-  template: 'action' | 'checkbox' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
+  template: 'action' | 'checkbox' | 'checkbox-single' | 'radio-single' | 'combobox' | 'disclosure' | 'button' | 'link' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
   sets: Record<string, string>;
   /** Storybook title; default Components/<name>. */
   title?: string;
@@ -132,6 +147,18 @@ function visualManifest(ir: FigmaIR, results: { c: PlannedComponent; result: Tem
 /** Generated folders are replaced; files are only written under them, so the target stays clean between runs. */
 const OWNED = ['src', '.storybook', 'types'];
 
+/** Descriptions by code prop, and the component description, from the applied decisions. */
+function decisionDocs(sets: IRComponentSet[]): { descriptions?: Record<string, string>; decidedDescription?: string } {
+  const descriptions: Record<string, string> = {};
+  for (const set of sets) {
+    const plan = propPlan(set);
+    for (const a of plan.axes) if (a.description) descriptions[a.prop] = a.description;
+    for (const b of [...plan.booleans, ...plan.texts]) if (b.description) descriptions[b.prop] = b.description;
+  }
+  const decided = sets.map((s) => decidedSetDescription(s)).find(Boolean);
+  return { ...(Object.keys(descriptions).length ? { descriptions } : {}), ...(decided ? { decidedDescription: decided } : {}) };
+}
+
 export async function generateStorybook(config: LoadedConfig, gen: GenerateConfig, ir: FigmaIR, renderer: FigmaRenderer, log: (m: string) => void, plan: PlannedComponent[] = gen.components ?? []) {
   let source: { variables?: Record<string, unknown[]> } = { variables: {} };
   if (gen.variablesExport) {
@@ -152,16 +179,35 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   const modeAttributes = { ...autoModes, ...(gen.modeAttributes ?? {}) };
 
   const setsById = new Map(ir.components.map((c) => [c.targetId, c]));
+  // Decisions: validated against this IR; entries with errors are left out and reported, never half-applied.
+  const decisionsFile = loadDecisions(resolve(config.baseDir, gen.decisions?.file ?? DECISIONS_FILE));
+  const decisionLevel: ApplyLevel = gen.decisions?.apply ?? 'accepted';
+  const decisionProblems = decisionsFile ? validateDecisions(decisionsFile, ir) : [];
+  if (decisionsFile) {
+    const usable: DecisionsFile = JSON.parse(JSON.stringify(decisionsFile)) as DecisionsFile;
+    for (const pr of decisionProblems.filter((x) => x.severity === 'error')) {
+      if (pr.prop) delete usable.sets[pr.set]?.props?.[pr.prop];
+      else delete usable.sets[pr.set];
+    }
+    setActiveDecisions(activeDecisions(usable, decisionLevel));
+    for (const pr of decisionProblems) log(`Decisions ${pr.severity}: ${pr.set}${pr.prop ? ` › ${pr.prop}` : ''}: ${pr.message}`);
+    const active = activeDecisions(usable, decisionLevel);
+    log(`Decisions: ${Object.keys(decisionsFile.sets).length} set(s) in ${gen.decisions?.file ?? DECISIONS_FILE}; applying ${decisionLevel} → ${active.size} set(s)`);
+  } else setActiveDecisions(new Map());
   const usedTargets = plan.flatMap((c) => Object.values(c.sets));
   const missing = usedTargets.filter((t) => !setsById.has(t));
   if (missing.length) throw new Error(`Component sets missing from the IR: ${missing.join(', ')}. Run "extract" first.`);
 
   // Fonts: loaded from npm packages; system and missing families are reported.
-  const fonts = await planFonts(usedFonts(ir), gen.fonts === false ? undefined : httpFontSource(join(config.baseDir, '.ds-sync', 'fonts.json')), gen.fonts || {});
+  const fonts = await planFonts(usedFonts(ir), gen.fonts === false ? undefined : httpFontSource(join(config.baseDir, '.ds-sync', 'fonts.json')), gen.fonts || {}, config.baseDir);
   setFontStacks(Object.fromEntries(fonts.filter((f) => f.family !== 'Inter').map((f) => [f.family, f.stack])));
+  setBreakpoints(gen.breakpoints);
   const fontPackages = fonts.filter((f) => f.package && f.package !== '@fontsource-variable/inter');
   const fontDeps = Object.fromEntries(fontPackages.filter((f) => f.version).map((f) => [f.package!, f.version!]));
-  const fontImports = [...new Set(fontPackages.flatMap((f) => f.imports ?? []))];
+  // The team's own font files: copied into src/fonts/ and declared there; base.css imports them with the packages.
+  const fontFaces = fontFaceCss(fonts);
+  const fontFiles: GeneratedFile[] = fontFaces ? [{ path: 'src/fonts/fonts.css', content: fontFaces }, ...fonts.flatMap((f) => (f.files ?? []).map((x) => ({ path: `src/${x.to}`, content: '', copyFrom: x.from })))] : [];
+  const fontImports = [...new Set([...fontPackages.flatMap((f) => f.imports ?? []), ...(fontFaces ? ['../fonts/fonts.css'] : [])])];
   for (const f of fonts.filter((x) => x.status === 'missing' || x.status === 'substitute')) log(`Font ${f.family}: ${f.status} (${f.note ?? ''})`);
   log(`Fonts: ${fonts.filter((f) => f.status === 'package' || f.status === 'configured').length} loaded, ${fonts.filter((f) => f.status === 'substitute').length} substituted, ${fonts.filter((f) => f.status === 'system').length} system, ${fonts.filter((f) => f.status === 'missing').length} missing`);
 
@@ -176,7 +222,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     if (c.template === 'checkbox' || c.template === 'accordion') continue;
     const set = setsById.get(c.sets.main ?? '');
     if (!set) continue;
-    const entry: RegistryEntry = { component: c.name, importPath: `../${c.name}/${c.name}`, kind: c.template, set };
+    const entry: RegistryEntry = { component: c.name, importPath: `../${c.name}/${c.name}`, kind: c.template === 'checkbox-single' || c.template === 'radio-single' ? 'switch' : c.template, set, template: c.template };
     for (const v of set.variants) registry.set(v.nodeId, entry);
   }
   const lookupEntry = (id: string) => registry.get(id);
@@ -237,6 +283,32 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     }
   } catch { visual = {}; }
   const modeNames = [...new Set(Object.values(tokens.modes).flat())];
+  // Scorecards (QUALITY.md section 3): per component, one status per measure.
+  const issueCount = (i: string | Record<string, string> | undefined) => (!i ? 0 : typeof i === 'string' ? 1 : Object.keys(i).length);
+  // Effective behaviour per component: a template, a collection the generic template recognised, or a trigger disclosure.
+  const effectiveOf = (c: PlannedComponent, core?: GenericCore) => (core?.collection ? `collection:${core.collection.role}` : core?.trigger ? 'disclosure' : c.template === 'combobox' ? (core?.combo ? (core.combo.kind === 'combobox' ? 'combobox' : 'menu-button') : 'generic') : c.template);
+  const effective = new Map(results.map(({ c, result }) => [c.name, effectiveOf(c, result.core as GenericCore | undefined)]));
+  const cards = results.map(({ c, ctx, result }) => {
+    const sets = Object.values(ctx.sets);
+    const docs = decisionDocs(sets);
+    const core = result.core as GenericCore | undefined;
+    const template = effective.get(c.name)!;
+    // A composite gets its behaviour from its parts: repeated items, or a nested component with a behaviour (a menu holding a listbox).
+    const itemTemplate = core?.repeats?.length ? effective.get(core.repeats[0]!.component) : undefined;
+    const nestedTemplate = (core?.layers ?? []).map((l) => (l.part.type === 'INSTANCE' && l.part.instanceComponentId ? registry.get(l.part.instanceComponentId)?.component : undefined)).map((n) => (n && n !== c.name ? effective.get(n) : undefined)).find((t) => t && BEHAVIOUR[t]);
+    const itemBehaviour = itemTemplate ? BEHAVIOUR[itemTemplate] : undefined;
+    const nestedBehaviour = nestedTemplate ? BEHAVIOUR[nestedTemplate] : undefined;
+    return buildScorecard({
+      name: c.name, template, sets, report: result.report, ...(itemBehaviour ? { itemBehaviour } : {}), ...(nestedBehaviour ? { nestedBehaviour } : {}),
+      css: (result.core as GenericCore | undefined)?.css ?? result.files.find((f) => f.path.endsWith('.module.css'))?.content ?? '',
+      buildingBlock: blockOf(c), ...(visual[c.name] ? { visual: visual[c.name] } : {}),
+      knownIssues: issueCount(gen.overrides?.knownIssues?.[c.name]),
+      questions: sets.reduce((n, s) => n + (decisionsFile?.sets[s.name]?.questions?.length ?? 0), 0),
+      described: sets.some((s) => s.description.trim()) || Boolean(leadSentence(sets.flatMap((s) => s.docFrames))) || Boolean(docs.decidedDescription),
+      describedProps: Object.keys(docs.descriptions ?? {}).length,
+    });
+  });
+  const cardOf = new Map(cards.map((x) => [x.component, x]));
   const applyDocs = (list: GeneratedFile[], framework: 'react' | 'wc', packageName: string) => {
     for (const { c, ctx, result } of results) {
       const dir = `src/components/${c.name}/`;
@@ -261,13 +333,30 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
         usedIn: results.filter((x) => (compositions.get(x.c.name) ?? []).some((r) => r.component === c.name)).map((x) => ({ name: x.c.name, title: titleOf(x.c) })),
         knownIssues: issue ? knownIssueNotes(issue) : [], modes: modeNames, packageName,
         ...(visual[c.name] ? { visual: visual[c.name] } : {}),
+        ...decisionDocs(Object.values(ctx.sets)),
+        ...(cardOf.get(c.name) ? { scorecard: scorecardLines(cardOf.get(c.name)!) } : {}),
       });
     }
   };
 
-  const colorTokens = tokens.rows
-    .filter((r) => r.collection === 'semantic.color')
-    .map((r) => ({ name: r.name, cssVar: r.cssVar }));
+  // Foundations: variables first; the file's local styles add what variables lack (shadows, or everything without them).
+  const foundations = fromTokens(tokens);
+  const styleNeeds = (ir.styles ?? []).filter((s) => s.type === 'EFFECT' || (s.type === 'FILL' && !foundations.sources.colors) || (s.type === 'TEXT' && !foundations.sources.typography));
+  const reader = renderer as unknown as Partial<FigmaReader>;
+  if (styleNeeds.length && typeof reader.nodes === 'function') {
+    const nodes: StyleNodes = {};
+    try {
+      for (let i = 0; i < styleNeeds.length; i += 100) {
+        const res = await reader.nodes(ir.fileKey, styleNeeds.slice(i, i + 100).map((s) => s.id), ir.version);
+        for (const [id, e] of Object.entries(res.nodes)) nodes[id] = e?.document;
+      }
+      addStyles(foundations, styleNeeds, nodes);
+    } catch (e) {
+      log(`Foundations: could not read the file's styles (${(e as Error).message.slice(0, 120)}); pages use variables only.`);
+    }
+  }
+  const foundationPagesList = foundationPages(foundations);
+  log(`Foundations: ${foundationPagesList.map((p) => p.title).join(', ') || 'none (no variables or styles)'}`);
   const page = {
     background: tokens.rows.find((r) => r.collection === 'semantic.color' && /^surface\/bg\/default$/.test(r.name))?.cssVar,
     text: tokens.rows.find((r) => r.collection === 'semantic.color' && /^text\/(primary|default)$/.test(r.name))?.cssVar,
@@ -292,19 +381,20 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   const shared: GeneratedFile[] = [
     ...tokenFiles,
     { path: 'token-map.json', content: JSON.stringify(tokenMap, null, 2) + '\n' },
-    { path: 'GENERATION-REPORT.md', content: report(ir, reports, tokenMap.counts, icons, fonts) },
+    { path: 'GENERATION-REPORT.md', content: report(ir, reports, tokenMap.counts, icons, fonts, [...scorecardReport(cards), ...decisionsReport(decisionsFile, decisionLevel, decisionProblems)]) },
+    { path: 'scorecard.json', content: JSON.stringify({ fileKey: ir.fileKey, version: ir.version, components: cards }, null, 2) + '\n' },
   ];
 
   const targets: TargetConfig[] = gen.targets?.length ? gen.targets : [{ target: gen.target ?? 'react', outDir: gen.outDir, ...(gen.packageName ? { packageName: gen.packageName } : {}) }];
   const written: { target: Target; outDir: string; files: string[] }[] = [];
   for (const t of targets) {
-    const outFiles: GeneratedFile[] = [...shared];
+    const outFiles: GeneratedFile[] = [...shared, ...fontFiles];
     const packageName = t.packageName ?? gen.packageName ?? 'figma-storybook';
     if (t.target === 'react') {
       applyDocs(files, 'react', packageName);
       outFiles.push(
         ...files,
-        ...projectFiles({ name: packageName, figma: { fileKey: ir.fileKey, fileName: ir.fileName, version: ir.version }, modes: tokens.modes, modeAttributes, components: plan.map((c) => c.name), icons, colorTokens, page, fonts: { deps: fontDeps, imports: fontImports } }),
+        ...projectFiles({ name: packageName, figma: { fileKey: ir.fileKey, fileName: ir.fileName, version: ir.version }, modes: tokens.modes, modeAttributes, components: plan.map((c) => c.name), icons, foundations: foundationPagesList, page, fonts: { deps: fontDeps, imports: fontImports } }),
         { path: 'README.md', content: readme(ir, plan, 'react') },
         { path: 'visual-manifest.json', content: JSON.stringify(visualManifest(ir, results), null, 2) + '\n' },
       );
@@ -337,7 +427,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
           modeAttributes,
           components: wc.map((x) => ({ name: x.name, tags: x.r.tags, module: x.r.module })),
           icons,
-          colorTokens,
+          foundations: foundationPagesList,
           page,
           fonts: { deps: fontDeps, imports: fontImports },
           typings: wc.flatMap((x) => x.r.typings),
@@ -351,14 +441,18 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
       const abs = join(outDir, dir);
       if (existsSync(abs)) rmSync(abs, { recursive: true, force: true });
     }
-    for (const f of outFiles) writeText(join(outDir, f.path), f.content);
+    for (const f of outFiles) {
+      if (!f.copyFrom) { writeText(join(outDir, f.path), f.content); continue; }
+      mkdirSync(dirname(join(outDir, f.path)), { recursive: true });
+      copyFileSync(f.copyFrom, join(outDir, f.path));
+    }
     written.push({ target: t.target, outDir, files: outFiles.map((f) => f.path) });
     log(`${t.target}: ${outFiles.length} files → ${outDir}`);
   }
   return { outDir: written[0]!.outDir, targets: written, files: written.flatMap((w) => w.files), reports, tokenCounts: tokenMap.counts };
 }
 
-function report(ir: FigmaIR, reports: ComponentReport[], counts: Record<string, number>, icons: IconAsset[], fonts: FontPlan[] = []): string {
+function report(ir: FigmaIR, reports: ComponentReport[], counts: Record<string, number>, icons: IconAsset[], fonts: FontPlan[] = [], decisionLines: string[] = []): string {
   const lines = [
     '# Generation report',
     '',
@@ -377,6 +471,7 @@ function report(ir: FigmaIR, reports: ComponentReport[], counts: Record<string, 
     ...icons.map((i) => `- \`${i.name}\` from ${i.figmaName} (${i.nodeId})`),
     '',
     ...fontsReport(fonts),
+    ...decisionLines,
   ];
   const nested = reports.filter((r) => r.nested);
   if (nested.length) {

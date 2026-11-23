@@ -23,11 +23,21 @@
     },
     {
       "prop": "size",
-      "figma": "Size (variant)"
+      "figma": "Size (variant)",
+      "type": "'medium' | 'small'",
+      "default": "'medium'"
+    },
+    {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "showInnerContent",
-      "figma": "Show Inner Content (boolean)"
+      "figma": "Show Inner Content (boolean)",
+      "type": "boolean",
+      "default": "true"
     }
   ],
   "notes": [

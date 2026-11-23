@@ -18,6 +18,8 @@ The default configuration (every property at its Figma default).
 
 ## Variants
 
+<p>{"Figma designs 30 of the 60 possible combinations of these properties. The stories below show designed variants only; other combinations set in the controls are computed from the nearest designed styles and are not reviewed designs."}</p>
+
 ### Type and size
 
 <Canvas of={Stories.TypeAndSize} />
@@ -34,15 +36,15 @@ The default configuration (every property at its Figma default).
 
 ### Appearance
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Type"}</td><td><code>{"type"}</code></td><td>{"Type (variant)"}</td><td>{""}</td></tr><tr><td>{"Size"}</td><td><code>{"size"}</code></td><td>{"Size (variant)"}</td><td>{""}</td></tr><tr><td>{"State"}</td><td><code>{"state"}</code></td><td>{"State (variant)"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Type"}</td><td><code>{"type"}</code></td><td><code>{"'confirmation' | 'alert' | 'form' | 'full-screen' | 'side-drawer'"}</code></td><td><code>{"'confirmation'"}</code></td><td>{""}</td><td>{"Type (variant)"}</td></tr><tr><td>{"Size"}</td><td><code>{"size"}</code></td><td><code>{"'small' | 'medium' | 'large' | 'full'"}</code></td><td><code>{"'small'"}</code></td><td>{""}</td><td>{"Size (variant)"}</td></tr><tr><td>{"State"}</td><td><code>{"state"}</code></td><td><code>{"'open' | 'loading' | 'error'"}</code></td><td><code>{"'open'"}</code></td><td>{""}</td><td>{"State (variant)"}</td></tr></tbody></table>
 
 ### Content
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"With close button"}</td><td><code>{"hasCloseButton"}</code></td><td>{"Has close button (boolean)"}</td><td>{""}</td></tr><tr><td>{"With secondary action"}</td><td><code>{"hasSecondaryAction"}</code></td><td>{"Has secondary action (boolean)"}</td><td>{""}</td></tr><tr><td>{"With subtitle"}</td><td><code>{"hasSubtitle"}</code></td><td>{"Has subtitle (boolean)"}</td><td>{""}</td></tr><tr><td>{"Scrollable content"}</td><td><code>{"scrollableContent"}</code></td><td>{"Scrollable content (boolean)"}</td><td>{""}</td></tr><tr><td>{"Title"}</td><td><code>{"title"}</code></td><td>{"Title (text)"}</td><td>{""}</td></tr><tr><td>{"Subtitle"}</td><td><code>{"subtitle"}</code></td><td>{"Subtitle (text)"}</td><td>{""}</td></tr><tr><td>{"Body content"}</td><td><code>{"bodyContent"}</code></td><td>{"Body content (text)"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"With close button"}</td><td><code>{"hasCloseButton"}</code></td><td><code>{"boolean"}</code></td><td><code>{"true"}</code></td><td>{""}</td><td>{"Has close button (boolean)"}</td></tr><tr><td>{"With secondary action"}</td><td><code>{"hasSecondaryAction"}</code></td><td><code>{"boolean"}</code></td><td><code>{"true"}</code></td><td>{""}</td><td>{"Has secondary action (boolean)"}</td></tr><tr><td>{"With subtitle"}</td><td><code>{"hasSubtitle"}</code></td><td><code>{"boolean"}</code></td><td><code>{"false"}</code></td><td>{""}</td><td>{"Has subtitle (boolean)"}</td></tr><tr><td>{"Scrollable content"}</td><td><code>{"scrollableContent"}</code></td><td><code>{"boolean"}</code></td><td><code>{"false"}</code></td><td>{""}</td><td>{"Scrollable content (boolean)"}</td></tr><tr><td>{"Title value"}</td><td><code>{"titleValue"}</code></td><td><code>{"ReactNode"}</code></td><td><code>{"'Dialog title'"}</code></td><td>{""}</td><td>{"Title (text)"}</td></tr><tr><td>{"Subtitle"}</td><td><code>{"subtitle"}</code></td><td><code>{"ReactNode"}</code></td><td><code>{"'Supporting context text'"}</code></td><td>{""}</td><td>{"Subtitle (text)"}</td></tr><tr><td>{"Body content"}</td><td><code>{"bodyContent"}</code></td><td><code>{"ReactNode"}</code></td><td><code>{"'Dialog body copy goes here.'"}</code></td><td>{""}</td><td>{"Body content (text)"}</td></tr></tbody></table>
 
 ### Behaviour
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Open / default open / modal / on open change"}</td><td><code>{"open / defaultOpen / modal / onOpenChange"}</code></td><td>{"—"}</td><td>{"Native <dialog>: showModal() when modal."}</td></tr><tr><td>{"Children"}</td><td><code>{"children"}</code></td><td>{"_body (layer)"}</td><td>{"Default: the Figma body."}</td></tr><tr><td>{"Footer"}</td><td><code>{"footer"}</code></td><td>{"_footer (layer)"}</td><td>{"Default: the Figma buttons, without actions."}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Open / default open / modal / on open change"}</td><td><code>{"open / defaultOpen / modal / onOpenChange"}</code></td><td>—</td><td>—</td><td>{"Native <dialog>: showModal() when modal."}</td><td>{"—"}</td></tr><tr><td>{"Children value"}</td><td><code>{"childrenValue"}</code></td><td>—</td><td>—</td><td>{"Default: the Figma body."}</td><td>{"_body (layer)"}</td></tr><tr><td>{"Footer"}</td><td><code>{"footer"}</code></td><td>—</td><td>—</td><td>{"Default: the Figma buttons, without actions."}</td><td>{"_footer (layer)"}</td></tr></tbody></table>
 
 ### Try it
 
@@ -88,7 +90,12 @@ This is a standard Web Component: it works in any framework, or none.
 
 ## Design reference
 
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=348-627">{"Dialog"}</a> · version 2420998788157412873 · 30 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
+<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=348-627">{"Dialog"}</a> · version 2420998788157412873 · 30 designed variants</li><li>{"Visual check: 15/30 variants match Figma (worst difference 5.94%)."}</li></ul>
+
+### Scorecard
+
+<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
+<ul><li>{"⚠ Visual fidelity: 15/30 designed variants match Figma (worst 5.9%)"}</li><li>{"✓ Variants: 30 designed variants shown; 30 computed combinations labelled"}</li><li>{"✓ Properties: 10/10 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"✓ Interaction: WAI-ARIA dialog pattern, tested in the stories"}</li><li>{"⚠ Tokens: 1 raw colour value (not bound to a variable in Figma)"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 2 accepted known issues; 1 accessible-name note to confirm"}</li><li>{"⚠ Documentation: description; 0/10 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 7 generator notes"}</li></ul>
 
 <details>
   <summary>Generation notes: what Figma does not specify, and approximations</summary>

@@ -5,6 +5,7 @@ import type { IRComponentSet } from '../ir/types.ts';
 import type { ComponentReport } from './templates/common.ts';
 import { leadSentence } from './templates/common.ts';
 import type { GenericCore, InstanceProp } from './templates/generic.ts';
+import { wcProp } from './wc/components.ts';
 
 const js = (v: unknown) => JSON.stringify(v);
 const slug = (x: string) => x.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -125,6 +126,12 @@ export interface DocsInput {
   modes: string[];
   packageName: string;
   visual?: { match: number; total: number; worst: number };
+  /** Scorecard lines (QUALITY.md section 3), shown under Design reference. */
+  scorecard?: string[];
+  /** Plain-language descriptions by code prop, from applied decisions. */
+  descriptions?: Record<string, string>;
+  /** Component description from an applied decision, used when Figma has none. */
+  decidedDescription?: string;
 }
 
 const GROUPS = ['Appearance', 'Content', 'State', 'Behaviour', 'Composition'] as const;
@@ -137,11 +144,38 @@ function groupOf(m: ComponentReport['props'][number]): (typeof GROUPS)[number] {
 }
 
 const p = (text: string) => `<p>{${js(text)}}</p>`;
+
+/** The row label: plain words, never a CSS selector or a code name (STANDARD 3.2). */
+function labelOf(m: ComponentReport['props'][number]): string {
+  if (m.prop === '—') return plainLabel(m.figma.replace(/ \(.*\)$/, ''));
+  // A CSS state (":hover:not(:disabled) (CSS)") is labelled with its Figma value ("State=Hover" → "Hover").
+  if (m.prop.startsWith(':')) return plainLabel(m.figma.replace(/^.*=/, '').replace(/ \(.*\)$/, ''));
+  return plainLabel(m.prop);
+}
+
+/** A literal default ('Label', "Label") back to its text. */
+const unquote = (v: string) => (/^(['"]).*\1$/s.test(v) ? v.slice(1, -1).replace(/\\(.)/g, '$1') : undefined);
+/** A JSX attribute that is always valid: quotes only when the text has none, else an expression. */
+const jsxAttr = (prop: string, value: string) => (/["\\{}<>]/.test(value) ? `${prop}={${JSON.stringify(value)}}` : `${prop}="${value}"`);
+
+/** A working example: the component with its Figma default content (texts), or its main property set explicitly. */
+export function codeExample(name: string, props: ComponentReport['props']): string {
+  const own = props.filter((m) => /^[a-z][A-Za-z0-9]*$/.test(m.prop) && m.default !== undefined && unquote(m.default) !== undefined);
+  const texts = own.filter((m) => /\(text\)/.test(m.figma) && unquote(m.default!));
+  const variant = own.filter((m) => /\(variant\)/.test(m.figma)).slice(0, 1);
+  const attrs = (texts.length ? texts : variant).map((m) => jsxAttr(m.prop, unquote(m.default!)!));
+  const children = props.find((m) => m.prop === 'children' && /label text|\(text\)/.test(m.figma));
+  const inner = children ? unquote(children.default ?? '') || 'Label' : '';
+  const open = `<${name}${attrs.length ? ` ${attrs.join(' ')}` : ''}`;
+  return inner ? `${open}>${inner}</${name}>` : `${open} />`;
+}
 const list = (items: string[]) => `<ul>${items.map((i) => `<li>{${js(i)}}</li>`).join('')}</ul>`;
 
 export function docsPage(d: DocsInput): string {
   const sets = d.sets;
-  const description = sets.map((s) => s.description).find((x) => x?.trim()) ?? leadSentence(sets.flatMap((s) => s.docFrames));
+  const figmaDescription = sets.map((s) => s.description).find((x) => x?.trim()) ?? leadSentence(sets.flatMap((s) => s.docFrames));
+  const description = figmaDescription || d.decidedDescription;
+  const fromDecision = !figmaDescription && Boolean(d.decidedDescription);
   const sections = templateSections(d.templateMdx);
   const out: string[] = [];
   const header = d.framework === 'react'
@@ -158,6 +192,7 @@ import * as Stories from './${d.name}.stories';`;
   // Overview
   out.push('## Overview', '');
   out.push(description ? p(description) : `<p><strong>No description in Figma.</strong> Add one to the component set's description in Figma; it appears here on the next sync.</p>`);
+  if (fromDecision) out.push('<p><small>Description from ds-sync.decisions.json (Figma has none).</small></p>');
   if (d.buildingBlock) {
     out.push(`<p>{${js(`Building block${d.usedIn.length ? ` of ${d.usedIn.map((u) => u.name).join(', ')}` : ''}: Figma marks it as internal (its name starts with "_" or "." or ends with "Base"), so it is not listed in the sidebar. Use the parent component unless you are composing your own.`)}}</p>`);
     if (d.usedIn.length) out.push(`<p>Used in: ${d.usedIn.map((u) => `<a href=${js(docsLink(u.title))} target="_top">{${js(u.name)}}</a>`).join(', ')}</p>`);
@@ -170,6 +205,10 @@ import * as Stories from './${d.name}.stories';`;
   // Variants (designed variants, grouped by property)
   if (sections.length) {
     out.push('## Variants', '');
+    // Designed vs computed (fidelity step 7): Controls can combine values Figma never drew together.
+    const possible = sets.reduce((n, st) => n * (st.properties ?? []).filter((x) => x.type === 'VARIANT').reduce((m, x) => m * (x.options?.length ?? 1), 1), 1);
+    const designed = sets.reduce((n, st) => n * (st.variants?.length ?? 0), 1);
+    if (sets.length === 1 && designed > 0 && designed < possible) out.push(p(`Figma designs ${designed} of the ${possible} possible combinations of these properties. The stories below show designed variants only; other combinations set in the controls are computed from the nearest designed styles and are not reviewed designs.`), '');
     for (const s of sections) out.push(`### ${plainLabel(s.heading)}`, '', ...(s.note ? [s.note, ''] : []), `<Canvas of={Stories.${s.story}} />`, '');
   }
 
@@ -177,11 +216,16 @@ import * as Stories from './${d.name}.stories';`;
   const rows = d.report.props.filter((m) => m.prop !== '—' || /instance swap/.test(m.figma));
   if (rows.length) {
     out.push('## Properties', '');
+    // Web Components name some props differently (title → titleValue: the element has a title) and keep a slot's
+    // visibility toggle as an attribute (React has only the slot prop): their table shows their own API.
+    const own = d.framework === 'wc'
+      ? rows.flatMap((m) => [{ ...m, prop: m.prop === '—' ? m.prop : wcProp(m.prop) }, ...(m.toggle ? [{ prop: wcProp(m.toggle.prop), figma: m.figma.replace(/^.*\+ /, ''), type: 'boolean', default: String(m.toggle.default), note: `Shows the ${m.prop} slot; content slotted into it shows it too.` }] : [])])
+      : rows;
     for (const g of GROUPS) {
-      const gr = rows.filter((m) => groupOf(m) === g);
+      const gr = own.filter((m) => groupOf(m) === g);
       if (!gr.length) continue;
-      out.push(`### ${g}`, '', `<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody>${gr
-        .map((m) => `<tr><td>{${js(m.prop === '—' ? m.figma.replace(/ \(.*\)$/, '') : plainLabel(m.prop))}}</td><td>${m.prop === '—' ? '—' : `<code>{${js(m.prop)}}</code>`}</td><td>{${js(m.figma)}}</td><td>{${js(m.note ?? '')}}</td></tr>`)
+      out.push(`### ${g}`, '', `<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody>${gr
+        .map((m) => `<tr><td>{${js(labelOf(m))}}</td><td>${m.prop === '—' ? '—' : `<code>{${js(m.prop)}}</code>`}</td><td>${m.type ? `<code>{${js(m.type)}}</code>` : '—'}</td><td>${m.default ? `<code>{${js(m.default)}}</code>` : '—'}</td><td>{${js([d.descriptions?.[m.prop], m.note].filter(Boolean).join(' '))}}</td><td>{${js(m.figma)}}</td></tr>`)
         .join('')}</tbody></table>`, '');
     }
     out.push('### Try it', '', '<Controls of={Stories.Default} />', '');
@@ -226,7 +270,7 @@ import * as Stories from './${d.name}.stories';`;
   // Code
   out.push('## Code', '');
   if (d.framework === 'react') {
-    out.push(`<Source language="tsx" dark code={${js(`import { ${d.name} } from '${d.packageName}';\nimport '${d.packageName}/tokens.css';\n\n<${d.name} />`)}} />`, '', 'Each story shows its code under "Show code".', '');
+    out.push(`<Source language="tsx" dark code={${js(`import { ${d.name} } from '${d.packageName}';\nimport '${d.packageName}/tokens.css';\n\n${codeExample(d.name, d.report.props)}`)}} />`, '', 'Each story shows its code under "Show code".', '');
   } else {
     const usage = /## Use it in your app\n([\s\S]*?)(?=\n## |\n<h2>|$)/.exec(d.templateMdx)?.[1];
     if (usage) out.push(usage.trim(), '');
@@ -241,6 +285,7 @@ import * as Stories from './${d.name}.stories';`;
     `<li>{${js(d.visual ? `Visual check: ${d.visual.match}/${d.visual.total} variants match Figma (worst difference ${d.visual.worst}%).` : 'Visual check: not run for this version yet ("ds-sync visual").')}}</li>`,
   ];
   out.push(`<ul>${ref.join('')}</ul>`, '');
+  if (d.scorecard?.length) out.push('### Scorecard', '', p('One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured.'), list(d.scorecard), '');
   const notes = [...d.report.assumptions.filter((a) => !behaviour.includes(a) && !a11y.includes(a)), ...d.report.gaps.filter((g) => !a11y.includes(g))];
   if (notes.length) out.push(`<details>\n  <summary>Generation notes: what Figma does not specify, and approximations</summary>\n  ${list(notes)}\n</details>`, '');
   if (d.framework === 'react') out.push('<FigmaDocs docs={docs} only="tabs" />', '');

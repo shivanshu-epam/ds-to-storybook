@@ -23,11 +23,11 @@ export interface DropdownTriggerProps extends Omit<HTMLAttributes<HTMLDivElement
 export function DropdownTrigger({ size = 'small', state = 'default', expanded = false, disabled = false, clearable = false, className, ...rest }: DropdownTriggerProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-size={size} data-state={state} data-expanded={expanded ? 'true' : 'false'} data-disabled={disabled ? '' : undefined} aria-disabled={disabled || undefined} {...rest}>
-      <span className={styles.value}>{"Select an option"}</span>
+      <span className={styles.value} data-layer="value">{"Select an option"}</span>
       {clearable && (
-        <span className={styles.clearIcon} aria-hidden="true"><Icon name="actionClose16" /></span>
+        <span className={styles.clearIcon} data-layer="clearIcon" aria-hidden="true"><Icon name="actionClose16" /></span>
       )}
-      <span className={styles.chevron} aria-hidden="true"><Icon name="navChevronDown16" /></span>
+      <span className={styles.chevron} data-layer="chevron" aria-hidden="true"><Icon name="navChevronDown16" /></span>
     </div>
   );
 }

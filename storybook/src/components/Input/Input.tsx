@@ -56,15 +56,15 @@ export function Input({ appearance = 'outlined', size = 'sm', state = 'default',
   };
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} style={style} data-type={appearance} data-size={size} data-state={state} data-disabled={disabled ? '' : undefined} data-invalid={invalid ? '' : undefined} data-force-state={forceState}>
-      <div className={styles.labelRow}>
+      <div className={styles.labelRow} data-layer="labelRow">
         <label className={styles.label} htmlFor={inputId}>{label}</label>
         {required && (
           <span className={styles.requiredIndicator} aria-hidden="true">{"*"}</span>
         )}
       </div>
-      <div className={styles.container}>
+      <div className={styles.container} data-layer="container">
         {showLeadingIcon && (
-          <span className={styles.leadingIcon} aria-hidden="true"><Icon name="actionSearch16" /></span>
+          <span className={styles.leadingIcon} data-layer="leadingIcon" aria-hidden="true"><Icon name="actionSearch16" /></span>
         )}
         <input
           ref={ref}
@@ -88,11 +88,11 @@ export function Input({ appearance = 'outlined', size = 'sm', state = 'default',
           <button type="button" className={styles.clearIcon} aria-label="Clear" disabled={disabled} onClick={clear}><Icon name="actionClear16" /></button>
         )}
         {showTrailingIcon && (
-          <span className={styles.trailingIcon} aria-hidden="true"><Icon name="actionSearch16" /></span>
+          <span className={styles.trailingIcon} data-layer="trailingIcon" aria-hidden="true"><Icon name="actionSearch16" /></span>
         )}
-        <span className={styles.statusIcon} aria-hidden="true"><Icon name="statusError16" /></span>
+        <span className={styles.statusIcon} data-layer="statusIcon" aria-hidden="true"><Icon name="statusError16" /></span>
       </div>
-      <div className={styles.footerRow}>
+      <div className={styles.footerRow} data-layer="footerRow">
         <span className={styles.helperText} id={helperId}>{helperText}</span>
         {showCharacterCount && (
           <span className={styles.counterText}>{maxLength !== undefined ? `${length}/${maxLength}` : characterCount}</span>

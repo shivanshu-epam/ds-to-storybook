@@ -49,12 +49,12 @@ export class DsAvatarIdentity extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-state=${this.state} ?data-disabled=${this.disabled} aria-disabled=${this.disabled ? 'true' : nothing} data-force-state=${this.forceState ?? nothing}>
-        <span class="avatar"><ds-avatar-glyph .size=${"md"}></ds-avatar-glyph></span>
-        <div class="textCol">
-          ${this.hasName ? html`<span class="name">${this.name}</span>` : nothing}
-          ${this.hasEmail ? html`<span class="email">${this.email}</span>` : nothing}
+        <span class="avatar" part="avatar"><ds-avatar-glyph .size=${"md"}></ds-avatar-glyph></span>
+        <div class="textCol" part="textCol">
+          ${this.hasName ? html`<span class="name" part="name">${this.name}</span>` : nothing}
+          ${this.hasEmail ? html`<span class="email" part="email">${this.email}</span>` : nothing}
         </div>
-        ${this.hasTrailingIcon ? html`<span class="trailing" aria-hidden="true">${icon("navChevronDown16")}</span>` : nothing}
+        ${this.hasTrailingIcon ? html`<span class="trailing" part="trailing" aria-hidden="true">${icon("navChevronDown16")}</span>` : nothing}
       </div>`;
   }
 }

@@ -24,8 +24,8 @@ export class DsSeparator extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-type=${this.type} data-force-state=${this.forceState ?? nothing}>
-        <span class="glyph">${"/"}</span>
-        <span class="glyph2" aria-hidden="true">${icon("navChevronRight16")}</span>
+        <span class="glyph" part="glyph">${"/"}</span>
+        <span class="glyph2" part="glyph2" aria-hidden="true">${icon("navChevronRight16")}</span>
       </div>`;
   }
 }

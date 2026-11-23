@@ -20,6 +20,12 @@
       "prop": "checked / defaultChecked",
       "figma": "Selected (variant)",
       "note": "false → not checked, true → checked; styled with :checked."
+    },
+    {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
     }
   ],
   "notes": [

@@ -13,15 +13,20 @@
   "mapping": [
     {
       "prop": "size",
-      "figma": "Size (variant)"
+      "figma": "Size (variant)",
+      "type": "'small' | 'medium' | 'large'",
+      "default": "'small'"
     },
     {
       "prop": "state",
-      "figma": "State (variant)"
+      "figma": "State (variant)",
+      "type": "'collapsed' | 'expanded'",
+      "default": "'collapsed'"
     }
   ],
   "notes": [
-    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified."
+    "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
+    "Behaviour from the WAI-ARIA menu button pattern, recognised from the State = expanded variant and the \"_menu\" popup, which holds actions (no selected state): the \"_trigger\" layer is a button with aria-haspopup=\"menu\" with aria-expanded and aria-controls; a click, Enter, Space or ArrowDown opens it, ArrowDown again moves focus into the popup, Escape closes it. open / defaultOpen / onOpenChange control it; state=\"expanded\" still opens it for docs and visual tests."
   ],
   "tabs": [
     {

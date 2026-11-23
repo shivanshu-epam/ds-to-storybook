@@ -61,4 +61,4 @@ flowchart TD
 - `skills/storybook-docs/SKILL.md`: the workflow above, the guardrails, and how to explain each discrepancy category.
 - `skills/storybook-docs/reference/standard.md`: a pointer to the standard, so the skill and the generator enforce the same rules.
 - New ds-sync commands it relies on: `ds-sync audit [<Component>]` (matrix and scorecard as JSON and Markdown) and `ds-sync docs lint` (documentation completeness).
-- It complements the existing `figma-to-storybook` skill (setup and generation) rather than replacing it.
+- It complements the existing `ds-sync` skill (formerly figma-to-storybook) (setup and generation) rather than replacing it.

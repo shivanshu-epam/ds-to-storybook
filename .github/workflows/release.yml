@@ -1,4 +1,4 @@
-# Publish the ds-sync CLI to npm when a version tag is pushed (git tag v0.1.0 && git push origin v0.1.0).
+# Publish the ds-sync CLI to npm when a version tag is pushed (git tag v0.2.0 && git push origin v0.2.0). See docs/RELEASING.md.
 # Authentication, either:
 #   - npm trusted publishing (recommended): on npmjs.com, package ds-sync > Settings > Trusted publishing, add this
 #     repository and the workflow file "release.yml". No secret needed.
@@ -27,11 +27,12 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org
 
-      - name: Tag matches package version
+      - name: Tag matches the package and plugin versions
         run: |
           version=$(node -p "require('./package.json').version")
-          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
-            echo "::error title=release::Tag $GITHUB_REF_NAME does not match engine/package.json version $version."
+          plugin=$(node -p "require('./claude-plugin/.claude-plugin/plugin.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ] || [ "$plugin" != "$version" ]; then
+            echo "::error title=release::Tag $GITHUB_REF_NAME, engine/package.json ($version) and the plugin ($plugin) must all match."
             exit 1
           fi
 

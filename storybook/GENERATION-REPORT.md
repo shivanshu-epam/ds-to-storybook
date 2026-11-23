@@ -61,16 +61,50 @@ Details are in `token-map.json`.
 | --- | --- | --- | --- | --- |
 | Inter | 2686 | 400, 500, 600, 700 | `@fontsource-variable/inter` 5.3.0 |  |
 
+## Scorecards
+
+One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured. No overall score: each measure is gated on its own. Public components: 27; 118 ✓, 85 ⚠, 6 ✗. Full detail in `scorecard.json`; building blocks are in the file, not this table.
+
+| Component | Visual fidelity | Variants | Properties | Nested consistency | Interaction | Tokens | Accessibility | Documentation | Open decisions |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Button | ⚠ | ✓ | ⚠ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| ListItem | ⚠ | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
+| Checkbox | ⚠ | ✓ | ✓ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| Badge | ⚠ | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
+| BreadcrumbItem | ⚠ | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
+| Separator | ✓ | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
+| Accordion | ✓ | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
+| NavControl | ✓ | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
+| PaginationDot | ✓ | ✓ | ✓ | – | ⚠ | ✓ | ✓ | ✓ | ✓ |
+| AutoplayToggle | ✓ | ✓ | ✓ | – | ⚠ | ✓ | ✓ | ⚠ | ✓ |
+| AvatarIdentity | ✓ | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ |
+| AvatarGlyph | ✓ | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
+| Alert | ✗ | ✓ | ✓ | – | – | ✓ | ⚠ | ⚠ | ⚠ |
+| Dialog | ⚠ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ | ⚠ |
+| RadioControl | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ✓ | ⚠ | ✓ |
+| RadioField | ✗ | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
+| RadioGroup | ✗ | ✓ | ✓ | – | ✓ | ✓ | ✓ | ⚠ | ✓ |
+| Divider | ⚠ | ✓ | ✓ | – | – | ✓ | ✓ | ⚠ | ✓ |
+| DatePicker | ⚠ | ✓ | ✓ | – | – | ⚠ | ⚠ | ⚠ | ⚠ |
+| Switch | ✓ | ✓ | ✓ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| Input | ✓ | ✓ | ⚠ | – | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| DropdownTrigger | ✓ | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| DropdownMenu | ✗ | ✓ | ✓ | ✓ | ✓ | ⚠ | ⚠ | ⚠ | ⚠ |
+| Dropdown | ⚠ | ✓ | ✓ | ✓ | ✓ | ✓ | ⚠ | ⚠ | ⚠ |
+| InputControl | ⚠ | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| InputField | ✗ | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
+| Form | ✗ | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ |
+
 ## Nested consistency
 
 For each nested component and each parent variant in its base state, the props the generated parent gives the nested component, compared with the Figma instance (its variant, booleans, texts and exposed nested instances).
 
-Overall: 72/72 values match (100%).
+Overall: 64/64 values match (100%).
 
 | Component | Nested layers | Match | Not compared (state variants) |
 | --- | --- | --- | --- |
 | AvatarIdentity | 1 | 3/3 | 5 |
-| DropdownMenu | 1 | 16/16 | 0 |
+| DropdownMenu | 1 | 8/8 | 0 |
 | Dropdown | 2 | 36/36 | 0 |
 | Form | 3 | 17/17 | 4 |
 
@@ -139,10 +173,9 @@ Figma: ListItem (520:3110)
 | Type (variant) | `type` |  |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Pressed → :pressed (CSS), Focused → :focus (CSS), Disabled → disabled, Selected → state="selected", Activated → state="activated", Dragged → state="dragged", Skeleton → state="skeleton" |
 | Size (variant) | `size` |  |
-| has-leading-control (boolean) | `hasLeadingControl` |  |
-| has-trailing-control (boolean) | `hasTrailingControl` |  |
-| leading-control (instance swap) | `—` | Not exposed yet. |
-| trailing-control (instance swap) | `—` | Not exposed yet. |
+| State=Disabled | `disabled` |  |
+| leading-control (instance swap) + has-leading-control (boolean) | `leadingControl` | Slot with its visibility toggle: content shows it, null hides it; not set: hidden. |
+| trailing-control (instance swap) + has-trailing-control (boolean) | `trailingControl` | Slot with its visibility toggle: content shows it, null hides it; not set: hidden. |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -151,9 +184,6 @@ Figma: ListItem (520:3110)
 
 **Gaps:**
 
-- Instance swap properties not exposed as props (default instance rendered): leading-control, trailing-control.
-- Layer "_interaction-wrapper/_visual-container/_content-container/leading-control" is an instance of "Size=Md, Type=Unselected, State=Enabled", which is not generated here; rendered as an empty box.
-- Layer "_interaction-wrapper/_visual-container/_content-container/trailing-control" is an instance of "Size=Md, Type=Unselected, State=Enabled", which is not generated here; rendered as an empty box.
 - Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B: #ab5910 on #ffd0a7 is 3.55:1
 - Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: #9ca3af on #374151 is 4.05:1
 
@@ -225,6 +255,7 @@ Figma: ListItem (520:3110)
 - `headline.font-weight`: State
 - `headline.line-height`: Size, State
 - `headline.min-height`: Size, State
+- `headline.opacity`: State
 - `headline.white-space`: State
 - `trailingControl.background`: State
 - `trailingControl.box-shadow`: State
@@ -289,6 +320,7 @@ Figma: ListItem (520:3110)
 - `supportingText.font-weight`: Type, State
 - `supportingText.line-height`: Type, Size, State
 - `supportingText.min-height`: Type, Size, +4 variant overrides
+- `supportingText.opacity`: Type, State
 - `supportingText.white-space`: Type, State
 - `metadata.color`: Type, State
 - `metadata.display`: Type, +3 variant overrides
@@ -298,6 +330,7 @@ Figma: ListItem (520:3110)
 - `metadata.font-weight`: Type, +3 variant overrides
 - `metadata.line-height`: Type, Size, +3 variant overrides
 - `metadata.min-height`: Type, Size, +2 variant overrides
+- `metadata.opacity`: Type, +3 variant overrides
 - `metadata.order`: Type, +3 variant overrides
 - `metadata.white-space`: Type, +3 variant overrides
 
@@ -522,6 +555,7 @@ Figma: Badge (211:1961)
 - `label.font-weight`: Type, Size
 - `label.letter-spacing`: Type, Size
 - `label.line-height`: Type, Size
+- `label.opacity`: Type
 - `label.white-space`: Type
 - `dismissIcon.color`: Status, Style, Type
 - `dismissIcon.display`: Type
@@ -540,6 +574,7 @@ Figma: BreadcrumbItem (224:1461)
 | --- | --- | --- |
 | Type (variant) | `type` |  |
 | State (variant) | `—` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Disabled → disabled |
+| State=Disabled | `disabled` |  |
 | Has icon (boolean) | `hasIcon` |  |
 | Label (text) | `label` |  |
 
@@ -579,6 +614,7 @@ Figma: BreadcrumbItem (224:1461)
 - `label.font-weight`: Type
 - `label.letter-spacing`: Type
 - `label.line-height`: Type
+- `label.opacity`: Type
 - `label.white-space`: Type
 - `moreIcon.color`: Type, +1 variant override
 - `moreIcon.display`: Type
@@ -618,6 +654,7 @@ Figma: Separator (224:1467)
 - `glyph.font-weight`: Type
 - `glyph.letter-spacing`: Type
 - `glyph.line-height`: Type
+- `glyph.opacity`: Type
 - `glyph.white-space`: Type
 - `glyph2.color`: Type
 - `glyph2.display`: Type
@@ -693,6 +730,7 @@ Figma: NavControl (241:1812)
 | --- | --- | --- |
 | Direction (variant) | `direction` |  |
 | State (variant) | `—` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Disabled → disabled |
+| State=Disabled | `disabled` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -786,6 +824,7 @@ Figma: AvatarIdentity (274:1803)
 | Figma | Prop | Note |
 | --- | --- | --- |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Active → :pressed (CSS), Disabled → disabled, Selected → state="selected" |
+| State=Disabled | `disabled` |  |
 | Has name (boolean) | `hasName` |  |
 | Has email (boolean) | `hasEmail` |  |
 | Has trailing icon (boolean) | `hasTrailingIcon` |  |
@@ -831,6 +870,7 @@ Figma: AvatarIdentity (274:1803)
 - `name.font-size`: none (same in every variant)
 - `name.font-weight`: none (same in every variant)
 - `name.line-height`: none (same in every variant)
+- `name.opacity`: none (same in every variant)
 - `name.white-space`: none (same in every variant)
 - `email.color`: +1 variant override
 - `email.display`: none (same in every variant)
@@ -839,6 +879,7 @@ Figma: AvatarIdentity (274:1803)
 - `email.font-size`: none (same in every variant)
 - `email.font-weight`: none (same in every variant)
 - `email.line-height`: none (same in every variant)
+- `email.opacity`: none (same in every variant)
 - `email.white-space`: none (same in every variant)
 - `email.width`: none (same in every variant)
 - `trailing.color`: +1 variant override
@@ -859,7 +900,7 @@ Figma: AvatarGlyph (276:1716)
 | Type (variant) | `type` |  |
 | Color (variant) | `color` |  |
 | Size (variant) | `size` |  |
-| Icon (instance swap) | `—` | Not exposed yet. |
+| Icon (instance swap) | `icon` | Slot: any content; the Figma instance is the default. |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -868,7 +909,6 @@ Figma: AvatarGlyph (276:1716)
 
 **Gaps:**
 
-- Instance swap properties not exposed as props (default instance rendered): Icon.
 - Known design issue in project=project-b (accessibility checks report instead of failing there): Brand B: white #f9fafb on orange #e46b00 is 3.13:1
 - Known design issue in theme=dark (accessibility checks report instead of failing there): Dark theme: text #111827 on avatar colours (#1e40af, #b91c1c, #15803d, #b45309) is 2.03–3.53:1
 
@@ -894,6 +934,7 @@ Figma: AvatarGlyph (276:1716)
 - `initials.font-weight`: Type, Size
 - `initials.letter-spacing`: Type, Size
 - `initials.line-height`: Type, Size
+- `initials.opacity`: Type
 - `initials.text-align`: Type
 - `initials.white-space`: Type
 - `icon.color`: Type
@@ -977,6 +1018,7 @@ Figma: Alert (516:2837)
 - `headline.font-weight`: none (same in every variant)
 - `headline.line-height`: none (same in every variant)
 - `headline.min-height`: none (same in every variant)
+- `headline.opacity`: none (same in every variant)
 - `headline.white-space`: none (same in every variant)
 - `supportingText.align-self`: none (same in every variant)
 - `supportingText.color`: Sentiment
@@ -987,6 +1029,7 @@ Figma: Alert (516:2837)
 - `supportingText.font-weight`: none (same in every variant)
 - `supportingText.line-height`: none (same in every variant)
 - `supportingText.min-height`: none (same in every variant)
+- `supportingText.opacity`: none (same in every variant)
 - `supportingText.white-space`: none (same in every variant)
 - `actionButton.display`: State
 - `actionButton.flex-shrink`: State
@@ -1075,6 +1118,7 @@ Figma: Dialog (348:627)
 - `title.font-size`: none (same in every variant)
 - `title.font-weight`: none (same in every variant)
 - `title.line-height`: none (same in every variant)
+- `title.opacity`: none (same in every variant)
 - `title.white-space`: none (same in every variant)
 - `closeIcon.color`: Type
 - `closeIcon.display`: Type
@@ -1109,6 +1153,7 @@ Figma: Dialog (348:627)
 - `bodyContent.font-size`: Type, +1 variant override
 - `bodyContent.font-weight`: Type, +1 variant override
 - `bodyContent.line-height`: Type, +1 variant override
+- `bodyContent.opacity`: Type, +1 variant override
 - `bodyContent.order`: Type, +1 variant override
 - `bodyContent.white-space`: Type, +1 variant override
 - `dividerBottom.background`: none (same in every variant)
@@ -1142,6 +1187,7 @@ Figma: Dialog (348:627)
 - `subtitle.font-size`: Type, +1 variant override
 - `subtitle.font-weight`: Type, +1 variant override
 - `subtitle.line-height`: Type, +1 variant override
+- `subtitle.opacity`: Type, +1 variant override
 - `subtitle.white-space`: Type, +1 variant override
 - `subtitle.width`: Type, Size, +1 variant override
 - `formField.align-self`: Type, +1 variant override
@@ -1163,6 +1209,7 @@ Figma: Dialog (348:627)
 - `fieldLabel.font-weight`: Type, +1 variant override
 - `fieldLabel.letter-spacing`: Type, +1 variant override
 - `fieldLabel.line-height`: Type, +1 variant override
+- `fieldLabel.opacity`: Type, +1 variant override
 - `fieldLabel.white-space`: Type, +1 variant override
 - `fieldInput.align-items`: Type, +1 variant override
 - `fieldInput.align-self`: Type, +1 variant override
@@ -1185,6 +1232,7 @@ Figma: Dialog (348:627)
 - `fieldPlaceholder.font-size`: Type, +1 variant override
 - `fieldPlaceholder.font-weight`: Type, +1 variant override
 - `fieldPlaceholder.line-height`: Type, +1 variant override
+- `fieldPlaceholder.opacity`: Type, +1 variant override
 - `fieldPlaceholder.white-space`: Type, +1 variant override
 - `formField2.align-self`: Type, +1 variant override
 - `formField2.background`: Type, +1 variant override
@@ -1205,6 +1253,7 @@ Figma: Dialog (348:627)
 - `fieldLabel2.font-weight`: Type, +1 variant override
 - `fieldLabel2.letter-spacing`: Type, +1 variant override
 - `fieldLabel2.line-height`: Type, +1 variant override
+- `fieldLabel2.opacity`: Type, +1 variant override
 - `fieldLabel2.white-space`: Type, +1 variant override
 - `fieldInput2.align-items`: Type, +1 variant override
 - `fieldInput2.align-self`: Type, +1 variant override
@@ -1227,6 +1276,7 @@ Figma: Dialog (348:627)
 - `fieldPlaceholder2.font-size`: Type, +1 variant override
 - `fieldPlaceholder2.font-weight`: Type, +1 variant override
 - `fieldPlaceholder2.line-height`: Type, +1 variant override
+- `fieldPlaceholder2.opacity`: Type, +1 variant override
 - `fieldPlaceholder2.white-space`: Type, +1 variant override
 - `errorBanner.align-items`: State
 - `errorBanner.align-self`: State
@@ -1256,6 +1306,7 @@ Figma: Dialog (348:627)
 - `errorText.font-size`: State
 - `errorText.font-weight`: State
 - `errorText.line-height`: State
+- `errorText.opacity`: State
 - `errorText.white-space`: State
 
 </details>
@@ -1268,6 +1319,7 @@ Figma: RadioControl (521:2681)
 | --- | --- | --- |
 | State (variant) | `state` | States: Enabled → default, Hovered → :hover (CSS), Focused → :focus (CSS), Pressed → :pressed (CSS), Disabled → disabled, Skeleton → state="skeleton", Read-Only → state="read-only", Invalid → state="invalid", Warning → state="warning" |
 | Selected (variant) | `checked / defaultChecked` | false → not checked, true → checked; styled with :checked. |
+| State=Disabled | `disabled` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -1328,6 +1380,7 @@ Figma: RadioField (522:125)
 | — | `name / value / checked / defaultChecked / onChange` | Passed to the radio input. |
 | State (variant) | `state` | States: Enabled → default, Focused → :focus (CSS), Invalid → state="invalid", Warning → state="warning", Read-Only → state="read-only", Disabled → disabled, Skeleton → state="skeleton" |
 | Position (variant) | `position` |  |
+| State=Disabled | `disabled` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -1367,6 +1420,7 @@ Figma: RadioField (522:125)
 - `value.font-weight`: none (same in every variant)
 - `value.line-height`: none (same in every variant)
 - `value.min-height`: none (same in every variant)
+- `value.opacity`: none (same in every variant)
 - `value.order`: Position
 - `value.white-space`: none (same in every variant)
 - `statusRow.align-items`: State
@@ -1395,6 +1449,7 @@ Figma: RadioField (522:125)
 - `errorText.font-weight`: State
 - `errorText.line-height`: State
 - `errorText.min-height`: State
+- `errorText.opacity`: State
 - `errorText.white-space`: State
 - `warningText.color`: State
 - `warningText.display`: State
@@ -1405,6 +1460,7 @@ Figma: RadioField (522:125)
 - `warningText.font-weight`: State
 - `warningText.line-height`: State
 - `warningText.min-height`: State
+- `warningText.opacity`: State
 - `warningText.white-space`: State
 
 </details>
@@ -1442,6 +1498,7 @@ Figma: RadioGroup (529:749)
 - `groupLabel.font-weight`: none (same in every variant)
 - `groupLabel.line-height`: none (same in every variant)
 - `groupLabel.min-height`: none (same in every variant)
+- `groupLabel.opacity`: none (same in every variant)
 - `groupLabel.white-space`: none (same in every variant)
 - `items.background`: none (same in every variant)
 - `items.box-shadow`: none (same in every variant)
@@ -1471,6 +1528,7 @@ Figma: RadioGroup (529:749)
 - `pleaseSelectADeliveryOption.font-weight`: State
 - `pleaseSelectADeliveryOption.line-height`: State
 - `pleaseSelectADeliveryOption.min-height`: State
+- `pleaseSelectADeliveryOption.opacity`: State
 - `pleaseSelectADeliveryOption.white-space`: State
 - `deliveryEstimateMayVaryByRegion.color`: State
 - `deliveryEstimateMayVaryByRegion.display`: State
@@ -1480,6 +1538,7 @@ Figma: RadioGroup (529:749)
 - `deliveryEstimateMayVaryByRegion.font-weight`: State
 - `deliveryEstimateMayVaryByRegion.line-height`: State
 - `deliveryEstimateMayVaryByRegion.min-height`: State
+- `deliveryEstimateMayVaryByRegion.opacity`: State
 - `deliveryEstimateMayVaryByRegion.white-space`: State
 
 </details>
@@ -1495,6 +1554,7 @@ Figma: Divider (697:1083)
 | Size (variant) | `size` |  |
 | Color (variant) | `color` |  |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Selected → state="selected", Disabled → disabled |
+| State=Disabled | `disabled` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -1510,15 +1570,13 @@ Figma: Divider (697:1083)
 - `root.flex-wrap`: none (same in every variant)
 - `root.opacity`: State
 - `line.background`: Orientation, Style, Size, Color
-- `line.border-color`: Style
-- `line.border-style`: Style
-- `line.border-width`: Orientation, Style, State
 - `line.box-shadow`: Style, Color, State
 - `line.display`: none (same in every variant)
 - `line.flex-shrink`: Orientation
 - `line.height`: Orientation, Style, Size, State
 - `line.margin`: Orientation, Style, State
 - `line.opacity`: Color
+- `line.padding`: Orientation, Style, State
 - `line.width`: Orientation, Style, Size, State
 
 </details>
@@ -1531,6 +1589,7 @@ Figma: Date Picker (660:4998)
 | --- | --- | --- |
 | Type (variant) | `type` |  |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Filled → state="filled", Disabled → disabled, Read-only → state="read-only", Error → state="error" |
+| State=Disabled | `disabled` |  |
 | Show Calendar (boolean) | `showCalendar` |  |
 
 **Not from Figma (archetype defaults or decisions):**
@@ -1577,6 +1636,7 @@ Figma: Date Picker (660:4998)
 - `mMDDYYYY.font-size`: Type, State
 - `mMDDYYYY.font-weight`: Type, State
 - `mMDDYYYY.line-height`: Type, State
+- `mMDDYYYY.opacity`: Type, State
 - `mMDDYYYY.order`: Type, State
 - `mMDDYYYY.white-space`: Type, State
 - `iconFormCalendar16.color`: Type, State
@@ -1710,6 +1770,7 @@ Figma: Date Picker (660:4998)
 - `l07302026.font-size`: Type, State
 - `l07302026.font-weight`: Type, State
 - `l07302026.line-height`: Type, State
+- `l07302026.opacity`: Type, State
 - `l07302026.order`: Type, State
 - `l07302026.white-space`: Type, State
 - `l13452026.color`: +1 variant override
@@ -1720,6 +1781,7 @@ Figma: Date Picker (660:4998)
 - `l13452026.font-size`: +1 variant override
 - `l13452026.font-weight`: +1 variant override
 - `l13452026.line-height`: +1 variant override
+- `l13452026.opacity`: +1 variant override
 - `l13452026.order`: +1 variant override
 - `l13452026.white-space`: +1 variant override
 - `fieldsRow.background`: Type
@@ -1757,6 +1819,7 @@ Figma: Date Picker (660:4998)
 - `mMDDYYYY2.font-size`: Type, State
 - `mMDDYYYY2.font-weight`: Type, State
 - `mMDDYYYY2.line-height`: Type, State
+- `mMDDYYYY2.opacity`: Type, State
 - `mMDDYYYY2.order`: Type, State
 - `mMDDYYYY2.white-space`: Type, State
 - `iconFormCalendar162.color`: Type, State
@@ -1791,6 +1854,7 @@ Figma: Date Picker (660:4998)
 - `mMDDYYYY3.font-size`: Type, State
 - `mMDDYYYY3.font-weight`: Type, State
 - `mMDDYYYY3.line-height`: Type, State
+- `mMDDYYYY3.opacity`: Type, State
 - `mMDDYYYY3.order`: Type, State
 - `mMDDYYYY3.white-space`: Type, State
 - `iconFormCalendar163.color`: Type, State
@@ -2035,6 +2099,7 @@ Figma: Date Picker (660:4998)
 - `l07202026.font-size`: Type, State
 - `l07202026.font-weight`: Type, State
 - `l07202026.line-height`: Type, State
+- `l07202026.opacity`: Type, State
 - `l07202026.order`: Type, State
 - `l07202026.white-space`: Type, State
 - `l08052026.color`: Type, State
@@ -2045,6 +2110,7 @@ Figma: Date Picker (660:4998)
 - `l08052026.font-size`: Type, State
 - `l08052026.font-weight`: Type, State
 - `l08052026.line-height`: Type, State
+- `l08052026.opacity`: Type, State
 - `l08052026.order`: Type, State
 - `l08052026.white-space`: Type, State
 - `l134520262.color`: +1 variant override
@@ -2055,6 +2121,7 @@ Figma: Date Picker (660:4998)
 - `l134520262.font-size`: +1 variant override
 - `l134520262.font-weight`: +1 variant override
 - `l134520262.line-height`: +1 variant override
+- `l134520262.opacity`: +1 variant override
 - `l134520262.order`: +1 variant override
 - `l134520262.white-space`: +1 variant override
 - `l134520263.color`: +1 variant override
@@ -2065,6 +2132,7 @@ Figma: Date Picker (660:4998)
 - `l134520263.font-size`: +1 variant override
 - `l134520263.font-weight`: +1 variant override
 - `l134520263.line-height`: +1 variant override
+- `l134520263.opacity`: +1 variant override
 - `l134520263.order`: +1 variant override
 - `l134520263.white-space`: +1 variant override
 - `mMDDYYYYHhMm.color`: Type, State
@@ -2075,6 +2143,7 @@ Figma: Date Picker (660:4998)
 - `mMDDYYYYHhMm.font-size`: Type, State
 - `mMDDYYYYHhMm.font-weight`: Type, State
 - `mMDDYYYYHhMm.line-height`: Type, State
+- `mMDDYYYYHhMm.opacity`: Type, State
 - `mMDDYYYYHhMm.order`: Type, State
 - `mMDDYYYYHhMm.white-space`: Type, State
 - `calendar.display`: none (same in every variant)
@@ -2204,6 +2273,7 @@ Figma: Date Picker (660:4998)
 - `l07302026230PM.font-size`: Type, State
 - `l07302026230PM.font-weight`: Type, State
 - `l07302026230PM.line-height`: Type, State
+- `l07302026230PM.opacity`: Type, State
 - `l07302026230PM.order`: Type, State
 - `l07302026230PM.white-space`: Type, State
 - `l134520264.color`: +1 variant override
@@ -2214,6 +2284,7 @@ Figma: Date Picker (660:4998)
 - `l134520264.font-size`: +1 variant override
 - `l134520264.font-weight`: +1 variant override
 - `l134520264.line-height`: +1 variant override
+- `l134520264.opacity`: +1 variant override
 - `l134520264.order`: +1 variant override
 - `l134520264.white-space`: +1 variant override
 
@@ -2228,6 +2299,7 @@ Figma: Switch (723:3038)
 | Value (variant) | `checked / defaultChecked` | Off → not checked, On → checked; aria-checked. |
 | Interaction (variant) | `interaction` | States: Default → default, Disabled → disabled, Loading → interaction="loading" |
 | Size (variant) | `size` |  |
+| State=Disabled | `disabled` |  |
 | Show Inner Content (boolean) | `showInnerContent` |  |
 
 **Not from Figma (archetype defaults or decisions):**
@@ -2285,11 +2357,12 @@ Figma: Input (836:4005)
 
 | Figma | Prop | Note |
 | --- | --- | --- |
-| value (text layer) | `value / defaultValue / onChange / type / name / maxLength / ...` | Native input attributes; the Figma placeholder text is the placeholder. |
+| value (text layer) | `value / defaultValue / onChange / type / name / maxLength / autoComplete / ...` | Native input attributes; the Figma placeholder text is the placeholder. |
 | — | `invalid` | aria-invalid without changing the look. |
 | Type (variant) | `appearance` |  |
 | Size (variant) | `size` |  |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Focus → :focus (CSS), Disabled → disabled, Error → state="error" |
+| State=Disabled | `disabled` |  |
 | Required (boolean) | `required` |  |
 | Show leading icon (boolean) | `showLeadingIcon` |  |
 | Show trailing icon (boolean) | `showTrailingIcon` |  |
@@ -2299,8 +2372,8 @@ Figma: Input (836:4005)
 | Placeholder (text) | `placeholder` |  |
 | Helper text (text) | `helperText` |  |
 | Character count (text) | `characterCount` |  |
-| Leading icon (instance swap) | `—` | Not exposed yet. |
-| Trailing icon (instance swap) | `—` | Not exposed yet. |
+| Leading icon (instance swap) | `—` | Not exposed by this behaviour template yet. |
+| Trailing icon (instance swap) | `—` | Not exposed by this behaviour template yet. |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -2348,6 +2421,7 @@ Figma: Input (836:4005)
 - `label.font-weight`: none (same in every variant)
 - `label.letter-spacing`: Size
 - `label.line-height`: Size
+- `label.opacity`: none (same in every variant)
 - `label.white-space`: none (same in every variant)
 - `requiredIndicator.color`: none (same in every variant)
 - `requiredIndicator.display`: none (same in every variant)
@@ -2357,6 +2431,7 @@ Figma: Input (836:4005)
 - `requiredIndicator.font-weight`: none (same in every variant)
 - `requiredIndicator.letter-spacing`: Size
 - `requiredIndicator.line-height`: Size
+- `requiredIndicator.opacity`: none (same in every variant)
 - `requiredIndicator.white-space`: none (same in every variant)
 - `container.align-items`: none (same in every variant)
 - `container.align-self`: Type
@@ -2387,6 +2462,7 @@ Figma: Input (836:4005)
 - `value.font-size`: Size
 - `value.font-weight`: none (same in every variant)
 - `value.line-height`: Size
+- `value.opacity`: none (same in every variant)
 - `value.white-space`: none (same in every variant)
 - `clearIcon.color`: none (same in every variant)
 - `clearIcon.display`: none (same in every variant)
@@ -2424,6 +2500,7 @@ Figma: Input (836:4005)
 - `helperText.font-size`: Type, Size
 - `helperText.font-weight`: Type
 - `helperText.line-height`: Type, Size
+- `helperText.opacity`: Type
 - `helperText.white-space`: Type
 - `counterText.color`: none (same in every variant)
 - `counterText.display`: none (same in every variant)
@@ -2432,6 +2509,7 @@ Figma: Input (836:4005)
 - `counterText.font-size`: Size
 - `counterText.font-weight`: none (same in every variant)
 - `counterText.line-height`: Size
+- `counterText.opacity`: none (same in every variant)
 - `counterText.white-space`: none (same in every variant)
 - `counterText.width`: Size
 
@@ -2446,6 +2524,7 @@ Figma: DropdownTrigger (396:1799)
 | Size (variant) | `size` |  |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Disabled → disabled, Error → state="error", Read-only → state="read-only" |
 | Expanded (variant) | `expanded` |  |
+| State=Disabled | `disabled` |  |
 | Clearable (boolean) | `clearable` |  |
 
 **Not from Figma (archetype defaults or decisions):**
@@ -2481,6 +2560,7 @@ Figma: DropdownTrigger (396:1799)
 - `value.font-size`: none (same in every variant)
 - `value.font-weight`: none (same in every variant)
 - `value.line-height`: none (same in every variant)
+- `value.opacity`: none (same in every variant)
 - `value.white-space`: none (same in every variant)
 - `clearIcon.color`: none (same in every variant)
 - `clearIcon.display`: none (same in every variant)
@@ -2506,10 +2586,12 @@ Figma: DropdownMenu (400:1970)
 | State (variant) | `state` |  |
 | Show Search (boolean) | `showSearch` |  |
 | Grouped (boolean) | `grouped` |  |
+| _option (repeated ListItem) | `children` | Children: DropdownMenu sets nothing on each ListItem; the Figma examples are the default. |
 
 **Not from Figma (archetype defaults or decisions):**
 
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
+- Behaviour from the WAI-ARIA menu pattern, recognised from the name: role="menu" with menuitem items. One tab stop; arrow keys, Home and End move the active item; Enter or Space activates it (a click). Opening and closing the menu belongs to its trigger.
 
 **Gaps:**
 
@@ -2591,6 +2673,7 @@ Figma: DropdownMenu (400:1970)
 - `loadingText.font-size`: State
 - `loadingText.font-weight`: State
 - `loadingText.line-height`: State
+- `loadingText.opacity`: State
 - `loadingText.white-space`: State
 - `emptyRow.align-self`: State
 - `emptyRow.background`: State
@@ -2611,6 +2694,7 @@ Figma: DropdownMenu (400:1970)
 - `emptyText.font-size`: State
 - `emptyText.font-weight`: State
 - `emptyText.line-height`: State
+- `emptyText.opacity`: State
 - `emptyText.text-align`: State
 - `emptyText.white-space`: State
 
@@ -2628,6 +2712,7 @@ Figma: Dropdown (401:2471)
 **Not from Figma (archetype defaults or decisions):**
 
 - Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.
+- Behaviour from the WAI-ARIA menu button pattern, recognised from the State = expanded variant and the "_menu" popup, which holds actions (no selected state): the "_trigger" layer is a button with aria-haspopup="menu" with aria-expanded and aria-controls; a click, Enter, Space or ArrowDown opens it, ArrowDown again moves focus into the popup, Escape closes it. open / defaultOpen / onOpenChange control it; state="expanded" still opens it for docs and visual tests.
 
 **Gaps:**
 
@@ -2661,6 +2746,7 @@ Figma: InputControl (427:2001)
 | Figma | Prop | Note |
 | --- | --- | --- |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Filled → state="filled", Disabled → disabled, Read-only → state="read-only", Error → state="error", Success → state="success", State9 → state="state9" |
+| State=Disabled | `disabled` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -2694,6 +2780,7 @@ Figma: InputControl (427:2001)
 - `value.font-size`: none (same in every variant)
 - `value.font-weight`: none (same in every variant)
 - `value.line-height`: none (same in every variant)
+- `value.opacity`: none (same in every variant)
 - `value.white-space`: none (same in every variant)
 - `errorIcon.color`: +1 variant override
 - `errorIcon.display`: +1 variant override
@@ -2717,6 +2804,7 @@ Figma: InputField (428:2042)
 | Figma | Prop | Note |
 | --- | --- | --- |
 | State (variant) | `state` | States: Default → default, Focused → :focus (CSS), Invalid → state="invalid", Success → state="success", Disabled → disabled, Read-only → state="read-only" |
+| State=Disabled | `disabled` |  |
 | Required (boolean) | `required` |  |
 | Helper Message (boolean) | `helperMessage` |  |
 | Label/Text (text) | `labelText` |  |
@@ -2764,6 +2852,7 @@ Figma: InputField (428:2042)
 - `label.font-weight`: none (same in every variant)
 - `label.letter-spacing`: none (same in every variant)
 - `label.line-height`: none (same in every variant)
+- `label.opacity`: none (same in every variant)
 - `label.white-space`: none (same in every variant)
 - `required.color`: none (same in every variant)
 - `required.display`: none (same in every variant)
@@ -2773,6 +2862,7 @@ Figma: InputField (428:2042)
 - `required.font-weight`: none (same in every variant)
 - `required.letter-spacing`: none (same in every variant)
 - `required.line-height`: none (same in every variant)
+- `required.opacity`: none (same in every variant)
 - `required.white-space`: none (same in every variant)
 - `required.width`: none (same in every variant)
 - `control.align-self`: none (same in every variant)
@@ -2785,6 +2875,7 @@ Figma: InputField (428:2042)
 - `helperText.font-size`: none (same in every variant)
 - `helperText.font-weight`: none (same in every variant)
 - `helperText.line-height`: none (same in every variant)
+- `helperText.opacity`: none (same in every variant)
 - `helperText.white-space`: none (same in every variant)
 - `helperText.width`: none (same in every variant)
 - `statusRow.align-items`: State
@@ -2812,6 +2903,7 @@ Figma: InputField (428:2042)
 - `errorText.font-size`: +1 variant override
 - `errorText.font-weight`: +1 variant override
 - `errorText.line-height`: +1 variant override
+- `errorText.opacity`: +1 variant override
 - `errorText.white-space`: +1 variant override
 - `successIcon.color`: +1 variant override
 - `successIcon.display`: +1 variant override
@@ -2827,6 +2919,7 @@ Figma: InputField (428:2042)
 - `successText.font-size`: +1 variant override
 - `successText.font-weight`: +1 variant override
 - `successText.line-height`: +1 variant override
+- `successText.opacity`: +1 variant override
 - `successText.white-space`: +1 variant override
 
 </details>
@@ -2838,6 +2931,7 @@ Figma: Form (435:8)
 | Figma | Prop | Note |
 | --- | --- | --- |
 | State (variant) | `state` | States: Default → default, Submitting → state="submitting", Success → state="success", Error → state="error", Disabled → disabled |
+| State=Disabled | `disabled` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -2871,6 +2965,7 @@ Figma: Form (435:8)
 - `sectionHeading.font-size`: none (same in every variant)
 - `sectionHeading.font-weight`: none (same in every variant)
 - `sectionHeading.line-height`: none (same in every variant)
+- `sectionHeading.opacity`: none (same in every variant)
 - `sectionHeading.order`: State
 - `sectionHeading.white-space`: none (same in every variant)
 - `fields.align-self`: none (same in every variant)
@@ -2908,6 +3003,7 @@ Figma: Form (435:8)
 - `label.font-weight`: none (same in every variant)
 - `label.letter-spacing`: none (same in every variant)
 - `label.line-height`: none (same in every variant)
+- `label.opacity`: none (same in every variant)
 - `label.white-space`: none (same in every variant)
 - `control.align-self`: none (same in every variant)
 - `control.display`: none (same in every variant)

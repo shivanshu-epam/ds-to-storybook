@@ -15,8 +15,8 @@ export interface SeparatorProps extends Omit<HTMLAttributes<HTMLDivElement>, 'ch
 export function Separator({ type = 'slash', className, ...rest }: SeparatorProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-type={type} {...rest}>
-      <span className={styles.glyph}>{"/"}</span>
-      <span className={styles.glyph2} aria-hidden="true"><Icon name="navChevronRight16" /></span>
+      <span className={styles.glyph} data-layer="glyph">{"/"}</span>
+      <span className={styles.glyph2} data-layer="glyph2" aria-hidden="true"><Icon name="navChevronRight16" /></span>
     </div>
   );
 }

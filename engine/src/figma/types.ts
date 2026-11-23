@@ -39,8 +39,10 @@ export interface FigmaNode {
   componentId?: string;
   /** An instance inside a component whose properties Figma shows on the component's own panel ("expose nested instance"). */
   isExposedInstance?: boolean;
+  /** Instances: the nodes this instance overrides and which fields. */
+  overrides?: { id: string; overriddenFields: string[] }[];
   characters?: string;
-  style?: { fontFamily?: string; fontSize?: number; fontWeight?: number; lineHeightPx?: number; letterSpacing?: number; textCase?: string; textDecoration?: string; textAlignHorizontal?: string };
+  style?: { fontFamily?: string; fontStyle?: string; fontSize?: number; fontWeight?: number; lineHeightPx?: number; letterSpacing?: number; textCase?: string; textDecoration?: string; textAlignHorizontal?: string };
   opacity?: number;
   strokeAlign?: 'INSIDE' | 'OUTSIDE' | 'CENTER';
   individualStrokeWeights?: { top: number; right: number; bottom: number; left: number } | null;
@@ -51,6 +53,8 @@ export interface FigmaNode {
   primaryAxisAlignItems?: 'MIN' | 'CENTER' | 'MAX' | 'SPACE_BETWEEN';
   counterAxisAlignItems?: 'MIN' | 'CENTER' | 'MAX' | 'BASELINE';
   layoutPositioning?: 'AUTO' | 'ABSOLUTE';
+  /** How a layer outside auto layout follows its parent's size. */
+  constraints?: { horizontal?: string; vertical?: string };
   layoutWrap?: 'NO_WRAP' | 'WRAP';
   clipsContent?: boolean;
   componentPropertyReferences?: { visible?: string; characters?: string; mainComponent?: string };
@@ -71,7 +75,17 @@ export interface FigmaNode {
   boundVariables?: Record<string, VariableAlias | VariableAlias[] | Record<string, VariableAlias>>;
 }
 
+/** A Figma style as a response lists it (keyed by the style's node id). */
+export interface StyleMeta {
+  key?: string;
+  name: string;
+  styleType: 'FILL' | 'TEXT' | 'EFFECT' | 'GRID';
+  remote?: boolean;
+  description?: string;
+}
+
 export interface FileResponse {
+  styles?: Record<string, StyleMeta>;
   name: string;
   version: string;
   lastModified: string;
@@ -86,6 +100,7 @@ export interface NodesResponse {
   lastModified: string;
   nodes: Record<string, {
     document: FigmaNode;
+    styles?: Record<string, StyleMeta>;
     components?: Record<string, { key: string; name: string; componentSetId?: string }>;
     componentSets?: Record<string, { key: string; name: string; description?: string }>;
   } | null>;

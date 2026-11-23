@@ -12,7 +12,7 @@
   },
   "mapping": [
     {
-      "prop": "value / defaultValue / onChange / type / name / maxLength / ...",
+      "prop": "value / defaultValue / onChange / type / name / maxLength / autoComplete / ...",
       "figma": "value (text layer)",
       "note": "Native input attributes; the Figma placeholder text is the placeholder."
     },
@@ -23,11 +23,15 @@
     },
     {
       "prop": "appearance",
-      "figma": "Type (variant)"
+      "figma": "Type (variant)",
+      "type": "'outlined' | 'filled' | 'borderless' | 'inline'",
+      "default": "'outlined'"
     },
     {
       "prop": "size",
-      "figma": "Size (variant)"
+      "figma": "Size (variant)",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'sm'"
     },
     {
       "prop": "state",
@@ -35,50 +39,74 @@
       "note": "States: Default → default, Hover → :hover (CSS), Focus → :focus (CSS), Disabled → disabled, Error → state=\"error\""
     },
     {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
+    },
+    {
       "prop": "required",
-      "figma": "Required (boolean)"
+      "figma": "Required (boolean)",
+      "type": "boolean",
+      "default": "true"
     },
     {
       "prop": "showLeadingIcon",
-      "figma": "Show leading icon (boolean)"
+      "figma": "Show leading icon (boolean)",
+      "type": "boolean",
+      "default": "true"
     },
     {
       "prop": "showTrailingIcon",
-      "figma": "Show trailing icon (boolean)"
+      "figma": "Show trailing icon (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "clearable",
-      "figma": "Clearable (boolean)"
+      "figma": "Clearable (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "showCharacterCount",
-      "figma": "Show character count (boolean)"
+      "figma": "Show character count (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "label",
-      "figma": "Label (text)"
+      "figma": "Label (text)",
+      "type": "ReactNode",
+      "default": "'Label'"
     },
     {
       "prop": "placeholder",
-      "figma": "Placeholder (text)"
+      "figma": "Placeholder (text)",
+      "type": "ReactNode",
+      "default": "'Placeholder text'"
     },
     {
       "prop": "helperText",
-      "figma": "Helper text (text)"
+      "figma": "Helper text (text)",
+      "type": "ReactNode",
+      "default": "'We\\'ll never share this.'"
     },
     {
       "prop": "characterCount",
-      "figma": "Character count (text)"
+      "figma": "Character count (text)",
+      "type": "ReactNode",
+      "default": "'0/100'"
     },
     {
       "prop": "—",
       "figma": "Leading icon (instance swap)",
-      "note": "Not exposed yet."
+      "note": "Not exposed by this behaviour template yet."
     },
     {
       "prop": "—",
       "figma": "Trailing icon (instance swap)",
-      "note": "Not exposed yet."
+      "note": "Not exposed by this behaviour template yet."
     }
   ],
   "notes": [

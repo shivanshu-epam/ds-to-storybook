@@ -57,17 +57,17 @@ export class DsInputField extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-state=${this.state} ?data-disabled=${this.disabled} aria-disabled=${this.disabled ? 'true' : nothing} data-force-state=${this.forceState ?? nothing}>
-        <div class="labelRow">
-          <span class="label">${this.labelText}</span>
-          ${this.required ? html`<span class="required">${"*"}</span>` : nothing}
+        <div class="labelRow" part="labelRow">
+          <span class="label" part="label">${this.labelText}</span>
+          ${this.required ? html`<span class="required" part="required">${"*"}</span>` : nothing}
         </div>
-        <span class="control"><ds-input-control></ds-input-control></span>
-        ${this.helperMessage ? html`<span class="helperText">${this.helperText}</span>` : nothing}
-        <div class="statusRow">
-          <span class="errorIcon" aria-hidden="true">${icon("statusError16")}</span>
-          <span class="errorText">${this.errorText}</span>
-          <span class="successIcon" aria-hidden="true">${icon("formCheck16")}</span>
-          <span class="successText">${this.successText}</span>
+        <span class="control" part="control"><ds-input-control></ds-input-control></span>
+        ${this.helperMessage ? html`<span class="helperText" part="helperText">${this.helperText}</span>` : nothing}
+        <div class="statusRow" part="statusRow">
+          <span class="errorIcon" part="errorIcon" aria-hidden="true">${icon("statusError16")}</span>
+          <span class="errorText" part="errorText">${this.errorText}</span>
+          <span class="successIcon" part="successIcon" aria-hidden="true">${icon("formCheck16")}</span>
+          <span class="successText" part="successText">${this.successText}</span>
         </div>
       </div>`;
   }

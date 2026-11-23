@@ -12,6 +12,7 @@ const meta = {
     type: { control: 'inline-radio', options: ['text', 'icon', 'image'], description: 'Figma: Type' },
     color: { control: 'inline-radio', options: ['1', '2', '3', '4', '5'], description: 'Figma: Color' },
     size: { control: 'inline-radio', options: ['sm', 'md', 'lg'], description: 'Figma: Size' },
+    icon: { control: false, description: 'Figma: Icon (instance swap)' },
     'data-force-state': { table: { disable: true } },
   },
   parameters: {

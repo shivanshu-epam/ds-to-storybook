@@ -40,15 +40,15 @@ The default configuration (every property at its Figma default).
 
 ### Appearance
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Variant"}</td><td><code>{"variant"}</code></td><td>{"Variant (variant)"}</td><td>{""}</td></tr><tr><td>{"Size"}</td><td><code>{"size"}</code></td><td>{"Size (variant)"}</td><td>{""}</td></tr><tr><td>{"Radius"}</td><td><code>{"radius"}</code></td><td>{"Radius (variant)"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Variant"}</td><td><code>{"variant"}</code></td><td>—</td><td>—</td><td>{""}</td><td>{"Variant (variant)"}</td></tr><tr><td>{"Size"}</td><td><code>{"size"}</code></td><td>—</td><td>—</td><td>{""}</td><td>{"Size (variant)"}</td></tr><tr><td>{"Radius"}</td><td><code>{"radius"}</code></td><td>—</td><td>—</td><td>{""}</td><td>{"Radius (variant)"}</td></tr></tbody></table>
 
 ### Content
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Leading icon"}</td><td><code>{"leadingIcon"}</code></td><td>{"Has leading icon (boolean)"}</td><td>{"Slot: shown when an element is passed."}</td></tr><tr><td>{"Trailing icon"}</td><td><code>{"trailingIcon"}</code></td><td>{"Has trailing icon (boolean)"}</td><td>{"Slot: shown when an element is passed."}</td></tr><tr><td>{"Children"}</td><td><code>{"children"}</code></td><td>{"Show label (boolean) + label text"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Leading icon"}</td><td><code>{"leadingIcon"}</code></td><td>—</td><td>—</td><td>{"Slot: shown when an element is passed."}</td><td>{"Has leading icon (boolean)"}</td></tr><tr><td>{"Trailing icon"}</td><td><code>{"trailingIcon"}</code></td><td>—</td><td>—</td><td>{"Slot: shown when an element is passed."}</td><td>{"Has trailing icon (boolean)"}</td></tr><tr><td>{"Children"}</td><td><code>{"children"}</code></td><td>—</td><td>—</td><td>{""}</td><td>{"Show label (boolean) + label text"}</td></tr></tbody></table>
 
 ### State
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{":hover:not(:disabled) (css)"}</td><td><code>{":hover:not(:disabled) (CSS)"}</code></td><td>{"State=Hover"}</td><td>{""}</td></tr><tr><td>{":active:not(:disabled) (css)"}</td><td><code>{":active:not(:disabled) (CSS)"}</code></td><td>{"State=Pressed"}</td><td>{""}</td></tr><tr><td>{":focus-visible (css)"}</td><td><code>{":focus-visible (CSS)"}</code></td><td>{"State=Focused"}</td><td>{""}</td></tr><tr><td>{"Disabled"}</td><td><code>{"disabled"}</code></td><td>{"State=Disabled"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Hover"}</td><td><code>{":hover:not(:disabled) (CSS)"}</code></td><td>—</td><td>—</td><td>{""}</td><td>{"State=Hover"}</td></tr><tr><td>{"Pressed"}</td><td><code>{":active:not(:disabled) (CSS)"}</code></td><td>—</td><td>—</td><td>{""}</td><td>{"State=Pressed"}</td></tr><tr><td>{"Focused"}</td><td><code>{":focus-visible (CSS)"}</code></td><td>—</td><td>—</td><td>{""}</td><td>{"State=Focused"}</td></tr><tr><td>{"Disabled"}</td><td><code>{"disabled"}</code></td><td>—</td><td>—</td><td>{""}</td><td>{"State=Disabled"}</td></tr></tbody></table>
 
 ### Try it
 
@@ -64,13 +64,18 @@ The default configuration (every property at its Figma default).
 
 ## Code
 
-<Source language="tsx" dark code={"import { Button } from 'figma-design-system-storybook';\nimport 'figma-design-system-storybook/tokens.css';\n\n<Button />"} />
+<Source language="tsx" dark code={"import { Button } from 'figma-design-system-storybook';\nimport 'figma-design-system-storybook/tokens.css';\n\n<Button>Label</Button>"} />
 
 Each story shows its code under "Show code".
 
 ## Design reference
 
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=102-122">{"Button"}</a> · version 2420998788157412873 · 180 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
+<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=102-122">{"Button"}</a> · version 2420998788157412873 · 180 designed variants</li><li>{"Visual check: 123/180 variants match Figma (worst difference 4.24%)."}</li></ul>
+
+### Scorecard
+
+<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
+<ul><li>{"⚠ Visual fidelity: 123/180 designed variants match Figma (worst 4.2%)"}</li><li>{"✓ Variants: 180 designed variants shown"}</li><li>{"⚠ Properties: 10/11 Figma properties mapped; not exposed: State=Default"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"✓ Interaction: WAI-ARIA button pattern, tested in the stories"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 1 accepted known issue"}</li><li>{"⚠ Documentation: description; 0/10 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 1 generator note"}</li></ul>
 
 <details>
   <summary>Generation notes: what Figma does not specify, and approximations</summary>

@@ -48,9 +48,9 @@ export class DsBadge extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-status=${this.status} data-style=${this.styleVariant} data-type=${this.type} data-size=${this.size} data-force-state=${this.forceState ?? nothing}>
-        ${this.hasLeadingIcon ? html`<span class="leadingIcon" aria-hidden="true">${icon("feedbackStar16")}</span>` : nothing}
-        <span class="label">${this.label}</span>
-        ${this.isDismissible ? html`<span class="dismissIcon" aria-hidden="true">${icon("actionClose16")}</span>` : nothing}
+        ${this.hasLeadingIcon ? html`<span class="leadingIcon" part="leadingIcon" aria-hidden="true">${icon("feedbackStar16")}</span>` : nothing}
+        <span class="label" part="label">${this.label}</span>
+        ${this.isDismissible ? html`<span class="dismissIcon" part="dismissIcon" aria-hidden="true">${icon("actionClose16")}</span>` : nothing}
       </div>`;
   }
 }

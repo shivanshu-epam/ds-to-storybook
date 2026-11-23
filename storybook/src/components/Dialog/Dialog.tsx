@@ -88,11 +88,11 @@ export function Dialog({ type = 'confirmation', size = 'small', state = 'open', 
       }}
       {...rest}
     >
-      <div className={styles.header}>
-        <div className={styles.headerTextCol}>
+      <div className={styles.header} data-layer="header">
+        <div className={styles.headerTextCol} data-layer="headerTextCol">
           <span className={styles.title} id={titleId}>{title}</span>
           {hasSubtitle && (
-            <span className={styles.subtitle}>{subtitle}</span>
+            <span className={styles.subtitle} data-layer="subtitle">{subtitle}</span>
           )}
         </div>
         {hasCloseButton && (
@@ -100,41 +100,41 @@ export function Dialog({ type = 'confirmation', size = 'small', state = 'open', 
         )}
       </div>
       {scrollableContent && (
-        <span className={styles.dividerTop} aria-hidden="true" />
+        <span className={styles.dividerTop} data-layer="dividerTop" aria-hidden="true" />
       )}
-      <div className={styles.body} id={bodyId}>
+      <div className={styles.body} data-layer="body" id={bodyId}>
         {children ?? (
           <>
-            <span className={styles.bodyContent}>{bodyContent}</span>
-            <div className={styles.formField}>
-              <span className={styles.fieldLabel}>{(({"full-screen":"Project name"} as Record<string, string>)[String(type)] ?? "Full name")}</span>
-              <div className={styles.fieldInput}>
-                <span className={styles.fieldPlaceholder}>{(({"full-screen":"Marketing website redesign"} as Record<string, string>)[String(type)] ?? "Jordan Lee")}</span>
+            <span className={styles.bodyContent} data-layer="bodyContent">{bodyContent}</span>
+            <div className={styles.formField} data-layer="formField">
+              <span className={styles.fieldLabel} data-layer="fieldLabel">{(({"full-screen":"Project name"} as Record<string, string>)[String(type)] ?? "Full name")}</span>
+              <div className={styles.fieldInput} data-layer="fieldInput">
+                <span className={styles.fieldPlaceholder} data-layer="fieldPlaceholder">{(({"full-screen":"Marketing website redesign"} as Record<string, string>)[String(type)] ?? "Jordan Lee")}</span>
               </div>
             </div>
-            <div className={styles.formField2}>
-              <span className={styles.fieldLabel2}>{(({"full-screen":"Workspace"} as Record<string, string>)[String(type)] ?? "Email address")}</span>
-              <div className={styles.fieldInput2}>
-                <span className={styles.fieldPlaceholder2}>{(({"full-screen":"Select a workspace"} as Record<string, string>)[String(type)] ?? "jordan@company.com")}</span>
+            <div className={styles.formField2} data-layer="formField2">
+              <span className={styles.fieldLabel2} data-layer="fieldLabel2">{(({"full-screen":"Workspace"} as Record<string, string>)[String(type)] ?? "Email address")}</span>
+              <div className={styles.fieldInput2} data-layer="fieldInput2">
+                <span className={styles.fieldPlaceholder2} data-layer="fieldPlaceholder2">{(({"full-screen":"Select a workspace"} as Record<string, string>)[String(type)] ?? "jordan@company.com")}</span>
               </div>
             </div>
-            <div className={styles.errorBanner}>
-              <span className={styles.errorIcon} aria-hidden="true"><Icon name="statusError20" /></span>
-              <span className={styles.errorText}>{"Please correct the errors below and try again."}</span>
+            <div className={styles.errorBanner} data-layer="errorBanner">
+              <span className={styles.errorIcon} data-layer="errorIcon" aria-hidden="true"><Icon name="statusError20" /></span>
+              <span className={styles.errorText} data-layer="errorText">{"Please correct the errors below and try again."}</span>
             </div>
           </>
         )}
       </div>
       {scrollableContent && (
-        <span className={styles.dividerBottom} aria-hidden="true" />
+        <span className={styles.dividerBottom} data-layer="dividerBottom" aria-hidden="true" />
       )}
-      <div className={styles.footer}>
+      <div className={styles.footer} data-layer="footer">
         {footer ?? (
           <>
             {hasSecondaryAction && (
-              <span className={styles.secondaryButton}><Button variant="secondary" size="md" children="Cancel" /></span>
+              <span className={styles.secondaryButton} data-layer="secondaryButton"><Button variant="secondary" size="md" children="Cancel" /></span>
             )}
-            <span className={styles.primaryButton}><Button size="md" children={(String(state) === "loading" ? "Loading…" : (({"alert":"Got it","form":"Save changes","full-screen":"Create project","side-drawer":"Save"} as Record<string, string>)[String(type)] ?? "Confirm"))} /></span>
+            <span className={styles.primaryButton} data-layer="primaryButton"><Button size="md" children={(String(state) === "loading" ? "Loading…" : (({"alert":"Got it","form":"Save changes","full-screen":"Create project","side-drawer":"Save"} as Record<string, string>)[String(type)] ?? "Confirm"))} /></span>
           </>
         )}
       </div>

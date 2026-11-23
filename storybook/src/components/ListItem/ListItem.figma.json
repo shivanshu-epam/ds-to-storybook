@@ -13,7 +13,9 @@
   "mapping": [
     {
       "prop": "type",
-      "figma": "Type (variant)"
+      "figma": "Type (variant)",
+      "type": "'default' | 'menu' | 'file' | 'setting'",
+      "default": "'default'"
     },
     {
       "prop": "state",
@@ -22,33 +24,42 @@
     },
     {
       "prop": "size",
-      "figma": "Size (variant)"
+      "figma": "Size (variant)",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'sm'"
     },
     {
-      "prop": "hasLeadingControl",
-      "figma": "has-leading-control (boolean)"
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
     },
     {
-      "prop": "hasTrailingControl",
-      "figma": "has-trailing-control (boolean)"
+      "prop": "leadingControl",
+      "figma": "leading-control (instance swap) + has-leading-control (boolean)",
+      "note": "Slot with its visibility toggle: content shows it, null hides it; not set: hidden.",
+      "type": "ReactNode",
+      "default": "not set (hidden)",
+      "toggle": {
+        "prop": "hasLeadingControl",
+        "default": false
+      }
     },
     {
-      "prop": "—",
-      "figma": "leading-control (instance swap)",
-      "note": "Not exposed yet."
-    },
-    {
-      "prop": "—",
-      "figma": "trailing-control (instance swap)",
-      "note": "Not exposed yet."
+      "prop": "trailingControl",
+      "figma": "trailing-control (instance swap) + has-trailing-control (boolean)",
+      "note": "Slot with its visibility toggle: content shows it, null hides it; not set: hidden.",
+      "type": "ReactNode",
+      "default": "not set (hidden)",
+      "toggle": {
+        "prop": "hasTrailingControl",
+        "default": false
+      }
     }
   ],
   "notes": [
     "Generated with the generic template: visuals come from Figma; keyboard, focus and ARIA behaviour are not specified.",
-    "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified.",
-    "Instance swap properties not exposed as props (default instance rendered): leading-control, trailing-control.",
-    "Layer \"_interaction-wrapper/_visual-container/_content-container/leading-control\" is an instance of \"Size=Md, Type=Unselected, State=Enabled\", which is not generated here; rendered as an empty box.",
-    "Layer \"_interaction-wrapper/_visual-container/_content-container/trailing-control\" is an instance of \"Size=Md, Type=Unselected, State=Enabled\", which is not generated here; rendered as an empty box."
+    "A focus style exists in Figma, but the generic element is not focusable; it shows only when forced (data-force-state=\"focus\") until behaviour is specified."
   ],
   "tabs": [
     {

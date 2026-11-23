@@ -60,7 +60,9 @@ ${indent}  @input=\${this.onInput} @change=\${this.onChange} />`;
       if (n && n.component !== name) {
         const ntag = tagOf(n.component);
         imports.add(`import '../${n.component}/${ntag}';`);
-        el = `<span ${c}><${ntag}></${ntag}></span>`;
+        // A nested button with no text is named from its Figma layer name (instanceRef sets aria-label).
+        const label = n.props.find((x) => x.prop === 'aria-label' && x.kind === 'string');
+        el = `<span ${c}><${ntag}${label ? ` accessible-label=${JSON.stringify(String(label.value))}` : ''}></${ntag}></span>`;
       } else el = `<span ${c} aria-hidden="true"></span>`;
     } else if (SHAPES.has(p.type)) {
       el = `<span ${c} aria-hidden="true"></span>`;

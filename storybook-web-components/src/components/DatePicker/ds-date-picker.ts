@@ -37,699 +37,699 @@ export class DsDatePicker extends LitElement {
 
   override render() {
     return html`<div class="root" part="root" data-type=${this.type} data-state=${this.state} ?data-disabled=${this.disabled} aria-disabled=${this.disabled ? 'true' : nothing} data-force-state=${this.forceState ?? nothing}>
-        <div class="fieldRow">
-          <span class="mMDDYYYY">${"MM/DD/YYYY"}</span>
-          <span class="iconFormCalendar16" aria-hidden="true">${icon("formCalendar16")}</span>
-          <span class="l07302026">${"07/30/2026"}</span>
-          <span class="l13452026">${"13/45/2026"}</span>
-          <span class="mMDDYYYYHhMm">${"MM/DD/YYYY hh:mm"}</span>
-          <span class="l07302026230PM">${"07/30/2026 2:30 PM"}</span>
-          <span class="l134520264">${"13/45/2026 --:--"}</span>
+        <div class="fieldRow" part="fieldRow">
+          <span class="mMDDYYYY" part="mMDDYYYY">${"MM/DD/YYYY"}</span>
+          <span class="iconFormCalendar16" part="iconFormCalendar16" aria-hidden="true">${icon("formCalendar16")}</span>
+          <span class="l07302026" part="l07302026">${"07/30/2026"}</span>
+          <span class="l13452026" part="l13452026">${"13/45/2026"}</span>
+          <span class="mMDDYYYYHhMm" part="mMDDYYYYHhMm">${"MM/DD/YYYY hh:mm"}</span>
+          <span class="l07302026230PM" part="l07302026230PM">${"07/30/2026 2:30 PM"}</span>
+          <span class="l134520264" part="l134520264">${"13/45/2026 --:--"}</span>
         </div>
-        ${this.showCalendar ? html`<div class="calendarPanel">
-          <div class="header">
-            <span class="iconNavChevronLeft20" aria-hidden="true">${icon("navChevronLeft20")}</span>
-            <span class="july2026">${"July 2026"}</span>
-            <span class="iconNavChevronRight20" aria-hidden="true">${icon("navChevronRight20")}</span>
+        ${this.showCalendar ? html`<div class="calendarPanel" part="calendarPanel">
+          <div class="header" part="header">
+            <span class="iconNavChevronLeft20" part="iconNavChevronLeft20" aria-hidden="true">${icon("navChevronLeft20")}</span>
+            <span class="july2026" part="july2026">${"July 2026"}</span>
+            <span class="iconNavChevronRight20" part="iconNavChevronRight20" aria-hidden="true">${icon("navChevronRight20")}</span>
           </div>
-          <div class="weekdays">
-            <span class="su">${"Su"}</span>
-            <span class="mo">${"Mo"}</span>
-            <span class="tu">${"Tu"}</span>
-            <span class="we">${"We"}</span>
-            <span class="th">${"Th"}</span>
-            <span class="fr">${"Fr"}</span>
-            <span class="sa">${"Sa"}</span>
+          <div class="weekdays" part="weekdays">
+            <span class="su" part="su">${"Su"}</span>
+            <span class="mo" part="mo">${"Mo"}</span>
+            <span class="tu" part="tu">${"Tu"}</span>
+            <span class="we" part="we">${"We"}</span>
+            <span class="th" part="th">${"Th"}</span>
+            <span class="fr" part="fr">${"Fr"}</span>
+            <span class="sa" part="sa">${"Sa"}</span>
           </div>
-          <div class="week1">
-            <div class="stateDefault">
-              <span class="l28">${"28"}</span>
+          <div class="week1" part="week1">
+            <div class="stateDefault" part="stateDefault">
+              <span class="l28" part="l28">${"28"}</span>
             </div>
-            <div class="stateDefault2">
-              <span class="l29">${"29"}</span>
+            <div class="stateDefault2" part="stateDefault2">
+              <span class="l29" part="l29">${"29"}</span>
             </div>
-            <div class="stateDefault3">
-              <span class="l30">${"30"}</span>
+            <div class="stateDefault3" part="stateDefault3">
+              <span class="l30" part="l30">${"30"}</span>
             </div>
-            <div class="stateDefault4">
-              <span class="l1">${"1"}</span>
+            <div class="stateDefault4" part="stateDefault4">
+              <span class="l1" part="l1">${"1"}</span>
             </div>
-            <div class="stateDefault5">
-              <span class="l2">${"2"}</span>
+            <div class="stateDefault5" part="stateDefault5">
+              <span class="l2" part="l2">${"2"}</span>
             </div>
-            <div class="stateDefault6">
-              <span class="l3">${"3"}</span>
+            <div class="stateDefault6" part="stateDefault6">
+              <span class="l3" part="l3">${"3"}</span>
             </div>
-            <div class="stateDefault7">
-              <span class="l4">${"4"}</span>
-            </div>
-          </div>
-          <div class="week2">
-            <div class="stateDefault8">
-              <span class="l5">${"5"}</span>
-            </div>
-            <div class="stateDefault9">
-              <span class="l6">${"6"}</span>
-            </div>
-            <div class="stateDefault10">
-              <span class="l7">${"7"}</span>
-            </div>
-            <div class="stateDefault11">
-              <span class="l8">${"8"}</span>
-            </div>
-            <div class="stateDefault12">
-              <span class="l9">${"9"}</span>
-            </div>
-            <div class="stateDefault13">
-              <span class="l10">${"10"}</span>
-            </div>
-            <div class="stateDefault14">
-              <span class="l11">${"11"}</span>
+            <div class="stateDefault7" part="stateDefault7">
+              <span class="l4" part="l4">${"4"}</span>
             </div>
           </div>
-          <div class="week3">
-            <div class="stateDefault15">
-              <span class="l12">${"12"}</span>
+          <div class="week2" part="week2">
+            <div class="stateDefault8" part="stateDefault8">
+              <span class="l5" part="l5">${"5"}</span>
             </div>
-            <div class="stateDefault16">
-              <span class="l13">${"13"}</span>
+            <div class="stateDefault9" part="stateDefault9">
+              <span class="l6" part="l6">${"6"}</span>
             </div>
-            <div class="stateDefault17">
-              <span class="l14">${"14"}</span>
+            <div class="stateDefault10" part="stateDefault10">
+              <span class="l7" part="l7">${"7"}</span>
             </div>
-            <div class="stateSelected">
-              <span class="l15">${"15"}</span>
+            <div class="stateDefault11" part="stateDefault11">
+              <span class="l8" part="l8">${"8"}</span>
             </div>
-            <div class="stateDefault18">
-              <span class="l16">${"16"}</span>
+            <div class="stateDefault12" part="stateDefault12">
+              <span class="l9" part="l9">${"9"}</span>
             </div>
-            <div class="stateDefault19">
-              <span class="l17">${"17"}</span>
+            <div class="stateDefault13" part="stateDefault13">
+              <span class="l10" part="l10">${"10"}</span>
             </div>
-            <div class="stateDefault20">
-              <span class="l18">${"18"}</span>
-            </div>
-          </div>
-          <div class="week4">
-            <div class="stateDefault21">
-              <span class="l19">${"19"}</span>
-            </div>
-            <div class="stateDefault22">
-              <span class="l20">${"20"}</span>
-            </div>
-            <div class="stateDefault23">
-              <span class="l21">${"21"}</span>
-            </div>
-            <div class="stateDisabled">
-              <span class="l22">${"22"}</span>
-            </div>
-            <div class="stateDefault24">
-              <span class="l23">${"23"}</span>
-            </div>
-            <div class="stateDefault25">
-              <span class="l24">${"24"}</span>
-            </div>
-            <div class="stateDefault26">
-              <span class="l25">${"25"}</span>
+            <div class="stateDefault14" part="stateDefault14">
+              <span class="l11" part="l11">${"11"}</span>
             </div>
           </div>
-          <div class="week5">
-            <div class="stateDefault27">
-              <span class="l26">${"26"}</span>
+          <div class="week3" part="week3">
+            <div class="stateDefault15" part="stateDefault15">
+              <span class="l12" part="l12">${"12"}</span>
             </div>
-            <div class="stateDefault28">
-              <span class="l27">${"27"}</span>
+            <div class="stateDefault16" part="stateDefault16">
+              <span class="l13" part="l13">${"13"}</span>
             </div>
-            <div class="stateDefault29">
-              <span class="l282">${"28"}</span>
+            <div class="stateDefault17" part="stateDefault17">
+              <span class="l14" part="l14">${"14"}</span>
             </div>
-            <div class="stateDefault30">
-              <span class="l292">${"29"}</span>
+            <div class="stateSelected" part="stateSelected">
+              <span class="l15" part="l15">${"15"}</span>
             </div>
-            <div class="stateToday">
-              <span class="l302">${"30"}</span>
-              <div class="ellipse"></div>
+            <div class="stateDefault18" part="stateDefault18">
+              <span class="l16" part="l16">${"16"}</span>
             </div>
-            <div class="stateDefault31">
-              <span class="l31">${"31"}</span>
+            <div class="stateDefault19" part="stateDefault19">
+              <span class="l17" part="l17">${"17"}</span>
             </div>
-            <div class="stateDefault32">
-              <span class="l110">${"1"}</span>
-            </div>
-          </div>
-          <div class="week6">
-            <div class="stateDefault33">
-              <span class="l210">${"2"}</span>
-            </div>
-            <div class="stateDefault34">
-              <span class="l32">${"3"}</span>
-            </div>
-            <div class="stateDefault35">
-              <span class="l42">${"4"}</span>
-            </div>
-            <div class="stateDefault36">
-              <span class="l52">${"5"}</span>
-            </div>
-            <div class="stateDefault37">
-              <span class="l62">${"6"}</span>
-            </div>
-            <div class="stateDefault38">
-              <span class="l72">${"7"}</span>
-            </div>
-            <div class="stateDefault39">
-              <span class="l82">${"8"}</span>
+            <div class="stateDefault20" part="stateDefault20">
+              <span class="l18" part="l18">${"18"}</span>
             </div>
           </div>
-          <div class="presets">
-            <div class="presetItem">
-              <span class="today">${"Today"}</span>
+          <div class="week4" part="week4">
+            <div class="stateDefault21" part="stateDefault21">
+              <span class="l19" part="l19">${"19"}</span>
             </div>
-            <div class="presetItem2">
-              <span class="yesterday">${"Yesterday"}</span>
+            <div class="stateDefault22" part="stateDefault22">
+              <span class="l20" part="l20">${"20"}</span>
             </div>
-            <div class="presetItem3">
-              <span class="last7Days">${"Last 7 days"}</span>
+            <div class="stateDefault23" part="stateDefault23">
+              <span class="l21" part="l21">${"21"}</span>
             </div>
-            <div class="presetItem4">
-              <span class="last30Days">${"Last 30 days"}</span>
+            <div class="stateDisabled" part="stateDisabled">
+              <span class="l22" part="l22">${"22"}</span>
             </div>
-            <div class="presetItem5">
-              <span class="thisMonth">${"This month"}</span>
+            <div class="stateDefault24" part="stateDefault24">
+              <span class="l23" part="l23">${"23"}</span>
             </div>
-            <div class="presetItem6">
-              <span class="lastMonth">${"Last month"}</span>
+            <div class="stateDefault25" part="stateDefault25">
+              <span class="l24" part="l24">${"24"}</span>
             </div>
-          </div>
-          <div class="vDivider"></div>
-          <div class="rightSide">
-            <div class="monthsRow">
-              <div class="monthJuly2026">
-                <div class="header2">
-                  <span class="iconNavChevronLeft202" aria-hidden="true">${icon("navChevronLeft20")}</span>
-                  <span class="july20262">${"July 2026"}</span>
-                  <span class="iconNavChevronRight202" aria-hidden="true">${icon("navChevronRight20")}</span>
-                </div>
-                <div class="weekdays2">
-                  <span class="su2">${"Su"}</span>
-                  <span class="mo2">${"Mo"}</span>
-                  <span class="tu2">${"Tu"}</span>
-                  <span class="we2">${"We"}</span>
-                  <span class="th2">${"Th"}</span>
-                  <span class="fr2">${"Fr"}</span>
-                  <span class="sa2">${"Sa"}</span>
-                </div>
-                <div class="week12">
-                  <div class="stateDefault40">
-                    <span class="l283">${"28"}</span>
-                  </div>
-                  <div class="stateDefault41">
-                    <span class="l293">${"29"}</span>
-                  </div>
-                  <div class="stateDefault42">
-                    <span class="l303">${"30"}</span>
-                  </div>
-                  <div class="stateDefault43">
-                    <span class="l111">${"1"}</span>
-                  </div>
-                  <div class="stateDefault44">
-                    <span class="l211">${"2"}</span>
-                  </div>
-                  <div class="stateDefault45">
-                    <span class="l33">${"3"}</span>
-                  </div>
-                  <div class="stateDefault46">
-                    <span class="l43">${"4"}</span>
-                  </div>
-                </div>
-                <div class="week22">
-                  <div class="stateDefault47">
-                    <span class="l53">${"5"}</span>
-                  </div>
-                  <div class="stateDefault48">
-                    <span class="l63">${"6"}</span>
-                  </div>
-                  <div class="stateDefault49">
-                    <span class="l73">${"7"}</span>
-                  </div>
-                  <div class="stateDefault50">
-                    <span class="l83">${"8"}</span>
-                  </div>
-                  <div class="stateDefault51">
-                    <span class="l92">${"9"}</span>
-                  </div>
-                  <div class="stateDefault52">
-                    <span class="l102">${"10"}</span>
-                  </div>
-                  <div class="stateDefault53">
-                    <span class="l112">${"11"}</span>
-                  </div>
-                </div>
-                <div class="week32">
-                  <div class="stateDefault54">
-                    <span class="l122">${"12"}</span>
-                  </div>
-                  <div class="stateDefault55">
-                    <span class="l132">${"13"}</span>
-                  </div>
-                  <div class="stateDefault56">
-                    <span class="l142">${"14"}</span>
-                  </div>
-                  <div class="stateDefault57">
-                    <span class="l152">${"15"}</span>
-                  </div>
-                  <div class="stateDefault58">
-                    <span class="l162">${"16"}</span>
-                  </div>
-                  <div class="stateDefault59">
-                    <span class="l172">${"17"}</span>
-                  </div>
-                  <div class="stateDefault60">
-                    <span class="l182">${"18"}</span>
-                  </div>
-                </div>
-                <div class="week42">
-                  <div class="stateDefault61">
-                    <span class="l192">${"19"}</span>
-                  </div>
-                  <div class="stateSelected2">
-                    <span class="l202">${"20"}</span>
-                  </div>
-                  <div class="stateInRange">
-                    <span class="l212">${"21"}</span>
-                  </div>
-                  <div class="stateInRange2">
-                    <span class="l222">${"22"}</span>
-                  </div>
-                  <div class="stateInRange3">
-                    <span class="l232">${"23"}</span>
-                  </div>
-                  <div class="stateInRange4">
-                    <span class="l242">${"24"}</span>
-                  </div>
-                  <div class="stateInRange5">
-                    <span class="l252">${"25"}</span>
-                  </div>
-                </div>
-                <div class="week52">
-                  <div class="stateInRange6">
-                    <span class="l262">${"26"}</span>
-                  </div>
-                  <div class="stateInRange7">
-                    <span class="l272">${"27"}</span>
-                  </div>
-                  <div class="stateInRange8">
-                    <span class="l284">${"28"}</span>
-                  </div>
-                  <div class="stateInRange9">
-                    <span class="l294">${"29"}</span>
-                  </div>
-                  <div class="stateInRange10">
-                    <span class="l304">${"30"}</span>
-                  </div>
-                  <div class="stateInRange11">
-                    <span class="l312">${"31"}</span>
-                  </div>
-                  <div class="stateDefault62">
-                    <span class="l113">${"1"}</span>
-                  </div>
-                </div>
-                <div class="week62">
-                  <div class="stateDefault63">
-                    <span class="l213">${"2"}</span>
-                  </div>
-                  <div class="stateDefault64">
-                    <span class="l34">${"3"}</span>
-                  </div>
-                  <div class="stateDefault65">
-                    <span class="l44">${"4"}</span>
-                  </div>
-                  <div class="stateDefault66">
-                    <span class="l54">${"5"}</span>
-                  </div>
-                  <div class="stateDefault67">
-                    <span class="l64">${"6"}</span>
-                  </div>
-                  <div class="stateDefault68">
-                    <span class="l74">${"7"}</span>
-                  </div>
-                  <div class="stateDefault69">
-                    <span class="l84">${"8"}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="monthAugust2026">
-                <div class="header3">
-                  <span class="iconNavChevronLeft203" aria-hidden="true">${icon("navChevronLeft20")}</span>
-                  <span class="august2026">${"August 2026"}</span>
-                  <span class="iconNavChevronRight203" aria-hidden="true">${icon("navChevronRight20")}</span>
-                </div>
-                <div class="weekdays3">
-                  <span class="su3">${"Su"}</span>
-                  <span class="mo3">${"Mo"}</span>
-                  <span class="tu3">${"Tu"}</span>
-                  <span class="we3">${"We"}</span>
-                  <span class="th3">${"Th"}</span>
-                  <span class="fr3">${"Fr"}</span>
-                  <span class="sa3">${"Sa"}</span>
-                </div>
-                <div class="week13">
-                  <div class="stateInRange12">
-                    <span class="l263">${"26"}</span>
-                  </div>
-                  <div class="stateInRange13">
-                    <span class="l273">${"27"}</span>
-                  </div>
-                  <div class="stateInRange14">
-                    <span class="l285">${"28"}</span>
-                  </div>
-                  <div class="stateInRange15">
-                    <span class="l295">${"29"}</span>
-                  </div>
-                  <div class="stateInRange16">
-                    <span class="l305">${"30"}</span>
-                  </div>
-                  <div class="stateInRange17">
-                    <span class="l313">${"31"}</span>
-                  </div>
-                  <div class="stateInRange18">
-                    <span class="l114">${"1"}</span>
-                  </div>
-                </div>
-                <div class="week23">
-                  <div class="stateInRange19">
-                    <span class="l214">${"2"}</span>
-                  </div>
-                  <div class="stateInRange20">
-                    <span class="l35">${"3"}</span>
-                  </div>
-                  <div class="stateInRange21">
-                    <span class="l45">${"4"}</span>
-                  </div>
-                  <div class="stateSelected3">
-                    <span class="l55">${"5"}</span>
-                  </div>
-                  <div class="stateDefault70">
-                    <span class="l65">${"6"}</span>
-                  </div>
-                  <div class="stateDefault71">
-                    <span class="l75">${"7"}</span>
-                  </div>
-                  <div class="stateDefault72">
-                    <span class="l85">${"8"}</span>
-                  </div>
-                </div>
-                <div class="week33">
-                  <div class="stateDefault73">
-                    <span class="l93">${"9"}</span>
-                  </div>
-                  <div class="stateDefault74">
-                    <span class="l103">${"10"}</span>
-                  </div>
-                  <div class="stateDefault75">
-                    <span class="l115">${"11"}</span>
-                  </div>
-                  <div class="stateDefault76">
-                    <span class="l123">${"12"}</span>
-                  </div>
-                  <div class="stateDefault77">
-                    <span class="l133">${"13"}</span>
-                  </div>
-                  <div class="stateDefault78">
-                    <span class="l143">${"14"}</span>
-                  </div>
-                  <div class="stateDefault79">
-                    <span class="l153">${"15"}</span>
-                  </div>
-                </div>
-                <div class="week43">
-                  <div class="stateDefault80">
-                    <span class="l163">${"16"}</span>
-                  </div>
-                  <div class="stateDefault81">
-                    <span class="l173">${"17"}</span>
-                  </div>
-                  <div class="stateDefault82">
-                    <span class="l183">${"18"}</span>
-                  </div>
-                  <div class="stateDefault83">
-                    <span class="l193">${"19"}</span>
-                  </div>
-                  <div class="stateDefault84">
-                    <span class="l203">${"20"}</span>
-                  </div>
-                  <div class="stateDefault85">
-                    <span class="l215">${"21"}</span>
-                  </div>
-                  <div class="stateDefault86">
-                    <span class="l223">${"22"}</span>
-                  </div>
-                </div>
-                <div class="week53">
-                  <div class="stateDefault87">
-                    <span class="l233">${"23"}</span>
-                  </div>
-                  <div class="stateDefault88">
-                    <span class="l243">${"24"}</span>
-                  </div>
-                  <div class="stateDefault89">
-                    <span class="l253">${"25"}</span>
-                  </div>
-                  <div class="stateDefault90">
-                    <span class="l264">${"26"}</span>
-                  </div>
-                  <div class="stateDefault91">
-                    <span class="l274">${"27"}</span>
-                  </div>
-                  <div class="stateDefault92">
-                    <span class="l286">${"28"}</span>
-                  </div>
-                  <div class="stateDefault93">
-                    <span class="l296">${"29"}</span>
-                  </div>
-                </div>
-                <div class="week63">
-                  <div class="stateDefault94">
-                    <span class="l306">${"30"}</span>
-                  </div>
-                  <div class="stateDefault95">
-                    <span class="l314">${"31"}</span>
-                  </div>
-                  <div class="stateDefault96">
-                    <span class="l116">${"1"}</span>
-                  </div>
-                  <div class="stateDefault97">
-                    <span class="l216">${"2"}</span>
-                  </div>
-                  <div class="stateDefault98">
-                    <span class="l36">${"3"}</span>
-                  </div>
-                  <div class="stateDefault99">
-                    <span class="l46">${"4"}</span>
-                  </div>
-                  <div class="stateDefault100">
-                    <span class="l56">${"5"}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="hDivider"></div>
-            <div class="footer">
-              <span class="button"><ds-button .variant=${"ghost"} .size=${"md"}>${"Clear"}</ds-button></span>
-              <div class="actions">
-                <span class="button2"><ds-button .variant=${"secondary"} .size=${"md"}>${"Cancel"}</ds-button></span>
-              </div>
+            <div class="stateDefault26" part="stateDefault26">
+              <span class="l25" part="l25">${"25"}</span>
             </div>
           </div>
-          <div class="calendar">
-            <div class="header4">
-              <span class="iconNavChevronLeft204" aria-hidden="true">${icon("navChevronLeft20")}</span>
-              <span class="july20263">${"July 2026"}</span>
-              <span class="iconNavChevronRight204" aria-hidden="true">${icon("navChevronRight20")}</span>
+          <div class="week5" part="week5">
+            <div class="stateDefault27" part="stateDefault27">
+              <span class="l26" part="l26">${"26"}</span>
             </div>
-            <div class="weekdays4">
-              <span class="su4">${"Su"}</span>
-              <span class="mo4">${"Mo"}</span>
-              <span class="tu4">${"Tu"}</span>
-              <span class="we4">${"We"}</span>
-              <span class="th4">${"Th"}</span>
-              <span class="fr4">${"Fr"}</span>
-              <span class="sa4">${"Sa"}</span>
+            <div class="stateDefault28" part="stateDefault28">
+              <span class="l27" part="l27">${"27"}</span>
             </div>
-            <div class="week14">
-              <div class="stateDefault101">
-                <span class="l287">${"28"}</span>
+            <div class="stateDefault29" part="stateDefault29">
+              <span class="l282" part="l282">${"28"}</span>
+            </div>
+            <div class="stateDefault30" part="stateDefault30">
+              <span class="l292" part="l292">${"29"}</span>
+            </div>
+            <div class="stateToday" part="stateToday">
+              <span class="l302" part="l302">${"30"}</span>
+              <div class="ellipse" part="ellipse"></div>
+            </div>
+            <div class="stateDefault31" part="stateDefault31">
+              <span class="l31" part="l31">${"31"}</span>
+            </div>
+            <div class="stateDefault32" part="stateDefault32">
+              <span class="l110" part="l110">${"1"}</span>
+            </div>
+          </div>
+          <div class="week6" part="week6">
+            <div class="stateDefault33" part="stateDefault33">
+              <span class="l210" part="l210">${"2"}</span>
+            </div>
+            <div class="stateDefault34" part="stateDefault34">
+              <span class="l32" part="l32">${"3"}</span>
+            </div>
+            <div class="stateDefault35" part="stateDefault35">
+              <span class="l42" part="l42">${"4"}</span>
+            </div>
+            <div class="stateDefault36" part="stateDefault36">
+              <span class="l52" part="l52">${"5"}</span>
+            </div>
+            <div class="stateDefault37" part="stateDefault37">
+              <span class="l62" part="l62">${"6"}</span>
+            </div>
+            <div class="stateDefault38" part="stateDefault38">
+              <span class="l72" part="l72">${"7"}</span>
+            </div>
+            <div class="stateDefault39" part="stateDefault39">
+              <span class="l82" part="l82">${"8"}</span>
+            </div>
+          </div>
+          <div class="presets" part="presets">
+            <div class="presetItem" part="presetItem">
+              <span class="today" part="today">${"Today"}</span>
+            </div>
+            <div class="presetItem2" part="presetItem2">
+              <span class="yesterday" part="yesterday">${"Yesterday"}</span>
+            </div>
+            <div class="presetItem3" part="presetItem3">
+              <span class="last7Days" part="last7Days">${"Last 7 days"}</span>
+            </div>
+            <div class="presetItem4" part="presetItem4">
+              <span class="last30Days" part="last30Days">${"Last 30 days"}</span>
+            </div>
+            <div class="presetItem5" part="presetItem5">
+              <span class="thisMonth" part="thisMonth">${"This month"}</span>
+            </div>
+            <div class="presetItem6" part="presetItem6">
+              <span class="lastMonth" part="lastMonth">${"Last month"}</span>
+            </div>
+          </div>
+          <div class="vDivider" part="vDivider"></div>
+          <div class="rightSide" part="rightSide">
+            <div class="monthsRow" part="monthsRow">
+              <div class="monthJuly2026" part="monthJuly2026">
+                <div class="header2" part="header2">
+                  <span class="iconNavChevronLeft202" part="iconNavChevronLeft202" aria-hidden="true">${icon("navChevronLeft20")}</span>
+                  <span class="july20262" part="july20262">${"July 2026"}</span>
+                  <span class="iconNavChevronRight202" part="iconNavChevronRight202" aria-hidden="true">${icon("navChevronRight20")}</span>
+                </div>
+                <div class="weekdays2" part="weekdays2">
+                  <span class="su2" part="su2">${"Su"}</span>
+                  <span class="mo2" part="mo2">${"Mo"}</span>
+                  <span class="tu2" part="tu2">${"Tu"}</span>
+                  <span class="we2" part="we2">${"We"}</span>
+                  <span class="th2" part="th2">${"Th"}</span>
+                  <span class="fr2" part="fr2">${"Fr"}</span>
+                  <span class="sa2" part="sa2">${"Sa"}</span>
+                </div>
+                <div class="week12" part="week12">
+                  <div class="stateDefault40" part="stateDefault40">
+                    <span class="l283" part="l283">${"28"}</span>
+                  </div>
+                  <div class="stateDefault41" part="stateDefault41">
+                    <span class="l293" part="l293">${"29"}</span>
+                  </div>
+                  <div class="stateDefault42" part="stateDefault42">
+                    <span class="l303" part="l303">${"30"}</span>
+                  </div>
+                  <div class="stateDefault43" part="stateDefault43">
+                    <span class="l111" part="l111">${"1"}</span>
+                  </div>
+                  <div class="stateDefault44" part="stateDefault44">
+                    <span class="l211" part="l211">${"2"}</span>
+                  </div>
+                  <div class="stateDefault45" part="stateDefault45">
+                    <span class="l33" part="l33">${"3"}</span>
+                  </div>
+                  <div class="stateDefault46" part="stateDefault46">
+                    <span class="l43" part="l43">${"4"}</span>
+                  </div>
+                </div>
+                <div class="week22" part="week22">
+                  <div class="stateDefault47" part="stateDefault47">
+                    <span class="l53" part="l53">${"5"}</span>
+                  </div>
+                  <div class="stateDefault48" part="stateDefault48">
+                    <span class="l63" part="l63">${"6"}</span>
+                  </div>
+                  <div class="stateDefault49" part="stateDefault49">
+                    <span class="l73" part="l73">${"7"}</span>
+                  </div>
+                  <div class="stateDefault50" part="stateDefault50">
+                    <span class="l83" part="l83">${"8"}</span>
+                  </div>
+                  <div class="stateDefault51" part="stateDefault51">
+                    <span class="l92" part="l92">${"9"}</span>
+                  </div>
+                  <div class="stateDefault52" part="stateDefault52">
+                    <span class="l102" part="l102">${"10"}</span>
+                  </div>
+                  <div class="stateDefault53" part="stateDefault53">
+                    <span class="l112" part="l112">${"11"}</span>
+                  </div>
+                </div>
+                <div class="week32" part="week32">
+                  <div class="stateDefault54" part="stateDefault54">
+                    <span class="l122" part="l122">${"12"}</span>
+                  </div>
+                  <div class="stateDefault55" part="stateDefault55">
+                    <span class="l132" part="l132">${"13"}</span>
+                  </div>
+                  <div class="stateDefault56" part="stateDefault56">
+                    <span class="l142" part="l142">${"14"}</span>
+                  </div>
+                  <div class="stateDefault57" part="stateDefault57">
+                    <span class="l152" part="l152">${"15"}</span>
+                  </div>
+                  <div class="stateDefault58" part="stateDefault58">
+                    <span class="l162" part="l162">${"16"}</span>
+                  </div>
+                  <div class="stateDefault59" part="stateDefault59">
+                    <span class="l172" part="l172">${"17"}</span>
+                  </div>
+                  <div class="stateDefault60" part="stateDefault60">
+                    <span class="l182" part="l182">${"18"}</span>
+                  </div>
+                </div>
+                <div class="week42" part="week42">
+                  <div class="stateDefault61" part="stateDefault61">
+                    <span class="l192" part="l192">${"19"}</span>
+                  </div>
+                  <div class="stateSelected2" part="stateSelected2">
+                    <span class="l202" part="l202">${"20"}</span>
+                  </div>
+                  <div class="stateInRange" part="stateInRange">
+                    <span class="l212" part="l212">${"21"}</span>
+                  </div>
+                  <div class="stateInRange2" part="stateInRange2">
+                    <span class="l222" part="l222">${"22"}</span>
+                  </div>
+                  <div class="stateInRange3" part="stateInRange3">
+                    <span class="l232" part="l232">${"23"}</span>
+                  </div>
+                  <div class="stateInRange4" part="stateInRange4">
+                    <span class="l242" part="l242">${"24"}</span>
+                  </div>
+                  <div class="stateInRange5" part="stateInRange5">
+                    <span class="l252" part="l252">${"25"}</span>
+                  </div>
+                </div>
+                <div class="week52" part="week52">
+                  <div class="stateInRange6" part="stateInRange6">
+                    <span class="l262" part="l262">${"26"}</span>
+                  </div>
+                  <div class="stateInRange7" part="stateInRange7">
+                    <span class="l272" part="l272">${"27"}</span>
+                  </div>
+                  <div class="stateInRange8" part="stateInRange8">
+                    <span class="l284" part="l284">${"28"}</span>
+                  </div>
+                  <div class="stateInRange9" part="stateInRange9">
+                    <span class="l294" part="l294">${"29"}</span>
+                  </div>
+                  <div class="stateInRange10" part="stateInRange10">
+                    <span class="l304" part="l304">${"30"}</span>
+                  </div>
+                  <div class="stateInRange11" part="stateInRange11">
+                    <span class="l312" part="l312">${"31"}</span>
+                  </div>
+                  <div class="stateDefault62" part="stateDefault62">
+                    <span class="l113" part="l113">${"1"}</span>
+                  </div>
+                </div>
+                <div class="week62" part="week62">
+                  <div class="stateDefault63" part="stateDefault63">
+                    <span class="l213" part="l213">${"2"}</span>
+                  </div>
+                  <div class="stateDefault64" part="stateDefault64">
+                    <span class="l34" part="l34">${"3"}</span>
+                  </div>
+                  <div class="stateDefault65" part="stateDefault65">
+                    <span class="l44" part="l44">${"4"}</span>
+                  </div>
+                  <div class="stateDefault66" part="stateDefault66">
+                    <span class="l54" part="l54">${"5"}</span>
+                  </div>
+                  <div class="stateDefault67" part="stateDefault67">
+                    <span class="l64" part="l64">${"6"}</span>
+                  </div>
+                  <div class="stateDefault68" part="stateDefault68">
+                    <span class="l74" part="l74">${"7"}</span>
+                  </div>
+                  <div class="stateDefault69" part="stateDefault69">
+                    <span class="l84" part="l84">${"8"}</span>
+                  </div>
+                </div>
               </div>
-              <div class="stateDefault102">
-                <span class="l297">${"29"}</span>
-              </div>
-              <div class="stateDefault103">
-                <span class="l307">${"30"}</span>
-              </div>
-              <div class="stateDefault104">
-                <span class="l117">${"1"}</span>
-              </div>
-              <div class="stateDefault105">
-                <span class="l217">${"2"}</span>
-              </div>
-              <div class="stateDefault106">
-                <span class="l37">${"3"}</span>
-              </div>
-              <div class="stateDefault107">
-                <span class="l47">${"4"}</span>
+              <div class="monthAugust2026" part="monthAugust2026">
+                <div class="header3" part="header3">
+                  <span class="iconNavChevronLeft203" part="iconNavChevronLeft203" aria-hidden="true">${icon("navChevronLeft20")}</span>
+                  <span class="august2026" part="august2026">${"August 2026"}</span>
+                  <span class="iconNavChevronRight203" part="iconNavChevronRight203" aria-hidden="true">${icon("navChevronRight20")}</span>
+                </div>
+                <div class="weekdays3" part="weekdays3">
+                  <span class="su3" part="su3">${"Su"}</span>
+                  <span class="mo3" part="mo3">${"Mo"}</span>
+                  <span class="tu3" part="tu3">${"Tu"}</span>
+                  <span class="we3" part="we3">${"We"}</span>
+                  <span class="th3" part="th3">${"Th"}</span>
+                  <span class="fr3" part="fr3">${"Fr"}</span>
+                  <span class="sa3" part="sa3">${"Sa"}</span>
+                </div>
+                <div class="week13" part="week13">
+                  <div class="stateInRange12" part="stateInRange12">
+                    <span class="l263" part="l263">${"26"}</span>
+                  </div>
+                  <div class="stateInRange13" part="stateInRange13">
+                    <span class="l273" part="l273">${"27"}</span>
+                  </div>
+                  <div class="stateInRange14" part="stateInRange14">
+                    <span class="l285" part="l285">${"28"}</span>
+                  </div>
+                  <div class="stateInRange15" part="stateInRange15">
+                    <span class="l295" part="l295">${"29"}</span>
+                  </div>
+                  <div class="stateInRange16" part="stateInRange16">
+                    <span class="l305" part="l305">${"30"}</span>
+                  </div>
+                  <div class="stateInRange17" part="stateInRange17">
+                    <span class="l313" part="l313">${"31"}</span>
+                  </div>
+                  <div class="stateInRange18" part="stateInRange18">
+                    <span class="l114" part="l114">${"1"}</span>
+                  </div>
+                </div>
+                <div class="week23" part="week23">
+                  <div class="stateInRange19" part="stateInRange19">
+                    <span class="l214" part="l214">${"2"}</span>
+                  </div>
+                  <div class="stateInRange20" part="stateInRange20">
+                    <span class="l35" part="l35">${"3"}</span>
+                  </div>
+                  <div class="stateInRange21" part="stateInRange21">
+                    <span class="l45" part="l45">${"4"}</span>
+                  </div>
+                  <div class="stateSelected3" part="stateSelected3">
+                    <span class="l55" part="l55">${"5"}</span>
+                  </div>
+                  <div class="stateDefault70" part="stateDefault70">
+                    <span class="l65" part="l65">${"6"}</span>
+                  </div>
+                  <div class="stateDefault71" part="stateDefault71">
+                    <span class="l75" part="l75">${"7"}</span>
+                  </div>
+                  <div class="stateDefault72" part="stateDefault72">
+                    <span class="l85" part="l85">${"8"}</span>
+                  </div>
+                </div>
+                <div class="week33" part="week33">
+                  <div class="stateDefault73" part="stateDefault73">
+                    <span class="l93" part="l93">${"9"}</span>
+                  </div>
+                  <div class="stateDefault74" part="stateDefault74">
+                    <span class="l103" part="l103">${"10"}</span>
+                  </div>
+                  <div class="stateDefault75" part="stateDefault75">
+                    <span class="l115" part="l115">${"11"}</span>
+                  </div>
+                  <div class="stateDefault76" part="stateDefault76">
+                    <span class="l123" part="l123">${"12"}</span>
+                  </div>
+                  <div class="stateDefault77" part="stateDefault77">
+                    <span class="l133" part="l133">${"13"}</span>
+                  </div>
+                  <div class="stateDefault78" part="stateDefault78">
+                    <span class="l143" part="l143">${"14"}</span>
+                  </div>
+                  <div class="stateDefault79" part="stateDefault79">
+                    <span class="l153" part="l153">${"15"}</span>
+                  </div>
+                </div>
+                <div class="week43" part="week43">
+                  <div class="stateDefault80" part="stateDefault80">
+                    <span class="l163" part="l163">${"16"}</span>
+                  </div>
+                  <div class="stateDefault81" part="stateDefault81">
+                    <span class="l173" part="l173">${"17"}</span>
+                  </div>
+                  <div class="stateDefault82" part="stateDefault82">
+                    <span class="l183" part="l183">${"18"}</span>
+                  </div>
+                  <div class="stateDefault83" part="stateDefault83">
+                    <span class="l193" part="l193">${"19"}</span>
+                  </div>
+                  <div class="stateDefault84" part="stateDefault84">
+                    <span class="l203" part="l203">${"20"}</span>
+                  </div>
+                  <div class="stateDefault85" part="stateDefault85">
+                    <span class="l215" part="l215">${"21"}</span>
+                  </div>
+                  <div class="stateDefault86" part="stateDefault86">
+                    <span class="l223" part="l223">${"22"}</span>
+                  </div>
+                </div>
+                <div class="week53" part="week53">
+                  <div class="stateDefault87" part="stateDefault87">
+                    <span class="l233" part="l233">${"23"}</span>
+                  </div>
+                  <div class="stateDefault88" part="stateDefault88">
+                    <span class="l243" part="l243">${"24"}</span>
+                  </div>
+                  <div class="stateDefault89" part="stateDefault89">
+                    <span class="l253" part="l253">${"25"}</span>
+                  </div>
+                  <div class="stateDefault90" part="stateDefault90">
+                    <span class="l264" part="l264">${"26"}</span>
+                  </div>
+                  <div class="stateDefault91" part="stateDefault91">
+                    <span class="l274" part="l274">${"27"}</span>
+                  </div>
+                  <div class="stateDefault92" part="stateDefault92">
+                    <span class="l286" part="l286">${"28"}</span>
+                  </div>
+                  <div class="stateDefault93" part="stateDefault93">
+                    <span class="l296" part="l296">${"29"}</span>
+                  </div>
+                </div>
+                <div class="week63" part="week63">
+                  <div class="stateDefault94" part="stateDefault94">
+                    <span class="l306" part="l306">${"30"}</span>
+                  </div>
+                  <div class="stateDefault95" part="stateDefault95">
+                    <span class="l314" part="l314">${"31"}</span>
+                  </div>
+                  <div class="stateDefault96" part="stateDefault96">
+                    <span class="l116" part="l116">${"1"}</span>
+                  </div>
+                  <div class="stateDefault97" part="stateDefault97">
+                    <span class="l216" part="l216">${"2"}</span>
+                  </div>
+                  <div class="stateDefault98" part="stateDefault98">
+                    <span class="l36" part="l36">${"3"}</span>
+                  </div>
+                  <div class="stateDefault99" part="stateDefault99">
+                    <span class="l46" part="l46">${"4"}</span>
+                  </div>
+                  <div class="stateDefault100" part="stateDefault100">
+                    <span class="l56" part="l56">${"5"}</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="week24">
-              <div class="stateDefault108">
-                <span class="l57">${"5"}</span>
-              </div>
-              <div class="stateDefault109">
-                <span class="l66">${"6"}</span>
-              </div>
-              <div class="stateDefault110">
-                <span class="l76">${"7"}</span>
-              </div>
-              <div class="stateDefault111">
-                <span class="l86">${"8"}</span>
-              </div>
-              <div class="stateDefault112">
-                <span class="l94">${"9"}</span>
-              </div>
-              <div class="stateDefault113">
-                <span class="l104">${"10"}</span>
-              </div>
-              <div class="stateDefault114">
-                <span class="l118">${"11"}</span>
-              </div>
-            </div>
-            <div class="week34">
-              <div class="stateDefault115">
-                <span class="l124">${"12"}</span>
-              </div>
-              <div class="stateDefault116">
-                <span class="l134">${"13"}</span>
-              </div>
-              <div class="stateDefault117">
-                <span class="l144">${"14"}</span>
-              </div>
-              <div class="stateDefault118">
-                <span class="l154">${"15"}</span>
-              </div>
-              <div class="stateDefault119">
-                <span class="l164">${"16"}</span>
-              </div>
-              <div class="stateDefault120">
-                <span class="l174">${"17"}</span>
-              </div>
-              <div class="stateDefault121">
-                <span class="l184">${"18"}</span>
-              </div>
-            </div>
-            <div class="week44">
-              <div class="stateDefault122">
-                <span class="l194">${"19"}</span>
-              </div>
-              <div class="stateDefault123">
-                <span class="l204">${"20"}</span>
-              </div>
-              <div class="stateDefault124">
-                <span class="l218">${"21"}</span>
-              </div>
-              <div class="stateDefault125">
-                <span class="l224">${"22"}</span>
-              </div>
-              <div class="stateDefault126">
-                <span class="l234">${"23"}</span>
-              </div>
-              <div class="stateDefault127">
-                <span class="l244">${"24"}</span>
-              </div>
-              <div class="stateDefault128">
-                <span class="l254">${"25"}</span>
-              </div>
-            </div>
-            <div class="week54">
-              <div class="stateDefault129">
-                <span class="l265">${"26"}</span>
-              </div>
-              <div class="stateDefault130">
-                <span class="l275">${"27"}</span>
-              </div>
-              <div class="stateDefault131">
-                <span class="l288">${"28"}</span>
-              </div>
-              <div class="stateDefault132">
-                <span class="l298">${"29"}</span>
-              </div>
-              <div class="stateSelected4">
-                <span class="l308">${"30"}</span>
-              </div>
-              <div class="stateDefault133">
-                <span class="l315">${"31"}</span>
-              </div>
-              <div class="stateDefault134">
-                <span class="l119">${"1"}</span>
-              </div>
-            </div>
-            <div class="week64">
-              <div class="stateDefault135">
-                <span class="l219">${"2"}</span>
-              </div>
-              <div class="stateDefault136">
-                <span class="l38">${"3"}</span>
-              </div>
-              <div class="stateDefault137">
-                <span class="l48">${"4"}</span>
-              </div>
-              <div class="stateDefault138">
-                <span class="l58">${"5"}</span>
-              </div>
-              <div class="stateDefault139">
-                <span class="l67">${"6"}</span>
-              </div>
-              <div class="stateDefault140">
-                <span class="l77">${"7"}</span>
-              </div>
-              <div class="stateDefault141">
-                <span class="l87">${"8"}</span>
+            <div class="hDivider" part="hDivider"></div>
+            <div class="footer" part="footer">
+              <span class="button" part="button"><ds-button .variant=${"ghost"} .size=${"md"}>${"Clear"}</ds-button></span>
+              <div class="actions" part="actions">
+                <span class="button2" part="button2"><ds-button .variant=${"secondary"} .size=${"md"}>${"Cancel"}</ds-button></span>
               </div>
             </div>
           </div>
-          <div class="timeRow">
-            <span class="time">${"Time"}</span>
-            <div class="timeBox">
-              <span class="l02">${"02"}</span>
+          <div class="calendar" part="calendar">
+            <div class="header4" part="header4">
+              <span class="iconNavChevronLeft204" part="iconNavChevronLeft204" aria-hidden="true">${icon("navChevronLeft20")}</span>
+              <span class="july20263" part="july20263">${"July 2026"}</span>
+              <span class="iconNavChevronRight204" part="iconNavChevronRight204" aria-hidden="true">${icon("navChevronRight20")}</span>
             </div>
-            <span class="layer">${":"}</span>
-            <div class="timeBox2">
-              <span class="l309">${"30"}</span>
+            <div class="weekdays4" part="weekdays4">
+              <span class="su4" part="su4">${"Su"}</span>
+              <span class="mo4" part="mo4">${"Mo"}</span>
+              <span class="tu4" part="tu4">${"Tu"}</span>
+              <span class="we4" part="we4">${"We"}</span>
+              <span class="th4" part="th4">${"Th"}</span>
+              <span class="fr4" part="fr4">${"Fr"}</span>
+              <span class="sa4" part="sa4">${"Sa"}</span>
             </div>
-            <div class="ampm">
-              <div class="segAM">
-                <span class="aM">${"AM"}</span>
+            <div class="week14" part="week14">
+              <div class="stateDefault101" part="stateDefault101">
+                <span class="l287" part="l287">${"28"}</span>
               </div>
-              <div class="segPM">
-                <span class="pM">${"PM"}</span>
+              <div class="stateDefault102" part="stateDefault102">
+                <span class="l297" part="l297">${"29"}</span>
+              </div>
+              <div class="stateDefault103" part="stateDefault103">
+                <span class="l307" part="l307">${"30"}</span>
+              </div>
+              <div class="stateDefault104" part="stateDefault104">
+                <span class="l117" part="l117">${"1"}</span>
+              </div>
+              <div class="stateDefault105" part="stateDefault105">
+                <span class="l217" part="l217">${"2"}</span>
+              </div>
+              <div class="stateDefault106" part="stateDefault106">
+                <span class="l37" part="l37">${"3"}</span>
+              </div>
+              <div class="stateDefault107" part="stateDefault107">
+                <span class="l47" part="l47">${"4"}</span>
+              </div>
+            </div>
+            <div class="week24" part="week24">
+              <div class="stateDefault108" part="stateDefault108">
+                <span class="l57" part="l57">${"5"}</span>
+              </div>
+              <div class="stateDefault109" part="stateDefault109">
+                <span class="l66" part="l66">${"6"}</span>
+              </div>
+              <div class="stateDefault110" part="stateDefault110">
+                <span class="l76" part="l76">${"7"}</span>
+              </div>
+              <div class="stateDefault111" part="stateDefault111">
+                <span class="l86" part="l86">${"8"}</span>
+              </div>
+              <div class="stateDefault112" part="stateDefault112">
+                <span class="l94" part="l94">${"9"}</span>
+              </div>
+              <div class="stateDefault113" part="stateDefault113">
+                <span class="l104" part="l104">${"10"}</span>
+              </div>
+              <div class="stateDefault114" part="stateDefault114">
+                <span class="l118" part="l118">${"11"}</span>
+              </div>
+            </div>
+            <div class="week34" part="week34">
+              <div class="stateDefault115" part="stateDefault115">
+                <span class="l124" part="l124">${"12"}</span>
+              </div>
+              <div class="stateDefault116" part="stateDefault116">
+                <span class="l134" part="l134">${"13"}</span>
+              </div>
+              <div class="stateDefault117" part="stateDefault117">
+                <span class="l144" part="l144">${"14"}</span>
+              </div>
+              <div class="stateDefault118" part="stateDefault118">
+                <span class="l154" part="l154">${"15"}</span>
+              </div>
+              <div class="stateDefault119" part="stateDefault119">
+                <span class="l164" part="l164">${"16"}</span>
+              </div>
+              <div class="stateDefault120" part="stateDefault120">
+                <span class="l174" part="l174">${"17"}</span>
+              </div>
+              <div class="stateDefault121" part="stateDefault121">
+                <span class="l184" part="l184">${"18"}</span>
+              </div>
+            </div>
+            <div class="week44" part="week44">
+              <div class="stateDefault122" part="stateDefault122">
+                <span class="l194" part="l194">${"19"}</span>
+              </div>
+              <div class="stateDefault123" part="stateDefault123">
+                <span class="l204" part="l204">${"20"}</span>
+              </div>
+              <div class="stateDefault124" part="stateDefault124">
+                <span class="l218" part="l218">${"21"}</span>
+              </div>
+              <div class="stateDefault125" part="stateDefault125">
+                <span class="l224" part="l224">${"22"}</span>
+              </div>
+              <div class="stateDefault126" part="stateDefault126">
+                <span class="l234" part="l234">${"23"}</span>
+              </div>
+              <div class="stateDefault127" part="stateDefault127">
+                <span class="l244" part="l244">${"24"}</span>
+              </div>
+              <div class="stateDefault128" part="stateDefault128">
+                <span class="l254" part="l254">${"25"}</span>
+              </div>
+            </div>
+            <div class="week54" part="week54">
+              <div class="stateDefault129" part="stateDefault129">
+                <span class="l265" part="l265">${"26"}</span>
+              </div>
+              <div class="stateDefault130" part="stateDefault130">
+                <span class="l275" part="l275">${"27"}</span>
+              </div>
+              <div class="stateDefault131" part="stateDefault131">
+                <span class="l288" part="l288">${"28"}</span>
+              </div>
+              <div class="stateDefault132" part="stateDefault132">
+                <span class="l298" part="l298">${"29"}</span>
+              </div>
+              <div class="stateSelected4" part="stateSelected4">
+                <span class="l308" part="l308">${"30"}</span>
+              </div>
+              <div class="stateDefault133" part="stateDefault133">
+                <span class="l315" part="l315">${"31"}</span>
+              </div>
+              <div class="stateDefault134" part="stateDefault134">
+                <span class="l119" part="l119">${"1"}</span>
+              </div>
+            </div>
+            <div class="week64" part="week64">
+              <div class="stateDefault135" part="stateDefault135">
+                <span class="l219" part="l219">${"2"}</span>
+              </div>
+              <div class="stateDefault136" part="stateDefault136">
+                <span class="l38" part="l38">${"3"}</span>
+              </div>
+              <div class="stateDefault137" part="stateDefault137">
+                <span class="l48" part="l48">${"4"}</span>
+              </div>
+              <div class="stateDefault138" part="stateDefault138">
+                <span class="l58" part="l58">${"5"}</span>
+              </div>
+              <div class="stateDefault139" part="stateDefault139">
+                <span class="l67" part="l67">${"6"}</span>
+              </div>
+              <div class="stateDefault140" part="stateDefault140">
+                <span class="l77" part="l77">${"7"}</span>
+              </div>
+              <div class="stateDefault141" part="stateDefault141">
+                <span class="l87" part="l87">${"8"}</span>
               </div>
             </div>
           </div>
-          <div class="divider"></div>
-          <div class="summaryRow">
-            <span class="selectedJul302026230PM">${"Selected: Jul 30, 2026, 2:30 PM"}</span>
-            <span class="button3"><ds-button .size=${"md"}>${"Apply"}</ds-button></span>
+          <div class="timeRow" part="timeRow">
+            <span class="time" part="time">${"Time"}</span>
+            <div class="timeBox" part="timeBox">
+              <span class="l02" part="l02">${"02"}</span>
+            </div>
+            <span class="layer" part="layer">${":"}</span>
+            <div class="timeBox2" part="timeBox2">
+              <span class="l309" part="l309">${"30"}</span>
+            </div>
+            <div class="ampm" part="ampm">
+              <div class="segAM" part="segAM">
+                <span class="aM" part="aM">${"AM"}</span>
+              </div>
+              <div class="segPM" part="segPM">
+                <span class="pM" part="pM">${"PM"}</span>
+              </div>
+            </div>
+          </div>
+          <div class="divider" part="divider"></div>
+          <div class="summaryRow" part="summaryRow">
+            <span class="selectedJul302026230PM" part="selectedJul302026230PM">${"Selected: Jul 30, 2026, 2:30 PM"}</span>
+            <span class="button3" part="button3"><ds-button .size=${"md"}>${"Apply"}</ds-button></span>
           </div>
         </div>` : nothing}
-        <div class="fieldsRow">
-          <div class="fieldRow2">
-            <span class="mMDDYYYY2">${"MM/DD/YYYY"}</span>
-            <span class="iconFormCalendar162" aria-hidden="true">${icon("formCalendar16")}</span>
-            <span class="l07202026">${"07/20/2026"}</span>
-            <span class="l134520262">${"13/45/2026"}</span>
+        <div class="fieldsRow" part="fieldsRow">
+          <div class="fieldRow2" part="fieldRow2">
+            <span class="mMDDYYYY2" part="mMDDYYYY2">${"MM/DD/YYYY"}</span>
+            <span class="iconFormCalendar162" part="iconFormCalendar162" aria-hidden="true">${icon("formCalendar16")}</span>
+            <span class="l07202026" part="l07202026">${"07/20/2026"}</span>
+            <span class="l134520262" part="l134520262">${"13/45/2026"}</span>
           </div>
-          <div class="fieldRow3">
-            <span class="mMDDYYYY3">${"MM/DD/YYYY"}</span>
-            <span class="iconFormCalendar163" aria-hidden="true">${icon("formCalendar16")}</span>
-            <span class="l08052026">${"08/05/2026"}</span>
-            <span class="l134520263">${"13/45/2026"}</span>
+          <div class="fieldRow3" part="fieldRow3">
+            <span class="mMDDYYYY3" part="mMDDYYYY3">${"MM/DD/YYYY"}</span>
+            <span class="iconFormCalendar163" part="iconFormCalendar163" aria-hidden="true">${icon("formCalendar16")}</span>
+            <span class="l08052026" part="l08052026">${"08/05/2026"}</span>
+            <span class="l134520263" part="l134520263">${"13/45/2026"}</span>
           </div>
         </div>
       </div>`;

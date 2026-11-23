@@ -13,12 +13,20 @@
   "mapping": [
     {
       "prop": "direction",
-      "figma": "Direction (variant)"
+      "figma": "Direction (variant)",
+      "type": "'prev' | 'next'",
+      "default": "'prev'"
     },
     {
       "prop": "—",
       "figma": "State (variant)",
       "note": "States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Disabled → disabled"
+    },
+    {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
     }
   ],
   "notes": [

@@ -22,701 +22,701 @@ export interface DatePickerProps extends Omit<HTMLAttributes<HTMLDivElement>, 'c
 export function DatePicker({ type = 'single', state = 'default', disabled = false, showCalendar = false, className, ...rest }: DatePickerProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-type={type} data-state={state} data-disabled={disabled ? '' : undefined} aria-disabled={disabled || undefined} {...rest}>
-      <div className={styles.fieldRow}>
-        <span className={styles.mMDDYYYY}>{"MM/DD/YYYY"}</span>
-        <span className={styles.iconFormCalendar16} aria-hidden="true"><Icon name="formCalendar16" /></span>
-        <span className={styles.l07302026}>{"07/30/2026"}</span>
-        <span className={styles.l13452026}>{"13/45/2026"}</span>
-        <span className={styles.mMDDYYYYHhMm}>{"MM/DD/YYYY hh:mm"}</span>
-        <span className={styles.l07302026230PM}>{"07/30/2026 2:30 PM"}</span>
-        <span className={styles.l134520264}>{"13/45/2026 --:--"}</span>
+      <div className={styles.fieldRow} data-layer="fieldRow">
+        <span className={styles.mMDDYYYY} data-layer="mMDDYYYY">{"MM/DD/YYYY"}</span>
+        <span className={styles.iconFormCalendar16} data-layer="iconFormCalendar16" aria-hidden="true"><Icon name="formCalendar16" /></span>
+        <span className={styles.l07302026} data-layer="l07302026">{"07/30/2026"}</span>
+        <span className={styles.l13452026} data-layer="l13452026">{"13/45/2026"}</span>
+        <span className={styles.mMDDYYYYHhMm} data-layer="mMDDYYYYHhMm">{"MM/DD/YYYY hh:mm"}</span>
+        <span className={styles.l07302026230PM} data-layer="l07302026230PM">{"07/30/2026 2:30 PM"}</span>
+        <span className={styles.l134520264} data-layer="l134520264">{"13/45/2026 --:--"}</span>
       </div>
       {showCalendar && (
-        <div className={styles.calendarPanel}>
-          <div className={styles.header}>
-            <span className={styles.iconNavChevronLeft20} aria-hidden="true"><Icon name="navChevronLeft20" /></span>
-            <span className={styles.july2026}>{"July 2026"}</span>
-            <span className={styles.iconNavChevronRight20} aria-hidden="true"><Icon name="navChevronRight20" /></span>
+        <div className={styles.calendarPanel} data-layer="calendarPanel">
+          <div className={styles.header} data-layer="header">
+            <span className={styles.iconNavChevronLeft20} data-layer="iconNavChevronLeft20" aria-hidden="true"><Icon name="navChevronLeft20" /></span>
+            <span className={styles.july2026} data-layer="july2026">{"July 2026"}</span>
+            <span className={styles.iconNavChevronRight20} data-layer="iconNavChevronRight20" aria-hidden="true"><Icon name="navChevronRight20" /></span>
           </div>
-          <div className={styles.weekdays}>
-            <span className={styles.su}>{"Su"}</span>
-            <span className={styles.mo}>{"Mo"}</span>
-            <span className={styles.tu}>{"Tu"}</span>
-            <span className={styles.we}>{"We"}</span>
-            <span className={styles.th}>{"Th"}</span>
-            <span className={styles.fr}>{"Fr"}</span>
-            <span className={styles.sa}>{"Sa"}</span>
+          <div className={styles.weekdays} data-layer="weekdays">
+            <span className={styles.su} data-layer="su">{"Su"}</span>
+            <span className={styles.mo} data-layer="mo">{"Mo"}</span>
+            <span className={styles.tu} data-layer="tu">{"Tu"}</span>
+            <span className={styles.we} data-layer="we">{"We"}</span>
+            <span className={styles.th} data-layer="th">{"Th"}</span>
+            <span className={styles.fr} data-layer="fr">{"Fr"}</span>
+            <span className={styles.sa} data-layer="sa">{"Sa"}</span>
           </div>
-          <div className={styles.week1}>
-            <div className={styles.stateDefault}>
-              <span className={styles.l28}>{"28"}</span>
+          <div className={styles.week1} data-layer="week1">
+            <div className={styles.stateDefault} data-layer="stateDefault">
+              <span className={styles.l28} data-layer="l28">{"28"}</span>
             </div>
-            <div className={styles.stateDefault2}>
-              <span className={styles.l29}>{"29"}</span>
+            <div className={styles.stateDefault2} data-layer="stateDefault2">
+              <span className={styles.l29} data-layer="l29">{"29"}</span>
             </div>
-            <div className={styles.stateDefault3}>
-              <span className={styles.l30}>{"30"}</span>
+            <div className={styles.stateDefault3} data-layer="stateDefault3">
+              <span className={styles.l30} data-layer="l30">{"30"}</span>
             </div>
-            <div className={styles.stateDefault4}>
-              <span className={styles.l1}>{"1"}</span>
+            <div className={styles.stateDefault4} data-layer="stateDefault4">
+              <span className={styles.l1} data-layer="l1">{"1"}</span>
             </div>
-            <div className={styles.stateDefault5}>
-              <span className={styles.l2}>{"2"}</span>
+            <div className={styles.stateDefault5} data-layer="stateDefault5">
+              <span className={styles.l2} data-layer="l2">{"2"}</span>
             </div>
-            <div className={styles.stateDefault6}>
-              <span className={styles.l3}>{"3"}</span>
+            <div className={styles.stateDefault6} data-layer="stateDefault6">
+              <span className={styles.l3} data-layer="l3">{"3"}</span>
             </div>
-            <div className={styles.stateDefault7}>
-              <span className={styles.l4}>{"4"}</span>
-            </div>
-          </div>
-          <div className={styles.week2}>
-            <div className={styles.stateDefault8}>
-              <span className={styles.l5}>{"5"}</span>
-            </div>
-            <div className={styles.stateDefault9}>
-              <span className={styles.l6}>{"6"}</span>
-            </div>
-            <div className={styles.stateDefault10}>
-              <span className={styles.l7}>{"7"}</span>
-            </div>
-            <div className={styles.stateDefault11}>
-              <span className={styles.l8}>{"8"}</span>
-            </div>
-            <div className={styles.stateDefault12}>
-              <span className={styles.l9}>{"9"}</span>
-            </div>
-            <div className={styles.stateDefault13}>
-              <span className={styles.l10}>{"10"}</span>
-            </div>
-            <div className={styles.stateDefault14}>
-              <span className={styles.l11}>{"11"}</span>
+            <div className={styles.stateDefault7} data-layer="stateDefault7">
+              <span className={styles.l4} data-layer="l4">{"4"}</span>
             </div>
           </div>
-          <div className={styles.week3}>
-            <div className={styles.stateDefault15}>
-              <span className={styles.l12}>{"12"}</span>
+          <div className={styles.week2} data-layer="week2">
+            <div className={styles.stateDefault8} data-layer="stateDefault8">
+              <span className={styles.l5} data-layer="l5">{"5"}</span>
             </div>
-            <div className={styles.stateDefault16}>
-              <span className={styles.l13}>{"13"}</span>
+            <div className={styles.stateDefault9} data-layer="stateDefault9">
+              <span className={styles.l6} data-layer="l6">{"6"}</span>
             </div>
-            <div className={styles.stateDefault17}>
-              <span className={styles.l14}>{"14"}</span>
+            <div className={styles.stateDefault10} data-layer="stateDefault10">
+              <span className={styles.l7} data-layer="l7">{"7"}</span>
             </div>
-            <div className={styles.stateSelected}>
-              <span className={styles.l15}>{"15"}</span>
+            <div className={styles.stateDefault11} data-layer="stateDefault11">
+              <span className={styles.l8} data-layer="l8">{"8"}</span>
             </div>
-            <div className={styles.stateDefault18}>
-              <span className={styles.l16}>{"16"}</span>
+            <div className={styles.stateDefault12} data-layer="stateDefault12">
+              <span className={styles.l9} data-layer="l9">{"9"}</span>
             </div>
-            <div className={styles.stateDefault19}>
-              <span className={styles.l17}>{"17"}</span>
+            <div className={styles.stateDefault13} data-layer="stateDefault13">
+              <span className={styles.l10} data-layer="l10">{"10"}</span>
             </div>
-            <div className={styles.stateDefault20}>
-              <span className={styles.l18}>{"18"}</span>
-            </div>
-          </div>
-          <div className={styles.week4}>
-            <div className={styles.stateDefault21}>
-              <span className={styles.l19}>{"19"}</span>
-            </div>
-            <div className={styles.stateDefault22}>
-              <span className={styles.l20}>{"20"}</span>
-            </div>
-            <div className={styles.stateDefault23}>
-              <span className={styles.l21}>{"21"}</span>
-            </div>
-            <div className={styles.stateDisabled}>
-              <span className={styles.l22}>{"22"}</span>
-            </div>
-            <div className={styles.stateDefault24}>
-              <span className={styles.l23}>{"23"}</span>
-            </div>
-            <div className={styles.stateDefault25}>
-              <span className={styles.l24}>{"24"}</span>
-            </div>
-            <div className={styles.stateDefault26}>
-              <span className={styles.l25}>{"25"}</span>
+            <div className={styles.stateDefault14} data-layer="stateDefault14">
+              <span className={styles.l11} data-layer="l11">{"11"}</span>
             </div>
           </div>
-          <div className={styles.week5}>
-            <div className={styles.stateDefault27}>
-              <span className={styles.l26}>{"26"}</span>
+          <div className={styles.week3} data-layer="week3">
+            <div className={styles.stateDefault15} data-layer="stateDefault15">
+              <span className={styles.l12} data-layer="l12">{"12"}</span>
             </div>
-            <div className={styles.stateDefault28}>
-              <span className={styles.l27}>{"27"}</span>
+            <div className={styles.stateDefault16} data-layer="stateDefault16">
+              <span className={styles.l13} data-layer="l13">{"13"}</span>
             </div>
-            <div className={styles.stateDefault29}>
-              <span className={styles.l282}>{"28"}</span>
+            <div className={styles.stateDefault17} data-layer="stateDefault17">
+              <span className={styles.l14} data-layer="l14">{"14"}</span>
             </div>
-            <div className={styles.stateDefault30}>
-              <span className={styles.l292}>{"29"}</span>
+            <div className={styles.stateSelected} data-layer="stateSelected">
+              <span className={styles.l15} data-layer="l15">{"15"}</span>
             </div>
-            <div className={styles.stateToday}>
-              <span className={styles.l302}>{"30"}</span>
-              <div className={styles.ellipse} />
+            <div className={styles.stateDefault18} data-layer="stateDefault18">
+              <span className={styles.l16} data-layer="l16">{"16"}</span>
             </div>
-            <div className={styles.stateDefault31}>
-              <span className={styles.l31}>{"31"}</span>
+            <div className={styles.stateDefault19} data-layer="stateDefault19">
+              <span className={styles.l17} data-layer="l17">{"17"}</span>
             </div>
-            <div className={styles.stateDefault32}>
-              <span className={styles.l110}>{"1"}</span>
-            </div>
-          </div>
-          <div className={styles.week6}>
-            <div className={styles.stateDefault33}>
-              <span className={styles.l210}>{"2"}</span>
-            </div>
-            <div className={styles.stateDefault34}>
-              <span className={styles.l32}>{"3"}</span>
-            </div>
-            <div className={styles.stateDefault35}>
-              <span className={styles.l42}>{"4"}</span>
-            </div>
-            <div className={styles.stateDefault36}>
-              <span className={styles.l52}>{"5"}</span>
-            </div>
-            <div className={styles.stateDefault37}>
-              <span className={styles.l62}>{"6"}</span>
-            </div>
-            <div className={styles.stateDefault38}>
-              <span className={styles.l72}>{"7"}</span>
-            </div>
-            <div className={styles.stateDefault39}>
-              <span className={styles.l82}>{"8"}</span>
+            <div className={styles.stateDefault20} data-layer="stateDefault20">
+              <span className={styles.l18} data-layer="l18">{"18"}</span>
             </div>
           </div>
-          <div className={styles.presets}>
-            <div className={styles.presetItem}>
-              <span className={styles.today}>{"Today"}</span>
+          <div className={styles.week4} data-layer="week4">
+            <div className={styles.stateDefault21} data-layer="stateDefault21">
+              <span className={styles.l19} data-layer="l19">{"19"}</span>
             </div>
-            <div className={styles.presetItem2}>
-              <span className={styles.yesterday}>{"Yesterday"}</span>
+            <div className={styles.stateDefault22} data-layer="stateDefault22">
+              <span className={styles.l20} data-layer="l20">{"20"}</span>
             </div>
-            <div className={styles.presetItem3}>
-              <span className={styles.last7Days}>{"Last 7 days"}</span>
+            <div className={styles.stateDefault23} data-layer="stateDefault23">
+              <span className={styles.l21} data-layer="l21">{"21"}</span>
             </div>
-            <div className={styles.presetItem4}>
-              <span className={styles.last30Days}>{"Last 30 days"}</span>
+            <div className={styles.stateDisabled} data-layer="stateDisabled">
+              <span className={styles.l22} data-layer="l22">{"22"}</span>
             </div>
-            <div className={styles.presetItem5}>
-              <span className={styles.thisMonth}>{"This month"}</span>
+            <div className={styles.stateDefault24} data-layer="stateDefault24">
+              <span className={styles.l23} data-layer="l23">{"23"}</span>
             </div>
-            <div className={styles.presetItem6}>
-              <span className={styles.lastMonth}>{"Last month"}</span>
+            <div className={styles.stateDefault25} data-layer="stateDefault25">
+              <span className={styles.l24} data-layer="l24">{"24"}</span>
             </div>
-          </div>
-          <div className={styles.vDivider} />
-          <div className={styles.rightSide}>
-            <div className={styles.monthsRow}>
-              <div className={styles.monthJuly2026}>
-                <div className={styles.header2}>
-                  <span className={styles.iconNavChevronLeft202} aria-hidden="true"><Icon name="navChevronLeft20" /></span>
-                  <span className={styles.july20262}>{"July 2026"}</span>
-                  <span className={styles.iconNavChevronRight202} aria-hidden="true"><Icon name="navChevronRight20" /></span>
-                </div>
-                <div className={styles.weekdays2}>
-                  <span className={styles.su2}>{"Su"}</span>
-                  <span className={styles.mo2}>{"Mo"}</span>
-                  <span className={styles.tu2}>{"Tu"}</span>
-                  <span className={styles.we2}>{"We"}</span>
-                  <span className={styles.th2}>{"Th"}</span>
-                  <span className={styles.fr2}>{"Fr"}</span>
-                  <span className={styles.sa2}>{"Sa"}</span>
-                </div>
-                <div className={styles.week12}>
-                  <div className={styles.stateDefault40}>
-                    <span className={styles.l283}>{"28"}</span>
-                  </div>
-                  <div className={styles.stateDefault41}>
-                    <span className={styles.l293}>{"29"}</span>
-                  </div>
-                  <div className={styles.stateDefault42}>
-                    <span className={styles.l303}>{"30"}</span>
-                  </div>
-                  <div className={styles.stateDefault43}>
-                    <span className={styles.l111}>{"1"}</span>
-                  </div>
-                  <div className={styles.stateDefault44}>
-                    <span className={styles.l211}>{"2"}</span>
-                  </div>
-                  <div className={styles.stateDefault45}>
-                    <span className={styles.l33}>{"3"}</span>
-                  </div>
-                  <div className={styles.stateDefault46}>
-                    <span className={styles.l43}>{"4"}</span>
-                  </div>
-                </div>
-                <div className={styles.week22}>
-                  <div className={styles.stateDefault47}>
-                    <span className={styles.l53}>{"5"}</span>
-                  </div>
-                  <div className={styles.stateDefault48}>
-                    <span className={styles.l63}>{"6"}</span>
-                  </div>
-                  <div className={styles.stateDefault49}>
-                    <span className={styles.l73}>{"7"}</span>
-                  </div>
-                  <div className={styles.stateDefault50}>
-                    <span className={styles.l83}>{"8"}</span>
-                  </div>
-                  <div className={styles.stateDefault51}>
-                    <span className={styles.l92}>{"9"}</span>
-                  </div>
-                  <div className={styles.stateDefault52}>
-                    <span className={styles.l102}>{"10"}</span>
-                  </div>
-                  <div className={styles.stateDefault53}>
-                    <span className={styles.l112}>{"11"}</span>
-                  </div>
-                </div>
-                <div className={styles.week32}>
-                  <div className={styles.stateDefault54}>
-                    <span className={styles.l122}>{"12"}</span>
-                  </div>
-                  <div className={styles.stateDefault55}>
-                    <span className={styles.l132}>{"13"}</span>
-                  </div>
-                  <div className={styles.stateDefault56}>
-                    <span className={styles.l142}>{"14"}</span>
-                  </div>
-                  <div className={styles.stateDefault57}>
-                    <span className={styles.l152}>{"15"}</span>
-                  </div>
-                  <div className={styles.stateDefault58}>
-                    <span className={styles.l162}>{"16"}</span>
-                  </div>
-                  <div className={styles.stateDefault59}>
-                    <span className={styles.l172}>{"17"}</span>
-                  </div>
-                  <div className={styles.stateDefault60}>
-                    <span className={styles.l182}>{"18"}</span>
-                  </div>
-                </div>
-                <div className={styles.week42}>
-                  <div className={styles.stateDefault61}>
-                    <span className={styles.l192}>{"19"}</span>
-                  </div>
-                  <div className={styles.stateSelected2}>
-                    <span className={styles.l202}>{"20"}</span>
-                  </div>
-                  <div className={styles.stateInRange}>
-                    <span className={styles.l212}>{"21"}</span>
-                  </div>
-                  <div className={styles.stateInRange2}>
-                    <span className={styles.l222}>{"22"}</span>
-                  </div>
-                  <div className={styles.stateInRange3}>
-                    <span className={styles.l232}>{"23"}</span>
-                  </div>
-                  <div className={styles.stateInRange4}>
-                    <span className={styles.l242}>{"24"}</span>
-                  </div>
-                  <div className={styles.stateInRange5}>
-                    <span className={styles.l252}>{"25"}</span>
-                  </div>
-                </div>
-                <div className={styles.week52}>
-                  <div className={styles.stateInRange6}>
-                    <span className={styles.l262}>{"26"}</span>
-                  </div>
-                  <div className={styles.stateInRange7}>
-                    <span className={styles.l272}>{"27"}</span>
-                  </div>
-                  <div className={styles.stateInRange8}>
-                    <span className={styles.l284}>{"28"}</span>
-                  </div>
-                  <div className={styles.stateInRange9}>
-                    <span className={styles.l294}>{"29"}</span>
-                  </div>
-                  <div className={styles.stateInRange10}>
-                    <span className={styles.l304}>{"30"}</span>
-                  </div>
-                  <div className={styles.stateInRange11}>
-                    <span className={styles.l312}>{"31"}</span>
-                  </div>
-                  <div className={styles.stateDefault62}>
-                    <span className={styles.l113}>{"1"}</span>
-                  </div>
-                </div>
-                <div className={styles.week62}>
-                  <div className={styles.stateDefault63}>
-                    <span className={styles.l213}>{"2"}</span>
-                  </div>
-                  <div className={styles.stateDefault64}>
-                    <span className={styles.l34}>{"3"}</span>
-                  </div>
-                  <div className={styles.stateDefault65}>
-                    <span className={styles.l44}>{"4"}</span>
-                  </div>
-                  <div className={styles.stateDefault66}>
-                    <span className={styles.l54}>{"5"}</span>
-                  </div>
-                  <div className={styles.stateDefault67}>
-                    <span className={styles.l64}>{"6"}</span>
-                  </div>
-                  <div className={styles.stateDefault68}>
-                    <span className={styles.l74}>{"7"}</span>
-                  </div>
-                  <div className={styles.stateDefault69}>
-                    <span className={styles.l84}>{"8"}</span>
-                  </div>
-                </div>
-              </div>
-              <div className={styles.monthAugust2026}>
-                <div className={styles.header3}>
-                  <span className={styles.iconNavChevronLeft203} aria-hidden="true"><Icon name="navChevronLeft20" /></span>
-                  <span className={styles.august2026}>{"August 2026"}</span>
-                  <span className={styles.iconNavChevronRight203} aria-hidden="true"><Icon name="navChevronRight20" /></span>
-                </div>
-                <div className={styles.weekdays3}>
-                  <span className={styles.su3}>{"Su"}</span>
-                  <span className={styles.mo3}>{"Mo"}</span>
-                  <span className={styles.tu3}>{"Tu"}</span>
-                  <span className={styles.we3}>{"We"}</span>
-                  <span className={styles.th3}>{"Th"}</span>
-                  <span className={styles.fr3}>{"Fr"}</span>
-                  <span className={styles.sa3}>{"Sa"}</span>
-                </div>
-                <div className={styles.week13}>
-                  <div className={styles.stateInRange12}>
-                    <span className={styles.l263}>{"26"}</span>
-                  </div>
-                  <div className={styles.stateInRange13}>
-                    <span className={styles.l273}>{"27"}</span>
-                  </div>
-                  <div className={styles.stateInRange14}>
-                    <span className={styles.l285}>{"28"}</span>
-                  </div>
-                  <div className={styles.stateInRange15}>
-                    <span className={styles.l295}>{"29"}</span>
-                  </div>
-                  <div className={styles.stateInRange16}>
-                    <span className={styles.l305}>{"30"}</span>
-                  </div>
-                  <div className={styles.stateInRange17}>
-                    <span className={styles.l313}>{"31"}</span>
-                  </div>
-                  <div className={styles.stateInRange18}>
-                    <span className={styles.l114}>{"1"}</span>
-                  </div>
-                </div>
-                <div className={styles.week23}>
-                  <div className={styles.stateInRange19}>
-                    <span className={styles.l214}>{"2"}</span>
-                  </div>
-                  <div className={styles.stateInRange20}>
-                    <span className={styles.l35}>{"3"}</span>
-                  </div>
-                  <div className={styles.stateInRange21}>
-                    <span className={styles.l45}>{"4"}</span>
-                  </div>
-                  <div className={styles.stateSelected3}>
-                    <span className={styles.l55}>{"5"}</span>
-                  </div>
-                  <div className={styles.stateDefault70}>
-                    <span className={styles.l65}>{"6"}</span>
-                  </div>
-                  <div className={styles.stateDefault71}>
-                    <span className={styles.l75}>{"7"}</span>
-                  </div>
-                  <div className={styles.stateDefault72}>
-                    <span className={styles.l85}>{"8"}</span>
-                  </div>
-                </div>
-                <div className={styles.week33}>
-                  <div className={styles.stateDefault73}>
-                    <span className={styles.l93}>{"9"}</span>
-                  </div>
-                  <div className={styles.stateDefault74}>
-                    <span className={styles.l103}>{"10"}</span>
-                  </div>
-                  <div className={styles.stateDefault75}>
-                    <span className={styles.l115}>{"11"}</span>
-                  </div>
-                  <div className={styles.stateDefault76}>
-                    <span className={styles.l123}>{"12"}</span>
-                  </div>
-                  <div className={styles.stateDefault77}>
-                    <span className={styles.l133}>{"13"}</span>
-                  </div>
-                  <div className={styles.stateDefault78}>
-                    <span className={styles.l143}>{"14"}</span>
-                  </div>
-                  <div className={styles.stateDefault79}>
-                    <span className={styles.l153}>{"15"}</span>
-                  </div>
-                </div>
-                <div className={styles.week43}>
-                  <div className={styles.stateDefault80}>
-                    <span className={styles.l163}>{"16"}</span>
-                  </div>
-                  <div className={styles.stateDefault81}>
-                    <span className={styles.l173}>{"17"}</span>
-                  </div>
-                  <div className={styles.stateDefault82}>
-                    <span className={styles.l183}>{"18"}</span>
-                  </div>
-                  <div className={styles.stateDefault83}>
-                    <span className={styles.l193}>{"19"}</span>
-                  </div>
-                  <div className={styles.stateDefault84}>
-                    <span className={styles.l203}>{"20"}</span>
-                  </div>
-                  <div className={styles.stateDefault85}>
-                    <span className={styles.l215}>{"21"}</span>
-                  </div>
-                  <div className={styles.stateDefault86}>
-                    <span className={styles.l223}>{"22"}</span>
-                  </div>
-                </div>
-                <div className={styles.week53}>
-                  <div className={styles.stateDefault87}>
-                    <span className={styles.l233}>{"23"}</span>
-                  </div>
-                  <div className={styles.stateDefault88}>
-                    <span className={styles.l243}>{"24"}</span>
-                  </div>
-                  <div className={styles.stateDefault89}>
-                    <span className={styles.l253}>{"25"}</span>
-                  </div>
-                  <div className={styles.stateDefault90}>
-                    <span className={styles.l264}>{"26"}</span>
-                  </div>
-                  <div className={styles.stateDefault91}>
-                    <span className={styles.l274}>{"27"}</span>
-                  </div>
-                  <div className={styles.stateDefault92}>
-                    <span className={styles.l286}>{"28"}</span>
-                  </div>
-                  <div className={styles.stateDefault93}>
-                    <span className={styles.l296}>{"29"}</span>
-                  </div>
-                </div>
-                <div className={styles.week63}>
-                  <div className={styles.stateDefault94}>
-                    <span className={styles.l306}>{"30"}</span>
-                  </div>
-                  <div className={styles.stateDefault95}>
-                    <span className={styles.l314}>{"31"}</span>
-                  </div>
-                  <div className={styles.stateDefault96}>
-                    <span className={styles.l116}>{"1"}</span>
-                  </div>
-                  <div className={styles.stateDefault97}>
-                    <span className={styles.l216}>{"2"}</span>
-                  </div>
-                  <div className={styles.stateDefault98}>
-                    <span className={styles.l36}>{"3"}</span>
-                  </div>
-                  <div className={styles.stateDefault99}>
-                    <span className={styles.l46}>{"4"}</span>
-                  </div>
-                  <div className={styles.stateDefault100}>
-                    <span className={styles.l56}>{"5"}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className={styles.hDivider} />
-            <div className={styles.footer}>
-              <span className={styles.button}><Button variant="ghost" size="md" children="Clear" /></span>
-              <div className={styles.actions}>
-                <span className={styles.button2}><Button variant="secondary" size="md" children="Cancel" /></span>
-              </div>
+            <div className={styles.stateDefault26} data-layer="stateDefault26">
+              <span className={styles.l25} data-layer="l25">{"25"}</span>
             </div>
           </div>
-          <div className={styles.calendar}>
-            <div className={styles.header4}>
-              <span className={styles.iconNavChevronLeft204} aria-hidden="true"><Icon name="navChevronLeft20" /></span>
-              <span className={styles.july20263}>{"July 2026"}</span>
-              <span className={styles.iconNavChevronRight204} aria-hidden="true"><Icon name="navChevronRight20" /></span>
+          <div className={styles.week5} data-layer="week5">
+            <div className={styles.stateDefault27} data-layer="stateDefault27">
+              <span className={styles.l26} data-layer="l26">{"26"}</span>
             </div>
-            <div className={styles.weekdays4}>
-              <span className={styles.su4}>{"Su"}</span>
-              <span className={styles.mo4}>{"Mo"}</span>
-              <span className={styles.tu4}>{"Tu"}</span>
-              <span className={styles.we4}>{"We"}</span>
-              <span className={styles.th4}>{"Th"}</span>
-              <span className={styles.fr4}>{"Fr"}</span>
-              <span className={styles.sa4}>{"Sa"}</span>
+            <div className={styles.stateDefault28} data-layer="stateDefault28">
+              <span className={styles.l27} data-layer="l27">{"27"}</span>
             </div>
-            <div className={styles.week14}>
-              <div className={styles.stateDefault101}>
-                <span className={styles.l287}>{"28"}</span>
+            <div className={styles.stateDefault29} data-layer="stateDefault29">
+              <span className={styles.l282} data-layer="l282">{"28"}</span>
+            </div>
+            <div className={styles.stateDefault30} data-layer="stateDefault30">
+              <span className={styles.l292} data-layer="l292">{"29"}</span>
+            </div>
+            <div className={styles.stateToday} data-layer="stateToday">
+              <span className={styles.l302} data-layer="l302">{"30"}</span>
+              <div className={styles.ellipse} data-layer="ellipse" />
+            </div>
+            <div className={styles.stateDefault31} data-layer="stateDefault31">
+              <span className={styles.l31} data-layer="l31">{"31"}</span>
+            </div>
+            <div className={styles.stateDefault32} data-layer="stateDefault32">
+              <span className={styles.l110} data-layer="l110">{"1"}</span>
+            </div>
+          </div>
+          <div className={styles.week6} data-layer="week6">
+            <div className={styles.stateDefault33} data-layer="stateDefault33">
+              <span className={styles.l210} data-layer="l210">{"2"}</span>
+            </div>
+            <div className={styles.stateDefault34} data-layer="stateDefault34">
+              <span className={styles.l32} data-layer="l32">{"3"}</span>
+            </div>
+            <div className={styles.stateDefault35} data-layer="stateDefault35">
+              <span className={styles.l42} data-layer="l42">{"4"}</span>
+            </div>
+            <div className={styles.stateDefault36} data-layer="stateDefault36">
+              <span className={styles.l52} data-layer="l52">{"5"}</span>
+            </div>
+            <div className={styles.stateDefault37} data-layer="stateDefault37">
+              <span className={styles.l62} data-layer="l62">{"6"}</span>
+            </div>
+            <div className={styles.stateDefault38} data-layer="stateDefault38">
+              <span className={styles.l72} data-layer="l72">{"7"}</span>
+            </div>
+            <div className={styles.stateDefault39} data-layer="stateDefault39">
+              <span className={styles.l82} data-layer="l82">{"8"}</span>
+            </div>
+          </div>
+          <div className={styles.presets} data-layer="presets">
+            <div className={styles.presetItem} data-layer="presetItem">
+              <span className={styles.today} data-layer="today">{"Today"}</span>
+            </div>
+            <div className={styles.presetItem2} data-layer="presetItem2">
+              <span className={styles.yesterday} data-layer="yesterday">{"Yesterday"}</span>
+            </div>
+            <div className={styles.presetItem3} data-layer="presetItem3">
+              <span className={styles.last7Days} data-layer="last7Days">{"Last 7 days"}</span>
+            </div>
+            <div className={styles.presetItem4} data-layer="presetItem4">
+              <span className={styles.last30Days} data-layer="last30Days">{"Last 30 days"}</span>
+            </div>
+            <div className={styles.presetItem5} data-layer="presetItem5">
+              <span className={styles.thisMonth} data-layer="thisMonth">{"This month"}</span>
+            </div>
+            <div className={styles.presetItem6} data-layer="presetItem6">
+              <span className={styles.lastMonth} data-layer="lastMonth">{"Last month"}</span>
+            </div>
+          </div>
+          <div className={styles.vDivider} data-layer="vDivider" />
+          <div className={styles.rightSide} data-layer="rightSide">
+            <div className={styles.monthsRow} data-layer="monthsRow">
+              <div className={styles.monthJuly2026} data-layer="monthJuly2026">
+                <div className={styles.header2} data-layer="header2">
+                  <span className={styles.iconNavChevronLeft202} data-layer="iconNavChevronLeft202" aria-hidden="true"><Icon name="navChevronLeft20" /></span>
+                  <span className={styles.july20262} data-layer="july20262">{"July 2026"}</span>
+                  <span className={styles.iconNavChevronRight202} data-layer="iconNavChevronRight202" aria-hidden="true"><Icon name="navChevronRight20" /></span>
+                </div>
+                <div className={styles.weekdays2} data-layer="weekdays2">
+                  <span className={styles.su2} data-layer="su2">{"Su"}</span>
+                  <span className={styles.mo2} data-layer="mo2">{"Mo"}</span>
+                  <span className={styles.tu2} data-layer="tu2">{"Tu"}</span>
+                  <span className={styles.we2} data-layer="we2">{"We"}</span>
+                  <span className={styles.th2} data-layer="th2">{"Th"}</span>
+                  <span className={styles.fr2} data-layer="fr2">{"Fr"}</span>
+                  <span className={styles.sa2} data-layer="sa2">{"Sa"}</span>
+                </div>
+                <div className={styles.week12} data-layer="week12">
+                  <div className={styles.stateDefault40} data-layer="stateDefault40">
+                    <span className={styles.l283} data-layer="l283">{"28"}</span>
+                  </div>
+                  <div className={styles.stateDefault41} data-layer="stateDefault41">
+                    <span className={styles.l293} data-layer="l293">{"29"}</span>
+                  </div>
+                  <div className={styles.stateDefault42} data-layer="stateDefault42">
+                    <span className={styles.l303} data-layer="l303">{"30"}</span>
+                  </div>
+                  <div className={styles.stateDefault43} data-layer="stateDefault43">
+                    <span className={styles.l111} data-layer="l111">{"1"}</span>
+                  </div>
+                  <div className={styles.stateDefault44} data-layer="stateDefault44">
+                    <span className={styles.l211} data-layer="l211">{"2"}</span>
+                  </div>
+                  <div className={styles.stateDefault45} data-layer="stateDefault45">
+                    <span className={styles.l33} data-layer="l33">{"3"}</span>
+                  </div>
+                  <div className={styles.stateDefault46} data-layer="stateDefault46">
+                    <span className={styles.l43} data-layer="l43">{"4"}</span>
+                  </div>
+                </div>
+                <div className={styles.week22} data-layer="week22">
+                  <div className={styles.stateDefault47} data-layer="stateDefault47">
+                    <span className={styles.l53} data-layer="l53">{"5"}</span>
+                  </div>
+                  <div className={styles.stateDefault48} data-layer="stateDefault48">
+                    <span className={styles.l63} data-layer="l63">{"6"}</span>
+                  </div>
+                  <div className={styles.stateDefault49} data-layer="stateDefault49">
+                    <span className={styles.l73} data-layer="l73">{"7"}</span>
+                  </div>
+                  <div className={styles.stateDefault50} data-layer="stateDefault50">
+                    <span className={styles.l83} data-layer="l83">{"8"}</span>
+                  </div>
+                  <div className={styles.stateDefault51} data-layer="stateDefault51">
+                    <span className={styles.l92} data-layer="l92">{"9"}</span>
+                  </div>
+                  <div className={styles.stateDefault52} data-layer="stateDefault52">
+                    <span className={styles.l102} data-layer="l102">{"10"}</span>
+                  </div>
+                  <div className={styles.stateDefault53} data-layer="stateDefault53">
+                    <span className={styles.l112} data-layer="l112">{"11"}</span>
+                  </div>
+                </div>
+                <div className={styles.week32} data-layer="week32">
+                  <div className={styles.stateDefault54} data-layer="stateDefault54">
+                    <span className={styles.l122} data-layer="l122">{"12"}</span>
+                  </div>
+                  <div className={styles.stateDefault55} data-layer="stateDefault55">
+                    <span className={styles.l132} data-layer="l132">{"13"}</span>
+                  </div>
+                  <div className={styles.stateDefault56} data-layer="stateDefault56">
+                    <span className={styles.l142} data-layer="l142">{"14"}</span>
+                  </div>
+                  <div className={styles.stateDefault57} data-layer="stateDefault57">
+                    <span className={styles.l152} data-layer="l152">{"15"}</span>
+                  </div>
+                  <div className={styles.stateDefault58} data-layer="stateDefault58">
+                    <span className={styles.l162} data-layer="l162">{"16"}</span>
+                  </div>
+                  <div className={styles.stateDefault59} data-layer="stateDefault59">
+                    <span className={styles.l172} data-layer="l172">{"17"}</span>
+                  </div>
+                  <div className={styles.stateDefault60} data-layer="stateDefault60">
+                    <span className={styles.l182} data-layer="l182">{"18"}</span>
+                  </div>
+                </div>
+                <div className={styles.week42} data-layer="week42">
+                  <div className={styles.stateDefault61} data-layer="stateDefault61">
+                    <span className={styles.l192} data-layer="l192">{"19"}</span>
+                  </div>
+                  <div className={styles.stateSelected2} data-layer="stateSelected2">
+                    <span className={styles.l202} data-layer="l202">{"20"}</span>
+                  </div>
+                  <div className={styles.stateInRange} data-layer="stateInRange">
+                    <span className={styles.l212} data-layer="l212">{"21"}</span>
+                  </div>
+                  <div className={styles.stateInRange2} data-layer="stateInRange2">
+                    <span className={styles.l222} data-layer="l222">{"22"}</span>
+                  </div>
+                  <div className={styles.stateInRange3} data-layer="stateInRange3">
+                    <span className={styles.l232} data-layer="l232">{"23"}</span>
+                  </div>
+                  <div className={styles.stateInRange4} data-layer="stateInRange4">
+                    <span className={styles.l242} data-layer="l242">{"24"}</span>
+                  </div>
+                  <div className={styles.stateInRange5} data-layer="stateInRange5">
+                    <span className={styles.l252} data-layer="l252">{"25"}</span>
+                  </div>
+                </div>
+                <div className={styles.week52} data-layer="week52">
+                  <div className={styles.stateInRange6} data-layer="stateInRange6">
+                    <span className={styles.l262} data-layer="l262">{"26"}</span>
+                  </div>
+                  <div className={styles.stateInRange7} data-layer="stateInRange7">
+                    <span className={styles.l272} data-layer="l272">{"27"}</span>
+                  </div>
+                  <div className={styles.stateInRange8} data-layer="stateInRange8">
+                    <span className={styles.l284} data-layer="l284">{"28"}</span>
+                  </div>
+                  <div className={styles.stateInRange9} data-layer="stateInRange9">
+                    <span className={styles.l294} data-layer="l294">{"29"}</span>
+                  </div>
+                  <div className={styles.stateInRange10} data-layer="stateInRange10">
+                    <span className={styles.l304} data-layer="l304">{"30"}</span>
+                  </div>
+                  <div className={styles.stateInRange11} data-layer="stateInRange11">
+                    <span className={styles.l312} data-layer="l312">{"31"}</span>
+                  </div>
+                  <div className={styles.stateDefault62} data-layer="stateDefault62">
+                    <span className={styles.l113} data-layer="l113">{"1"}</span>
+                  </div>
+                </div>
+                <div className={styles.week62} data-layer="week62">
+                  <div className={styles.stateDefault63} data-layer="stateDefault63">
+                    <span className={styles.l213} data-layer="l213">{"2"}</span>
+                  </div>
+                  <div className={styles.stateDefault64} data-layer="stateDefault64">
+                    <span className={styles.l34} data-layer="l34">{"3"}</span>
+                  </div>
+                  <div className={styles.stateDefault65} data-layer="stateDefault65">
+                    <span className={styles.l44} data-layer="l44">{"4"}</span>
+                  </div>
+                  <div className={styles.stateDefault66} data-layer="stateDefault66">
+                    <span className={styles.l54} data-layer="l54">{"5"}</span>
+                  </div>
+                  <div className={styles.stateDefault67} data-layer="stateDefault67">
+                    <span className={styles.l64} data-layer="l64">{"6"}</span>
+                  </div>
+                  <div className={styles.stateDefault68} data-layer="stateDefault68">
+                    <span className={styles.l74} data-layer="l74">{"7"}</span>
+                  </div>
+                  <div className={styles.stateDefault69} data-layer="stateDefault69">
+                    <span className={styles.l84} data-layer="l84">{"8"}</span>
+                  </div>
+                </div>
               </div>
-              <div className={styles.stateDefault102}>
-                <span className={styles.l297}>{"29"}</span>
-              </div>
-              <div className={styles.stateDefault103}>
-                <span className={styles.l307}>{"30"}</span>
-              </div>
-              <div className={styles.stateDefault104}>
-                <span className={styles.l117}>{"1"}</span>
-              </div>
-              <div className={styles.stateDefault105}>
-                <span className={styles.l217}>{"2"}</span>
-              </div>
-              <div className={styles.stateDefault106}>
-                <span className={styles.l37}>{"3"}</span>
-              </div>
-              <div className={styles.stateDefault107}>
-                <span className={styles.l47}>{"4"}</span>
+              <div className={styles.monthAugust2026} data-layer="monthAugust2026">
+                <div className={styles.header3} data-layer="header3">
+                  <span className={styles.iconNavChevronLeft203} data-layer="iconNavChevronLeft203" aria-hidden="true"><Icon name="navChevronLeft20" /></span>
+                  <span className={styles.august2026} data-layer="august2026">{"August 2026"}</span>
+                  <span className={styles.iconNavChevronRight203} data-layer="iconNavChevronRight203" aria-hidden="true"><Icon name="navChevronRight20" /></span>
+                </div>
+                <div className={styles.weekdays3} data-layer="weekdays3">
+                  <span className={styles.su3} data-layer="su3">{"Su"}</span>
+                  <span className={styles.mo3} data-layer="mo3">{"Mo"}</span>
+                  <span className={styles.tu3} data-layer="tu3">{"Tu"}</span>
+                  <span className={styles.we3} data-layer="we3">{"We"}</span>
+                  <span className={styles.th3} data-layer="th3">{"Th"}</span>
+                  <span className={styles.fr3} data-layer="fr3">{"Fr"}</span>
+                  <span className={styles.sa3} data-layer="sa3">{"Sa"}</span>
+                </div>
+                <div className={styles.week13} data-layer="week13">
+                  <div className={styles.stateInRange12} data-layer="stateInRange12">
+                    <span className={styles.l263} data-layer="l263">{"26"}</span>
+                  </div>
+                  <div className={styles.stateInRange13} data-layer="stateInRange13">
+                    <span className={styles.l273} data-layer="l273">{"27"}</span>
+                  </div>
+                  <div className={styles.stateInRange14} data-layer="stateInRange14">
+                    <span className={styles.l285} data-layer="l285">{"28"}</span>
+                  </div>
+                  <div className={styles.stateInRange15} data-layer="stateInRange15">
+                    <span className={styles.l295} data-layer="l295">{"29"}</span>
+                  </div>
+                  <div className={styles.stateInRange16} data-layer="stateInRange16">
+                    <span className={styles.l305} data-layer="l305">{"30"}</span>
+                  </div>
+                  <div className={styles.stateInRange17} data-layer="stateInRange17">
+                    <span className={styles.l313} data-layer="l313">{"31"}</span>
+                  </div>
+                  <div className={styles.stateInRange18} data-layer="stateInRange18">
+                    <span className={styles.l114} data-layer="l114">{"1"}</span>
+                  </div>
+                </div>
+                <div className={styles.week23} data-layer="week23">
+                  <div className={styles.stateInRange19} data-layer="stateInRange19">
+                    <span className={styles.l214} data-layer="l214">{"2"}</span>
+                  </div>
+                  <div className={styles.stateInRange20} data-layer="stateInRange20">
+                    <span className={styles.l35} data-layer="l35">{"3"}</span>
+                  </div>
+                  <div className={styles.stateInRange21} data-layer="stateInRange21">
+                    <span className={styles.l45} data-layer="l45">{"4"}</span>
+                  </div>
+                  <div className={styles.stateSelected3} data-layer="stateSelected3">
+                    <span className={styles.l55} data-layer="l55">{"5"}</span>
+                  </div>
+                  <div className={styles.stateDefault70} data-layer="stateDefault70">
+                    <span className={styles.l65} data-layer="l65">{"6"}</span>
+                  </div>
+                  <div className={styles.stateDefault71} data-layer="stateDefault71">
+                    <span className={styles.l75} data-layer="l75">{"7"}</span>
+                  </div>
+                  <div className={styles.stateDefault72} data-layer="stateDefault72">
+                    <span className={styles.l85} data-layer="l85">{"8"}</span>
+                  </div>
+                </div>
+                <div className={styles.week33} data-layer="week33">
+                  <div className={styles.stateDefault73} data-layer="stateDefault73">
+                    <span className={styles.l93} data-layer="l93">{"9"}</span>
+                  </div>
+                  <div className={styles.stateDefault74} data-layer="stateDefault74">
+                    <span className={styles.l103} data-layer="l103">{"10"}</span>
+                  </div>
+                  <div className={styles.stateDefault75} data-layer="stateDefault75">
+                    <span className={styles.l115} data-layer="l115">{"11"}</span>
+                  </div>
+                  <div className={styles.stateDefault76} data-layer="stateDefault76">
+                    <span className={styles.l123} data-layer="l123">{"12"}</span>
+                  </div>
+                  <div className={styles.stateDefault77} data-layer="stateDefault77">
+                    <span className={styles.l133} data-layer="l133">{"13"}</span>
+                  </div>
+                  <div className={styles.stateDefault78} data-layer="stateDefault78">
+                    <span className={styles.l143} data-layer="l143">{"14"}</span>
+                  </div>
+                  <div className={styles.stateDefault79} data-layer="stateDefault79">
+                    <span className={styles.l153} data-layer="l153">{"15"}</span>
+                  </div>
+                </div>
+                <div className={styles.week43} data-layer="week43">
+                  <div className={styles.stateDefault80} data-layer="stateDefault80">
+                    <span className={styles.l163} data-layer="l163">{"16"}</span>
+                  </div>
+                  <div className={styles.stateDefault81} data-layer="stateDefault81">
+                    <span className={styles.l173} data-layer="l173">{"17"}</span>
+                  </div>
+                  <div className={styles.stateDefault82} data-layer="stateDefault82">
+                    <span className={styles.l183} data-layer="l183">{"18"}</span>
+                  </div>
+                  <div className={styles.stateDefault83} data-layer="stateDefault83">
+                    <span className={styles.l193} data-layer="l193">{"19"}</span>
+                  </div>
+                  <div className={styles.stateDefault84} data-layer="stateDefault84">
+                    <span className={styles.l203} data-layer="l203">{"20"}</span>
+                  </div>
+                  <div className={styles.stateDefault85} data-layer="stateDefault85">
+                    <span className={styles.l215} data-layer="l215">{"21"}</span>
+                  </div>
+                  <div className={styles.stateDefault86} data-layer="stateDefault86">
+                    <span className={styles.l223} data-layer="l223">{"22"}</span>
+                  </div>
+                </div>
+                <div className={styles.week53} data-layer="week53">
+                  <div className={styles.stateDefault87} data-layer="stateDefault87">
+                    <span className={styles.l233} data-layer="l233">{"23"}</span>
+                  </div>
+                  <div className={styles.stateDefault88} data-layer="stateDefault88">
+                    <span className={styles.l243} data-layer="l243">{"24"}</span>
+                  </div>
+                  <div className={styles.stateDefault89} data-layer="stateDefault89">
+                    <span className={styles.l253} data-layer="l253">{"25"}</span>
+                  </div>
+                  <div className={styles.stateDefault90} data-layer="stateDefault90">
+                    <span className={styles.l264} data-layer="l264">{"26"}</span>
+                  </div>
+                  <div className={styles.stateDefault91} data-layer="stateDefault91">
+                    <span className={styles.l274} data-layer="l274">{"27"}</span>
+                  </div>
+                  <div className={styles.stateDefault92} data-layer="stateDefault92">
+                    <span className={styles.l286} data-layer="l286">{"28"}</span>
+                  </div>
+                  <div className={styles.stateDefault93} data-layer="stateDefault93">
+                    <span className={styles.l296} data-layer="l296">{"29"}</span>
+                  </div>
+                </div>
+                <div className={styles.week63} data-layer="week63">
+                  <div className={styles.stateDefault94} data-layer="stateDefault94">
+                    <span className={styles.l306} data-layer="l306">{"30"}</span>
+                  </div>
+                  <div className={styles.stateDefault95} data-layer="stateDefault95">
+                    <span className={styles.l314} data-layer="l314">{"31"}</span>
+                  </div>
+                  <div className={styles.stateDefault96} data-layer="stateDefault96">
+                    <span className={styles.l116} data-layer="l116">{"1"}</span>
+                  </div>
+                  <div className={styles.stateDefault97} data-layer="stateDefault97">
+                    <span className={styles.l216} data-layer="l216">{"2"}</span>
+                  </div>
+                  <div className={styles.stateDefault98} data-layer="stateDefault98">
+                    <span className={styles.l36} data-layer="l36">{"3"}</span>
+                  </div>
+                  <div className={styles.stateDefault99} data-layer="stateDefault99">
+                    <span className={styles.l46} data-layer="l46">{"4"}</span>
+                  </div>
+                  <div className={styles.stateDefault100} data-layer="stateDefault100">
+                    <span className={styles.l56} data-layer="l56">{"5"}</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className={styles.week24}>
-              <div className={styles.stateDefault108}>
-                <span className={styles.l57}>{"5"}</span>
-              </div>
-              <div className={styles.stateDefault109}>
-                <span className={styles.l66}>{"6"}</span>
-              </div>
-              <div className={styles.stateDefault110}>
-                <span className={styles.l76}>{"7"}</span>
-              </div>
-              <div className={styles.stateDefault111}>
-                <span className={styles.l86}>{"8"}</span>
-              </div>
-              <div className={styles.stateDefault112}>
-                <span className={styles.l94}>{"9"}</span>
-              </div>
-              <div className={styles.stateDefault113}>
-                <span className={styles.l104}>{"10"}</span>
-              </div>
-              <div className={styles.stateDefault114}>
-                <span className={styles.l118}>{"11"}</span>
-              </div>
-            </div>
-            <div className={styles.week34}>
-              <div className={styles.stateDefault115}>
-                <span className={styles.l124}>{"12"}</span>
-              </div>
-              <div className={styles.stateDefault116}>
-                <span className={styles.l134}>{"13"}</span>
-              </div>
-              <div className={styles.stateDefault117}>
-                <span className={styles.l144}>{"14"}</span>
-              </div>
-              <div className={styles.stateDefault118}>
-                <span className={styles.l154}>{"15"}</span>
-              </div>
-              <div className={styles.stateDefault119}>
-                <span className={styles.l164}>{"16"}</span>
-              </div>
-              <div className={styles.stateDefault120}>
-                <span className={styles.l174}>{"17"}</span>
-              </div>
-              <div className={styles.stateDefault121}>
-                <span className={styles.l184}>{"18"}</span>
-              </div>
-            </div>
-            <div className={styles.week44}>
-              <div className={styles.stateDefault122}>
-                <span className={styles.l194}>{"19"}</span>
-              </div>
-              <div className={styles.stateDefault123}>
-                <span className={styles.l204}>{"20"}</span>
-              </div>
-              <div className={styles.stateDefault124}>
-                <span className={styles.l218}>{"21"}</span>
-              </div>
-              <div className={styles.stateDefault125}>
-                <span className={styles.l224}>{"22"}</span>
-              </div>
-              <div className={styles.stateDefault126}>
-                <span className={styles.l234}>{"23"}</span>
-              </div>
-              <div className={styles.stateDefault127}>
-                <span className={styles.l244}>{"24"}</span>
-              </div>
-              <div className={styles.stateDefault128}>
-                <span className={styles.l254}>{"25"}</span>
-              </div>
-            </div>
-            <div className={styles.week54}>
-              <div className={styles.stateDefault129}>
-                <span className={styles.l265}>{"26"}</span>
-              </div>
-              <div className={styles.stateDefault130}>
-                <span className={styles.l275}>{"27"}</span>
-              </div>
-              <div className={styles.stateDefault131}>
-                <span className={styles.l288}>{"28"}</span>
-              </div>
-              <div className={styles.stateDefault132}>
-                <span className={styles.l298}>{"29"}</span>
-              </div>
-              <div className={styles.stateSelected4}>
-                <span className={styles.l308}>{"30"}</span>
-              </div>
-              <div className={styles.stateDefault133}>
-                <span className={styles.l315}>{"31"}</span>
-              </div>
-              <div className={styles.stateDefault134}>
-                <span className={styles.l119}>{"1"}</span>
-              </div>
-            </div>
-            <div className={styles.week64}>
-              <div className={styles.stateDefault135}>
-                <span className={styles.l219}>{"2"}</span>
-              </div>
-              <div className={styles.stateDefault136}>
-                <span className={styles.l38}>{"3"}</span>
-              </div>
-              <div className={styles.stateDefault137}>
-                <span className={styles.l48}>{"4"}</span>
-              </div>
-              <div className={styles.stateDefault138}>
-                <span className={styles.l58}>{"5"}</span>
-              </div>
-              <div className={styles.stateDefault139}>
-                <span className={styles.l67}>{"6"}</span>
-              </div>
-              <div className={styles.stateDefault140}>
-                <span className={styles.l77}>{"7"}</span>
-              </div>
-              <div className={styles.stateDefault141}>
-                <span className={styles.l87}>{"8"}</span>
+            <div className={styles.hDivider} data-layer="hDivider" />
+            <div className={styles.footer} data-layer="footer">
+              <span className={styles.button} data-layer="button"><Button variant="ghost" size="md" children="Clear" /></span>
+              <div className={styles.actions} data-layer="actions">
+                <span className={styles.button2} data-layer="button2"><Button variant="secondary" size="md" children="Cancel" /></span>
               </div>
             </div>
           </div>
-          <div className={styles.timeRow}>
-            <span className={styles.time}>{"Time"}</span>
-            <div className={styles.timeBox}>
-              <span className={styles.l02}>{"02"}</span>
+          <div className={styles.calendar} data-layer="calendar">
+            <div className={styles.header4} data-layer="header4">
+              <span className={styles.iconNavChevronLeft204} data-layer="iconNavChevronLeft204" aria-hidden="true"><Icon name="navChevronLeft20" /></span>
+              <span className={styles.july20263} data-layer="july20263">{"July 2026"}</span>
+              <span className={styles.iconNavChevronRight204} data-layer="iconNavChevronRight204" aria-hidden="true"><Icon name="navChevronRight20" /></span>
             </div>
-            <span className={styles.layer}>{":"}</span>
-            <div className={styles.timeBox2}>
-              <span className={styles.l309}>{"30"}</span>
+            <div className={styles.weekdays4} data-layer="weekdays4">
+              <span className={styles.su4} data-layer="su4">{"Su"}</span>
+              <span className={styles.mo4} data-layer="mo4">{"Mo"}</span>
+              <span className={styles.tu4} data-layer="tu4">{"Tu"}</span>
+              <span className={styles.we4} data-layer="we4">{"We"}</span>
+              <span className={styles.th4} data-layer="th4">{"Th"}</span>
+              <span className={styles.fr4} data-layer="fr4">{"Fr"}</span>
+              <span className={styles.sa4} data-layer="sa4">{"Sa"}</span>
             </div>
-            <div className={styles.ampm}>
-              <div className={styles.segAM}>
-                <span className={styles.aM}>{"AM"}</span>
+            <div className={styles.week14} data-layer="week14">
+              <div className={styles.stateDefault101} data-layer="stateDefault101">
+                <span className={styles.l287} data-layer="l287">{"28"}</span>
               </div>
-              <div className={styles.segPM}>
-                <span className={styles.pM}>{"PM"}</span>
+              <div className={styles.stateDefault102} data-layer="stateDefault102">
+                <span className={styles.l297} data-layer="l297">{"29"}</span>
+              </div>
+              <div className={styles.stateDefault103} data-layer="stateDefault103">
+                <span className={styles.l307} data-layer="l307">{"30"}</span>
+              </div>
+              <div className={styles.stateDefault104} data-layer="stateDefault104">
+                <span className={styles.l117} data-layer="l117">{"1"}</span>
+              </div>
+              <div className={styles.stateDefault105} data-layer="stateDefault105">
+                <span className={styles.l217} data-layer="l217">{"2"}</span>
+              </div>
+              <div className={styles.stateDefault106} data-layer="stateDefault106">
+                <span className={styles.l37} data-layer="l37">{"3"}</span>
+              </div>
+              <div className={styles.stateDefault107} data-layer="stateDefault107">
+                <span className={styles.l47} data-layer="l47">{"4"}</span>
+              </div>
+            </div>
+            <div className={styles.week24} data-layer="week24">
+              <div className={styles.stateDefault108} data-layer="stateDefault108">
+                <span className={styles.l57} data-layer="l57">{"5"}</span>
+              </div>
+              <div className={styles.stateDefault109} data-layer="stateDefault109">
+                <span className={styles.l66} data-layer="l66">{"6"}</span>
+              </div>
+              <div className={styles.stateDefault110} data-layer="stateDefault110">
+                <span className={styles.l76} data-layer="l76">{"7"}</span>
+              </div>
+              <div className={styles.stateDefault111} data-layer="stateDefault111">
+                <span className={styles.l86} data-layer="l86">{"8"}</span>
+              </div>
+              <div className={styles.stateDefault112} data-layer="stateDefault112">
+                <span className={styles.l94} data-layer="l94">{"9"}</span>
+              </div>
+              <div className={styles.stateDefault113} data-layer="stateDefault113">
+                <span className={styles.l104} data-layer="l104">{"10"}</span>
+              </div>
+              <div className={styles.stateDefault114} data-layer="stateDefault114">
+                <span className={styles.l118} data-layer="l118">{"11"}</span>
+              </div>
+            </div>
+            <div className={styles.week34} data-layer="week34">
+              <div className={styles.stateDefault115} data-layer="stateDefault115">
+                <span className={styles.l124} data-layer="l124">{"12"}</span>
+              </div>
+              <div className={styles.stateDefault116} data-layer="stateDefault116">
+                <span className={styles.l134} data-layer="l134">{"13"}</span>
+              </div>
+              <div className={styles.stateDefault117} data-layer="stateDefault117">
+                <span className={styles.l144} data-layer="l144">{"14"}</span>
+              </div>
+              <div className={styles.stateDefault118} data-layer="stateDefault118">
+                <span className={styles.l154} data-layer="l154">{"15"}</span>
+              </div>
+              <div className={styles.stateDefault119} data-layer="stateDefault119">
+                <span className={styles.l164} data-layer="l164">{"16"}</span>
+              </div>
+              <div className={styles.stateDefault120} data-layer="stateDefault120">
+                <span className={styles.l174} data-layer="l174">{"17"}</span>
+              </div>
+              <div className={styles.stateDefault121} data-layer="stateDefault121">
+                <span className={styles.l184} data-layer="l184">{"18"}</span>
+              </div>
+            </div>
+            <div className={styles.week44} data-layer="week44">
+              <div className={styles.stateDefault122} data-layer="stateDefault122">
+                <span className={styles.l194} data-layer="l194">{"19"}</span>
+              </div>
+              <div className={styles.stateDefault123} data-layer="stateDefault123">
+                <span className={styles.l204} data-layer="l204">{"20"}</span>
+              </div>
+              <div className={styles.stateDefault124} data-layer="stateDefault124">
+                <span className={styles.l218} data-layer="l218">{"21"}</span>
+              </div>
+              <div className={styles.stateDefault125} data-layer="stateDefault125">
+                <span className={styles.l224} data-layer="l224">{"22"}</span>
+              </div>
+              <div className={styles.stateDefault126} data-layer="stateDefault126">
+                <span className={styles.l234} data-layer="l234">{"23"}</span>
+              </div>
+              <div className={styles.stateDefault127} data-layer="stateDefault127">
+                <span className={styles.l244} data-layer="l244">{"24"}</span>
+              </div>
+              <div className={styles.stateDefault128} data-layer="stateDefault128">
+                <span className={styles.l254} data-layer="l254">{"25"}</span>
+              </div>
+            </div>
+            <div className={styles.week54} data-layer="week54">
+              <div className={styles.stateDefault129} data-layer="stateDefault129">
+                <span className={styles.l265} data-layer="l265">{"26"}</span>
+              </div>
+              <div className={styles.stateDefault130} data-layer="stateDefault130">
+                <span className={styles.l275} data-layer="l275">{"27"}</span>
+              </div>
+              <div className={styles.stateDefault131} data-layer="stateDefault131">
+                <span className={styles.l288} data-layer="l288">{"28"}</span>
+              </div>
+              <div className={styles.stateDefault132} data-layer="stateDefault132">
+                <span className={styles.l298} data-layer="l298">{"29"}</span>
+              </div>
+              <div className={styles.stateSelected4} data-layer="stateSelected4">
+                <span className={styles.l308} data-layer="l308">{"30"}</span>
+              </div>
+              <div className={styles.stateDefault133} data-layer="stateDefault133">
+                <span className={styles.l315} data-layer="l315">{"31"}</span>
+              </div>
+              <div className={styles.stateDefault134} data-layer="stateDefault134">
+                <span className={styles.l119} data-layer="l119">{"1"}</span>
+              </div>
+            </div>
+            <div className={styles.week64} data-layer="week64">
+              <div className={styles.stateDefault135} data-layer="stateDefault135">
+                <span className={styles.l219} data-layer="l219">{"2"}</span>
+              </div>
+              <div className={styles.stateDefault136} data-layer="stateDefault136">
+                <span className={styles.l38} data-layer="l38">{"3"}</span>
+              </div>
+              <div className={styles.stateDefault137} data-layer="stateDefault137">
+                <span className={styles.l48} data-layer="l48">{"4"}</span>
+              </div>
+              <div className={styles.stateDefault138} data-layer="stateDefault138">
+                <span className={styles.l58} data-layer="l58">{"5"}</span>
+              </div>
+              <div className={styles.stateDefault139} data-layer="stateDefault139">
+                <span className={styles.l67} data-layer="l67">{"6"}</span>
+              </div>
+              <div className={styles.stateDefault140} data-layer="stateDefault140">
+                <span className={styles.l77} data-layer="l77">{"7"}</span>
+              </div>
+              <div className={styles.stateDefault141} data-layer="stateDefault141">
+                <span className={styles.l87} data-layer="l87">{"8"}</span>
               </div>
             </div>
           </div>
-          <div className={styles.divider} />
-          <div className={styles.summaryRow}>
-            <span className={styles.selectedJul302026230PM}>{"Selected: Jul 30, 2026, 2:30 PM"}</span>
-            <span className={styles.button3}><Button size="md" children="Apply" /></span>
+          <div className={styles.timeRow} data-layer="timeRow">
+            <span className={styles.time} data-layer="time">{"Time"}</span>
+            <div className={styles.timeBox} data-layer="timeBox">
+              <span className={styles.l02} data-layer="l02">{"02"}</span>
+            </div>
+            <span className={styles.layer} data-layer="layer">{":"}</span>
+            <div className={styles.timeBox2} data-layer="timeBox2">
+              <span className={styles.l309} data-layer="l309">{"30"}</span>
+            </div>
+            <div className={styles.ampm} data-layer="ampm">
+              <div className={styles.segAM} data-layer="segAM">
+                <span className={styles.aM} data-layer="aM">{"AM"}</span>
+              </div>
+              <div className={styles.segPM} data-layer="segPM">
+                <span className={styles.pM} data-layer="pM">{"PM"}</span>
+              </div>
+            </div>
+          </div>
+          <div className={styles.divider} data-layer="divider" />
+          <div className={styles.summaryRow} data-layer="summaryRow">
+            <span className={styles.selectedJul302026230PM} data-layer="selectedJul302026230PM">{"Selected: Jul 30, 2026, 2:30 PM"}</span>
+            <span className={styles.button3} data-layer="button3"><Button size="md" children="Apply" /></span>
           </div>
         </div>
       )}
-      <div className={styles.fieldsRow}>
-        <div className={styles.fieldRow2}>
-          <span className={styles.mMDDYYYY2}>{"MM/DD/YYYY"}</span>
-          <span className={styles.iconFormCalendar162} aria-hidden="true"><Icon name="formCalendar16" /></span>
-          <span className={styles.l07202026}>{"07/20/2026"}</span>
-          <span className={styles.l134520262}>{"13/45/2026"}</span>
+      <div className={styles.fieldsRow} data-layer="fieldsRow">
+        <div className={styles.fieldRow2} data-layer="fieldRow2">
+          <span className={styles.mMDDYYYY2} data-layer="mMDDYYYY2">{"MM/DD/YYYY"}</span>
+          <span className={styles.iconFormCalendar162} data-layer="iconFormCalendar162" aria-hidden="true"><Icon name="formCalendar16" /></span>
+          <span className={styles.l07202026} data-layer="l07202026">{"07/20/2026"}</span>
+          <span className={styles.l134520262} data-layer="l134520262">{"13/45/2026"}</span>
         </div>
-        <div className={styles.fieldRow3}>
-          <span className={styles.mMDDYYYY3}>{"MM/DD/YYYY"}</span>
-          <span className={styles.iconFormCalendar163} aria-hidden="true"><Icon name="formCalendar16" /></span>
-          <span className={styles.l08052026}>{"08/05/2026"}</span>
-          <span className={styles.l134520263}>{"13/45/2026"}</span>
+        <div className={styles.fieldRow3} data-layer="fieldRow3">
+          <span className={styles.mMDDYYYY3} data-layer="mMDDYYYY3">{"MM/DD/YYYY"}</span>
+          <span className={styles.iconFormCalendar163} data-layer="iconFormCalendar163" aria-hidden="true"><Icon name="formCalendar16" /></span>
+          <span className={styles.l08052026} data-layer="l08052026">{"08/05/2026"}</span>
+          <span className={styles.l134520263} data-layer="l134520263">{"13/45/2026"}</span>
         </div>
       </div>
     </div>

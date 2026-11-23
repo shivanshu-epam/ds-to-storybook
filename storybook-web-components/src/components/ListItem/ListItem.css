@@ -98,6 +98,7 @@
   flex-shrink: 1;
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-weight: 500;
+  opacity: 1;
   white-space: normal;
 }
 
@@ -138,6 +139,7 @@
   flex-shrink: 1;
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-weight: 400;
+  opacity: 1;
   order: 3;
   white-space: nowrap;
 }
@@ -263,6 +265,7 @@
   flex-shrink: 1;
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-weight: 400;
+  opacity: 1;
   white-space: normal;
 }
 
@@ -273,6 +276,7 @@
   flex-shrink: 1;
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-weight: 400;
+  opacity: 1;
   white-space: normal;
 }
 

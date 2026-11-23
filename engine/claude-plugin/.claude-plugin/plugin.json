@@ -1,0 +1,11 @@
+{
+  "name": "ds-sync",
+  "version": "0.2.0",
+  "description": "Generate a tested Storybook from any Figma design system with the ds-sync CLI, and use Claude for the judgement calls Figma leaves open: code names and descriptions as reviewed decisions, and diagnosis of fidelity failures.",
+  "author": { "name": "ds-sync contributors" },
+  "homepage": "https://github.com/shivanshu-epam/ds-to-storybook",
+  "repository": "https://github.com/shivanshu-epam/ds-to-storybook",
+  "license": "MIT",
+  "keywords": ["figma", "storybook", "design-system", "design-tokens", "codegen"],
+  "hooks": "./hooks/hooks.json"
+}

@@ -15,6 +15,12 @@
       "prop": "state",
       "figma": "State (variant)",
       "note": "States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Filled → state=\"filled\", Disabled → disabled, Read-only → state=\"read-only\", Error → state=\"error\", Success → state=\"success\", State9 → state=\"state9\""
+    },
+    {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
     }
   ],
   "notes": [

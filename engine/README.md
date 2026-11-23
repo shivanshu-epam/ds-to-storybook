@@ -40,7 +40,7 @@ On Figma plans without the Variables API (non-Enterprise), export your variables
 
 The token comes from `FIGMA_TOKEN` in the environment or in `.env` next to the config. Figma responses are cached in `.ds-sync/cache`; `--refresh` re-reads them; `--figma-version` pins a version for reproducible runs.
 
-Configuration reference, templates and how it all works: [the repository](https://github.com/shivanshu-epam/ds-to-storybook) ([ARCHITECTURE.md](https://github.com/shivanshu-epam/ds-to-storybook/blob/main/ARCHITECTURE.md), [config reference](https://github.com/shivanshu-epam/ds-to-storybook/blob/main/skills/figma-to-storybook/reference/config.md)).
+Configuration reference, templates and how it all works: [the repository](https://github.com/shivanshu-epam/ds-to-storybook) ([ARCHITECTURE.md](https://github.com/shivanshu-epam/ds-to-storybook/blob/main/ARCHITECTURE.md), [config reference](https://github.com/shivanshu-epam/ds-to-storybook/blob/main/engine/claude-plugin/skills/ds-sync/reference/config.md)).
 
 ## Develop
 

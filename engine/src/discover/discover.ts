@@ -9,6 +9,7 @@ import type { ComponentTarget } from '../config.ts';
 import type { FigmaReader } from '../figma/client.ts';
 import type { FigmaNode, FileResponse } from '../figma/types.ts';
 import { looseKey } from '../util/core.ts';
+import { asComponentSet, isIconNode } from '../ir/build.ts';
 
 export type FrameKind = 'documentation' | 'example' | 'page-text' | 'other';
 export type PageKind = 'components' | 'icons' | 'parts' | 'patterns' | 'skip' | 'empty';
@@ -34,7 +35,7 @@ export interface DiscoveredFrame {
 export interface Proposal {
   /** Generated component name (PascalCase). */
   name: string;
-  template: 'action' | 'checkbox' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
+  template: 'action' | 'checkbox' | 'checkbox-single' | 'radio-single' | 'combobox' | 'disclosure' | 'button' | 'link' | 'accordion' | 'switch' | 'radio' | 'radio-field' | 'radio-group' | 'input' | 'dialog' | 'generic';
   /** Template role -> component set id. */
   sets: Record<string, string>;
   page: string;
@@ -136,6 +137,80 @@ function hasOnOffAxis(node?: FigmaNode): boolean {
   return defs.some((d) => d.type === 'VARIANT' && d.variantOptions?.length === 2 && /^(off|false|unchecked|unselected|inactive)$/i.test(d.variantOptions.find((o) => /^(off|false|unchecked|unselected|inactive)$/i.test(o)) ?? '') && d.variantOptions.some((o) => /^(on|true|checked|selected|active)$/i.test(o)));
 }
 
+/**
+ * Disclosure by structure (phase 3): a True/False variant axis about being expanded or open, one layer shown only in
+ * the expanded variants (the panel) and one frame beside it shown in all (the header). The generator checks the same.
+ */
+function disclosureStructure(node?: FigmaNode): string | undefined {
+  const defs = Object.entries(node?.componentPropertyDefinitions ?? {}) as [string, { type?: string; variantOptions?: string[] }][];
+  const axis = defs.find(([k, d]) => d.type === 'VARIANT' && /expand|open/i.test(k) && d.variantOptions?.length === 2 && d.variantOptions.every((o) => /^(true|false)$/i.test(o)))?.[0];
+  // A boolean property shows the panel and a nested instance triggers it (a Collapsible): the generator checks the trigger is a button.
+  const bool = defs.find(([k, d]) => d.type === 'BOOLEAN' && /expand|open/i.test(k))?.[0];
+  if (!axis && bool && node?.children?.length) {
+    let bound = false;
+    let instances = 0;
+    const walk = (n: FigmaNode) => { if ((n.componentPropertyReferences as Record<string, string> | undefined)?.visible === bool) bound = true; else if (n.type === 'INSTANCE') instances++; if (n.type !== 'INSTANCE') n.children?.forEach(walk); };
+    node.children.forEach(walk);
+    return bound && instances ? bool.replace(/#[\d:]+$/, '') : undefined;
+  }
+  if (!axis || !node?.children?.length) return undefined;
+  const valueOf = (v: FigmaNode) => Object.fromEntries(v.name.split(',').map((x) => x.split('=').map((y) => y.trim()) as [string, string]))[axis];
+  const walk = (n: FigmaNode, prefix: string, out: Map<string, { visible: boolean; type: string; parent: string }>, depth: number, hidden: boolean) => {
+    if (depth > 3) return;
+    for (const k of n.children ?? []) {
+      const path = prefix ? `${prefix}/${k.name}` : k.name;
+      const vis = !hidden && k.visible !== false;
+      out.set(path, { visible: vis, type: k.type, parent: prefix });
+      if (k.type !== 'INSTANCE') walk(k, path, out, depth + 1, !vis);
+    }
+  };
+  const variants = node.children.filter((v) => v.type === 'COMPONENT').map((v) => { const m = new Map<string, { visible: boolean; type: string; parent: string }>(); walk(v, '', m, 0, false); return { on: /^true$/i.test(valueOf(v) ?? ''), m }; });
+  const on = variants.filter((v) => v.on);
+  const off = variants.filter((v) => !v.on);
+  if (!on.length || !off.length) return undefined;
+  const vis = (v: (typeof variants)[number], path: string) => v.m.get(path)?.visible === true;
+  let parent = '';
+  for (let depth = 0; depth < 3; depth++) {
+    const kids = [...new Set(variants.flatMap((v) => [...v.m].filter(([, x]) => x.parent === parent && x.type !== 'TEXT').map(([k]) => k)))];
+    const panels = kids.filter((k) => on.every((v) => vis(v, k)) && off.every((v) => !vis(v, k)));
+    const headers = kids.filter((k) => variants.every((v) => vis(v, k) && v.m.get(k)!.type !== 'INSTANCE'));
+    if (panels.length === 1 && headers.length === 1) return axis;
+    if (kids.length !== 1) return undefined;
+    parent = kids[0]!;
+  }
+  return undefined;
+}
+
+/**
+ * A select or combobox: a variant value that means open (State=Opened, isOpen=True) and a nested list, menu or dropdown
+ * instance as the popup, in a set named as a select, combobox, dropdown, picker or autocomplete (or one holding a list).
+ */
+function comboStructure(node: FigmaNode | undefined, name: string, nodes: Map<string, FigmaNode>): string | undefined {
+  const defs = Object.entries(node?.componentPropertyDefinitions ?? {}) as [string, { type?: string; variantOptions?: string[] }][];
+  const axis = defs.find(([k, d]) => d.type === 'VARIANT' && (d.variantOptions?.some((o) => /^(is[ _-]?)?(open|opened|expanded)$/i.test(o.trim())) || (/open|expand/i.test(k) && d.variantOptions?.every((o) => /^(true|false)$/i.test(o)))))?.[0];
+  if (!axis || !node?.children?.length || /^[_.]|base$/i.test(name.trim()) || /accordion|collapsible|dialog|modal|drawer/i.test(name)) return undefined;
+  let popup: string | undefined;
+  const walk = (n: FigmaNode) => {
+    if (popup) return;
+    if (n.type === 'INSTANCE') {
+      const main = n.componentId ? nodes.get(n.componentId) : undefined;
+      const label = `${n.name} ${main?.name ?? ''}`;
+      if (/menu|list|dropdown|popover|option/i.test(label) && !/icon|trigger|button|field|input|header|label|footer/i.test(label)) popup = n.name;
+      return;
+    }
+    n.children?.forEach(walk);
+  };
+  node.children.forEach(walk);
+  if (!popup || !/select|combo ?box|dropdown|picker|autocomplete/i.test(name)) return undefined;
+  return `${axis.replace(/#[\d:]+$/, '')} opens the "${popup}" popup`;
+}
+
+/** A True/False variant axis about being checked (isChecked, Checked=On/Off). */
+function checkedAxis(node?: FigmaNode): string | undefined {
+  const defs = Object.entries(node?.componentPropertyDefinitions ?? {}) as [string, { type?: string; variantOptions?: string[] }][];
+  return defs.find(([k, d]) => d.type === 'VARIANT' && /check/i.test(k) && d.variantOptions?.length === 2 && d.variantOptions.some((o) => /^(true|checked|on)$/i.test(o)) && d.variantOptions.some((o) => /^(false|unchecked|off)$/i.test(o)))?.[0];
+}
+
 function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides: Overrides): Proposal[] {
   const out: Proposal[] = [];
   const claimed = new Set<string>();
@@ -184,6 +259,10 @@ function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides
         template = radioTemplate;
         reason = radioTemplate === 'radio' ? 'Radio control with a selected axis: radio archetype (native radio, WAI-ARIA radio group).' : radioTemplate === 'radio-field' ? 'Radio field: the row with the radio becomes its <label>.' : 'Radio group: role="radiogroup" with a shared name and value.';
         confidence = 0.85;
+      } else if (comboStructure(nodes.get(s.id), s.name, nodes)) {
+        template = 'combobox';
+        reason = `${comboStructure(nodes.get(s.id), s.name, nodes)}: select-only combobox archetype (WAI-ARIA combobox), recognised from structure.`;
+        confidence = 0.75;
       } else if (/^button$/i.test(s.name) && p.includes('Variant') && p.some((x) => /^state$/i.test(x))) {
         template = 'action';
         reason = 'Named Button with Variant and State axes: action archetype (WAI-ARIA button).';
@@ -204,6 +283,26 @@ function propose(sets: DiscoveredSet[], nodes: Map<string, FigmaNode>, overrides
         template = 'switch';
         reason = 'Switch or toggle with an on/off variant axis: switch archetype (WAI-ARIA switch).';
         confidence = 0.85;
+      } else if (disclosureStructure(nodes.get(s.id))) {
+        template = 'disclosure';
+        reason = `${disclosureStructure(nodes.get(s.id))} axis with a header and a panel shown only when expanded: disclosure archetype (WAI-ARIA disclosure), recognised from structure.`;
+        confidence = 0.8;
+      } else if (checkedAxis(nodes.get(s.id)) && /radio/i.test(s.name) && !/group/i.test(s.name) && !/^[_.]|base$/i.test(s.name.trim())) {
+        template = 'radio-single';
+        reason = `${checkedAxis(nodes.get(s.id))} axis on a set named as a radio: radio archetype (WAI-ARIA radio), selected by its group.`;
+        confidence = 0.75;
+      } else if (checkedAxis(nodes.get(s.id)) && !/radio|switch|toggle/i.test(s.name) && !/^[_.]|base$/i.test(s.name.trim())) {
+        template = 'checkbox-single';
+        reason = `${checkedAxis(nodes.get(s.id))} axis: checkbox archetype (WAI-ARIA checkbox), recognised from the property.`;
+        confidence = 0.75;
+      } else if (/\bbutton\b|button$/i.test(s.name.replace(/([a-z])([A-Z])/g, '$1 $2')) && !/group|bar/i.test(s.name) && !/^[_.]|base$/i.test(s.name.trim())) {
+        template = 'button';
+        reason = 'Named as a button, with no checked or expanded axis: button archetype (native <button>, WAI-ARIA button). Figma has no structural marker for a button, so the name is the evidence; override with an archetype decision if wrong.';
+        confidence = 0.7;
+      } else if (/\blink\b|link$/i.test(s.name.replace(/([a-z])([A-Z])/g, '$1 $2')) && !/group|list/i.test(s.name) && !/^[_.]|base$/i.test(s.name.trim())) {
+        template = 'link';
+        reason = 'Named as a link: link archetype (native <a>, pass href). The name is the evidence; override with an archetype decision if wrong.';
+        confidence = 0.7;
       } else if (/button|accordion|checkbox|radio|switch|tab|dialog|modal|menu|select|dropdown|input|slider/i.test(s.name)) {
         confidence = 0.6;
         reason += ' The name suggests an interactive component, so behaviour must be specified before production use.';
@@ -332,6 +431,43 @@ export async function discover(client: FigmaReader, fileKey: string, overrides: 
     for (const [id, e] of Object.entries(res.nodes)) if (e) fullNodes.set(id, e.document);
   }
 
+  // Dependencies: local sets that the found components place as instances but that live where discovery does not look
+  // (internal pages, "_" frames). Without them those layers render as empty boxes (Blade's focus rings and icon sizes).
+  let added = 0;
+  for (let round = 0; round < 3; round++) {
+    const known = new Set(sets.flatMap((s) => (fullNodes.get(s.id)?.children ?? []).map((v) => v.id)));
+    const wanted = new Map<string, FigmaNode>();
+    const walk = (n: FigmaNode) => { if (n.type === 'INSTANCE' && n.componentId && !known.has(n.componentId) && !wanted.has(n.componentId)) wanted.set(n.componentId, n); n.children?.forEach(walk); };
+    for (const s of sets) fullNodes.get(s.id)?.children?.forEach(walk);
+    if (!wanted.size) break;
+    const setIds = new Set<string>();
+    const ids = [...wanted.keys()];
+    for (let i = 0; i < ids.length; i += 50) {
+      const res = await client.nodes(fileKey, ids.slice(i, i + 50), file.version, 1);
+      for (const [id, e] of Object.entries(res.nodes)) {
+        const c = e?.components?.[id] as { name: string; componentSetId?: string; remote?: boolean } | undefined;
+        if (!e || !c || c.remote) continue;
+        if (c.componentSetId) { if (!sets.some((s) => s.id === c.componentSetId)) setIds.add(c.componentSetId); continue; }
+        // A standalone component (no variants) that is not an icon: icons are exported as SVG, not generated.
+        const names = Object.fromEntries(Object.entries(e.components ?? {}).map(([k, v]) => [k, v.name]));
+        if (e.document.type === 'COMPONENT' && e.document.children?.length && !isIconNode(wanted.get(id)!, names)) setIds.add(id);
+      }
+    }
+    if (!setIds.size) break;
+    const list = [...setIds];
+    for (let i = 0; i < list.length; i += 25) {
+      const res = await client.nodes(fileKey, list.slice(i, i + 25), file.version);
+      for (const [id, e] of Object.entries(res.nodes)) {
+        const doc = e ? asComponentSet(e.document) : undefined;
+        if (!doc || doc.type !== 'COMPONENT_SET' || !doc.children?.some((v) => v.type === 'COMPONENT')) continue;
+        fullNodes.set(id, doc);
+        sets.push({ id, name: doc.name, page: located.get(id)?.page || 'Dependencies', path: located.get(id)?.path ?? [] });
+        added++;
+      }
+    }
+  }
+  if (added) log(`Discovery: added ${added} set(s) that other components use but that live outside the component pages`);
+
   const proposals = propose(sets, fullNodes, overrides).map((p) => ({
     ...p,
     docFrames: frames.filter((f) => f.page === p.page && f.kind === 'documentation').map((f) => f.id),
@@ -351,7 +487,7 @@ export function targetsFromDiscovery(d: Discovery): ComponentTarget[] {
     const p = d.proposals.find((x) => Object.values(x.sets).includes(s.id));
     return {
       id: `auto.${s.id}`,
-      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' ? 'selection.binary' : p?.template === 'accordion' ? 'disclosure' : p?.template === 'switch' ? 'switch' : p?.template?.startsWith('radio') ? 'radio' : p?.template === 'input' ? 'input' : p?.template === 'dialog' ? 'dialog' : 'generic',
+      archetype: p?.template === 'action' ? 'action' : p?.template === 'checkbox' || p?.template === 'checkbox-single' ? 'selection.binary' : p?.template === 'radio-single' ? 'radio' : p?.template === 'disclosure' ? 'disclosure' : p?.template === 'button' ? 'action' : p?.template === 'link' ? 'generic' : p?.template === 'accordion' ? 'disclosure' : p?.template === 'switch' ? 'switch' : p?.template?.startsWith('radio') ? 'radio' : p?.template === 'input' ? 'input' : p?.template === 'dialog' ? 'dialog' : 'generic',
       figma: { page: s.page, componentSet: { id: s.id, name: s.name }, docFrames: p?.docFrames ?? [] },
     };
   });

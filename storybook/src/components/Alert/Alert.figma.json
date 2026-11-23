@@ -13,15 +13,21 @@
   "mapping": [
     {
       "prop": "sentiment",
-      "figma": "Sentiment (variant)"
+      "figma": "Sentiment (variant)",
+      "type": "'danger' | 'neutral' | 'info' | 'success' | 'warning'",
+      "default": "'neutral'"
     },
     {
       "prop": "size",
-      "figma": "Size (variant)"
+      "figma": "Size (variant)",
+      "type": "'md' | 'sm'",
+      "default": "'sm'"
     },
     {
       "prop": "state",
-      "figma": "State (variant)"
+      "figma": "State (variant)",
+      "type": "'with-action-close' | 'default' | 'with-action' | 'with-close'",
+      "default": "'default'"
     }
   ],
   "notes": [

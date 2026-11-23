@@ -30,11 +30,11 @@ The default configuration (every property at its Figma default).
 
 ### Content
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"With name"}</td><td><code>{"hasName"}</code></td><td>{"Has name (boolean)"}</td><td>{""}</td></tr><tr><td>{"With email"}</td><td><code>{"hasEmail"}</code></td><td>{"Has email (boolean)"}</td><td>{""}</td></tr><tr><td>{"With trailing icon"}</td><td><code>{"hasTrailingIcon"}</code></td><td>{"Has trailing icon (boolean)"}</td><td>{""}</td></tr><tr><td>{"Name"}</td><td><code>{"name"}</code></td><td>{"Name (text)"}</td><td>{""}</td></tr><tr><td>{"Email"}</td><td><code>{"email"}</code></td><td>{"Email (text)"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"With name"}</td><td><code>{"hasName"}</code></td><td><code>{"boolean"}</code></td><td><code>{"true"}</code></td><td>{""}</td><td>{"Has name (boolean)"}</td></tr><tr><td>{"With email"}</td><td><code>{"hasEmail"}</code></td><td><code>{"boolean"}</code></td><td><code>{"false"}</code></td><td>{""}</td><td>{"Has email (boolean)"}</td></tr><tr><td>{"With trailing icon"}</td><td><code>{"hasTrailingIcon"}</code></td><td><code>{"boolean"}</code></td><td><code>{"false"}</code></td><td>{""}</td><td>{"Has trailing icon (boolean)"}</td></tr><tr><td>{"Name"}</td><td><code>{"name"}</code></td><td><code>{"ReactNode"}</code></td><td><code>{"'Alex Johnson'"}</code></td><td>{""}</td><td>{"Name (text)"}</td></tr><tr><td>{"Email"}</td><td><code>{"email"}</code></td><td><code>{"ReactNode"}</code></td><td><code>{"'alex.johnson@acme.com'"}</code></td><td>{""}</td><td>{"Email (text)"}</td></tr></tbody></table>
 
 ### State
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"State"}</td><td><code>{"state"}</code></td><td>{"State (variant)"}</td><td>{"States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Active → :pressed (CSS), Disabled → disabled, Selected → state=\"selected\""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"State"}</td><td><code>{"state"}</code></td><td>—</td><td>—</td><td>{"States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Active → :pressed (CSS), Disabled → disabled, Selected → state=\"selected\""}</td><td>{"State (variant)"}</td></tr><tr><td>{"Disabled"}</td><td><code>{"disabled"}</code></td><td><code>{"boolean"}</code></td><td><code>{"false"}</code></td><td>{""}</td><td>{"State=Disabled"}</td></tr></tbody></table>
 
 ### Try it
 
@@ -85,7 +85,12 @@ This is a standard Web Component: it works in any framework, or none.
 
 ## Design reference
 
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=274-1803">{"AvatarIdentity"}</a> · version 2420998788157412873 · 6 designed variants</li><li>{"Nested consistency: 3/3 nested values match Figma (1 nested component layers; 5 state variants not compared)."}</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
+<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=274-1803">{"AvatarIdentity"}</a> · version 2420998788157412873 · 6 designed variants</li><li>{"Nested consistency: 3/3 nested values match Figma (1 nested component layers; 5 state variants not compared)."}</li><li>{"Visual check: 6/6 variants match Figma (worst difference 0.31%)."}</li></ul>
+
+### Scorecard
+
+<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
+<ul><li>{"✓ Visual fidelity: 6/6 designed variants match Figma (worst 0.3%)"}</li><li>{"✓ Variants: 6 designed variants shown"}</li><li>{"✓ Properties: 7/7 Figma properties mapped"}</li><li>{"✓ Nested consistency: 3/3 nested values match Figma (1 nested layers)"}</li><li>{"– Interaction: visuals only (display component)"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 2 accepted known issues"}</li><li>{"⚠ Documentation: description; 0/7 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 2 generator notes"}</li></ul>
 
 <h2>{"Usage"}</h2>
 <h3>{"Avatar"}</h3>

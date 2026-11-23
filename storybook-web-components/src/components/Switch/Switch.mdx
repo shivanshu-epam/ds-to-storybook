@@ -34,15 +34,15 @@ The default configuration (every property at its Figma default).
 
 ### Appearance
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Size"}</td><td><code>{"size"}</code></td><td>{"Size (variant)"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Size"}</td><td><code>{"size"}</code></td><td><code>{"'medium' | 'small'"}</code></td><td><code>{"'medium'"}</code></td><td>{""}</td><td>{"Size (variant)"}</td></tr></tbody></table>
 
 ### Content
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"With inner content"}</td><td><code>{"showInnerContent"}</code></td><td>{"Show Inner Content (boolean)"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"With inner content"}</td><td><code>{"showInnerContent"}</code></td><td><code>{"boolean"}</code></td><td><code>{"true"}</code></td><td>{""}</td><td>{"Show Inner Content (boolean)"}</td></tr></tbody></table>
 
 ### State
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Checked / default checked"}</td><td><code>{"checked / defaultChecked"}</code></td><td>{"Value (variant)"}</td><td>{"Off → not checked, On → checked; aria-checked."}</td></tr><tr><td>{"Interaction"}</td><td><code>{"interaction"}</code></td><td>{"Interaction (variant)"}</td><td>{"States: Default → default, Disabled → disabled, Loading → interaction=\"loading\""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Checked / default checked"}</td><td><code>{"checked / defaultChecked"}</code></td><td>—</td><td>—</td><td>{"Off → not checked, On → checked; aria-checked."}</td><td>{"Value (variant)"}</td></tr><tr><td>{"Interaction"}</td><td><code>{"interaction"}</code></td><td>—</td><td>—</td><td>{"States: Default → default, Disabled → disabled, Loading → interaction=\"loading\""}</td><td>{"Interaction (variant)"}</td></tr><tr><td>{"Disabled"}</td><td><code>{"disabled"}</code></td><td><code>{"boolean"}</code></td><td><code>{"false"}</code></td><td>{""}</td><td>{"State=Disabled"}</td></tr></tbody></table>
 
 ### Try it
 
@@ -87,7 +87,12 @@ This is a standard Web Component: it works in any framework, or none.
 
 ## Design reference
 
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=723-3038">{"Switch"}</a> · version 2420998788157412873 · 12 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
+<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=723-3038">{"Switch"}</a> · version 2420998788157412873 · 12 designed variants</li><li>{"Visual check: 12/12 variants match Figma (worst difference 1.91%)."}</li></ul>
+
+### Scorecard
+
+<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
+<ul><li>{"✓ Visual fidelity: 12/12 designed variants match Figma (worst 1.9%)"}</li><li>{"✓ Variants: 12 designed variants shown"}</li><li>{"✓ Properties: 5/5 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"✓ Interaction: WAI-ARIA switch pattern, tested in the stories"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 1 accessible-name note to confirm"}</li><li>{"⚠ Documentation: description; 0/5 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 1 generator note"}</li></ul>
 
 <h2>{"Documentation"}</h2>
 <p style={{ whiteSpace: 'pre-line' }}>{"A two-state control that applies its change the instant it's toggled — distinct from a checkbox, which marks a selection typically confirmed later."}</p>

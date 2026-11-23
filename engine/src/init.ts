@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 import { parseFigmaFileKey, type Config } from './config.ts';
 import { FigmaClient, FigmaHttpError } from './figma/client.ts';
+import { VERSION } from './version.ts';
 import { loadDotEnv, writeText } from './util/core.ts';
 
 export interface InitOptions {
@@ -182,7 +183,8 @@ export async function runInit(opts: InitOptions): Promise<void> {
     // 7. Optional CI workflow
     if (opts.ci || (interactive && /^y/i.test(await ask('Add a GitHub Actions workflow that regenerates on demand and opens a pull request? [y/N]', 'n')))) {
       const template = fileURLToPath(new URL('../templates/github-workflow.yml', import.meta.url));
-      writeText(join(cwd, '.github', 'workflows', 'ds-sync.yml'), readFileSync(template, 'utf8'));
+      // Pinned to this version: scheduled runs regenerate with the engine that set the project up.
+      writeText(join(cwd, '.github', 'workflows', 'ds-sync.yml'), readFileSync(template, 'utf8').replace(/__DS_SYNC_VERSION__/g, VERSION));
       opts.log('Wrote .github/workflows/ds-sync.yml (add a FIGMA_TOKEN repository secret).');
     }
 

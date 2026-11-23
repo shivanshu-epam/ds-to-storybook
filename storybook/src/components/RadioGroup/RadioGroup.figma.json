@@ -28,11 +28,15 @@
     },
     {
       "prop": "state",
-      "figma": "State (variant)"
+      "figma": "State (variant)",
+      "type": "'enabled' | 'read-only' | 'invalid' | 'warning'",
+      "default": "'enabled'"
     },
     {
       "prop": "horizontal",
-      "figma": "Horizontal (variant)"
+      "figma": "Horizontal (variant)",
+      "type": "boolean",
+      "default": "false"
     }
   ],
   "notes": [

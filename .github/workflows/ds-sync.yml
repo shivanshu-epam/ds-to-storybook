@@ -123,7 +123,8 @@ jobs:
               if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
               # The browser that matches this project's Playwright version (not whatever npx would fetch).
               npx playwright install --with-deps chromium
-              npm run typecheck && npm test
+              # A JSON report next to the console output, for the fidelity audit.
+              npm run typecheck && npm test -- --reporter=default --reporter=json --outputFile.json="$RUNNER_TEMP/tests-$(basename "$dir").json"
             ) || status=1
             echo "::endgroup::"
           done
@@ -144,6 +145,16 @@ jobs:
           node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" visual --url http://localhost:6006 --dir "$dir" | tee "$RUNNER_TEMP/visual.txt"
           echo "summary=$(grep '^· Visual:' "$RUNNER_TEMP/visual.txt" | sed 's/^· Visual: //')" >> "$GITHUB_OUTPUT"
 
+      # Scorecards of the React output with the real test and visual results: one status per fidelity measure.
+      - name: Fidelity audit
+        id: audit
+        if: steps.changes.outputs.changed == 'true' && steps.out.outputs.react_dir != ''
+        continue-on-error: true
+        run: |
+          dir="${{ steps.out.outputs.react_dir }}"
+          tests="$RUNNER_TEMP/tests-$(basename "$dir").json"
+          node "$RUNNER_TEMP/ds-sync/engine/dist/cli.js" audit --dir "$dir" $( [ -f "$tests" ] && echo --tests "$tests" )
+
       - name: Keep the change images and visual report
         if: steps.changes.outputs.changed == 'true'
         uses: actions/upload-artifact@v7
@@ -153,6 +164,7 @@ jobs:
             .ds-sync/changes/
             .ds-sync/visual/
             .ds-sync/changes.md
+            .ds-sync/audit.md
           if-no-files-found: ignore
 
       - name: Write the pull request description
@@ -165,6 +177,7 @@ jobs:
             echo
             echo "- Story tests (every Figma mode): **${{ steps.test.outcome }}**"
             if [ -n "${{ steps.visual.outputs.summary }}" ]; then echo "- Visual check against Figma: ${{ steps.visual.outputs.summary }}"; fi
+            if [ -f .ds-sync/audit-summary.md ]; then echo; cat .ds-sync/audit-summary.md; fi
             echo "- Before/after Figma renders of the changed variants and the visual report: the \`ds-sync-review\` artifact of [this workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
           } > "$RUNNER_TEMP/pr-body.md"
 

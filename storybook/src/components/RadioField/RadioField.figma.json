@@ -28,7 +28,15 @@
     },
     {
       "prop": "position",
-      "figma": "Position (variant)"
+      "figma": "Position (variant)",
+      "type": "'left' | 'right'",
+      "default": "'left'"
+    },
+    {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
     }
   ],
   "notes": [

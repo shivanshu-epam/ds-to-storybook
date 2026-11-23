@@ -17,9 +17,9 @@ export interface InputControlProps extends Omit<HTMLAttributes<HTMLDivElement>, 
 export function InputControl({ state = 'default', disabled = false, className, ...rest }: InputControlProps) {
   return (
     <div className={[styles.root, className].filter(Boolean).join(' ')} data-state={state} data-disabled={disabled ? '' : undefined} aria-disabled={disabled || undefined} {...rest}>
-      <span className={styles.value}>{(({"filled":"jordan@company.com","error":"jordan@company.com","success":"jordan@company.com"} as Record<string, string>)[String(state)] ?? "Enter your email")}</span>
-      <span className={styles.errorIcon} aria-hidden="true"><Icon name="statusError16" /></span>
-      <span className={styles.successIcon} aria-hidden="true"><Icon name="formCheck16" /></span>
+      <span className={styles.value} data-layer="value">{(({"filled":"jordan@company.com","error":"jordan@company.com","success":"jordan@company.com"} as Record<string, string>)[String(state)] ?? "Enter your email")}</span>
+      <span className={styles.errorIcon} data-layer="errorIcon" aria-hidden="true"><Icon name="statusError16" /></span>
+      <span className={styles.successIcon} data-layer="successIcon" aria-hidden="true"><Icon name="formCheck16" /></span>
     </div>
   );
 }

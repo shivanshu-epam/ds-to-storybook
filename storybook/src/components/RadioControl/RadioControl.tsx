@@ -47,9 +47,9 @@ export function RadioControl({ state = 'enabled', disabled = false, className, s
         }}
         {...rest}
       />
-      <span className={styles.focusRing} />
-      <span className={styles.outerCircle} />
-      <span className={styles.innerDot} />
+      <span className={styles.focusRing} data-layer="focusRing" />
+      <span className={styles.outerCircle} data-layer="outerCircle" />
+      <span className={styles.innerDot} data-layer="innerDot" />
     </span>
   );
 }

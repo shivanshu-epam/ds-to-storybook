@@ -1,7 +1,7 @@
 import type { ComponentTarget } from '../config.ts';
 import type { FigmaColor, FigmaNode, FigmaPaint, VariableAlias } from '../figma/types.ts';
 import { sha256, stripPropertyId } from '../util/core.ts';
-import type { FigmaIR, IRComponentSet, IRDocBlock, IRDocFrame, IRExposedInstance, IRPart, IRProperty, IRStyle, IRValue, IRVariable, IRVariant } from './types.ts';
+import type { FigmaIR, IRComponentSet, IRDocBlock, IRDocFrame, IRExposedInstance, IRInnerOverride, IRPart, IRProperty, IRStyle, IRValue, IRVariable, IRVariant } from './types.ts';
 
 export function toHex(c: FigmaColor, opacity = 1): string {
   const ch = (v: number) => Math.round(v * 255).toString(16).padStart(2, '0');
@@ -89,6 +89,9 @@ export function styleOf(node: FigmaNode, resolve: Resolver, parent?: FigmaNode):
   }
   if (node.clipsContent) style.clips = true;
   if (node.layoutPositioning === 'ABSOLUTE') style.absolute = true;
+  const h = node.constraints?.horizontal;
+  const vc = node.constraints?.vertical;
+  if ((h && h !== 'LEFT') || (vc && vc !== 'TOP')) style.constraints = { ...(h && h !== 'LEFT' ? { h } : {}), ...(vc && vc !== 'TOP' ? { v: vc } : {}) };
   if (parent?.absoluteBoundingBox && node.absoluteBoundingBox) {
     style.x = round(node.absoluteBoundingBox.x - parent.absoluteBoundingBox.x);
     style.y = round(node.absoluteBoundingBox.y - parent.absoluteBoundingBox.y);
@@ -116,7 +119,7 @@ export function styleOf(node: FigmaNode, resolve: Resolver, parent?: FigmaNode):
     style.text = {
       ...(t.fontFamily ? { fontFamily: t.fontFamily } : {}),
       ...(t.fontSize ? { fontSize: t.fontSize } : {}),
-      ...(t.fontWeight ? { fontWeight: t.fontWeight } : {}),
+      ...(weightOf(t.fontStyle, t.fontWeight) ? { fontWeight: weightOf(t.fontStyle, t.fontWeight) } : {}),
       ...(t.lineHeightPx ? { lineHeightPx: round(t.lineHeightPx) } : {}),
       ...(t.letterSpacing ? { letterSpacing: round(t.letterSpacing) } : {}),
     };
@@ -139,6 +142,52 @@ export function isIconNode(node: FigmaNode, componentNames: Record<string, strin
   if (!box || box.width > 48 || box.height > 48 || Math.abs(box.width - box.height) > 1) return false;
   const shapesOnly = (n: FigmaNode): boolean => (n.children ?? []).every((c) => c.type !== 'TEXT' && c.type !== 'INSTANCE' ? shapesOnly(c) : c.type === 'INSTANCE' ? isIconNode(c, componentNames) || shapesOnly(c) : false);
   return shapesOnly(node);
+}
+
+/**
+ * The font weight, from the style name when it names one: Figma's REST API sometimes reports 400 for a "Medium" style
+ * (Blade's Display and Heading), and the style name is what the designer chose.
+ */
+export function weightOf(style?: string, weight?: number): number | undefined {
+  const s = (style ?? '').toLowerCase().replace(/[\s_-]+/g, '').replace(/italic|oblique/g, '');
+  const named: [RegExp, number][] = [[/^(thin|hairline)/, 100], [/^(extralight|ultralight)/, 200], [/^light/, 300], [/^(regular|normal|book|roman)$/, 400], [/^medium/, 500], [/^(semibold|demibold)/, 600], [/^bold$/, 700], [/^(extrabold|ultrabold)/, 800], [/^(black|heavy)/, 900]];
+  return named.find(([re]) => re.test(s))?.[1] ?? weight;
+}
+
+/** A standalone component (no variants) as a set of one variant, so every template can take it. */
+export function asComponentSet(node: FigmaNode): FigmaNode {
+  if (node.type !== 'COMPONENT') return node;
+  return { ...node, type: 'COMPONENT_SET', children: [node], ...(node.componentPropertyDefinitions ? { componentPropertyDefinitions: node.componentPropertyDefinitions } : {}) } as FigmaNode;
+}
+
+/** Overridden fields that change how a layer looks (not its content or layout, which the component's props carry). */
+const STYLE_FIELDS = /^(fontSize|fontWeight|fontFamily|fontPostScriptName|fontStyle|lineHeight\w*|letterSpacing|fills|textCase|textDecoration|visible|opacity|inheritTextStyleId|inheritFillStyleId)$/;
+
+/**
+ * Layers inside a placed instance that the placement restyles, named as the component names its own parts (repeated
+ * names get "#n"; nested instances are leaves). Blade's Amount sets the text size of Amount Base's digits this way.
+ */
+function innerOverrides(instance: FigmaNode, resolve: Resolver): IRInnerOverride[] {
+  const wanted = new Map<string, string[]>();
+  for (const o of instance.overrides ?? []) {
+    const fields = o.overriddenFields.filter((f) => STYLE_FIELDS.test(f));
+    if (o.id !== instance.id && fields.length) wanted.set(o.id, fields);
+  }
+  if (!wanted.size) return [];
+  const out: IRInnerOverride[] = [];
+  const walk = (node: FigmaNode, prefix: string) => {
+    const seen = new Map<string, number>();
+    for (const c of node.children ?? []) {
+      const n = (seen.get(c.name) ?? 0) + 1;
+      seen.set(c.name, n);
+      const path = `${prefix ? `${prefix}/` : ''}${n > 1 && c.type !== 'INSTANCE' ? `${c.name}#${n}` : c.name}`;
+      const fields = wanted.get(c.id);
+      if (fields) out.push({ path, type: c.type, fields, style: styleOf(c, resolve, node), ...(c.visible === false ? { hidden: true } : {}) });
+      if (c.type !== 'INSTANCE') walk(c, path);
+    }
+  };
+  walk(instance, '');
+  return out;
 }
 
 /** Shapes CSS cannot draw: their outline is exported from Figma as SVG. */
@@ -182,6 +231,8 @@ function collectParts(node: FigmaNode, resolve: Resolver, prefix: string, out: I
       if (child.isExposedInstance) part.exposed = true;
       const exposed = exposedInside(child, '', componentNames, Boolean(part.hidden));
       if (exposed.length) part.exposedInstances = exposed;
+      const restyled = innerOverrides(child, resolve);
+      if (restyled.length) part.inner = restyled;
     }
     out.push(part);
     // Instances are leaves: their internals belong to the referenced component.
