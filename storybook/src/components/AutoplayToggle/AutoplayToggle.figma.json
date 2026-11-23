@@ -13,7 +13,9 @@
   "mapping": [
     {
       "prop": "state",
-      "figma": "State (variant)"
+      "figma": "State (variant)",
+      "type": "'playing' | 'paused'",
+      "default": "'playing'"
     }
   ],
   "notes": [

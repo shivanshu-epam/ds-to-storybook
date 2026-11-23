@@ -30,7 +30,7 @@ The default configuration (every property at its Figma default).
 
 ### State
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"State"}</td><td><code>{"state"}</code></td><td>{"State (variant)"}</td><td>{"States: Enabled → default, Hovered → :hover (CSS), Focused → :focus (CSS), Pressed → :pressed (CSS), Disabled → disabled, Skeleton → state=\"skeleton\", Read-Only → state=\"read-only\", Invalid → state=\"invalid\", Warning → state=\"warning\""}</td></tr><tr><td>{"Checked / default checked"}</td><td><code>{"checked / defaultChecked"}</code></td><td>{"Selected (variant)"}</td><td>{"false → not checked, true → checked; styled with :checked."}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"State"}</td><td><code>{"state"}</code></td><td>—</td><td>—</td><td>{"States: Enabled → default, Hovered → :hover (CSS), Focused → :focus (CSS), Pressed → :pressed (CSS), Disabled → disabled, Skeleton → state=\"skeleton\", Read-Only → state=\"read-only\", Invalid → state=\"invalid\", Warning → state=\"warning\""}</td><td>{"State (variant)"}</td></tr><tr><td>{"Checked / default checked"}</td><td><code>{"checked / defaultChecked"}</code></td><td>—</td><td>—</td><td>{"false → not checked, true → checked; styled with :checked."}</td><td>{"Selected (variant)"}</td></tr><tr><td>{"Disabled"}</td><td><code>{"disabled"}</code></td><td><code>{"boolean"}</code></td><td><code>{"false"}</code></td><td>{""}</td><td>{"State=Disabled"}</td></tr></tbody></table>
 
 ### Try it
 
@@ -62,6 +62,6 @@ Each story shows its code under "Show code".
 ### Scorecard
 
 <p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"✓ Visual fidelity: 17/17 designed variants match Figma (worst 0.0%)"}</li><li>{"✓ Variants: 17 designed variants shown; 1 computed combinations labelled"}</li><li>{"✓ Properties: 2/2 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"✓ Interaction: WAI-ARIA radio pattern, tested in the stories"}</li><li>{"⚠ Tokens: 1 raw colour value (not bound to a variable in Figma)"}</li><li>{"✓ Accessibility: axe in every Figma mode"}</li><li>{"⚠ Documentation: description; 0/2 props described"}</li><li>{"✓ Open decisions: 0 open questions; 0 generator notes"}</li></ul>
+<ul><li>{"✓ Visual fidelity: 17/17 designed variants match Figma (worst 0.0%)"}</li><li>{"✓ Variants: 17 designed variants shown; 1 computed combinations labelled"}</li><li>{"✓ Properties: 3/3 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"✓ Interaction: WAI-ARIA radio pattern, tested in the stories"}</li><li>{"⚠ Tokens: 1 raw colour value (not bound to a variable in Figma)"}</li><li>{"✓ Accessibility: axe in every Figma mode"}</li><li>{"⚠ Documentation: description; 0/3 props described"}</li><li>{"✓ Open decisions: 0 open questions; 0 generator notes"}</li></ul>
 
 <FigmaDocs docs={docs} only="tabs" />

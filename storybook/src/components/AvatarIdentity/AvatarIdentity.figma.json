@@ -17,24 +17,40 @@
       "note": "States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Active → :pressed (CSS), Disabled → disabled, Selected → state=\"selected\""
     },
     {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
+    },
+    {
       "prop": "hasName",
-      "figma": "Has name (boolean)"
+      "figma": "Has name (boolean)",
+      "type": "boolean",
+      "default": "true"
     },
     {
       "prop": "hasEmail",
-      "figma": "Has email (boolean)"
+      "figma": "Has email (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "hasTrailingIcon",
-      "figma": "Has trailing icon (boolean)"
+      "figma": "Has trailing icon (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "name",
-      "figma": "Name (text)"
+      "figma": "Name (text)",
+      "type": "ReactNode",
+      "default": "'Alex Johnson'"
     },
     {
       "prop": "email",
-      "figma": "Email (text)"
+      "figma": "Email (text)",
+      "type": "ReactNode",
+      "default": "'alex.johnson@acme.com'"
     }
   ],
   "notes": [

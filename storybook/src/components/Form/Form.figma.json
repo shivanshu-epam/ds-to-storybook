@@ -15,6 +15,12 @@
       "prop": "state",
       "figma": "State (variant)",
       "note": "States: Default → default, Submitting → state=\"submitting\", Success → state=\"success\", Error → state=\"error\", Disabled → disabled"
+    },
+    {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
     }
   ],
   "notes": [

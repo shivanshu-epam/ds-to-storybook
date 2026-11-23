@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { docsPage, isBuildingBlock, plainLabel, polishStories, templateSections } from '../src/generate/docs.ts';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+import { lintDocs } from '../src/docs/lint.ts';
+import { codeExample, docsPage, isBuildingBlock, plainLabel, polishStories, templateSections } from '../src/generate/docs.ts';
 import type { IRComponentSet } from '../src/ir/types.ts';
 
 describe('documentation standard (fidelity step 6)', () => {
@@ -84,5 +89,24 @@ export const FigmaVariants: Story = {
     expect(page).toContain('(light, dark)');
     expect(page).not.toMatch(/^## isDisabled/m);
     expect(page).toContain('<Meta of={Stories} />');
+  });
+  it('writes a working code example from the Figma defaults, valid JSX whatever the text', () => {
+    expect(codeExample('Input', [{ prop: 'label', figma: 'label (text)', default: "'Label'" }, { prop: 'helperText', figma: 'helper (text)', default: "'We\\'ll never share this.'" }]))
+      .toBe(`<Input label="Label" helperText="We'll never share this." />`);
+    expect(codeExample('Quote', [{ prop: 'text', figma: 'text (text)', default: `'Say "hi"'` }])).toBe(`<Quote text={"Say \\"hi\\""} />`);
+    expect(codeExample('Badge', [{ prop: 'size', figma: 'Size (variant)', default: "'md'" }])).toBe('<Badge size="md" />');
+    expect(codeExample('Button', [{ prop: 'children', figma: 'Show label (boolean) + label text' }])).toBe('<Button>Label</Button>');
+  });
+
+  it('lints a generated page against the standard', () => {
+    const dir = join(mkdtempSync(join(tmpdir(), 'ds-lint-')), 'src', 'components', 'Chip');
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, 'Chip.tsx'), 'export interface ChipProps {\n  /** x */\n  size?: string;\n  tone?: string;\n}\n');
+    writeFileSync(join(dir, 'Chip.stories.tsx'), "const meta = { title: 'Components/Chip' };");
+    writeFileSync(join(dir, 'Chip.mdx'), ['## Overview', '', '<p><strong>No description in Figma.</strong></p>', '## Preview', '', 'x', '## Variants', '',
+      '## Properties', '', '### Appearance', '', '<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Size"}</td><td><code>{"size"}</code></td><td>{""}</td></tr></tbody></table>',
+      '## Accessibility', '', 'x', '## Code', '', '<Source code={"<Chip />"} />', '## Design reference', '', '<p>Visual check: not run</p>', '<a href="./?path=/docs/components-nope--docs">x</a>'].join('\n'));
+    const rules = lintDocs(join(dir, '..', '..', '..')).findings.map((f) => `${f.severity}:${f.rule}`);
+    expect(rules).toEqual(expect.arrayContaining(['error:empty-section', 'warning:no-description', 'error:props-columns', 'warning:prop-missing', 'warning:prop-undescribed', 'warning:code-example', 'error:figma-link', 'warning:visual-not-run', 'error:broken-link']));
   });
 });

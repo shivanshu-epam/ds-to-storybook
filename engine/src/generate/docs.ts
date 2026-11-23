@@ -5,6 +5,7 @@ import type { IRComponentSet } from '../ir/types.ts';
 import type { ComponentReport } from './templates/common.ts';
 import { leadSentence } from './templates/common.ts';
 import type { GenericCore, InstanceProp } from './templates/generic.ts';
+import { wcProp } from './wc/components.ts';
 
 const js = (v: unknown) => JSON.stringify(v);
 const slug = (x: string) => x.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -143,6 +144,31 @@ function groupOf(m: ComponentReport['props'][number]): (typeof GROUPS)[number] {
 }
 
 const p = (text: string) => `<p>{${js(text)}}</p>`;
+
+/** The row label: plain words, never a CSS selector or a code name (STANDARD 3.2). */
+function labelOf(m: ComponentReport['props'][number]): string {
+  if (m.prop === '—') return plainLabel(m.figma.replace(/ \(.*\)$/, ''));
+  // A CSS state (":hover:not(:disabled) (CSS)") is labelled with its Figma value ("State=Hover" → "Hover").
+  if (m.prop.startsWith(':')) return plainLabel(m.figma.replace(/^.*=/, '').replace(/ \(.*\)$/, ''));
+  return plainLabel(m.prop);
+}
+
+/** A literal default ('Label', "Label") back to its text. */
+const unquote = (v: string) => (/^(['"]).*\1$/s.test(v) ? v.slice(1, -1).replace(/\\(.)/g, '$1') : undefined);
+/** A JSX attribute that is always valid: quotes only when the text has none, else an expression. */
+const jsxAttr = (prop: string, value: string) => (/["\\{}<>]/.test(value) ? `${prop}={${JSON.stringify(value)}}` : `${prop}="${value}"`);
+
+/** A working example: the component with its Figma default content (texts), or its main property set explicitly. */
+export function codeExample(name: string, props: ComponentReport['props']): string {
+  const own = props.filter((m) => /^[a-z][A-Za-z0-9]*$/.test(m.prop) && m.default !== undefined && unquote(m.default) !== undefined);
+  const texts = own.filter((m) => /\(text\)/.test(m.figma) && unquote(m.default!));
+  const variant = own.filter((m) => /\(variant\)/.test(m.figma)).slice(0, 1);
+  const attrs = (texts.length ? texts : variant).map((m) => jsxAttr(m.prop, unquote(m.default!)!));
+  const children = props.find((m) => m.prop === 'children' && /label text|\(text\)/.test(m.figma));
+  const inner = children ? unquote(children.default ?? '') || 'Label' : '';
+  const open = `<${name}${attrs.length ? ` ${attrs.join(' ')}` : ''}`;
+  return inner ? `${open}>${inner}</${name}>` : `${open} />`;
+}
 const list = (items: string[]) => `<ul>${items.map((i) => `<li>{${js(i)}}</li>`).join('')}</ul>`;
 
 export function docsPage(d: DocsInput): string {
@@ -190,11 +216,16 @@ import * as Stories from './${d.name}.stories';`;
   const rows = d.report.props.filter((m) => m.prop !== '—' || /instance swap/.test(m.figma));
   if (rows.length) {
     out.push('## Properties', '');
+    // Web Components name some props differently (title → titleValue: the element has a title) and keep a slot's
+    // visibility toggle as an attribute (React has only the slot prop): their table shows their own API.
+    const own = d.framework === 'wc'
+      ? rows.flatMap((m) => [{ ...m, prop: m.prop === '—' ? m.prop : wcProp(m.prop) }, ...(m.toggle ? [{ prop: wcProp(m.toggle.prop), figma: m.figma.replace(/^.*\+ /, ''), type: 'boolean', default: String(m.toggle.default), note: `Shows the ${m.prop} slot; content slotted into it shows it too.` }] : [])])
+      : rows;
     for (const g of GROUPS) {
-      const gr = rows.filter((m) => groupOf(m) === g);
+      const gr = own.filter((m) => groupOf(m) === g);
       if (!gr.length) continue;
-      out.push(`### ${g}`, '', `<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody>${gr
-        .map((m) => `<tr><td>{${js(m.prop === '—' ? m.figma.replace(/ \(.*\)$/, '') : plainLabel(m.prop))}}</td><td>${m.prop === '—' ? '—' : `<code>{${js(m.prop)}}</code>`}</td><td>{${js(m.figma)}}</td><td>{${js([d.descriptions?.[m.prop], m.note].filter(Boolean).join(' '))}}</td></tr>`)
+      out.push(`### ${g}`, '', `<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody>${gr
+        .map((m) => `<tr><td>{${js(labelOf(m))}}</td><td>${m.prop === '—' ? '—' : `<code>{${js(m.prop)}}</code>`}</td><td>${m.type ? `<code>{${js(m.type)}}</code>` : '—'}</td><td>${m.default ? `<code>{${js(m.default)}}</code>` : '—'}</td><td>{${js([d.descriptions?.[m.prop], m.note].filter(Boolean).join(' '))}}</td><td>{${js(m.figma)}}</td></tr>`)
         .join('')}</tbody></table>`, '');
     }
     out.push('### Try it', '', '<Controls of={Stories.Default} />', '');
@@ -239,7 +270,7 @@ import * as Stories from './${d.name}.stories';`;
   // Code
   out.push('## Code', '');
   if (d.framework === 'react') {
-    out.push(`<Source language="tsx" dark code={${js(`import { ${d.name} } from '${d.packageName}';\nimport '${d.packageName}/tokens.css';\n\n<${d.name} />`)}} />`, '', 'Each story shows its code under "Show code".', '');
+    out.push(`<Source language="tsx" dark code={${js(`import { ${d.name} } from '${d.packageName}';\nimport '${d.packageName}/tokens.css';\n\n${codeExample(d.name, d.report.props)}`)}} />`, '', 'Each story shows its code under "Show code".', '');
   } else {
     const usage = /## Use it in your app\n([\s\S]*?)(?=\n## |\n<h2>|$)/.exec(d.templateMdx)?.[1];
     if (usage) out.push(usage.trim(), '');

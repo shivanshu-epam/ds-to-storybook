@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { fontsReport, planFonts, type FontSource } from '../src/generate/fonts.ts';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+import { fontFaceCss, fontsReport, planFonts, type FontSource } from '../src/generate/fonts.ts';
 
 const source: FontSource = {
   async meta(id) {
@@ -40,5 +44,26 @@ describe('fonts (fidelity step 9)', () => {
   it('uses a configured package for a licensed font', async () => {
     const [acme] = await planFonts(used([['Acme Sans', 4, [400]]]), source, { 'Acme Sans': { package: '@acme/fonts', imports: ['@acme/fonts/sans.css'] } });
     expect(acme).toMatchObject({ status: 'configured', imports: ['@acme/fonts/sans.css'] });
+  });
+  it('loads the team’s own font files, with weight and style from each file name', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'ds-fonts-'));
+    mkdirSync(join(dir, 'brand'));
+    for (const f of ['Brand-Regular.woff2', 'Brand-SemiBold.woff2', 'Brand-ExtraBold.otf', 'Brand-BoldItalic.ttf', 'notes.txt']) writeFileSync(join(dir, 'brand', f), '');
+    const used = new Map([['Brand Display', { layers: 3, weights: new Set([400, 500, 600]) }]]);
+    const [brand] = await planFonts(used, source, { 'Brand Display': { files: ['brand'] } }, dir);
+    expect(brand).toMatchObject({ status: 'configured', stack: '"Brand Display", system-ui, sans-serif' });
+    expect(brand!.files!.map((f) => [f.to, f.weight, f.style, f.format])).toEqual([
+      ['fonts/brand-display/Brand-BoldItalic.ttf', '700', 'italic', 'truetype'],
+      ['fonts/brand-display/Brand-ExtraBold.otf', '800', 'normal', 'opentype'],
+      ['fonts/brand-display/Brand-Regular.woff2', '400', 'normal', 'woff2'],
+      ['fonts/brand-display/Brand-SemiBold.woff2', '600', 'normal', 'woff2'],
+    ]);
+    expect(brand!.note).toMatch(/weights without a file: 500/);
+    const css = fontFaceCss([brand!]);
+    expect(css).toContain(`font-family: "Brand Display";\n  src: url('./brand-display/Brand-SemiBold.woff2') format('woff2');\n  font-weight: 600;`);
+    expect(fontsReport([brand!]).join('\n')).toContain('font files: 4');
+    // A path with no font files is reported, not silently skipped.
+    const [none] = await planFonts(used, source, { 'Brand Display': { files: ['missing'] } }, dir);
+    expect(none).toMatchObject({ status: 'missing', note: expect.stringMatching(/No font files found at missing/) });
   });
 });

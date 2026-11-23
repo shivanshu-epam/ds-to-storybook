@@ -13,7 +13,9 @@
   "mapping": [
     {
       "prop": "size",
-      "figma": "Size (variant)"
+      "figma": "Size (variant)",
+      "type": "'small' | 'medium' | 'large'",
+      "default": "'small'"
     },
     {
       "prop": "state",
@@ -22,11 +24,21 @@
     },
     {
       "prop": "expanded",
-      "figma": "Expanded (variant)"
+      "figma": "Expanded (variant)",
+      "type": "boolean",
+      "default": "false"
+    },
+    {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "clearable",
-      "figma": "Clearable (boolean)"
+      "figma": "Clearable (boolean)",
+      "type": "boolean",
+      "default": "false"
     }
   ],
   "notes": [

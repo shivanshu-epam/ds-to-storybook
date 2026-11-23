@@ -13,11 +13,15 @@
   "mapping": [
     {
       "prop": "size",
-      "figma": "Size (variant)"
+      "figma": "Size (variant)",
+      "type": "'small' | 'medium' | 'large'",
+      "default": "'small'"
     },
     {
       "prop": "state",
-      "figma": "State (variant)"
+      "figma": "State (variant)",
+      "type": "'collapsed' | 'expanded'",
+      "default": "'collapsed'"
     }
   ],
   "notes": [

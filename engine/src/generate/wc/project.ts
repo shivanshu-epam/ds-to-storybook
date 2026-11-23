@@ -1,4 +1,5 @@
 /** Static files for a Web Components (Lit) Storybook project. Works in any framework. */
+import type { FoundationPage } from '../foundations.ts';
 import type { IconAsset } from '../icons.ts';
 import type { GeneratedFile } from '../templates/common.ts';
 import { vitestConfig } from '../project.ts';
@@ -28,7 +29,8 @@ export interface WcProjectOptions {
   /** Component name -> tag + module path. */
   components: { name: string; tags: string[]; module: string }[];
   icons: IconAsset[];
-  colorTokens: { name: string; cssVar: string }[];
+  /** Foundations pages (colours, typography, spacing, ...), framework-neutral HTML. */
+  foundations: FoundationPage[];
   page?: { background?: string; text?: string };
   /** Font packages the Figma file needs (package -> version) and their CSS imports. */
   fonts?: { deps: Record<string, string>; imports: string[] };
@@ -213,26 +215,25 @@ export function shadowOf(root: Element, selector: string): ShadowRoot {
 }
 `,
     },
-    {
-      path: 'src/foundations/Colors.stories.ts',
+    ...o.foundations.map((f) => ({
+      path: `src/foundations/${f.title}.stories.ts`,
       content: `import type { Meta, StoryObj } from '@storybook/web-components-vite';
-import { html } from 'lit';
 
-/** Semantic colour tokens from the Figma variables (switch modes in the toolbar). */
-const TOKENS: { name: string; cssVar: string }[] = ${JSON.stringify(o.colorTokens, null, 2)};
+/** ${f.intro} */
+const HTML = ${JSON.stringify(f.html)};
 
-const meta = { title: 'Foundations/Colors', parameters: { layout: 'padded' } } satisfies Meta;
+const meta = { title: 'Foundations/${f.title}', parameters: { layout: 'padded' } } satisfies Meta;
 export default meta;
 
-export const Semantic: StoryObj = {
-  render: () => html\`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
-    \${TOKENS.map((t) => html\`<div style="display:flex;align-items:center;gap:8px;font:12px system-ui,sans-serif">
-      <span style="width:32px;height:32px;flex:none;border-radius:6px;background:var(\${t.cssVar});box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)"></span>
-      <span><strong>\${t.name}</strong><br /><code>\${t.cssVar}</code></span></div>\`)}
-  </div>\`,
+export const ${f.title}: StoryObj = {
+  render: () => {
+    const el = document.createElement('div');
+    el.innerHTML = HTML;
+    return el;
+  },
 };
 `,
-    },
+    })),
     {
       path: 'src/index.ts',
       content: `// Importing this module registers every custom element.

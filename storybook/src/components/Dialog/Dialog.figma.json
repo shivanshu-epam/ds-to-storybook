@@ -28,43 +28,63 @@
     },
     {
       "prop": "type",
-      "figma": "Type (variant)"
+      "figma": "Type (variant)",
+      "type": "'confirmation' | 'alert' | 'form' | 'full-screen' | 'side-drawer'",
+      "default": "'confirmation'"
     },
     {
       "prop": "size",
-      "figma": "Size (variant)"
+      "figma": "Size (variant)",
+      "type": "'small' | 'medium' | 'large' | 'full'",
+      "default": "'small'"
     },
     {
       "prop": "state",
-      "figma": "State (variant)"
+      "figma": "State (variant)",
+      "type": "'open' | 'loading' | 'error'",
+      "default": "'open'"
     },
     {
       "prop": "hasCloseButton",
-      "figma": "Has close button (boolean)"
+      "figma": "Has close button (boolean)",
+      "type": "boolean",
+      "default": "true"
     },
     {
       "prop": "hasSecondaryAction",
-      "figma": "Has secondary action (boolean)"
+      "figma": "Has secondary action (boolean)",
+      "type": "boolean",
+      "default": "true"
     },
     {
       "prop": "hasSubtitle",
-      "figma": "Has subtitle (boolean)"
+      "figma": "Has subtitle (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "scrollableContent",
-      "figma": "Scrollable content (boolean)"
+      "figma": "Scrollable content (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "title",
-      "figma": "Title (text)"
+      "figma": "Title (text)",
+      "type": "ReactNode",
+      "default": "'Dialog title'"
     },
     {
       "prop": "subtitle",
-      "figma": "Subtitle (text)"
+      "figma": "Subtitle (text)",
+      "type": "ReactNode",
+      "default": "'Supporting context text'"
     },
     {
       "prop": "bodyContent",
-      "figma": "Body content (text)"
+      "figma": "Body content (text)",
+      "type": "ReactNode",
+      "default": "'Dialog body copy goes here.'"
     }
   ],
   "notes": [

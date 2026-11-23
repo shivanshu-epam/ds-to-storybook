@@ -435,7 +435,91 @@ There are 16 pairs in Blade and 2 in Design System AI (ListItem's `has-leading-c
 
 Duplicate props are gone: `showLeadingIcon` on Badge, Tag, Chip and Card, and `hasLeadingIcon`/`hasTrailingIcon` on Collapsible. The match count does not move because Blade calls the remaining prop `icon` where we call it `leadingIcon`. With one icon slot left, that rename is now a clean AI decision; the skill says so.
 
-## 20. Reproduce
+## 20. Foundations pages (18 Nov 2026)
+
+Blade's Storybook has 7 token pages; ours had one Colors page, and it was empty for any system whose colour collection was not named `semantic.color` (Blade's among them). The new foundations module builds the pages from whatever the Figma file has.
+
+- **From Figma variables.** Variables become CSS custom properties, so the mode switcher in the toolbar changes the pages too.
+  - Colours: semantic first, then the palette.
+  - Typography: sibling variables that name a family and a size, such as `text-style/body/md/…`.
+  - Number variables are sorted by name into spacing, radius, sizing, border widths, motion and opacity.
+- **From the file's local styles**, for whatever the variables don't cover: colour and text styles when a file has no variables, and effect styles always, because a variable can't hold a shadow.
+  - The Figma client records every local style in the responses it already fetches (discovery's page reads see the whole palette).
+  - The IR keeps the list.
+  - Generation reads each style's definition as a node. Values come from the definition, not the description: Blade's `Brand/Primary/500` description says `#1566F1`, but its fill is `#305EFF`.
+- **Pages.** There is one HTML page per section with content, shared by the React and Web Components projects. Each sits on a light card, so labels stay readable and pass axe in every mode. Figma's private groups (a leading `_`) and deprecated groups come last.
+
+| System | Pages | Story tests |
+| --- | --- | --- |
+| Design System AI (variables) | Colors 200, Typography 17, Spacing 23, Radius 19, Sizing 33, Borders 8, Elevation 15 (effect styles), Motion 13, Opacity 16 | React 333 / 333, Web Components 336 / 336 |
+| Blade (no variables) | Colors 788, Typography 132, Elevation 4, all from styles | React 296 / 465, Web Components 295 / 464: the 2 new pages pass; the 169 failures are Blade's contrast issue, as before |
+
+Not covered yet:
+
+- grid styles, and breakpoints as a page;
+- usage guidance per token: Figma rarely has it, so this would need an AI-drafted, person-accepted decision.
+
+## 21. The team's own font files (23 Nov 2026)
+
+Blade's display text uses "TASA Orbiter Display". ds-sync loaded "TASA Orbiter" in its place: the published family, which since 2025 is one family with only a weight axis. Its wider, heavier letters cost about 275 variants (Display, Heading, Amount), and the Semibold display line wrapped onto two lines.
+
+Most design systems use brand or licensed fonts that are not npm packages. A `fonts` entry can now name font files or folders:
+
+```json
+"fonts": { "TASA Orbiter Display": { "files": ["./fonts/tasa-orbiter-display"] } }
+```
+
+- The files are copied into each generated project under `src/fonts/`, declared with `@font-face` in `src/fonts/fonts.css`, and imported by `base.css`.
+- Weight and italic are read from each file name: SemiBold is 600 and BoldItalic is 700 italic; a file named "Variable" covers every weight.
+- The fonts table in `GENERATION-REPORT.md` shows "font files: N", the weights that have no file, and paths that hold no fonts.
+
+For Blade, the Display cut came from the font's official release v1.001 (2023, SIL Open Font License). It is kept in the local, gitignored Blade folder only.
+
+| Blade visual check (4,001 variants) | Before | After |
+| --- | --- | --- |
+| Match | 2,185 | 2,246 |
+| To check | 1,251 | 1,448 |
+| Differs | 565 | 307 |
+
+- 286 variants improved, and none got worse; one harness error re-ran cleanly with `visual --only`.
+- Display: 12 of 12 match (0 before).
+- Heading: 4 moved from differs to match.
+- Amount: differs fell from 314 to 88.
+
+## 22. Docs lint (23 Nov 2026)
+
+`ds-sync docs lint` checks every generated page against [the documentation standard](fidelity/STANDARD.md). It reads what ships (MDX pages, component source), not the generator's data. `--strict` fails on errors, for CI.
+
+| Rule | Severity | Checks |
+| --- | --- | --- |
+| required-section, empty-section | error | Overview, Preview, Properties, Accessibility, Code and Design reference; Behaviour and keyboard when stories test interaction; no empty sections |
+| props-columns | error | Properties table has type, default and description columns |
+| prop-missing | warning | Every prop in the component source is in the table (Web Components: their own names; private Lit state excluded) |
+| plain-label, prop-undescribed, no-description | warning | Plain-language labels; what each prop and component does |
+| code-example | warning | The example has content, not an empty tag |
+| figma-link, broken-link, visual-not-run | error / warning | Design reference and links between pages |
+
+The first run found real gaps on every page, and the generator was fixed to meet the standard:
+
+- **Properties table.** It now has Property, Code, Type, Default, Description and Figma. Type and default come from the template.
+- **`disabled`.** It gets its own row.
+- **Web Components tables** show their own names (`titleValue`) and their toggle attributes.
+- **State rows** are labelled "Hover" or "Pressed", not `:hover:not(:disabled) (css)`.
+- **Code examples** show the Figma default content (`<Input label="Label" placeholder="Placeholder text" … />`) as valid JSX.
+
+| System | Before (errors / warnings) | After |
+| --- | --- | --- |
+| Design System AI, React | 26 / 42 | 0 / 33 |
+| Design System AI, Web Components | 26 / 32 | 0 / 29 |
+| Blade, React | 126 / 230 | 0 / 163 |
+| Blade, Web Components | 126 / 198 | 0 / 161 |
+
+The warnings left are content, not generation:
+
+- descriptions that Figma doesn't have, which the interpret step proposes and a person accepts;
+- six code examples from archetype templates, which don't report defaults yet.
+
+## 23. Reproduce
 
 - Blade Storybook inventory: `fetch('https://blade.razorpay.com/index.json')`.
 - Blade source: `git clone --depth 1 --filter=blob:none --sparse https://github.com/razorpay/blade`, with sparse paths `packages/blade/src/components` and `packages/blade-plugin`.

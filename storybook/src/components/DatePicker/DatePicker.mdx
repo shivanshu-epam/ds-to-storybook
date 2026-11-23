@@ -32,15 +32,15 @@ The default configuration (every property at its Figma default).
 
 ### Appearance
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Type"}</td><td><code>{"type"}</code></td><td>{"Type (variant)"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Type"}</td><td><code>{"type"}</code></td><td><code>{"'single' | 'range' | 'date-time'"}</code></td><td><code>{"'single'"}</code></td><td>{""}</td><td>{"Type (variant)"}</td></tr></tbody></table>
 
 ### Content
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"With calendar"}</td><td><code>{"showCalendar"}</code></td><td>{"Show Calendar (boolean)"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"With calendar"}</td><td><code>{"showCalendar"}</code></td><td><code>{"boolean"}</code></td><td><code>{"false"}</code></td><td>{""}</td><td>{"Show Calendar (boolean)"}</td></tr></tbody></table>
 
 ### State
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"State"}</td><td><code>{"state"}</code></td><td>{"State (variant)"}</td><td>{"States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Filled → state=\"filled\", Disabled → disabled, Read-only → state=\"read-only\", Error → state=\"error\""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"State"}</td><td><code>{"state"}</code></td><td>—</td><td>—</td><td>{"States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Filled → state=\"filled\", Disabled → disabled, Read-only → state=\"read-only\", Error → state=\"error\""}</td><td>{"State (variant)"}</td></tr><tr><td>{"Disabled"}</td><td><code>{"disabled"}</code></td><td><code>{"boolean"}</code></td><td><code>{"false"}</code></td><td>{""}</td><td>{"State=Disabled"}</td></tr></tbody></table>
 
 ### Try it
 
@@ -67,7 +67,7 @@ The default configuration (every property at its Figma default).
 
 ## Code
 
-<Source language="tsx" dark code={"import { DatePicker } from 'figma-design-system-storybook';\nimport 'figma-design-system-storybook/tokens.css';\n\n<DatePicker />"} />
+<Source language="tsx" dark code={"import { DatePicker } from 'figma-design-system-storybook';\nimport 'figma-design-system-storybook/tokens.css';\n\n<DatePicker type=\"single\" />"} />
 
 Each story shows its code under "Show code".
 
@@ -78,6 +78,6 @@ Each story shows its code under "Show code".
 ### Scorecard
 
 <p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"⚠ Visual fidelity: 17/21 designed variants match Figma (worst 2.4%)"}</li><li>{"✓ Variants: 21 designed variants shown"}</li><li>{"✓ Properties: 3/3 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"– Interaction: visuals only (display component)"}</li><li>{"⚠ Tokens: 2 raw colour values (not bound to a variable in Figma)"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 1 accepted known issue"}</li><li>{"⚠ Documentation: description; 0/3 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 1 generator note"}</li></ul>
+<ul><li>{"⚠ Visual fidelity: 17/21 designed variants match Figma (worst 2.4%)"}</li><li>{"✓ Variants: 21 designed variants shown"}</li><li>{"✓ Properties: 4/4 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"– Interaction: visuals only (display component)"}</li><li>{"⚠ Tokens: 2 raw colour values (not bound to a variable in Figma)"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 1 accepted known issue"}</li><li>{"⚠ Documentation: description; 0/4 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 1 generator note"}</li></ul>
 
 <FigmaDocs docs={docs} only="tabs" />

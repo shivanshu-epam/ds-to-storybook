@@ -13,7 +13,9 @@
   "mapping": [
     {
       "prop": "type",
-      "figma": "Type (variant)"
+      "figma": "Type (variant)",
+      "type": "'slash' | 'chevron'",
+      "default": "'slash'"
     }
   ],
   "notes": [

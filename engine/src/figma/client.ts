@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
 import { sha256, writeText } from '../util/core.ts';
-import type { FileResponse, LocalVariablesResponse, NodesResponse } from './types.ts';
+import type { FileResponse, LocalVariablesResponse, NodesResponse, StyleMeta } from './types.ts';
 
 export class FigmaHttpError extends Error {
   constructor(readonly status: number, readonly url: string, body: string) {
@@ -17,6 +17,8 @@ export interface FigmaReader {
   /** The file tree containing only the given nodes and their ancestors (finds the page of nested sets). */
   fileWithIds(fileKey: string, ids: string[], version?: string): Promise<FileResponse>;
   localVariables(fileKey: string): Promise<LocalVariablesResponse>;
+  /** Local styles seen in the responses so far (keyed by style node id): the file's colour, text and effect styles. */
+  seenStyles?(): Record<string, StyleMeta>;
 }
 
 /** Optional capability: rendering nodes to SVG (used by the generator for icons). */
@@ -49,22 +51,36 @@ export class FigmaClient implements FigmaReader, FigmaRenderer {
     this.apiBase = opts.apiBase ?? 'https://api.figma.com';
   }
 
-  /** depth=2 returns pages plus their top-level children (component sets and doc frames on DS pages). */
-  file(fileKey: string, depth = 2, version?: string): Promise<FileResponse> {
-    return this.get(`/v1/files/${fileKey}?depth=${depth}${version ? `&version=${encodeURIComponent(version)}` : ''}`);
+  private readonly styles: Record<string, StyleMeta> = {};
+
+  /** Figma lists the styles the returned nodes use; local ones are the design system's foundations. */
+  private noteStyles<T extends { styles?: Record<string, StyleMeta>; nodes?: NodesResponse['nodes'] }>(res: T): T {
+    const add = (m?: Record<string, StyleMeta>) => { for (const [id, s] of Object.entries(m ?? {})) if (!s.remote) this.styles[id] = s; };
+    add(res.styles);
+    for (const n of Object.values(res.nodes ?? {})) add(n?.styles);
+    return res;
   }
 
-  nodes(fileKey: string, ids: string[], version?: string, depth?: number): Promise<NodesResponse> {
+  seenStyles(): Record<string, StyleMeta> {
+    return { ...this.styles };
+  }
+
+  /** depth=2 returns pages plus their top-level children (component sets and doc frames on DS pages). */
+  async file(fileKey: string, depth = 2, version?: string): Promise<FileResponse> {
+    return this.noteStyles(await this.get<FileResponse>(`/v1/files/${fileKey}?depth=${depth}${version ? `&version=${encodeURIComponent(version)}` : ''}`));
+  }
+
+  async nodes(fileKey: string, ids: string[], version?: string, depth?: number): Promise<NodesResponse> {
     const params = new URLSearchParams({ ids: ids.join(',') });
     if (version) params.set('version', version);
     if (depth) params.set('depth', String(depth));
-    return this.get(`/v1/files/${fileKey}/nodes?${params}`);
+    return this.noteStyles(await this.get<NodesResponse>(`/v1/files/${fileKey}/nodes?${params}`));
   }
 
-  fileWithIds(fileKey: string, ids: string[], version?: string): Promise<FileResponse> {
+  async fileWithIds(fileKey: string, ids: string[], version?: string): Promise<FileResponse> {
     const params = new URLSearchParams({ ids: ids.join(',') });
     if (version) params.set('version', version);
-    return this.get(`/v1/files/${fileKey}?${params}`);
+    return this.noteStyles(await this.get<FileResponse>(`/v1/files/${fileKey}?${params}`));
   }
 
   /** Enterprise plans only. Callers must handle a 403 and fall back. */

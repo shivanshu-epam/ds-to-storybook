@@ -13,7 +13,9 @@
   "mapping": [
     {
       "prop": "type",
-      "figma": "Type (variant)"
+      "figma": "Type (variant)",
+      "type": "'single' | 'range' | 'date-time'",
+      "default": "'single'"
     },
     {
       "prop": "state",
@@ -21,8 +23,16 @@
       "note": "States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Filled → state=\"filled\", Disabled → disabled, Read-only → state=\"read-only\", Error → state=\"error\""
     },
     {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
+    },
+    {
       "prop": "showCalendar",
-      "figma": "Show Calendar (boolean)"
+      "figma": "Show Calendar (boolean)",
+      "type": "boolean",
+      "default": "false"
     }
   ],
   "notes": [

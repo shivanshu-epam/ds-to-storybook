@@ -3,15 +3,16 @@ import { composition, docsPage, isBuildingBlock, polishStories, templateSections
 import { activeDecisions, decidedSetDescription, decisionsReport, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel, type DecisionsFile } from '../decisions/decisions.ts';
 import { BEHAVIOUR, buildScorecard, scorecardLines, scorecardReport } from './scorecard.ts';
 import { leadSentence } from './templates/common.ts';
-import { fontsReport, httpFontSource, planFonts, usedFonts, type FontOverride, type FontPlan } from './fonts.ts';
-import { existsSync, rmSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { fontFaceCss, fontsReport, httpFontSource, planFonts, usedFonts, type FontOverride, type FontPlan } from './fonts.ts';
+import { copyFileSync, existsSync, mkdirSync, rmSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 
 import type { LoadedConfig } from '../config.ts';
 import type { FigmaReader, FigmaRenderer } from '../figma/client.ts';
 import type { FigmaIR, IRComponentSet } from '../ir/types.ts';
 import { expandHome, readJson, writeText } from '../util/core.ts';
 import { exportIcons, exportShapes, iconRefs, type IconAsset } from './icons.ts';
+import { addStyles, foundationPages, fromTokens, type StyleNodes } from './foundations.ts';
 import { projectFiles } from './project.ts';
 import { accordionTemplate } from './templates/accordion.ts';
 import { actionTemplate } from './templates/action.ts';
@@ -198,12 +199,15 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   if (missing.length) throw new Error(`Component sets missing from the IR: ${missing.join(', ')}. Run "extract" first.`);
 
   // Fonts: loaded from npm packages; system and missing families are reported.
-  const fonts = await planFonts(usedFonts(ir), gen.fonts === false ? undefined : httpFontSource(join(config.baseDir, '.ds-sync', 'fonts.json')), gen.fonts || {});
+  const fonts = await planFonts(usedFonts(ir), gen.fonts === false ? undefined : httpFontSource(join(config.baseDir, '.ds-sync', 'fonts.json')), gen.fonts || {}, config.baseDir);
   setFontStacks(Object.fromEntries(fonts.filter((f) => f.family !== 'Inter').map((f) => [f.family, f.stack])));
   setBreakpoints(gen.breakpoints);
   const fontPackages = fonts.filter((f) => f.package && f.package !== '@fontsource-variable/inter');
   const fontDeps = Object.fromEntries(fontPackages.filter((f) => f.version).map((f) => [f.package!, f.version!]));
-  const fontImports = [...new Set(fontPackages.flatMap((f) => f.imports ?? []))];
+  // The team's own font files: copied into src/fonts/ and declared there; base.css imports them with the packages.
+  const fontFaces = fontFaceCss(fonts);
+  const fontFiles: GeneratedFile[] = fontFaces ? [{ path: 'src/fonts/fonts.css', content: fontFaces }, ...fonts.flatMap((f) => (f.files ?? []).map((x) => ({ path: `src/${x.to}`, content: '', copyFrom: x.from })))] : [];
+  const fontImports = [...new Set([...fontPackages.flatMap((f) => f.imports ?? []), ...(fontFaces ? ['../fonts/fonts.css'] : [])])];
   for (const f of fonts.filter((x) => x.status === 'missing' || x.status === 'substitute')) log(`Font ${f.family}: ${f.status} (${f.note ?? ''})`);
   log(`Fonts: ${fonts.filter((f) => f.status === 'package' || f.status === 'configured').length} loaded, ${fonts.filter((f) => f.status === 'substitute').length} substituted, ${fonts.filter((f) => f.status === 'system').length} system, ${fonts.filter((f) => f.status === 'missing').length} missing`);
 
@@ -335,9 +339,24 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     }
   };
 
-  const colorTokens = tokens.rows
-    .filter((r) => r.collection === 'semantic.color')
-    .map((r) => ({ name: r.name, cssVar: r.cssVar }));
+  // Foundations: variables first; the file's local styles add what variables lack (shadows, or everything without them).
+  const foundations = fromTokens(tokens);
+  const styleNeeds = (ir.styles ?? []).filter((s) => s.type === 'EFFECT' || (s.type === 'FILL' && !foundations.sources.colors) || (s.type === 'TEXT' && !foundations.sources.typography));
+  const reader = renderer as unknown as Partial<FigmaReader>;
+  if (styleNeeds.length && typeof reader.nodes === 'function') {
+    const nodes: StyleNodes = {};
+    try {
+      for (let i = 0; i < styleNeeds.length; i += 100) {
+        const res = await reader.nodes(ir.fileKey, styleNeeds.slice(i, i + 100).map((s) => s.id), ir.version);
+        for (const [id, e] of Object.entries(res.nodes)) nodes[id] = e?.document;
+      }
+      addStyles(foundations, styleNeeds, nodes);
+    } catch (e) {
+      log(`Foundations: could not read the file's styles (${(e as Error).message.slice(0, 120)}); pages use variables only.`);
+    }
+  }
+  const foundationPagesList = foundationPages(foundations);
+  log(`Foundations: ${foundationPagesList.map((p) => p.title).join(', ') || 'none (no variables or styles)'}`);
   const page = {
     background: tokens.rows.find((r) => r.collection === 'semantic.color' && /^surface\/bg\/default$/.test(r.name))?.cssVar,
     text: tokens.rows.find((r) => r.collection === 'semantic.color' && /^text\/(primary|default)$/.test(r.name))?.cssVar,
@@ -369,13 +388,13 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   const targets: TargetConfig[] = gen.targets?.length ? gen.targets : [{ target: gen.target ?? 'react', outDir: gen.outDir, ...(gen.packageName ? { packageName: gen.packageName } : {}) }];
   const written: { target: Target; outDir: string; files: string[] }[] = [];
   for (const t of targets) {
-    const outFiles: GeneratedFile[] = [...shared];
+    const outFiles: GeneratedFile[] = [...shared, ...fontFiles];
     const packageName = t.packageName ?? gen.packageName ?? 'figma-storybook';
     if (t.target === 'react') {
       applyDocs(files, 'react', packageName);
       outFiles.push(
         ...files,
-        ...projectFiles({ name: packageName, figma: { fileKey: ir.fileKey, fileName: ir.fileName, version: ir.version }, modes: tokens.modes, modeAttributes, components: plan.map((c) => c.name), icons, colorTokens, page, fonts: { deps: fontDeps, imports: fontImports } }),
+        ...projectFiles({ name: packageName, figma: { fileKey: ir.fileKey, fileName: ir.fileName, version: ir.version }, modes: tokens.modes, modeAttributes, components: plan.map((c) => c.name), icons, foundations: foundationPagesList, page, fonts: { deps: fontDeps, imports: fontImports } }),
         { path: 'README.md', content: readme(ir, plan, 'react') },
         { path: 'visual-manifest.json', content: JSON.stringify(visualManifest(ir, results), null, 2) + '\n' },
       );
@@ -408,7 +427,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
           modeAttributes,
           components: wc.map((x) => ({ name: x.name, tags: x.r.tags, module: x.r.module })),
           icons,
-          colorTokens,
+          foundations: foundationPagesList,
           page,
           fonts: { deps: fontDeps, imports: fontImports },
           typings: wc.flatMap((x) => x.r.typings),
@@ -422,7 +441,11 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
       const abs = join(outDir, dir);
       if (existsSync(abs)) rmSync(abs, { recursive: true, force: true });
     }
-    for (const f of outFiles) writeText(join(outDir, f.path), f.content);
+    for (const f of outFiles) {
+      if (!f.copyFrom) { writeText(join(outDir, f.path), f.content); continue; }
+      mkdirSync(dirname(join(outDir, f.path)), { recursive: true });
+      copyFileSync(f.copyFrom, join(outDir, f.path));
+    }
     written.push({ target: t.target, outDir, files: outFiles.map((f) => f.path) });
     log(`${t.target}: ${outFiles.length} files → ${outDir}`);
   }

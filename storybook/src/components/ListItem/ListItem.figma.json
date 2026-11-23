@@ -13,7 +13,9 @@
   "mapping": [
     {
       "prop": "type",
-      "figma": "Type (variant)"
+      "figma": "Type (variant)",
+      "type": "'default' | 'menu' | 'file' | 'setting'",
+      "default": "'default'"
     },
     {
       "prop": "state",
@@ -22,17 +24,37 @@
     },
     {
       "prop": "size",
-      "figma": "Size (variant)"
+      "figma": "Size (variant)",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'sm'"
+    },
+    {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "leadingControl",
       "figma": "leading-control (instance swap) + has-leading-control (boolean)",
-      "note": "Slot with its visibility toggle: content shows it, null hides it; not set: hidden."
+      "note": "Slot with its visibility toggle: content shows it, null hides it; not set: hidden.",
+      "type": "ReactNode",
+      "default": "not set (hidden)",
+      "toggle": {
+        "prop": "hasLeadingControl",
+        "default": false
+      }
     },
     {
       "prop": "trailingControl",
       "figma": "trailing-control (instance swap) + has-trailing-control (boolean)",
-      "note": "Slot with its visibility toggle: content shows it, null hides it; not set: hidden."
+      "note": "Slot with its visibility toggle: content shows it, null hides it; not set: hidden.",
+      "type": "ReactNode",
+      "default": "not set (hidden)",
+      "toggle": {
+        "prop": "hasTrailingControl",
+        "default": false
+      }
     }
   ],
   "notes": [

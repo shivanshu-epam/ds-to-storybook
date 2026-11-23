@@ -121,6 +121,9 @@ export async function extractIR(client: FigmaReader, config: LoadedConfig, log: 
     return [buildComponentSet({ target, set, ...(key ? { key } : {}), docFrames, componentNames, resolve, notes: p.notes })];
   });
 
+  const styles = Object.entries(client.seenStyles?.() ?? {})
+    .map(([id, st]) => ({ id, name: st.name, type: st.styleType, ...(st.description?.trim() ? { description: st.description.trim() } : {}) }))
+    .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
   return {
     irVersion: 1,
     fileKey,
@@ -129,6 +132,7 @@ export async function extractIR(client: FigmaReader, config: LoadedConfig, log: 
     lastModified: file.lastModified,
     variables,
     components,
+    ...(styles.length ? { styles } : {}),
     missing,
   };
 }

@@ -28,15 +28,15 @@ The default configuration (every property at its Figma default).
 
 ### Appearance
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Position"}</td><td><code>{"position"}</code></td><td>{"Position (variant)"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Position"}</td><td><code>{"position"}</code></td><td><code>{"'left' | 'right'"}</code></td><td><code>{"'left'"}</code></td><td>{""}</td><td>{"Position (variant)"}</td></tr></tbody></table>
 
 ### Content
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Label"}</td><td><code>{"label"}</code></td><td>{"value (text layer)"}</td><td>{"Rendered in the <label>."}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Label"}</td><td><code>{"label"}</code></td><td>—</td><td>—</td><td>{"Rendered in the <label>."}</td><td>{"value (text layer)"}</td></tr></tbody></table>
 
 ### State
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Name / value / checked / default checked / on change"}</td><td><code>{"name / value / checked / defaultChecked / onChange"}</code></td><td>{"—"}</td><td>{"Passed to the radio input."}</td></tr><tr><td>{"State"}</td><td><code>{"state"}</code></td><td>{"State (variant)"}</td><td>{"States: Enabled → default, Focused → :focus (CSS), Invalid → state=\"invalid\", Warning → state=\"warning\", Read-Only → state=\"read-only\", Disabled → disabled, Skeleton → state=\"skeleton\""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Name / value / checked / default checked / on change"}</td><td><code>{"name / value / checked / defaultChecked / onChange"}</code></td><td>—</td><td>—</td><td>{"Passed to the radio input."}</td><td>{"—"}</td></tr><tr><td>{"State"}</td><td><code>{"state"}</code></td><td>—</td><td>—</td><td>{"States: Enabled → default, Focused → :focus (CSS), Invalid → state=\"invalid\", Warning → state=\"warning\", Read-Only → state=\"read-only\", Disabled → disabled, Skeleton → state=\"skeleton\""}</td><td>{"State (variant)"}</td></tr><tr><td>{"Disabled"}</td><td><code>{"disabled"}</code></td><td><code>{"boolean"}</code></td><td><code>{"false"}</code></td><td>{""}</td><td>{"State=Disabled"}</td></tr></tbody></table>
 
 ### Try it
 
@@ -63,7 +63,7 @@ The default configuration (every property at its Figma default).
 
 ## Code
 
-<Source language="tsx" dark code={"import { RadioField } from 'figma-design-system-storybook';\nimport 'figma-design-system-storybook/tokens.css';\n\n<RadioField />"} />
+<Source language="tsx" dark code={"import { RadioField } from 'figma-design-system-storybook';\nimport 'figma-design-system-storybook/tokens.css';\n\n<RadioField position=\"left\" />"} />
 
 Each story shows its code under "Show code".
 
@@ -74,6 +74,6 @@ Each story shows its code under "Show code".
 ### Scorecard
 
 <p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"✗ Visual fidelity: 6/14 designed variants match Figma (worst 4.2%)"}</li><li>{"✓ Variants: 14 designed variants shown"}</li><li>{"✓ Properties: 3/3 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"✓ Interaction: WAI-ARIA radio (label) pattern, tested in the stories"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"✓ Accessibility: axe in every Figma mode"}</li><li>{"⚠ Documentation: description; 0/3 props described"}</li><li>{"✓ Open decisions: 0 open questions; 0 generator notes"}</li></ul>
+<ul><li>{"✗ Visual fidelity: 6/14 designed variants match Figma (worst 4.2%)"}</li><li>{"✓ Variants: 14 designed variants shown"}</li><li>{"✓ Properties: 4/4 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"✓ Interaction: WAI-ARIA radio (label) pattern, tested in the stories"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"✓ Accessibility: axe in every Figma mode"}</li><li>{"⚠ Documentation: description; 0/4 props described"}</li><li>{"✓ Open decisions: 0 open questions; 0 generator notes"}</li></ul>
 
 <FigmaDocs docs={docs} only="tabs" />

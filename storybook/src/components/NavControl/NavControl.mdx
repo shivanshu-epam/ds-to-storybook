@@ -28,7 +28,11 @@ The default configuration (every property at its Figma default).
 
 ### Appearance
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Figma</th><th scope="col">Notes</th></tr></thead><tbody><tr><td>{"Direction"}</td><td><code>{"direction"}</code></td><td>{"Direction (variant)"}</td><td>{""}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Direction"}</td><td><code>{"direction"}</code></td><td><code>{"'prev' | 'next'"}</code></td><td><code>{"'prev'"}</code></td><td>{""}</td><td>{"Direction (variant)"}</td></tr></tbody></table>
+
+### State
+
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Disabled"}</td><td><code>{"disabled"}</code></td><td><code>{"boolean"}</code></td><td><code>{"false"}</code></td><td>{""}</td><td>{"State=Disabled"}</td></tr></tbody></table>
 
 ### Try it
 
@@ -40,7 +44,7 @@ The default configuration (every property at its Figma default).
 
 ## Code
 
-<Source language="tsx" dark code={"import { NavControl } from 'figma-design-system-storybook';\nimport 'figma-design-system-storybook/tokens.css';\n\n<NavControl />"} />
+<Source language="tsx" dark code={"import { NavControl } from 'figma-design-system-storybook';\nimport 'figma-design-system-storybook/tokens.css';\n\n<NavControl direction=\"prev\" />"} />
 
 Each story shows its code under "Show code".
 
@@ -51,6 +55,6 @@ Each story shows its code under "Show code".
 ### Scorecard
 
 <p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"✓ Visual fidelity: 8/8 designed variants match Figma (worst 0.0%)"}</li><li>{"✓ Variants: 8 designed variants shown"}</li><li>{"✓ Properties: 2/2 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"– Interaction: visuals only (display component)"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"✓ Accessibility: axe in every Figma mode"}</li><li>{"⚠ Documentation: description; 0/1 props described"}</li><li>{"✓ Open decisions: 0 open questions; 0 generator notes"}</li></ul>
+<ul><li>{"✓ Visual fidelity: 8/8 designed variants match Figma (worst 0.0%)"}</li><li>{"✓ Variants: 8 designed variants shown"}</li><li>{"✓ Properties: 3/3 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"– Interaction: visuals only (display component)"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"✓ Accessibility: axe in every Figma mode"}</li><li>{"⚠ Documentation: description; 0/2 props described"}</li><li>{"✓ Open decisions: 0 open questions; 0 generator notes"}</li></ul>
 
 <FigmaDocs docs={docs} only="tabs" />

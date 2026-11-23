@@ -17,32 +17,52 @@
       "note": "States: Default → default, Focused → :focus (CSS), Invalid → state=\"invalid\", Success → state=\"success\", Disabled → disabled, Read-only → state=\"read-only\""
     },
     {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
+    },
+    {
       "prop": "required",
-      "figma": "Required (boolean)"
+      "figma": "Required (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "helperMessage",
-      "figma": "Helper Message (boolean)"
+      "figma": "Helper Message (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "labelText",
-      "figma": "Label/Text (text)"
+      "figma": "Label/Text (text)",
+      "type": "ReactNode",
+      "default": "'Email address'"
     },
     {
       "prop": "valueText",
-      "figma": "Value/Text (text)"
+      "figma": "Value/Text (text)",
+      "type": "ReactNode",
+      "default": "'Enter your email'"
     },
     {
       "prop": "helperText",
-      "figma": "Helper/Text (text)"
+      "figma": "Helper/Text (text)",
+      "type": "ReactNode",
+      "default": "'We\\'ll never share your email'"
     },
     {
       "prop": "errorText",
-      "figma": "Error/Text (text)"
+      "figma": "Error/Text (text)",
+      "type": "ReactNode",
+      "default": "'Enter a valid email address'"
     },
     {
       "prop": "successText",
-      "figma": "Success/Text (text)"
+      "figma": "Success/Text (text)",
+      "type": "ReactNode",
+      "default": "'Email verified'"
     }
   ],
   "notes": [

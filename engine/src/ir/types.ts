@@ -187,6 +187,9 @@ export interface FigmaIR {
     byName: Record<string, IRVariable>;
   };
   components: IRComponentSet[];
+  /** The file's local styles (colour, text, effect, grid) seen while reading it, by style node id. Their values are
+   * read when the foundations pages are generated. */
+  styles?: { id: string; name: string; type: 'FILL' | 'TEXT' | 'EFFECT' | 'GRID'; description?: string }[];
   /** Targets that could not be found in Figma. */
   missing: { targetId: string; reason: string }[];
 }

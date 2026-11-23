@@ -143,14 +143,17 @@ It compares every Figma variant (Figma's own render) with the Storybook, pixel b
 
 ```json
 "generate": {
-  "fonts": { "Acme Sans": { "package": "@acme/fonts", "imports": ["@acme/fonts/sans.css"] } },
+  "fonts": {
+    "Acme Sans": { "package": "@acme/fonts", "imports": ["@acme/fonts/sans.css"] },
+    "Acme Display": { "files": ["./fonts/acme-display"] }
+  },
   "categories": { "Actions": ["Button", "Link"], "Forms": ["Checkbox", "Input"] },
   "publicComponents": ["CheckboxBase"],
   "internalComponents": ["ListItemRow"]
 }
 ```
 
-- **Fonts.** Every font family the Figma file uses is loaded from its open-source npm package (Fontsource) when one exists, with the weights Figma uses. System fonts (SF Pro, Menlo) stay system fonts. A licensed font needs your own package under `fonts`. The "Fonts" table in `GENERATION-REPORT.md` lists how each family was loaded, and any it could not load; a family published under a slightly different name (for example "TASA Orbiter Display" loaded as "TASA Orbiter") is reported as a substitute to confirm.
+- **Fonts.** Every font family the Figma file uses is loaded from its open-source npm package (Fontsource) when one exists, with the weights Figma uses. System fonts (SF Pro, Menlo) stay system fonts. A licensed or brand font needs your own source under `fonts`: an npm package (`package`, `imports`), or the font files themselves (`files`: files or folders of `.woff2`, `.woff`, `.ttf` or `.otf`, relative to the configuration). Files are copied into each generated project under `src/fonts/` and declared with `@font-face`; weight and italic are read from each file name (`Brand-SemiBold.woff2` is 600, `Brand-BoldItalic.ttf` is 700 italic, a file with `Variable` in its name covers every weight). Make sure the licence lets you include the files in your Storybook. The "Fonts" table in `GENERATION-REPORT.md` lists how each family was loaded, and any it could not load; a family published under a slightly different name (for example "TASA Orbiter Display" loaded as "TASA Orbiter") is reported as a substitute to confirm.
 - **Sidebar.** Components go under `Components/<category>` when `categories` assigns one. Components Figma marks as building blocks (names starting with `_` or `.`, or ending in `Base`) are built and tested but not listed; their parent's docs page links to them under Composition. `publicComponents` and `internalComponents` override that.
 - **Docs pages** follow [the documentation standard](fidelity/STANDARD.md): Overview, Preview, Variants, Properties (grouped, with the Figma property each one comes from), States, Behaviour, Composition, Accessibility, Code and Design reference (Figma links, nested consistency, visual check). Test-only stories are kept out of the sidebar.
 

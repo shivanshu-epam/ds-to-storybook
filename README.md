@@ -59,9 +59,10 @@ The tool follows the pattern multi-framework design systems use (Adobe Spectrum,
 2. **Extract.** It reads the Figma REST API into a normalized model: variants, properties, layout, tokens, icons and doc text.
 3. **Tokens.** Figma variables become CSS custom properties. Modes (light/dark, brands) become attributes.
 4. **Components.** Archetype templates (button, checkbox, accordion, switch, radio, input, dialog, select-only combobox) add tested WAI-ARIA behaviour. The generic template renders every other component from its Figma layers, and also recognises behaviour from structure: disclosures, tabs, radio and checkbox groups, listboxes, menus and menu buttons. Where nothing matches, the docs say the behaviour isn't specified yet.
-5. **Stories and docs.** It writes variant × state matrices, axis stories, play tests and MDX pages with the Figma documentation text.
-6. **Report.** `GENERATION-REPORT.md` records every assumption and gap; `token-map.json` records every token decision.
-7. **Visual check.** `ds-sync visual` compares every Figma variant, as Figma renders it, with the generated Storybook, pixel by pixel, and writes an HTML report (Figma, code and difference side by side).
+5. **Stories and docs.** It writes variant × state matrices, axis stories, play tests and MDX pages with the Figma documentation text. Foundations pages (colours, typography, spacing, radius, sizing, borders, elevation, motion, opacity) come from the Figma variables, or from the file's colour, text and effect styles when there are none.
+6. **Check.** `ds-sync docs lint` checks every docs page against the documentation standard; `ds-sync audit` scores each component per fidelity measure.
+7. **Report.** `GENERATION-REPORT.md` records every assumption and gap; `token-map.json` records every token decision.
+8. **Visual check.** `ds-sync visual` compares every Figma variant, as Figma renders it, with the generated Storybook, pixel by pixel, and writes an HTML report (Figma, code and difference side by side).
 
 ## Licence
 

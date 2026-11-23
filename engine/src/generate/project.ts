@@ -1,4 +1,5 @@
 /** Static files for a fresh Storybook project (no existing code or Storybook assumed). */
+import type { FoundationPage } from './foundations.ts';
 import type { IconAsset } from './icons.ts';
 import type { GeneratedFile } from './templates/common.ts';
 
@@ -30,7 +31,8 @@ export interface ProjectOptions {
   modeAttributes: Record<string, string>;
   components: string[];
   icons: IconAsset[];
-  colorTokens: { name: string; cssVar: string }[];
+  /** Foundations pages (colours, typography, spacing, ...), framework-neutral HTML. */
+  foundations: FoundationPage[];
   /** Page background and text tokens, when the variables have them (so mode switches restyle the canvas). */
   page?: { background?: string; text?: string };
   /** Font packages the Figma file needs (package -> version) and their CSS imports. */
@@ -306,30 +308,21 @@ export function FigmaDocs({ docs, only }: { docs: Docs; only?: 'tabs' }) {
 }
 `,
     },
-    {
-      path: 'src/foundations/Colors.stories.tsx',
+    ...o.foundations.map((f) => ({
+      path: `src/foundations/${f.title}.stories.tsx`,
       content: `import type { Meta, StoryObj } from '@storybook/react-vite';
 
-/** Semantic colour tokens from the Figma variables (switch modes in the toolbar). */
-const TOKENS: { name: string; cssVar: string }[] = ${JSON.stringify(o.colorTokens, null, 2)};
+/** ${f.intro} */
+const HTML = ${JSON.stringify(f.html)};
 
-const meta = { title: 'Foundations/Colors', parameters: { layout: 'padded' } } satisfies Meta;
+const meta = { title: 'Foundations/${f.title}', parameters: { layout: 'padded' } } satisfies Meta;
 export default meta;
 
-export const Semantic: StoryObj = {
-  render: () => (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
-      {TOKENS.map((t) => (
-        <div key={t.cssVar} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, fontFamily: 'system-ui, sans-serif' }}>
-          <span style={{ width: 32, height: 32, flex: 'none', borderRadius: 6, background: \`var(\${t.cssVar})\`, boxShadow: 'inset 0 0 0 1px rgba(0,0,0,.15)' }} />
-          <span><strong>{t.name}</strong><br /><code>{t.cssVar}</code></span>
-        </div>
-      ))}
-    </div>
-  ),
+export const ${f.title}: StoryObj = {
+  render: () => <div dangerouslySetInnerHTML={{ __html: HTML }} />,
 };
 `,
-    },
+    })),
     {
       path: 'src/index.ts',
       content: `${o.components.map((c) => `export * from './components/${c}/${c}';`).join('\n')}

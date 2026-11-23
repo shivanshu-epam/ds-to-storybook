@@ -13,20 +13,28 @@
   "mapping": [
     {
       "prop": "state",
-      "figma": "State (variant)"
+      "figma": "State (variant)",
+      "type": "'default' | 'loading' | 'empty'",
+      "default": "'default'"
     },
     {
       "prop": "showSearch",
-      "figma": "Show Search (boolean)"
+      "figma": "Show Search (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "grouped",
-      "figma": "Grouped (boolean)"
+      "figma": "Grouped (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "children",
       "figma": "_option (repeated ListItem)",
-      "note": "Children: DropdownMenu sets nothing on each ListItem; the Figma examples are the default."
+      "note": "Children: DropdownMenu sets nothing on each ListItem; the Figma examples are the default.",
+      "type": "ReactNode",
+      "default": "the Figma examples"
     }
   ],
   "notes": [

@@ -75,7 +75,17 @@ export interface FigmaNode {
   boundVariables?: Record<string, VariableAlias | VariableAlias[] | Record<string, VariableAlias>>;
 }
 
+/** A Figma style as a response lists it (keyed by the style's node id). */
+export interface StyleMeta {
+  key?: string;
+  name: string;
+  styleType: 'FILL' | 'TEXT' | 'EFFECT' | 'GRID';
+  remote?: boolean;
+  description?: string;
+}
+
 export interface FileResponse {
+  styles?: Record<string, StyleMeta>;
   name: string;
   version: string;
   lastModified: string;
@@ -90,6 +100,7 @@ export interface NodesResponse {
   lastModified: string;
   nodes: Record<string, {
     document: FigmaNode;
+    styles?: Record<string, StyleMeta>;
     components?: Record<string, { key: string; name: string; componentSetId?: string }>;
     componentSets?: Record<string, { key: string; name: string; description?: string }>;
   } | null>;

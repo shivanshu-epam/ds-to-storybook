@@ -173,6 +173,7 @@ Figma: ListItem (520:3110)
 | Type (variant) | `type` |  |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Pressed → :pressed (CSS), Focused → :focus (CSS), Disabled → disabled, Selected → state="selected", Activated → state="activated", Dragged → state="dragged", Skeleton → state="skeleton" |
 | Size (variant) | `size` |  |
+| State=Disabled | `disabled` |  |
 | leading-control (instance swap) + has-leading-control (boolean) | `leadingControl` | Slot with its visibility toggle: content shows it, null hides it; not set: hidden. |
 | trailing-control (instance swap) + has-trailing-control (boolean) | `trailingControl` | Slot with its visibility toggle: content shows it, null hides it; not set: hidden. |
 
@@ -573,6 +574,7 @@ Figma: BreadcrumbItem (224:1461)
 | --- | --- | --- |
 | Type (variant) | `type` |  |
 | State (variant) | `—` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Disabled → disabled |
+| State=Disabled | `disabled` |  |
 | Has icon (boolean) | `hasIcon` |  |
 | Label (text) | `label` |  |
 
@@ -728,6 +730,7 @@ Figma: NavControl (241:1812)
 | --- | --- | --- |
 | Direction (variant) | `direction` |  |
 | State (variant) | `—` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Disabled → disabled |
+| State=Disabled | `disabled` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -821,6 +824,7 @@ Figma: AvatarIdentity (274:1803)
 | Figma | Prop | Note |
 | --- | --- | --- |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Active → :pressed (CSS), Disabled → disabled, Selected → state="selected" |
+| State=Disabled | `disabled` |  |
 | Has name (boolean) | `hasName` |  |
 | Has email (boolean) | `hasEmail` |  |
 | Has trailing icon (boolean) | `hasTrailingIcon` |  |
@@ -1315,6 +1319,7 @@ Figma: RadioControl (521:2681)
 | --- | --- | --- |
 | State (variant) | `state` | States: Enabled → default, Hovered → :hover (CSS), Focused → :focus (CSS), Pressed → :pressed (CSS), Disabled → disabled, Skeleton → state="skeleton", Read-Only → state="read-only", Invalid → state="invalid", Warning → state="warning" |
 | Selected (variant) | `checked / defaultChecked` | false → not checked, true → checked; styled with :checked. |
+| State=Disabled | `disabled` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -1375,6 +1380,7 @@ Figma: RadioField (522:125)
 | — | `name / value / checked / defaultChecked / onChange` | Passed to the radio input. |
 | State (variant) | `state` | States: Enabled → default, Focused → :focus (CSS), Invalid → state="invalid", Warning → state="warning", Read-Only → state="read-only", Disabled → disabled, Skeleton → state="skeleton" |
 | Position (variant) | `position` |  |
+| State=Disabled | `disabled` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -1548,6 +1554,7 @@ Figma: Divider (697:1083)
 | Size (variant) | `size` |  |
 | Color (variant) | `color` |  |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Selected → state="selected", Disabled → disabled |
+| State=Disabled | `disabled` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -1582,6 +1589,7 @@ Figma: Date Picker (660:4998)
 | --- | --- | --- |
 | Type (variant) | `type` |  |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Filled → state="filled", Disabled → disabled, Read-only → state="read-only", Error → state="error" |
+| State=Disabled | `disabled` |  |
 | Show Calendar (boolean) | `showCalendar` |  |
 
 **Not from Figma (archetype defaults or decisions):**
@@ -2291,6 +2299,7 @@ Figma: Switch (723:3038)
 | Value (variant) | `checked / defaultChecked` | Off → not checked, On → checked; aria-checked. |
 | Interaction (variant) | `interaction` | States: Default → default, Disabled → disabled, Loading → interaction="loading" |
 | Size (variant) | `size` |  |
+| State=Disabled | `disabled` |  |
 | Show Inner Content (boolean) | `showInnerContent` |  |
 
 **Not from Figma (archetype defaults or decisions):**
@@ -2348,11 +2357,12 @@ Figma: Input (836:4005)
 
 | Figma | Prop | Note |
 | --- | --- | --- |
-| value (text layer) | `value / defaultValue / onChange / type / name / maxLength / ...` | Native input attributes; the Figma placeholder text is the placeholder. |
+| value (text layer) | `value / defaultValue / onChange / type / name / maxLength / autoComplete / ...` | Native input attributes; the Figma placeholder text is the placeholder. |
 | — | `invalid` | aria-invalid without changing the look. |
 | Type (variant) | `appearance` |  |
 | Size (variant) | `size` |  |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Focus → :focus (CSS), Disabled → disabled, Error → state="error" |
+| State=Disabled | `disabled` |  |
 | Required (boolean) | `required` |  |
 | Show leading icon (boolean) | `showLeadingIcon` |  |
 | Show trailing icon (boolean) | `showTrailingIcon` |  |
@@ -2514,6 +2524,7 @@ Figma: DropdownTrigger (396:1799)
 | Size (variant) | `size` |  |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Disabled → disabled, Error → state="error", Read-only → state="read-only" |
 | Expanded (variant) | `expanded` |  |
+| State=Disabled | `disabled` |  |
 | Clearable (boolean) | `clearable` |  |
 
 **Not from Figma (archetype defaults or decisions):**
@@ -2735,6 +2746,7 @@ Figma: InputControl (427:2001)
 | Figma | Prop | Note |
 | --- | --- | --- |
 | State (variant) | `state` | States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Filled → state="filled", Disabled → disabled, Read-only → state="read-only", Error → state="error", Success → state="success", State9 → state="state9" |
+| State=Disabled | `disabled` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 
@@ -2792,6 +2804,7 @@ Figma: InputField (428:2042)
 | Figma | Prop | Note |
 | --- | --- | --- |
 | State (variant) | `state` | States: Default → default, Focused → :focus (CSS), Invalid → state="invalid", Success → state="success", Disabled → disabled, Read-only → state="read-only" |
+| State=Disabled | `disabled` |  |
 | Required (boolean) | `required` |  |
 | Helper Message (boolean) | `helperMessage` |  |
 | Label/Text (text) | `labelText` |  |
@@ -2918,6 +2931,7 @@ Figma: Form (435:8)
 | Figma | Prop | Note |
 | --- | --- | --- |
 | State (variant) | `state` | States: Default → default, Submitting → state="submitting", Success → state="success", Error → state="error", Disabled → disabled |
+| State=Disabled | `disabled` |  |
 
 **Not from Figma (archetype defaults or decisions):**
 

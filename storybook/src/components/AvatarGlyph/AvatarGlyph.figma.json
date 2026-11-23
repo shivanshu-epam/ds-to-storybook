@@ -13,20 +13,28 @@
   "mapping": [
     {
       "prop": "type",
-      "figma": "Type (variant)"
+      "figma": "Type (variant)",
+      "type": "'text' | 'icon' | 'image'",
+      "default": "'text'"
     },
     {
       "prop": "color",
-      "figma": "Color (variant)"
+      "figma": "Color (variant)",
+      "type": "'1' | '2' | '3' | '4' | '5'",
+      "default": "'1'"
     },
     {
       "prop": "size",
-      "figma": "Size (variant)"
+      "figma": "Size (variant)",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'sm'"
     },
     {
       "prop": "icon",
       "figma": "Icon (instance swap)",
-      "note": "Slot: any content; the Figma instance is the default."
+      "note": "Slot: any content; the Figma instance is the default.",
+      "type": "ReactNode",
+      "default": "the Figma instance"
     }
   ],
   "notes": [

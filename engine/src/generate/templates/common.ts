@@ -6,13 +6,16 @@ import type { TokenResolver } from '../tokens.ts';
 export interface GeneratedFile {
   path: string;
   content: string;
+  /** A binary file copied as it is (font files): content is ignored. */
+  copyFrom?: string;
 }
 
 export interface ComponentReport {
   name: string;
   figmaSets: string[];
   files: string[];
-  props: { prop: string; figma: string; note?: string }[];
+  /** Each code prop and the Figma property it comes from; type and default when the template knows them (docs table). */
+  props: { prop: string; figma: string; note?: string; type?: string; default?: string; toggle?: { prop: string; default: boolean } }[];
   /** Behaviour or API decisions not specified in Figma (archetype defaults). */
   assumptions: string[];
   /** Figma items the template could not express. */

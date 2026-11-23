@@ -13,31 +13,45 @@
   "mapping": [
     {
       "prop": "status",
-      "figma": "Status (variant)"
+      "figma": "Status (variant)",
+      "type": "'success' | 'warning' | 'error' | 'info' | 'neutral'",
+      "default": "'success'"
     },
     {
       "prop": "styleVariant",
-      "figma": "Style (variant)"
+      "figma": "Style (variant)",
+      "type": "'filled' | 'outlined' | 'subtle'",
+      "default": "'filled'"
     },
     {
       "prop": "type",
-      "figma": "Type (variant)"
+      "figma": "Type (variant)",
+      "type": "'text' | 'numeric' | 'dot'",
+      "default": "'text'"
     },
     {
       "prop": "size",
-      "figma": "Size (variant)"
+      "figma": "Size (variant)",
+      "type": "'sm' | 'md' | 'lg'",
+      "default": "'sm'"
     },
     {
       "prop": "hasLeadingIcon",
-      "figma": "Has leading icon (boolean)"
+      "figma": "Has leading icon (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "isDismissible",
-      "figma": "Is dismissible (boolean)"
+      "figma": "Is dismissible (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "label",
-      "figma": "Label (text)"
+      "figma": "Label (text)",
+      "type": "ReactNode",
+      "default": "'Label'"
     }
   ],
   "notes": [

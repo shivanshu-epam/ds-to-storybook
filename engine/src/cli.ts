@@ -24,6 +24,7 @@ import { loadIR, paths, stepAnalyze, stepExtract, stepReport, stepSpecs } from '
 import { loadDotEnv, writeJson, writeText } from './util/core.ts';
 import { decide, hasProposals, activeDecisions, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel } from './decisions/decisions.ts';
 import { buildReview, writeReview } from './review/review.ts';
+import { lintDocs, lintMarkdown } from './docs/lint.ts';
 import { claudeAvailable, interpret } from './ai/interpret.ts';
 import { evalMarkdown, evaluate } from './eval/eval.ts';
 import { auditMarkdown, loadScorecards, testTallies, withTests, withVisual } from './audit/audit.ts';
@@ -53,6 +54,8 @@ Commands:
   decisions validate | accept | reject: check ds-sync.decisions.json against Figma, or change
             the status of entries (--only A,B; --by <name>). Accepting is a person's call.
   eval      Compare the generated API with a reference library: --reference <components folder>
+  docs lint Check every generated docs page against the documentation standard → out/docs-lint.md
+            (--dir <generated project>; --strict fails on any error)
   audit     Scorecards of the generated project, one status per fidelity measure → out/audit.md
             (--tests <vitest json report> adds real test results; --strict fails on any ✗)
 
@@ -277,6 +280,22 @@ async function main() {
         writeText(decisionsPath, JSON.stringify(file, null, 2) + '\n');
         log(`Decisions: ${names.length} set(s) ${action}ed.`);
       } else throw new Error(`Unknown decisions action "${action}" (validate, accept, reject).`);
+      break;
+    }
+    case 'docs': {
+      if ((positionals[1] ?? 'lint') !== 'lint') throw new Error(`Unknown docs action "${positionals[1]}" (lint).`);
+      const g = config.generate;
+      const dirs = values.dir ? [values.dir] : g?.targets?.length ? g.targets.map((t) => t.outDir) : g ? [g.outDir] : [];
+      const results = dirs.map((d) => ({ ...lintDocs(resolve(config.baseDir, d)), dir: d }));
+      const file = join(p.out, 'docs-lint.md');
+      writeText(file, lintMarkdown(results));
+      for (const r of results) {
+        const errors = r.findings.filter((f) => f.severity === 'error');
+        log(`Docs lint (${r.dir}): ${r.pages} pages, ${errors.length} error(s), ${r.findings.length - errors.length} warning(s)`);
+        for (const f of errors.slice(0, 10)) log(`  ✗ ${f.component}: ${f.rule}: ${f.message}`);
+      }
+      log(`Docs lint → ${file}`);
+      if (values.strict && results.some((r) => r.findings.some((f) => f.severity === 'error'))) process.exitCode = 1;
       break;
     }
     case 'audit': {

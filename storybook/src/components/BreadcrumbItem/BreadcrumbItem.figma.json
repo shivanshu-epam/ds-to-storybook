@@ -13,7 +13,9 @@
   "mapping": [
     {
       "prop": "type",
-      "figma": "Type (variant)"
+      "figma": "Type (variant)",
+      "type": "'link' | 'current' | 'collapse'",
+      "default": "'link'"
     },
     {
       "prop": "—",
@@ -21,12 +23,22 @@
       "note": "States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Disabled → disabled"
     },
     {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
+    },
+    {
       "prop": "hasIcon",
-      "figma": "Has icon (boolean)"
+      "figma": "Has icon (boolean)",
+      "type": "boolean",
+      "default": "false"
     },
     {
       "prop": "label",
-      "figma": "Label (text)"
+      "figma": "Label (text)",
+      "type": "ReactNode",
+      "default": "'Breadcrumb'"
     }
   ],
   "notes": [

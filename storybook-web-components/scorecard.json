@@ -88,7 +88,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "5/5 Figma properties mapped"
+          "value": "6/6 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -113,7 +113,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/5 props described"
+          "value": "description; 0/6 props described"
         },
         {
           "name": "Open decisions",
@@ -272,7 +272,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "4/4 Figma properties mapped"
+          "value": "5/5 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -297,7 +297,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/3 props described"
+          "value": "description; 0/4 props described"
         },
         {
           "name": "Open decisions",
@@ -452,7 +452,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "2/2 Figma properties mapped"
+          "value": "3/3 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -477,7 +477,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/1 props described"
+          "value": "description; 0/2 props described"
         },
         {
           "name": "Open decisions",
@@ -632,7 +632,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "6/6 Figma properties mapped"
+          "value": "7/7 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -657,7 +657,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/6 props described"
+          "value": "description; 0/7 props described"
         },
         {
           "name": "Open decisions",
@@ -872,7 +872,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "2/2 Figma properties mapped"
+          "value": "3/3 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -897,7 +897,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/2 props described"
+          "value": "description; 0/3 props described"
         },
         {
           "name": "Open decisions",
@@ -932,7 +932,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "3/3 Figma properties mapped"
+          "value": "4/4 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -957,7 +957,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/3 props described"
+          "value": "description; 0/4 props described"
         },
         {
           "name": "Open decisions",
@@ -1052,7 +1052,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "5/5 Figma properties mapped"
+          "value": "6/6 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -1077,7 +1077,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/5 props described"
+          "value": "description; 0/6 props described"
         },
         {
           "name": "Open decisions",
@@ -1112,7 +1112,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "3/3 Figma properties mapped"
+          "value": "4/4 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -1137,7 +1137,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/3 props described"
+          "value": "description; 0/4 props described"
         },
         {
           "name": "Open decisions",
@@ -1172,7 +1172,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "4/4 Figma properties mapped"
+          "value": "5/5 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -1197,7 +1197,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/4 props described"
+          "value": "description; 0/5 props described"
         },
         {
           "name": "Open decisions",
@@ -1232,7 +1232,7 @@
         {
           "name": "Properties",
           "status": "warn",
-          "value": "13/15 Figma properties mapped; not exposed: Leading icon, Trailing icon"
+          "value": "14/16 Figma properties mapped; not exposed: Leading icon, Trailing icon"
         },
         {
           "name": "Nested consistency",
@@ -1257,7 +1257,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/13 props described"
+          "value": "description; 0/14 props described"
         },
         {
           "name": "Open decisions",
@@ -1292,7 +1292,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "4/4 Figma properties mapped"
+          "value": "5/5 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -1317,7 +1317,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/4 props described"
+          "value": "description; 0/5 props described"
         },
         {
           "name": "Open decisions",
@@ -1472,7 +1472,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "1/1 Figma properties mapped"
+          "value": "2/2 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -1497,7 +1497,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/1 props described"
+          "value": "description; 0/2 props described"
         },
         {
           "name": "Open decisions",
@@ -1532,7 +1532,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "8/8 Figma properties mapped"
+          "value": "9/9 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -1557,7 +1557,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/8 props described"
+          "value": "description; 0/9 props described"
         },
         {
           "name": "Open decisions",
@@ -1592,7 +1592,7 @@
         {
           "name": "Properties",
           "status": "pass",
-          "value": "1/1 Figma properties mapped"
+          "value": "2/2 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -1617,7 +1617,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/1 props described"
+          "value": "description; 0/2 props described"
         },
         {
           "name": "Open decisions",

@@ -13,24 +13,38 @@
   "mapping": [
     {
       "prop": "orientation",
-      "figma": "Orientation (variant)"
+      "figma": "Orientation (variant)",
+      "type": "'horizontal' | 'vertical'",
+      "default": "'horizontal'"
     },
     {
       "prop": "styleVariant",
-      "figma": "Style (variant)"
+      "figma": "Style (variant)",
+      "type": "'solid' | 'dotted' | 'dash'",
+      "default": "'solid'"
     },
     {
       "prop": "size",
-      "figma": "Size (variant)"
+      "figma": "Size (variant)",
+      "type": "'sm' | 'md'",
+      "default": "'sm'"
     },
     {
       "prop": "color",
-      "figma": "Color (variant)"
+      "figma": "Color (variant)",
+      "type": "'light' | 'dark' | 'subtle' | 'transparent' | 'danger' | 'success' | 'neutral' | 'warning' | 'info'",
+      "default": "'light'"
     },
     {
       "prop": "state",
       "figma": "State (variant)",
       "note": "States: Default → default, Hover → :hover (CSS), Focused → :focus (CSS), Selected → state=\"selected\", Disabled → disabled"
+    },
+    {
+      "prop": "disabled",
+      "figma": "State=Disabled",
+      "type": "boolean",
+      "default": "false"
     }
   ],
   "notes": [
