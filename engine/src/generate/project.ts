@@ -29,6 +29,8 @@ export interface ProjectOptions {
   figma: { fileKey: string; fileName: string; version: string };
   modes: Record<string, string[]>;
   modeAttributes: Record<string, string>;
+  /** Collections that get one story-test run per mode (those holding colours); all when not set. */
+  testCollections?: string[];
   components: string[];
   icons: IconAsset[];
   /** Foundations pages (colours, typography, spacing, ...), framework-neutral HTML. */
@@ -118,7 +120,7 @@ const TEST_MODES: Record<string, string> = JSON.parse(import.meta.env.VITE_DS_MO
 const withModes: Decorator = (Story, { globals }) => {
   useEffect(() => {
     const html = document.documentElement;
-${toolbars.map((t) => `    html.setAttribute('data-${t.key}', String(globals.${camel(t.key)} ?? '${t.modes[0]}'));`).join('\n')}
+${toolbars.map((t) => `    html.setAttribute('data-${t.key}', String(globals.${camel(t.key)} ?? ${JSON.stringify(t.modes[0])}));`).join('\n')}
   }, [${toolbars.map((t) => `globals.${camel(t.key)}`).join(', ')}]);
   return <Story />;
 };
@@ -127,11 +129,11 @@ const preview: Preview = {
   decorators: [withModes],
   globalTypes: {
 ${toolbars.map((t) => `    ${camel(t.key)}: {
-      description: 'Figma mode: ${t.collection}',
-      toolbar: { title: '${t.key}', icon: 'paintbrush', items: [${t.modes.map((m) => `'${m}'`).join(', ')}], dynamicTitle: true },
+      description: ${JSON.stringify(`Figma mode: ${t.collection}`)},
+      toolbar: { title: ${JSON.stringify(t.key)}, icon: 'paintbrush', items: [${t.modes.map((m) => JSON.stringify(m)).join(', ')}], dynamicTitle: true },
     },`).join('\n')}
   },
-  initialGlobals: { ${toolbars.map((t) => `${camel(t.key)}: TEST_MODES['${t.key}'] ?? '${t.modes[0]}'`).join(', ')} },
+  initialGlobals: { ${toolbars.map((t) => `${camel(t.key)}: TEST_MODES[${JSON.stringify(t.key)}] ?? ${JSON.stringify(t.modes[0])}`).join(', ')} },
   parameters: {
     controls: { expanded: true },
     // Accessibility violations fail the story tests.
@@ -144,7 +146,9 @@ export default preview;
     },
     {
       path: 'vitest.config.ts',
-      content: vitestConfig(toolbars),
+      // A story's tests (render, interactions, axe contrast) change only where colours change: one run per mode of each
+      // collection that holds colours. Collections of sizes (breakpoints, grids, spacing) stay at their default mode.
+      content: vitestConfig(toolbars.filter((t) => !o.testCollections || o.testCollections.includes(t.collection))),
     },
     {
       path: 'src/styles/base.css',
@@ -333,8 +337,10 @@ export type { IconName } from './icons/icons';
   ];
 }
 
+/** A Storybook globals key from a mode attribute ("Color-palette-1" → "colorPalette1"): always a valid identifier. */
 function camel(s: string): string {
-  return s.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
+  const id = s.replace(/[^A-Za-z0-9]+(.)?/g, (_m, c: string | undefined) => (c ? c.toUpperCase() : '')).replace(/^./, (c) => c.toLowerCase());
+  return /^[0-9]/.test(id) ? `_${id}` : id || 'mode';
 }
 
 /** One test run per Figma mode: the defaults, then each other mode once (other collections at their defaults). */

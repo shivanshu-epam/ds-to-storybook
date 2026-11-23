@@ -160,23 +160,26 @@ function decisionDocs(sets: IRComponentSet[]): { descriptions?: Record<string, s
 }
 
 export async function generateStorybook(config: LoadedConfig, gen: GenerateConfig, ir: FigmaIR, renderer: FigmaRenderer, log: (m: string) => void, plan: PlannedComponent[] = gen.components ?? []) {
-  let source: { variables?: Record<string, unknown[]> } = { variables: {} };
+  let source: { variables?: Record<string, unknown[]>; ids?: Record<string, string> } = { variables: {} };
   if (gen.variablesExport) {
     source = readJson(resolve(config.baseDir, expandHome(gen.variablesExport)));
     log(`Variables: ${gen.variablesExport}`);
   } else {
     try {
       source = exportFromRest(await (renderer as unknown as FigmaReader).localVariables(ir.fileKey));
-      log('Variables: read from the Figma Variables API');
+      log(`Variables: ${Object.keys(source.ids ?? {}).length} read from ${'manifest' in (renderer as object) ? 'the ds-sync plugin export' : 'the Figma Variables API'}`);
     } catch {
       log('Variables: not available (the Variables API needs an Enterprise plan). Export them with the ds-sync Figma plugin and set generate.variablesExport; values stay raw until then.');
     }
   }
   const tokens = loadTokens(source);
-  const resolver = new TokenResolver(tokens);
+  const resolver = new TokenResolver(tokens, source.ids ?? {});
   // Mode attributes: light/dark collections drive data-theme; others data-<collection>. Config can override.
   const autoModes = Object.fromEntries(Object.entries(tokens.modes).map(([c, modes]) => [c, modes.some((m) => /dark/i.test(m)) ? 'data-theme' : `data-${c.replace(/^(primitives|semantic)\./, '').replace(/\W+/g, '-')}`]));
   const modeAttributes = { ...autoModes, ...(gen.modeAttributes ?? {}) };
+  // Story tests run once per mode only for collections whose modes change colours (themes, brands): contrast can only
+  // differ there. Sizes and layouts (breakpoints, grids) would multiply the runs without testing anything new.
+  const testCollections = [...new Set(tokens.rows.filter((r) => r.type === 'C' && tokens.modes[r.collection]).map((r) => r.collection))];
 
   const setsById = new Map(ir.components.map((c) => [c.targetId, c]));
   // Decisions: validated against this IR; entries with errors are left out and reported, never half-applied.
@@ -370,9 +373,9 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
 
   const decisions = resolver.decisions;
   const tokenMap = {
-    note: 'How each Figma value became CSS. "bound": bound to a variable in Figma and matched to a token by value (the Variables REST API is Enterprise-only, so variable ids cannot be read directly). "raw-in-figma": not bound in Figma, kept as a raw value. "no-matching-token": bound in Figma, but no token has that value.',
+    note: 'How each Figma value became CSS. "bound-by-id": bound to a variable in Figma and mapped to the token of that same variable (variable ids known: Variables API or the ds-sync plugin export). "bound": bound to a variable and matched to a token by value (variable ids not known). "raw-in-figma": not bound in Figma, kept as a raw value. "no-matching-token": bound in Figma, but no token has that value.',
     counts: {
-      bound: decisions.filter((d) => d.reason === 'bound').length,
+      bound: decisions.filter((d) => d.reason === 'bound' || d.reason === 'bound-by-id').length,
       rawInFigma: decisions.filter((d) => d.reason === 'raw-in-figma').length,
       noMatchingToken: decisions.filter((d) => d.reason === 'no-matching-token').length,
     },
@@ -394,7 +397,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
       applyDocs(files, 'react', packageName);
       outFiles.push(
         ...files,
-        ...projectFiles({ name: packageName, figma: { fileKey: ir.fileKey, fileName: ir.fileName, version: ir.version }, modes: tokens.modes, modeAttributes, components: plan.map((c) => c.name), icons, foundations: foundationPagesList, page, fonts: { deps: fontDeps, imports: fontImports } }),
+        ...projectFiles({ name: packageName, figma: { fileKey: ir.fileKey, fileName: ir.fileName, version: ir.version }, modes: tokens.modes, modeAttributes, testCollections, components: plan.map((c) => c.name), icons, foundations: foundationPagesList, page, fonts: { deps: fontDeps, imports: fontImports } }),
         { path: 'README.md', content: readme(ir, plan, 'react') },
         { path: 'visual-manifest.json', content: JSON.stringify(visualManifest(ir, results), null, 2) + '\n' },
       );
@@ -425,6 +428,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
           figma: { fileKey: ir.fileKey, fileName: ir.fileName },
           modes: tokens.modes,
           modeAttributes,
+          testCollections,
           components: wc.map((x) => ({ name: x.name, tags: x.r.tags, module: x.r.module })),
           icons,
           foundations: foundationPagesList,
@@ -442,7 +446,8 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
       if (existsSync(abs)) rmSync(abs, { recursive: true, force: true });
     }
     for (const f of outFiles) {
-      if (!f.copyFrom) { writeText(join(outDir, f.path), f.content); continue; }
+      // Figma text can carry U+2028/U+2029 (invisible line separators): they break JavaScript parsers in generated code.
+      if (!f.copyFrom) { writeText(join(outDir, f.path), f.content.replace(/[\u2028\u2029]/g, ' ')); continue; }
       mkdirSync(dirname(join(outDir, f.path)), { recursive: true });
       copyFileSync(f.copyFrom, join(outDir, f.path));
     }

@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { FigmaClient, FigmaHttpError } from '../src/figma/client.ts';
+import { FigmaClient, FigmaHttpError, FigmaRateLimitError } from '../src/figma/client.ts';
 
 const client = (maxRetries = 3) => new FigmaClient({ token: 't', cacheDir: mkdtempSync(join(tmpdir(), 'ds-client-')), maxRetries, retryBaseMs: 1 });
 const reply = (status: number, body: unknown) => new Response(JSON.stringify(body), { status });
@@ -36,5 +36,14 @@ describe('FigmaClient retries', () => {
     vi.stubGlobal('fetch', forbidden);
     await expect(client().localVariables('KEY')).rejects.toMatchObject({ status: 403 });
     expect(forbidden).toHaveBeenCalledTimes(1);
+  });
+
+  it('stops at once when Figma asks for a long wait (the plan allowance is used up), and says why', async () => {
+    const limited = vi.fn().mockResolvedValue(new Response('{}', { status: 429, headers: { 'retry-after': '399949', 'x-figma-plan-tier': 'starter', 'x-figma-rate-limit-type': 'low' } }));
+    vi.stubGlobal('fetch', limited);
+    const err = await client().file('KEY').catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(FigmaRateLimitError);
+    expect((err as Error).message).toMatch(/wait 111 hours .*plan tier: starter, limit: low.*Dev or Full seat/);
+    expect(limited).toHaveBeenCalledTimes(1);
   });
 });

@@ -4,6 +4,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 
 import type { FigmaIR, IRComponentSet } from '../ir/types.ts';
+import { JS_RESERVED } from '../util/reserved.ts';
 
 export type DecisionStatus = 'proposed' | 'accepted' | 'rejected';
 
@@ -55,7 +56,8 @@ export type ApplyLevel = 'accepted' | 'proposed' | 'none';
 
 export const DECISIONS_FILE = 'ds-sync.decisions.json';
 const IDENT = /^[a-z][A-Za-z0-9]*$/;
-const RESERVED = new Set(['children', 'className', 'style', 'key', 'ref', 'id', 'disabled', 'class', 'slot', 'part']);
+// DOM, React and Lit names, and JavaScript reserved words (a prop named "function" is not valid code).
+const RESERVED = new Set(['children', 'className', 'style', 'key', 'ref', 'id', 'disabled', 'class', 'slot', 'part', ...JS_RESERVED]);
 
 export function emptyDecisions(): DecisionsFile {
   return { $schema: './node_modules/ds-sync/schemas/decisions.schema.json', version: 1, sets: {} };

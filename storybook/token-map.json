@@ -1,5 +1,5 @@
 {
-  "note": "How each Figma value became CSS. \"bound\": bound to a variable in Figma and matched to a token by value (the Variables REST API is Enterprise-only, so variable ids cannot be read directly). \"raw-in-figma\": not bound in Figma, kept as a raw value. \"no-matching-token\": bound in Figma, but no token has that value.",
+  "note": "How each Figma value became CSS. \"bound-by-id\": bound to a variable in Figma and mapped to the token of that same variable (variable ids known: Variables API or the ds-sync plugin export). \"bound\": bound to a variable and matched to a token by value (variable ids not known). \"raw-in-figma\": not bound in Figma, kept as a raw value. \"no-matching-token\": bound in Figma, but no token has that value.",
   "counts": {
     "bound": 262,
     "rawInFigma": 10,

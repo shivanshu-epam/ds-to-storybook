@@ -2,11 +2,15 @@
 # Every weekday it asks Figma for the file's version (one cheap call) and stops if nothing moved. When Figma
 # changed, it regenerates, tests the Storybooks, compares them with Figma's renders, and opens a pull request
 # whose description lists what changed in Figma, labelled by kind of change, with before/after renders attached.
-# Needs a repository secret FIGMA_TOKEN (Figma personal access token, scope file_content:read).
+# Figma is read through the REST API (repository secret FIGMA_TOKEN, scope file_content:read) or, when the config
+# names one ("figma": { "export": "figma-export.zip" }), from the ds-sync Figma plugin's export: no token and no
+# API limits. Committing a new export starts a run.
 name: ds-sync
 
 on:
   workflow_dispatch:
+  push:
+    paths: ['figma-export.zip'] # a new export from the ds-sync Figma plugin
   schedule:
     - cron: '0 6 * * 1-5' # weekdays 06:00 UTC; runs where Figma did not change stop after one API call
 
@@ -34,7 +38,14 @@ jobs:
           npm install --global --no-audit --no-fund "ds-sync@$DS_SYNC_VERSION"
           echo "sha=$DS_SYNC_VERSION" >> "$GITHUB_OUTPUT"
 
+      - name: Find the Figma source
+        id: source
+        run: |
+          # The plugin's export when the config names one and it is committed; the REST API otherwise.
+          node -e "const c=require('./ds-sync.config.json');const f=c.figma&&c.figma.export;process.stdout.write('source='+(f&&require('fs').existsSync(f)?'export':'api')+'\\n')" >> "$GITHUB_OUTPUT"
+
       - name: Check the FIGMA_TOKEN secret
+        if: steps.source.outputs.source == 'api'
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
         run: |

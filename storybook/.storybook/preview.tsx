@@ -10,8 +10,8 @@ const TEST_MODES: Record<string, string> = JSON.parse(import.meta.env.VITE_DS_MO
 const withModes: Decorator = (Story, { globals }) => {
   useEffect(() => {
     const html = document.documentElement;
-    html.setAttribute('data-project', String(globals.project ?? 'project-a'));
-    html.setAttribute('data-theme', String(globals.theme ?? 'light'));
+    html.setAttribute('data-project', String(globals.project ?? "project-a"));
+    html.setAttribute('data-theme', String(globals.theme ?? "light"));
   }, [globals.project, globals.theme]);
   return <Story />;
 };
@@ -20,15 +20,15 @@ const preview: Preview = {
   decorators: [withModes],
   globalTypes: {
     project: {
-      description: 'Figma mode: primitives.color',
-      toolbar: { title: 'project', icon: 'paintbrush', items: ['project-a', 'project-b'], dynamicTitle: true },
+      description: "Figma mode: primitives.color",
+      toolbar: { title: "project", icon: 'paintbrush', items: ["project-a", "project-b"], dynamicTitle: true },
     },
     theme: {
-      description: 'Figma mode: semantic.color',
-      toolbar: { title: 'theme', icon: 'paintbrush', items: ['light', 'dark'], dynamicTitle: true },
+      description: "Figma mode: semantic.color",
+      toolbar: { title: "theme", icon: 'paintbrush', items: ["light", "dark"], dynamicTitle: true },
     },
   },
-  initialGlobals: { project: TEST_MODES['project'] ?? 'project-a', theme: TEST_MODES['theme'] ?? 'light' },
+  initialGlobals: { project: TEST_MODES["project"] ?? "project-a", theme: TEST_MODES["theme"] ?? "light" },
   parameters: {
     controls: { expanded: true },
     // Accessibility violations fail the story tests.

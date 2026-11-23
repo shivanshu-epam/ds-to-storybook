@@ -9,6 +9,7 @@
  */
 import { decidedDescription, decidedName } from '../../decisions/decisions.ts';
 import type { IRComponentSet, IRPart, IRProperty, IRVariant } from '../../ir/types.ts';
+import { JS_RESERVED } from '../../util/reserved.ts';
 import { generateStyles, type Found, type RoleDef, type StateAxis, type StyleModel, type VariantAxis } from '../styles.ts';
 import type { IconAsset } from '../icons.ts';
 import { docsJson, forced, kebab, mdxPage, pascal, q, type ComponentReport, type TemplateContext, type TemplateResult } from './common.ts';
@@ -18,7 +19,7 @@ const PSEUDO: { test: RegExp; state: string; native: string }[] = [
   { test: /^(pressed|active)$/i, state: 'pressed', native: ':active' },
   { test: /^(focus|focused|focus-visible)$/i, state: 'focus', native: ':focus-visible' },
 ];
-const RESERVED = new Set(['children', 'className', 'style', 'key', 'ref', 'id']);
+const RESERVED = new Set(['children', 'className', 'style', 'key', 'ref', 'id', ...JS_RESERVED]);
 /** "<decided description> Figma: <name>", or "Figma: <name>" when there is no decision. */
 export const figmaNote = (figma: string, description?: string) => (description ? `${description.replace(/\s*$/, '')} Figma: ${figma}` : `Figma: ${figma}`);
 
@@ -157,7 +158,7 @@ export const sizedIcon = (name: string, size?: [number, number]) => (size ? `<sp
 
 /** Behaviour templates whose generated component has content slots (and so takes toggles as slot props). */
 export const SLOT_TEMPLATES = new Set(['generic', 'switch', 'checkbox-single', 'disclosure', 'button', 'link', 'combobox']);
-const SLOT_RESERVED = ['disabled', 'checked', 'className', 'style', 'children'];
+const SLOT_RESERVED = ['disabled', 'checked', 'className', 'style', 'children', ...JS_RESERVED];
 
 /** Toggle-and-swap pairs, from structure only: the boolean is bound to the visibility of one layer, that layer holds
  * the one instance bound to the swap (and no text or other toggle), and the swap is bound nowhere else. */
@@ -519,7 +520,8 @@ function listBody(c: Collection): string {
     '  const labelId = useId();',
     '  const [active, setActive] = useState(-1);',
   ];
-  if (c.kinds) lines.push(`  const kindOf = (value: unknown) => (${JSON.stringify(c.kinds.separator)}.includes(String(value)) ? 'separator' : ${JSON.stringify(c.kinds.heading)}.includes(String(value)) ? 'heading' : 'item');`);
+  // Typed lists: an empty one ("[]") is never[] to TypeScript, and includes(string) would not compile.
+  if (c.kinds) lines.push(`  const kindOf = (value: unknown) => ((${JSON.stringify(c.kinds.separator)} as string[]).includes(String(value)) ? 'separator' : (${JSON.stringify(c.kinds.heading)} as string[]).includes(String(value)) ? 'heading' : 'item');`);
   if (c.item === 'option') lines.push(
     "  // Undefined until the user selects: each option keeps the selection Figma gives it.",
     '  const [innerSelected, setInnerSelected] = useState<number[] | undefined>(defaultSelected);',
@@ -966,6 +968,17 @@ export function makeResponsive(css: string, attr: string, values: string[]): str
 /** Registry kinds rendered by the generic template, whose props a parent can set on nested instances. */
 const GENERIC_LIKE = new Set<RegistryEntry['kind']>(['generic', 'disclosure', 'button', 'link']);
 
+/** Every template writes its own React import line; repeated children (Children.map, cloneElement) can appear in any
+ * of them. Adds the React APIs a component uses but does not import, whichever template wrote it. */
+export function withReactImports(tsx: string): string {
+  const imported = new Set([...tsx.matchAll(/^import (?:type )?\{([^}]*)\} from 'react';$/gm)].flatMap((m) => m[1]!.split(',').map((x) => x.trim().replace(/^type /, ''))));
+  const missing = ['Children', 'cloneElement', 'isValidElement', 'useId', 'useState'].filter((n) => !imported.has(n) && new RegExp(`\\b${n}\\(|\\b${n}\\.`).test(tsx));
+  if (!missing.length) return tsx;
+  const line = `import { ${missing.join(', ')} } from 'react';\n`;
+  const first = tsx.search(/^import /m);
+  return first < 0 ? line + tsx : tsx.slice(0, first) + line + tsx.slice(first);
+}
+
 /** Union of layers across all variants, in a stable order (default variant first). */
 export function layers(set: IRComponentSet, defaultVariant: IRVariant): LayerInfo[] {
   // A layer that is a text in some variants and an icon or instance in others (Type=Slash "/" vs Type=Chevron)
@@ -1092,7 +1105,7 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   const mergedBooleans: typeof booleans = [];
   const slotsEnabled = !opts.behavior || opts.behavior === 'switch' || opts.behavior === 'checkbox-single' || opts.behavior === 'disclosure' || opts.behavior === 'button' || opts.behavior === 'link' || opts.behavior === 'combobox';
   if (slotsEnabled) {
-    const taken = new Set<string>([...axes.map((a) => a.prop), ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop), 'disabled', 'checked', 'className', 'style', 'children']);
+    const taken = new Set<string>([...axes.map((a) => a.prop), ...booleans.map((b) => b.prop), ...texts.map((t) => t.prop), 'disabled', 'checked', 'className', 'style', 'children', ...JS_RESERVED]);
     const claim = (base: string) => { let n = base || 'slot'; if (taken.has(n)) n = `${n}Slot`; for (let i = 2; taken.has(n); i++) n = `${base}Slot${i}`; taken.add(n); return n; };
     for (const l of all) {
       if (l.part.type !== 'INSTANCE' || l.copies?.length) continue;
@@ -1137,6 +1150,8 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
     if (opts.behavior !== 'combobox') return undefined;
     const axis = axes.find((a) => !a.boolean && a.options.length > 1 && a.options.some((o) => /^(is-)?(open|opened|expanded)$/.test(o))) ?? axes.find((a) => a.boolean && /open|expand/i.test(a.figma));
     if (!axis) return undefined;
+    // The combobox's own API is open / defaultOpen / onOpenChange: a Figma axis called "Open" becomes its internal state.
+    if (axis.prop === 'open') axis.prop = 'openState';
     const open = axis.boolean ? 'true' : axis.options.find((o) => /^(is-)?(open|opened|expanded)$/.test(o))!;
     const closed = axis.boolean ? 'false' : axis.defaultValue !== open ? axis.defaultValue : axis.options.find((o) => o !== open)!;
     const setName = (l: LayerInfo) => (l.part.instanceComponentId ? opts.lookup?.(l.part.instanceComponentId)?.set.name ?? '' : '');
@@ -1321,7 +1336,9 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
       if (parts.some((x) => x.refs?.visible)) continue; // per-copy visibility (table columns) stays as designed
       const refs = parts.map((x) => inst(x));
       if (refs.some((r) => !r) || new Set(refs.map((r) => r!.component)).size !== 1 || refs[0]!.component === name) continue;
-      const prop = !taken.has('children') ? 'children' : camel(`${l.part.name.replace(/[^A-Za-z0-9 _-]+/g, ' ')} items`);
+      let prop = !taken.has('children') ? 'children' : camel(`${l.part.name.replace(/[^A-Za-z0-9 _-]+/g, ' ')} items`);
+      // Two repeated groups of the same child (a calendar's weeks) would share a name: number the later ones.
+      for (let i = 2; prop !== 'children' && taken.has(prop); i++) prop = camel(`${l.part.name.replace(/[^A-Za-z0-9 _-]+/g, ' ')} items ${i}`);
       taken.add(prop);
       const entry = l.part.instanceComponentId && opts.lookup ? opts.lookup(l.part.instanceComponentId) : undefined;
       const defaults = Object.fromEntries((entry ? childApi(entry) : []).filter((cp) => !cp.axis).map((cp) => [cp.prop, cp.default]));
@@ -2662,7 +2679,7 @@ ${stories.join('\n\n')}
   if (responsive.size) css = [...responsive].reduce((c, a) => makeResponsive(c, a.attr, a.options), css);
   const core: GenericCore = { ...(combo ? { combo } : {}), ...(trig ? { trigger: { prop: trig.prop, trigger: trig.trigger, panel: trig.panel } } : {}), ...(collection ? { collection } : {}), ...(repeatList.length ? { repeats: repeatList } : {}), ...(responsive.size ? { responsive: [...responsive].map((a) => a.prop) } : {}), ...(rootTag !== 'div' ? { rootTag, ...(busyAxis ? { busyProp: busyAxis.prop } : {}), ...(needsName ? { storyLabel: humanize(name.replace(/([a-z])([A-Z])/g, '$1 $2')) } : {}) } : {}), ...(disclosure ? { disclosure: { prop: disclosure.axis.prop, header: byPath.get(disclosure.header)!.role, panel: byPath.get(disclosure.panel)!.role, headerPath: disclosure.header } } : {}), slots: slotList, toggles: mergedBooleans.map((b) => ({ b, slot: [...merged.values()].find((x) => x.toggle!.figma === b.p.name)! })), set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, nestedProps, exposed: exposedProps, nestedCheck, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(dialog ? { dialog } : {}), visual, ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
   const files = [
-    { path: `${dir}/${name}.tsx`, content: tsx },
+    { path: `${dir}/${name}.tsx`, content: withReactImports(tsx) },
     { path: `${dir}/${name}.module.css`, content: css },
     { path: `${dir}/${name}.stories.tsx`, content: storiesFile },
     { path: `${dir}/${name}.mdx`, content: mdxPage(name, name, sections) },

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 
 import { loadConfig } from './config.ts';
-import { FigmaClient } from './figma/client.ts';
+import { FigmaClient, type FigmaReader, type FigmaRenderer } from './figma/client.ts';
 import { discover, discoveryMarkdown, targetsFromDiscovery, type Discovery } from './discover/discover.ts';
 import { generateStorybook, type PlannedComponent } from './generate/index.ts';
 import { runInit } from './init.ts';
@@ -26,6 +26,7 @@ import { decide, hasProposals, activeDecisions, DECISIONS_FILE, loadDecisions, s
 import { buildReview, writeReview } from './review/review.ts';
 import { lintDocs, lintMarkdown } from './docs/lint.ts';
 import { VERSION } from './version.ts';
+import { ExportReader } from './figma/export.ts';
 import { claudeAvailable, interpret } from './ai/interpret.ts';
 import { evalMarkdown, evaluate } from './eval/eval.ts';
 import { auditMarkdown, loadScorecards, testTallies, withTests, withVisual } from './audit/audit.ts';
@@ -62,6 +63,8 @@ Commands:
 
 Options:
   --version, -v     Print the ds-sync version
+  --source <auto|api|export>  Read Figma from the REST API or from the ds-sync plugin's export
+                    (figma.export in the config); auto uses the export when it is there
   --config <file>   Config file (default: ds-sync.config.json)
   --out <dir>       Working directory for reports and cache (default: .ds-sync)
   --figma-version <id>  Read this Figma version instead of the latest (discover, generate)
@@ -74,9 +77,18 @@ Options:
   --help            Show this help
 `;
 
-function figmaClient() {
+/** Where Figma is read from: the ds-sync plugin's export when it is configured and present (no API limits, any
+ * plan), otherwise the REST API. --source api|export forces one. */
+function figmaClient(): FigmaClient | ExportReader {
+  const wantExport = CTX.source === 'export' || (CTX.source !== 'api' && CTX.exportPath !== '' && existsSync(CTX.exportPath));
+  if (wantExport) {
+    const reader = new ExportReader(CTX.exportPath || 'figma-export.zip');
+    if (reader.manifest.fileKey && reader.manifest.fileKey !== CTX.fileKey) CTX.log(`Figma export is of file ${reader.manifest.fileKey}, the configuration names ${CTX.fileKey}: using the export.`);
+    CTX.log(`Figma: reading the plugin export ${CTX.exportPath} ("${reader.manifest.fileName}", exported ${reader.manifest.exportedAt}).`);
+    return reader;
+  }
   const token = process.env.FIGMA_TOKEN;
-  if (!token) throw new Error('FIGMA_TOKEN is not set. Copy .env.example to .env and add a Figma personal access token.');
+  if (!token) throw new Error('FIGMA_TOKEN is not set. Add a Figma personal access token to .env, or export the file with the ds-sync Figma plugin and set "figma.export" in ds-sync.config.json.');
   return new FigmaClient({ token, cacheDir: CTX.cache, log: CTX.log, ...(CTX.refresh ? { refresh: true } : {}) });
 }
 
@@ -86,9 +98,9 @@ function pageLabel(page: string): string {
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
-const CTX = { cache: '', out: '', fileKey: '', version: undefined as string | undefined, refresh: false, overrides: {} as NonNullable<NonNullable<ReturnType<typeof loadConfig>['generate']>['overrides']>, log: (_m: string) => {} };
+const CTX = { source: 'auto' as string, exportPath: '', cache: '', out: '', fileKey: '', version: undefined as string | undefined, refresh: false, overrides: {} as NonNullable<NonNullable<ReturnType<typeof loadConfig>['generate']>['overrides']>, log: (_m: string) => {} };
 
-async function runDiscovery(client: FigmaClient): Promise<Discovery> {
+async function runDiscovery(client: FigmaReader): Promise<Discovery> {
   const d = await discover(client, CTX.fileKey, CTX.overrides, CTX.log, CTX.version);
   writeJson(join(CTX.out, 'discovery.json'), d);
   writeText(join(CTX.out, 'discovery.md'), discoveryMarkdown(d));
@@ -109,11 +121,31 @@ function generatedVersion(config: ReturnType<typeof loadConfig>): string | undef
 }
 
 /** Diffs the Figma file at an earlier version against an IR already read at the new one; writes changes.md and .json. */
-async function writeChanges(client: FigmaClient, config: ReturnType<typeof loadConfig>, since: string, after: FigmaIR, names: Record<string, string>): Promise<ChangeSet> {
-  CTX.log(`Changes: reading Figma version ${since} to compare`);
-  const quiet = () => {};
-  const old = await discover(client, CTX.fileKey, CTX.overrides, quiet, since);
-  const before = await extractIR(client, { ...config, components: targetsFromDiscovery(old) }, quiet, since);
+/** The IR of each Figma version generated recently: an export has no version history, so changes compare with these. */
+const irHistory = (version: string) => join(CTX.out, 'ir-history', `${version.replace(/[^A-Za-z0-9._-]+/g, '_')}.json`);
+function keepIR(ir: FigmaIR): void {
+  writeJson(irHistory(ir.version), ir);
+  const dir = join(CTX.out, 'ir-history');
+  const files = readdirSync(dir).map((f) => ({ f, t: statSync(join(dir, f)).mtimeMs })).sort((a, b) => b.t - a.t);
+  for (const { f } of files.slice(3)) rmSync(join(dir, f));
+}
+
+async function writeChanges(client: FigmaReader & FigmaRenderer, config: ReturnType<typeof loadConfig>, since: string, after: FigmaIR, names: Record<string, string>): Promise<ChangeSet> {
+  let before: FigmaIR;
+  if (client instanceof ExportReader) {
+    // An export is one moment of the file: the earlier version comes from the IR kept when it was generated.
+    if (!existsSync(irHistory(since))) {
+      CTX.log(`Changes: version ${since} is not in ${join(CTX.out, 'ir-history')}; the change summary needs the earlier generation's IR. Skipped.`);
+      return { fileKey: after.fileKey, fileName: after.fileName, from: since, to: after.version, components: [], labels: [] };
+    }
+    CTX.log(`Changes: comparing with the IR kept for version ${since}`);
+    before = JSON.parse(readFileSync(irHistory(since), 'utf8')) as FigmaIR;
+  } else {
+    CTX.log(`Changes: reading Figma version ${since} to compare`);
+    const quiet = () => {};
+    const old = await discover(client, CTX.fileKey, CTX.overrides, quiet, since);
+    before = await extractIR(client, { ...config, components: targetsFromDiscovery(old) }, quiet, since);
+  }
   const changes = diffIR(before, after, names);
   const imagesDir = join(CTX.out, 'changes');
   const shown = await changeImages(client, changes, imagesDir, (path, data) => (typeof data === 'string' ? writeText(path, data) : writeBinary(path, data)));
@@ -160,6 +192,7 @@ async function main() {
       ci: { type: 'boolean', default: false },
       refresh: { type: 'boolean', default: false },
       help: { type: 'boolean', default: false },
+      source: { type: 'string' },
       version: { type: 'boolean', short: 'v', default: false },
     },
   });
@@ -181,7 +214,8 @@ async function main() {
   const config = loadConfig(values.config!);
   loadDotEnv(join(config.baseDir, '.env'));
   const p = paths(config, values.out);
-  Object.assign(CTX, { cache: p.cache, out: p.out, fileKey: config.figma.fileKey, version: values['figma-version'], refresh: values.refresh!, overrides: config.generate?.overrides ?? {}, log });
+  if (values.source && !['auto', 'api', 'export'].includes(values.source)) throw new Error('--source must be auto, api or export.');
+  Object.assign(CTX, { source: values.source ?? 'auto', exportPath: config.figma.export ? resolve(config.baseDir, config.figma.export) : '', cache: p.cache, out: p.out, fileKey: config.figma.fileKey, version: values['figma-version'], refresh: values.refresh!, overrides: config.generate?.overrides ?? {}, log });
 
   switch (command) {
     case 'extract': {
@@ -225,7 +259,8 @@ async function main() {
     }
     case 'status': {
       // For CI: one cheap call (no document tree) to see whether Figma moved since the last generation.
-      const latest = (await new FigmaClient({ token: process.env.FIGMA_TOKEN ?? '', cacheDir: CTX.cache, refresh: true }).file(CTX.fileKey, 1)).version;
+      const source = figmaClient();
+      const latest = source instanceof ExportReader ? source.version : (await new FigmaClient({ token: process.env.FIGMA_TOKEN ?? '', cacheDir: CTX.cache, refresh: true }).file(CTX.fileKey, 1)).version;
       const generated = generatedVersion(config) ?? '';
       const changed = latest !== generated;
       log(changed ? `Figma version ${latest}; generated from ${generated || 'nothing yet'}: regenerate.` : `Figma is still at version ${latest}, the generated version: nothing to do.`);
@@ -362,6 +397,7 @@ async function main() {
         const targets = targetsFromDiscovery(d);
         ir = await extractIR(client, { ...config, components: targets }, log, CTX.version);
         writeJson(join(p.out, 'figma-ir.auto.json'), ir);
+        keepIR(ir);
         const perPage = new Map<string, number>();
         for (const x of d.proposals) perPage.set(x.page, (perPage.get(x.page) ?? 0) + 1);
         plan = d.proposals.map((x) => ({

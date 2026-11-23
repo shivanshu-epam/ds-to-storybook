@@ -6,6 +6,12 @@ All notable changes to ds-sync. The CLI (npm package `ds-sync`) and the Claude C
 
 The first public release. Version 0.1.0 was never published.
 
+### Read Figma without API limits
+
+- The ds-sync Figma plugin saves `figma-export.zip`: the file as the REST API returns it, with styles, variables (on any plan) and renders. ds-sync reads it instead of the API (`figma.export` in the config; `--source api|export`). There are no API limits, and no token is needed. The GitHub workflow runs when a new export is committed.
+- Tested on a third design system, Carbon v11, read only through the plugin export. The fixes it led to: tokens bound by variable id, CSS-safe variable names, reserved JavaScript and element names, unique icon names, valid Storybook toolbar keys, and per-mode story tests only for collections that hold colours.
+- When Figma's API asks for a long wait (its allowance is used up), ds-sync stops at once with an explanation instead of waiting for days.
+
 ### Generate
 
 - Discovers every component set in a Figma file, including nested ones, and classifies frames as documentation, examples or other.

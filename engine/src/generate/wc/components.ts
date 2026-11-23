@@ -37,7 +37,15 @@ const js = (v: unknown) => JSON.stringify(v);
 export const wcText = (l: LayerInfo, plain: string) => (l.textByAxis ? lookupExpr(l.textByAxis, (p) => (p === '$checked' ? 'this.checked' : `this.${wcProp(p)}`), 'string') : plain);
 
 /** Properties every HTMLElement already has: a generated prop with one of these names gets a "Text"/"Value" suffix. */
-const ELEMENT_RESERVED = new Set(['title', 'hidden', 'id', 'slot', 'style', 'role', 'dir', 'lang', 'draggable', 'inert', 'popover', 'translate', 'spellcheck', 'tabIndex', 'className', 'children', 'part', 'nonce', 'autofocus', 'accessKey', 'enterKeyHint', 'inputMode', 'contentEditable']);
+const ELEMENT_RESERVED = new Set([
+  // HTMLElement attributes and properties
+  'title', 'hidden', 'id', 'slot', 'style', 'role', 'dir', 'lang', 'draggable', 'inert', 'popover', 'translate', 'spellcheck', 'tabIndex', 'className', 'children', 'part', 'nonce', 'autofocus', 'accessKey', 'enterKeyHint', 'inputMode', 'contentEditable',
+  'attributes', 'classList', 'dataset', 'innerHTML', 'outerHTML', 'innerText', 'textContent', 'shadowRoot', 'isConnected', 'nodeName', 'nodeType', 'localName', 'tagName', 'offsetWidth', 'offsetHeight',
+  // Element and HTMLElement methods: a Figma property named "Focus" or "Remove" would replace them
+  'focus', 'blur', 'click', 'remove', 'append', 'prepend', 'after', 'before', 'replaceWith', 'closest', 'matches', 'animate', 'scroll', 'scrollTo', 'scrollBy', 'attachShadow', 'getAttribute', 'setAttribute', 'hasAttribute', 'removeAttribute', 'toggleAttribute', 'dispatchEvent', 'addEventListener', 'removeEventListener',
+  // LitElement members
+  'render', 'update', 'updated', 'firstUpdated', 'willUpdate', 'requestUpdate', 'updateComplete', 'renderRoot', 'connectedCallback', 'disconnectedCallback', 'attributeChangedCallback', 'properties', 'styles', 'shadowRootOptions',
+]);
 export const wcProp = (prop: string) => (ELEMENT_RESERVED.has(prop) ? `${prop}Value` : prop);
 /** A parent prop as Lit code. */
 export const wcRef = (prop: string) => (prop === '$checked' ? 'this.checked' : `this.${wcProp(prop)}`);
@@ -391,11 +399,11 @@ ${lc ? `${lc.item === 'option' ? `  /** Whether option i is selected: the user's
     }
   };
 
-` : ''}${cb ? `  /** Whether the popup is open: ${cb.axis.prop} is ${js(cb.open)}. */
+` : ''}${cb ? `${cb.axis.boolean && wcProp(cb.axis.prop) === 'open' ? '' : `  /** Whether the popup is open: ${cb.axis.prop} is ${js(cb.open)}. */
   get open() {
     return ${cb.axis.boolean ? `this.${wcProp(cb.axis.prop)}` : `this.${wcProp(cb.axis.prop)} === ${js(cb.open)}`};
   }
-
+`}
   setOpen(next: boolean) {
     ${hasDisabled ? 'if (this.disabled) return;\n    ' : ''}this.${wcProp(cb.axis.prop)} = ${cb.axis.boolean ? 'next' : `next ? ${js(cb.open)} : ${js(cb.closed)}`};
     this.dispatchEvent(new CustomEvent('open-change', { detail: next, bubbles: true, composed: true }));

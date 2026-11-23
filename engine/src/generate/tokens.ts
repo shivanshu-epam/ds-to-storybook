@@ -12,9 +12,11 @@ import type { LocalVariablesResponse } from '../figma/types.ts';
  * The Variables REST API response (Enterprise) converted to the export format,
  * so both sources feed the same token pipeline.
  */
-export function exportFromRest(res: LocalVariablesResponse): { variables: Record<string, unknown[]> } {
+export function exportFromRest(res: LocalVariablesResponse): { variables: Record<string, unknown[]>; ids: Record<string, string> } {
   const { variables, variableCollections } = res.meta;
   const out: Record<string, unknown[]> = {};
+  /** Variable id → "<collection>:<name>", the token key: bound layers then use their own variable's token. */
+  const ids: Record<string, string> = {};
   const hex = (c: { r: number; g: number; b: number; a?: number }) => {
     const ch = (v: number) => Math.round(v * 255).toString(16).padStart(2, '0');
     return `#${ch(c.r)}${ch(c.g)}${ch(c.b)}${c.a !== undefined && c.a < 1 ? ch(c.a) : ''}`;
@@ -38,8 +40,9 @@ export function exportFromRest(res: LocalVariablesResponse): { variables: Record
       ? Object.fromEntries(modes.map((m) => [m.name, convert(v.valuesByMode[m.modeId])]))
       : convert(v.valuesByMode[modes[0]?.modeId ?? '']);
     (out[col.name] ??= []).push([v.name, type, value, v.codeSyntax?.WEB ?? '']);
+    ids[v.id] = `${col.name}:${v.name}`;
   }
-  return { variables: out };
+  return { variables: out, ids };
 }
 
 export interface TokenRow {
@@ -74,8 +77,11 @@ export function fontStack(family: string): string {
   return FONT_STACKS[family] ?? loaded[family] ?? `"${family}", system-ui, sans-serif`;
 }
 
-const cssName = (name: string, codeSyntax: unknown) =>
-  (typeof codeSyntax === 'string' ? /var\((--[\w-]+)\)/.exec(codeSyntax)?.[1] : undefined) ?? `--${name.replace(/\//g, '-')}`;
+/** A CSS custom property name: Figma's code syntax when it gives one, else the variable name with every character that
+ * is not valid in a CSS identifier (spaces, parentheses, invisible separators) replaced: "Carbon for IBM Products/x"
+ * would otherwise be an invalid property, silently ignored by the browser. */
+export const cssName = (name: string, codeSyntax: unknown) =>
+  (typeof codeSyntax === 'string' ? /var\((--[\w-]+)\)/.exec(codeSyntax)?.[1] : undefined) ?? `--${name.replace(/-*[^A-Za-z0-9_-]+-*/g, '-').replace(/^-+|-+$/g, '')}`;
 
 function unitFor(name: string): string {
   if (/letter-spacing/.test(name)) return 'em';
@@ -175,7 +181,7 @@ export interface TokenDecision {
   hint: string[];
   variableId: string | null;
   token?: string;
-  reason: 'bound' | 'raw-in-figma' | 'no-matching-token';
+  reason: 'bound' | 'bound-by-id' | 'raw-in-figma' | 'no-matching-token';
 }
 
 /**
@@ -190,7 +196,9 @@ export class TokenResolver {
   private readonly chosen = new Map<string, TokenRow | null>();
   readonly decisions: TokenDecision[] = [];
 
-  constructor(private readonly set: TokenSet) {
+  /** @param ids variable id → token key, when variable ids are known (Variables API or the plugin export): a bound
+   * layer then uses its own variable's token, in every mode, instead of a token that happens to share its value. */
+  constructor(private readonly set: TokenSet, private readonly ids: Record<string, string> = {}) {
     for (const row of set.rows) {
       if (row.type === 'S') continue;
       const v = resolveDefault(set, row);
@@ -218,6 +226,11 @@ export class TokenResolver {
     if (!variableId) {
       this.record({ value, hint, variableId, reason: 'raw-in-figma' });
       return value;
+    }
+    const own = this.ids[variableId] ? this.set.byKey.get(this.ids[variableId]!) : undefined;
+    if (own) {
+      this.record({ value, hint, variableId, token: own.cssVar, reason: 'bound-by-id' });
+      return `var(${own.cssVar})`;
     }
     let row = this.chosen.get(variableId);
     if (row === undefined) {
