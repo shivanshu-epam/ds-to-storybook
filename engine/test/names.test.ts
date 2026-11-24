@@ -86,3 +86,17 @@ describe('CSS custom property names', () => {
     expect(cssName('x', 'var(--brand-primary)')).toBe('--brand-primary');
   });
 });
+
+describe('tokens whose value Figma could not give', () => {
+  it('leaves them out of tokens.css and binds layers to their raw value instead', async () => {
+    const { tokensCss } = await import('../src/generate/tokens.ts');
+    // An alias to a variable missing from the file arrives as null.
+    const set = loadTokens({ variables: { Theme: [['ok', 'C', '#0f62fe'], ['broken', 'C', null], ['viaBroken', 'C', '@Theme:broken']] } });
+    const css = tokensCss(set, {});
+    expect(css).toContain('--ok: #0f62fe;');
+    expect(css).not.toMatch(/null|--broken|--viaBroken/);
+    const r = new TokenResolver(set, { 'VariableID:1': 'Theme:broken', 'VariableID:2': 'Theme:ok' });
+    expect(r.css('#da1e28', 'VariableID:1', ['bg'])).toBe('#da1e28');
+    expect(r.css('#0f62fe', 'VariableID:2', ['bg'])).toBe('var(--ok)');
+  });
+});

@@ -145,6 +145,7 @@ function cssValue(set: TokenSet, row: TokenRow, raw: unknown): string {
 export function resolveDefault(set: TokenSet, row: TokenRow, depth = 0): string | undefined {
   if (depth > 10) return undefined;
   const raw = isModed(row.value) ? Object.values(row.value)[0] : row.value;
+  if (raw === null || raw === undefined) return undefined;
   if (isAlias(raw)) {
     const target = set.byKey.get(raw.slice(1));
     return target ? resolveDefault(set, target, depth + 1) : undefined;
@@ -158,8 +159,11 @@ export function resolveDefault(set: TokenSet, row: TokenRow, depth = 0): string 
  */
 export function tokensCss(set: TokenSet, modeAttributes: Record<string, string>): string {
   const lines = ['/* Generated from Figma variables by ds-sync. Do not edit by hand. */', ':root {'];
+  // A value Figma could not give (an alias to a variable missing from the file) is left out, never written as "null":
+  // an invalid declaration would hide the fallback, and layers bound to it keep Figma's own value instead.
   for (const row of set.rows) {
     const raw = isModed(row.value) ? Object.values(row.value)[0] : row.value;
+    if (raw === null || raw === undefined || resolveDefault(set, row) === undefined) continue;
     lines.push(`  ${row.cssVar}: ${cssValue(set, row, raw)};`);
   }
   lines.push('}');
@@ -168,7 +172,9 @@ export function tokensCss(set: TokenSet, modeAttributes: Record<string, string>)
     for (const mode of modes.slice(1)) {
       lines.push('', `[${attr}="${mode}"] {`);
       for (const row of set.rows.filter((r) => r.collection === collection && isModed(r.value))) {
-        lines.push(`  ${row.cssVar}: ${cssValue(set, row, (row.value as Record<string, unknown>)[mode])};`);
+        const raw = (row.value as Record<string, unknown>)[mode];
+        if (raw === null || raw === undefined) continue;
+        lines.push(`  ${row.cssVar}: ${cssValue(set, row, raw)};`);
       }
       lines.push('}');
     }
@@ -228,7 +234,8 @@ export class TokenResolver {
       return value;
     }
     const own = this.ids[variableId] ? this.set.byKey.get(this.ids[variableId]!) : undefined;
-    if (own) {
+    // Only a token that has a value: one whose alias chain ends at a missing variable would render nothing.
+    if (own && resolveDefault(this.set, own) !== undefined) {
       this.record({ value, hint, variableId, token: own.cssVar, reason: 'bound-by-id' });
       return `var(${own.cssVar})`;
     }

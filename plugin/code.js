@@ -254,10 +254,28 @@ async function variablesRest() {
   const variables = await figma.variables.getLocalVariablesAsync();
   const meta = { variables: {}, variableCollections: {} };
   for (const c of collections) meta.variableCollections[c.id] = { id: c.id, name: c.name, modes: c.modes.map((m) => ({ modeId: m.modeId, name: m.name })), defaultModeId: c.defaultModeId, variableIds: c.variableIds.slice() };
-  for (const v of variables) {
+  const add = (v) => {
     const valuesByMode = {};
     for (const [mode, val] of Object.entries(v.valuesByMode)) valuesByMode[mode] = val && typeof val === 'object' && val.type === 'VARIABLE_ALIAS' ? { type: 'VARIABLE_ALIAS', id: val.id } : val;
-    meta.variables[v.id] = { id: v.id, name: v.name, variableCollectionId: v.variableCollectionId, resolvedType: v.resolvedType, codeSyntax: Object.assign({}, v.codeSyntax), valuesByMode, scopes: v.scopes.slice() };
+    meta.variables[v.id] = { id: v.id, name: v.name, variableCollectionId: v.variableCollectionId, resolvedType: v.resolvedType, codeSyntax: Object.assign({}, v.codeSyntax), valuesByMode, scopes: (v.scopes || []).slice(), remote: Boolean(v.remote) };
+  };
+  for (const v of variables) add(v);
+  // Aliases can point to variables the local list leaves out (from a library, or hidden): follow them, so every alias
+  // resolves. A target Figma no longer has stays missing; ds-sync then keeps the layer's own value.
+  const pending = Object.values(meta.variables).flatMap((v) => Object.values(v.valuesByMode)).filter((x) => x && x.type === 'VARIABLE_ALIAS').map((x) => x.id);
+  const tried = new Set();
+  while (pending.length) {
+    const id = pending.pop();
+    if (meta.variables[id] || tried.has(id)) continue;
+    tried.add(id);
+    const v = await figma.variables.getVariableByIdAsync(id).catch(() => null);
+    if (!v) continue;
+    add(v);
+    if (!meta.variableCollections[v.variableCollectionId]) {
+      const c = await figma.variables.getVariableCollectionByIdAsync(v.variableCollectionId).catch(() => null);
+      if (c) meta.variableCollections[c.id] = { id: c.id, name: c.name, modes: c.modes.map((m) => ({ modeId: m.modeId, name: m.name })), defaultModeId: c.defaultModeId, variableIds: (c.variableIds || []).slice(), remote: Boolean(c.remote) };
+    }
+    for (const val of Object.values(v.valuesByMode)) if (val && val.type === 'VARIABLE_ALIAS') pending.push(val.id);
   }
   return { status: 200, error: false, meta };
 }
