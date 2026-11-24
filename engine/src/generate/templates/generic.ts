@@ -370,8 +370,10 @@ export interface GenericCore {
   busyProp?: string;
   /** Accessible name the stories give a button or link that has no text in Figma. */
   storyLabel?: string;
+  /** Text prop that names a button or link whose label layer some variants hide (icon-only): it becomes aria-label. */
+  nameFrom?: string;
   /** Disclosure pack: the expanded prop and the header (button) and panel layer roles. */
-  disclosure?: { prop: string; header: string; panel: string; headerPath: string };
+  disclosure?: { prop: string; header: string; panel: string; headerPath: string; triggerPath?: string };
   /** Content slots (instance swaps and placeholders). */
   slots?: SlotInfo[];
   /** Booleans merged into a slot (React has only the slot prop; Web Components keep the boolean too). */
@@ -979,6 +981,9 @@ export function withReactImports(tsx: string): string {
   return first < 0 ? line + tsx : tsx.slice(0, first) + line + tsx.slice(first);
 }
 
+/** Registry kinds that are controls: a component holding one must not itself be a control. */
+export const INTERACTIVE_KINDS = new Set<string>(['button', 'link', 'action', 'switch', 'radio', 'radio-field', 'radio-group', 'checkbox', 'disclosure', 'combobox', 'input']);
+
 /** Union of layers across all variants, in a stable order (default variant first). */
 export function layers(set: IRComponentSet, defaultVariant: IRVariant): LayerInfo[] {
   // A layer that is a text in some variants and an icon or instance in others (Type=Slash "/" vs Type=Chevron)
@@ -1033,6 +1038,13 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   if (!defaultVariant) throw new Error(`${name}: component set has no variants`);
   const gaps: string[] = [];
   const assumptions: string[] = [];
+  // A control may not contain other controls (WCAG: nested interactive elements). A component named or shaped like a
+  // button, a link or a switch group that holds nested controls becomes a plain container; its controls stay usable.
+  const nestedControls = opts.lookup ? [...new Set(set.variants.flatMap((v) => v.parts.filter((x) => x.type === 'INSTANCE' && x.instanceComponentId).map((x) => opts.lookup!(x.instanceComponentId!)).filter((e): e is RegistryEntry => Boolean(e && e.set !== set && INTERACTIVE_KINDS.has(e.kind))).map((e) => e.component)))] : [];
+  if (nestedControls.length && (opts.behavior === 'button' || opts.behavior === 'link' || ((opts.behavior === 'switch' || opts.behavior === 'checkbox-single') && nestedControls.length > 1))) {
+    gaps.push(`${name} contains other controls (${nestedControls.join(', ')}), so it is not itself a ${opts.behavior === 'link' ? 'link' : opts.behavior === 'button' ? 'button' : 'switch'}: a control inside a control is not accessible. It is a plain container; its controls work on their own.`);
+    opts = { ...opts, behavior: undefined };
+  }
   const toggleRole = opts.behavior === 'switch' ? 'switch' as const : opts.behavior === 'checkbox-single' ? 'checkbox' as const : opts.behavior === 'radio-single' ? 'radio' as const : undefined;
   const found = toggleRole ? switchAxis(axes) : undefined;
   if (opts.behavior === 'switch' && !found) gaps.push('Switch template: no on/off variant axis found (for example Value=Off/On), so no switch behaviour was generated.');
@@ -1098,6 +1110,21 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   // Styles
   const all = layers(set, defaultVariant);
   const byPath = new Map(all.map((l) => [l.path, l]));
+  // A button or link whose label text is hidden in some variants (icon-only) has no name there: its label text names
+  // it (aria-label, which a caller's own aria-label overrides). Found from structure: the layer bound to a text
+  // property, or one of its ancestors, is hidden or missing in a variant.
+  const nameFrom = rootTag === 'div' ? undefined : (() => {
+    for (const t of texts) {
+      const layer = all.find((l) => l.part.type === 'TEXT' && l.part.refs?.characters === t.p.name);
+      if (!layer) continue;
+      const chain = layer.path.split('/').map((_, i, xs) => xs.slice(0, i + 1).join('/'));
+      if (set.variants.some((v) => chain.some((path) => { const p = v.parts.find((x) => x.path === path); return !p || p.hidden; }))) return t.prop;
+    }
+    return undefined;
+  })();
+  if (nameFrom) assumptions.push(`Where a variant hides the label (icon-only), the ${rootTag === 'a' ? 'link' : 'button'} is named by its ${nameFrom} text (aria-label); pass aria-label to name it differently.`);
+  // The component names itself now: the "give it a name" gap no longer applies.
+  if (nameFrom) for (let i = gaps.length - 1; i >= 0; i--) if (/icon-only variant: give each icon-only/.test(gaps[i]!)) gaps.splice(i, 1);
   // Slots (phase 2): content the consumer provides, with the Figma instance as the default.
   // An instance-swap property bound to a layer's main component is a slot; so is a placeholder instance of a
   // component named "Slot" (a common Figma convention for "content goes here"). Packs with their own children skip it.
@@ -1581,6 +1608,12 @@ export function genericTemplate(ctx: TemplateContext, name: string, opts: { titl
   let usesRepeat = false;
   const children = (parent: string) => all.filter((l) => l.parent === parent);
   const inHeader = (l: LayerInfo): boolean => Boolean(disclosure) && (l.path === disclosure!.header || (l.parent !== '' && byPath.has(l.parent) && inHeader(byPath.get(l.parent)!)));
+  /** The control inside a disclosure header, if any: it becomes the trigger instead of a new button around it. */
+  let disTriggerMemo: LayerInfo | null | undefined;
+  const disTrigger = (): LayerInfo | undefined => {
+    if (disTriggerMemo === undefined) disTriggerMemo = (disclosure && all.find((x) => x.path.startsWith(`${disclosure.header}/`) && x.part.type === 'INSTANCE' && !isIcon(x.part) && INTERACTIVE_KINDS.has(inst(x.part)?.kind ?? ''))) || null;
+    return disTriggerMemo ?? undefined;
+  };
   const render = (l: LayerInfo, indent: string): string => {
     const p = l.part;
     // data-layer: a stable hook on every layer, so a component that places this one can restyle a layer as Figma does.
@@ -1686,7 +1719,7 @@ ${indent}/>`;
       const kids = children(l.path);
       const box = l.path === rowPath ? 'label' : sw || radio?.kind === 'control' || inHeader(l) || rootTag !== 'div' ? 'span' : 'div'; // a <button> or <a> may only hold phrasing content
       const inner = kids.map((k) => render(k, indent + '  ')).join('\n');
-      if (disclosure && l.path === disclosure.header) {
+      if (disclosure && l.path === disclosure.header && !disTrigger()) {
         const open = disclosure.axis.prop;
         const b0 = boolFor(p.refs?.visible);
         const btn = `<button type="button" ${cls} aria-expanded={${open}} aria-controls={panelId} onClick={toggleExpanded}${hasDisabled ? ' disabled={disabled}' : ''}>\n${inner}\n${indent}</button>`;
@@ -1706,6 +1739,8 @@ ${indent}/>`;
     if (combo?.popup === l.path) el = el.replace(/^<(\w+) /, '<$1 id={popupId} ');
     if (combo?.label === l.path) el = el.replace(/^<(\w+) /, '<$1 id={labelId} ');
     // The trigger may be a plain nested button or the default of a slot (an instance swap): add the attributes to its tag.
+    // A disclosure whose header holds a control: that control is the trigger (no button around a button).
+    if (disclosure && disTrigger()?.path === l.path) el = el.replace(/ \/>(\)\})?<\/span>$/, (_m, slot: string | undefined) => ` aria-expanded={${disclosure.axis.prop}} aria-controls={panelId} onClick={toggleExpanded} />${slot ?? ''}</span>`);
     if (trig?.trigger === l.path) el = el.replace(/ \/>(\)\})?<\/span>$/, (_m, slot: string | undefined) => ` aria-expanded={${trig.prop}} aria-controls={${trig.prop} ? panelId : undefined} onClick={toggleExpanded} />${slot ?? ''}</span>`);
     const b = boolFor(p.refs?.visible);
     return b ? `${indent}{${b} && (\n${indent}  ${el.replace(/\n/g, `\n  `)}\n${indent})}` : `${indent}${el}`;
@@ -1784,6 +1819,8 @@ ${indent}/>`;
     '...rest',
   ];
   const dataAttrs = [
+    // A link without href has no link role, and ARIA does not allow a name on it: only a real link is named.
+    ...(nameFrom ? [`aria-label={typeof ${nameFrom} === 'string'${rootTag === 'a' ? ' && rest.href !== undefined' : ''} ? ${nameFrom} : undefined}`] : []),
     ...(sw ? [`data-${sw.axis.attr}={on ? ${q(sw.on)} : ${q(sw.off)}}`] : []),
     ...propAxes.map((a) => (responsive.has(a) ? `data-${a.attr}={${a.prop} ?? 'responsive'}` : `data-${a.attr}={${axisData(a, a.prop)}}`)),
     ...(hasDisabled ? ["data-disabled={disabled ? '' : undefined}", sw || rootTag === 'button' ? 'disabled={disabled}' : 'aria-disabled={disabled || undefined}'] : []),
@@ -2677,7 +2714,7 @@ ${stories.join('\n\n')}
   ];
   const uniqueGaps = [...new Set(gaps)];
   if (responsive.size) css = [...responsive].reduce((c, a) => makeResponsive(c, a.attr, a.options), css);
-  const core: GenericCore = { ...(combo ? { combo } : {}), ...(trig ? { trigger: { prop: trig.prop, trigger: trig.trigger, panel: trig.panel } } : {}), ...(collection ? { collection } : {}), ...(repeatList.length ? { repeats: repeatList } : {}), ...(responsive.size ? { responsive: [...responsive].map((a) => a.prop) } : {}), ...(rootTag !== 'div' ? { rootTag, ...(busyAxis ? { busyProp: busyAxis.prop } : {}), ...(needsName ? { storyLabel: humanize(name.replace(/([a-z])([A-Z])/g, '$1 $2')) } : {}) } : {}), ...(disclosure ? { disclosure: { prop: disclosure.axis.prop, header: byPath.get(disclosure.header)!.role, panel: byPath.get(disclosure.panel)!.role, headerPath: disclosure.header } } : {}), slots: slotList, toggles: mergedBooleans.map((b) => ({ b, slot: [...merged.values()].find((x) => x.toggle!.figma === b.p.name)! })), set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, nestedProps, exposed: exposedProps, nestedCheck, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(dialog ? { dialog } : {}), visual, ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
+  const core: GenericCore = { ...(combo ? { combo } : {}), ...(trig ? { trigger: { prop: trig.prop, trigger: trig.trigger, panel: trig.panel } } : {}), ...(collection ? { collection } : {}), ...(repeatList.length ? { repeats: repeatList } : {}), ...(responsive.size ? { responsive: [...responsive].map((a) => a.prop) } : {}), ...(rootTag !== 'div' ? { rootTag, ...(busyAxis ? { busyProp: busyAxis.prop } : {}), ...(needsName ? { storyLabel: humanize(name.replace(/([a-z])([A-Z])/g, '$1 $2')) } : {}), ...(nameFrom ? { nameFrom } : {}) } : {}), ...(disclosure ? { disclosure: { prop: disclosure.axis.prop, header: byPath.get(disclosure.header)!.role, panel: byPath.get(disclosure.panel)!.role, headerPath: disclosure.header, ...(disTrigger() ? { triggerPath: disTrigger()!.path } : {}) } } : {}), slots: slotList, toggles: mergedBooleans.map((b) => ({ b, slot: [...merged.values()].find((x) => x.toggle!.figma === b.p.name)! })), set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, nestedProps, exposed: exposedProps, nestedCheck, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(dialog ? { dialog } : {}), visual, ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
   const files = [
     { path: `${dir}/${name}.tsx`, content: withReactImports(tsx) },
     { path: `${dir}/${name}.module.css`, content: css },

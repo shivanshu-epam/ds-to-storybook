@@ -582,10 +582,31 @@ Why the API match is low:
 - Carbon models validation as booleans plus messages (`invalid` and `invalidText`), where Figma uses one `state` variant.
 - Housekeeping properties are exposed (`v12FeatureFlags`), and nested exposed properties are duplicated (`tabsButtonItemType2`).
 
-These point to the next work:
+**Accessibility fixes (same day).** Both patterns are now handled by structural rules, with no names involved:
 
-- accessible names for icon-only variants;
-- no button roots around interactive children;
+- **Icon-only names.** When the layer bound to a button's or link's text property (or a layer above it) is hidden in some variant, the component uses that text as its `aria-label`. A caller's `aria-label` still wins. The old "give icon-only buttons a name" note is dropped.
+- **No controls inside controls.** A component that would be a button or link, or a switch holding two or more controls, but contains nested controls is generated as a plain container, and the report says why. A disclosure whose header already holds a control uses that control as its trigger (`aria-expanded`, `aria-controls`, the click), instead of wrapping it in a new button.
+
+Results in the default mode:
+
+| Measure | Before | After |
+| --- | --- | --- |
+| Carbon React story tests | 547 / 661 | 630 / 656 |
+| Carbon Web Components story tests | 546 / 660 | 628 / 655 |
+| Icon-only buttons without a name (React) | 74 | 0 |
+| Nested interactive controls (React) | 36 | 3 |
+
+The 3 nested controls left are Toggle and Toggletip: a switch with a single nested control keeps its switch behaviour. Design System AI's output does not change. Blade's Button names its icon-only variant from its label.
+
+The remaining failures were already there:
+
+- 8 are colour contrast in Carbon's palette;
+- 6 are a text-input labelling rule (`label-title-only`);
+- 4 are interaction tests of select-only dropdowns;
+- the rest are naming of a few combobox, toggle and tab items.
+
+Still to do:
+
 - validation states as booleans;
 - a "drop" decision for properties that are not API.
 

@@ -259,7 +259,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     } else {
       const kids = children(l.path);
       const box = sw || inHeader(l) || core.rootTag ? 'span' : 'div'; // a <button> or <a> may only hold phrasing content
-      if (dis && l.path === dis.headerPath) {
+      if (dis && l.path === dis.headerPath && !dis.triggerPath) {
         const btn = `<button type="button" ${c} aria-expanded=\${this.${disProp} ? 'true' : 'false'} aria-controls="panel" @click=\${this.toggleExpanded}${hasDisabled ? ' ?disabled=\${this.disabled}' : ''}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</button>`;
         const b0 = boolFor(p.refs?.visible);
         return b0 ? `${indent}\${this.${b0} ? html\`${btn}\` : nothing}` : `${indent}${btn}`;
@@ -278,6 +278,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     if (cb?.popup === l.path) el = el.replace(/^<([\w-]+) /, '<$1 id="popup" ');
     if (cb?.label === l.path) el = el.replace(/^<([\w-]+) /, '<$1 id="label" ');
     // The trigger's own button reports the state (aria-controls cannot point across shadow roots).
+    if (dis?.triggerPath === l.path) el = el.replace(/<(ds-[\w-]+)(?=[ >])/, `<$1 @click=\${this.toggleExpanded} .accessibleExpanded=\${this.${disProp} ? 'true' : 'false'}`);
     if (core.trigger?.trigger === l.path) el = el.replace(/<(ds-[\w-]+)(?=[ >])/, `<$1 @click=\${this.toggleExpanded} .accessibleExpanded=\${this.${wcProp(core.trigger.prop)} ? 'true' : 'false'}`);
     const b = boolFor(p.refs?.visible);
     return b ? `${indent}\${this.${b} ? html\`${el}\` : nothing}` : `${indent}${el}`;
@@ -315,7 +316,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     ...(hasDisabled ? ['?data-disabled=${this.disabled}', sw || core.rootTag === 'button' ? '?disabled=${this.disabled}' : "aria-disabled=${this.disabled ? 'true' : nothing}"] : []),
     ...(core.busyProp ? [`aria-busy=\${this.${wcProp(core.busyProp)} ? 'true' : nothing}`] : []),
     ...(core.rootTag === 'a' ? ['href=${this.href ?? nothing}'] : []),
-    ...(core.rootTag ? ['aria-label=${this.accessibleLabel ?? nothing}'] : []),
+    ...(core.rootTag ? [core.nameFrom ? `aria-label=\${this.accessibleLabel ?? (${core.rootTag === 'a' ? 'this.href ? ' : ''}this.${wcProp(core.nameFrom)}${core.rootTag === 'a' ? ' : nothing' : ''})}` : 'aria-label=${this.accessibleLabel ?? nothing}'] : []),
     ...(core.rootTag === 'button' ? ['aria-expanded=${this.accessibleExpanded ?? nothing}'] : []),
     ...(lc ? (() => {
       // Where Figma shows no items (loading, empty), the list is not one: no role, no keyboard, aria-busy while loading.
