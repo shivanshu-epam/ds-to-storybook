@@ -281,4 +281,4 @@ All ten questions are answered.
 | 5. *write* skill | Built: evidence packs, the write-usage skill, `ds-sync usage`, cited-source checks, and the Usage section. Piloted on Carbon Button (draft, not yet accepted). The other components still need drafting and review |
 | 6. Validation | Done: `ds-sync docs check` against a reviewed baseline, in the GitHub workflow |
 | 7. Expand | Coverage runs on every component already. Each reference spec still needs checking on two systems |
-| 8. Product | Not started |
+| 8. Product | Enhance mode built (decision 6: teams with a Storybook get additions, not a replacement), piloted on Carbon's own Button stories. Packaging and release still to do |

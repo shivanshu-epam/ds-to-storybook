@@ -8,6 +8,8 @@ import type { ComponentApi } from '../code/api.ts';
 import type { UsageDecision } from '../decisions/decisions.ts';
 import { codeStories } from './code/stories.ts';
 import { usageEvidence } from '../ai/usage.ts';
+import { enhance } from '../enhance/enhance.ts';
+import { findStoryFiles, readStoriesFile } from '../enhance/existing.ts';
 import { BEHAVIOUR, buildScorecard, scorecardLines, scorecardReport } from './scorecard.ts';
 import { leadSentence } from './templates/common.ts';
 import { fontFaceCss, fontsReport, httpFontSource, planFonts, usedFonts, type FontOverride, type FontPlan } from './fonts.ts';
@@ -66,7 +68,7 @@ export interface GenerateConfig {
    * module they are imported from; visuals and tokens still come from Figma. root: the folder whose node_modules
    * resolve the module (default: the config folder). names: generated component -> export, where the names differ.
    */
-  code?: { from: string; root?: string; names?: Record<string, string>; /** CSS the components need, e.g. "@carbon/styles/css/styles.css" (react-code target). */ styles?: string[]; /** Module of icon components for icon slots, e.g. "@carbon/icons-react" (react-code target). */ icons?: string; /** Example props Figma does not have, per generated component (react-code target), e.g. { "PaginationNav": { "totalItems": 10 } }. Reviewed like code. */ examples?: Record<string, Record<string, string | number | boolean>>; /** Parent export a component is rendered inside, where the name does not say it, e.g. { "ListItem": "UnorderedList" }. */ parents?: Record<string, string> };
+  code?: { from: string; root?: string; names?: Record<string, string>; /** CSS the components need, e.g. "@carbon/styles/css/styles.css" (react-code target). */ styles?: string[]; /** Module of icon components for icon slots, e.g. "@carbon/icons-react" (react-code target). */ icons?: string; /** Enhance mode: the team's existing stories folder (relative to the config). Each run checks them against Figma and previews the stories to add in .ds-sync/enhance/ ("ds-sync enhance apply" adds them). */ stories?: string; /** Example props Figma does not have, per generated component (react-code target), e.g. { "PaginationNav": { "totalItems": 10 } }. Reviewed like code. */ examples?: Record<string, Record<string, string | number | boolean>>; /** Parent export a component is rendered inside, where the name does not say it, e.g. { "ListItem": "UnorderedList" }. */ parents?: Record<string, string> };
   /**
    * Viewport values of Figma "Screen Size" / "Device" / "Breakpoint" axes -> CSS media conditions, e.g.
    * { "Mobile": "(max-width: 767px)" }. Such an axis then follows the viewport when its prop is not set.
@@ -239,6 +241,19 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     mapped.forEach((m, i) => { if (m.entry.found) { const b = best.get(m.entry.export); if (b === undefined || rank(plan[i]!.name, m.entry.export) < rank(plan[b]!.name, m.entry.export)) best.set(m.entry.export, i); } });
     codeComponents = mapped.flatMap((m, i) => (m.entry.found && best.get(m.entry.export) === i ? [{ c: plan[i]!, sets: m.sets, entry: m.entry, api: apis.get(m.entry.export)! }] : []));
     codeExports = exportsList;
+    if (gen.code.stories) {
+      // Enhance mode: the team's own stories against Figma; additions previewed in .ds-sync/enhance/.
+      const storiesRoot = resolve(config.baseDir, gen.code.stories);
+      const existing = findStoryFiles(storiesRoot).map((f) => readStoriesFile(f, storiesRoot));
+      const res = enhance({ existing, root: storiesRoot, from: gen.code.from, components: codeComponents.map((x) => ({ name: x.c.name, sets: x.sets, entry: x.entry, api: x.api })) });
+      const preview = join(config.baseDir, '.ds-sync', 'enhance');
+      rmSync(preview, { recursive: true, force: true });
+      writeText(join(preview, 'ENHANCE-REPORT.md'), res.report);
+      for (const f of res.files) writeText(join(preview, 'stories', f.path), f.content);
+      writeText(join(preview, 'manifest.json'), JSON.stringify({ root: storiesRoot, files: res.files.map((f) => f.path) }, null, 2) + '\n');
+      const n = (st: string) => res.components.reduce((k, c) => k + c.items.filter((i) => i.status === st).length, 0);
+      log(`Enhance: ${existing.length} story file(s) of yours; Figma values shown ${n('shown')}, control only ${n('control')}, missing ${n('missing')}; ${res.files.length} file(s) to add → ${preview} ("ds-sync enhance apply" adds them)`);
+    }
     try { codeVersion = (readJson(join(src.root, 'node_modules', gen.code.from, 'package.json')) as { version?: string }).version; } catch { codeVersion = undefined; }
     const found = codeMap.filter((e) => e.found);
     log(`Code: ${found.length}/${codeMap.length} components found in ${gen.code.from}; ${found.reduce((n, e) => n + e.mappings.filter((m) => m.shape !== 'none').length, 0)}/${found.reduce((n, e) => n + e.mappings.length, 0)} Figma properties mapped to code props (CODE-MAP.md)`);

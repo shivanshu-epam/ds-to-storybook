@@ -54,6 +54,7 @@ Commands:
   review    Write the interpretation work list: one evidence file per component → out/review/
             (from the last generate; no Figma calls)
   interpret Answer the open review files with Claude (headless claude -p + the ds-sync plugin)
+  enhance apply  Add the previewed .figma.stories files next to your existing stories (generate.code.stories)
   usage     Draft usage guidance with Claude, every sentence citing the component's evidence (--only, --all, --from <answer.json>)
             → proposals in ds-sync.decisions.json (optional; needs Claude Code)
   decisions validate | accept | reject: check ds-sync.decisions.json against Figma, or change
@@ -303,6 +304,21 @@ async function main() {
       });
       log(`Interpret: ${res.done.length} answered, ${res.failed.length} failed, about $${res.costUsd.toFixed(2)} → ${decisionsPath} (proposed; accept with "ds-sync decisions accept")`);
       if (res.failed.length) process.exitCode = 1;
+      break;
+    }
+    case 'enhance': {
+      // Adds the previewed .figma.stories files next to the team's stories; never touches their other files.
+      if ((positionals[1] ?? 'apply') !== 'apply') throw new Error(`Unknown enhance action "${positionals[1]}" (apply).`);
+      const preview = join(p.out, 'enhance');
+      const manifestFile = join(preview, 'manifest.json');
+      if (!exists(manifestFile)) throw new Error('Nothing to add: set "generate.code.stories" and run "ds-sync generate" first.');
+      const manifest = JSON.parse(readFileSync(manifestFile, 'utf8')) as { root: string; files: string[] };
+      for (const f of manifest.files) {
+        if (!/\.figma\.stories\.[jt]sx?$/.test(f)) continue;
+        writeText(join(manifest.root, f), readFileSync(join(preview, 'stories', f), 'utf8'));
+        log(`Enhance: added ${join(manifest.root, f)}`);
+      }
+      log(`Enhance: ${manifest.files.length} file(s) added; the report is ${join(preview, 'ENHANCE-REPORT.md')}`);
       break;
     }
     case 'usage': {

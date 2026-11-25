@@ -206,3 +206,25 @@ A proposed decision for Carbon Button: `"State": { "components": { "Skeleton": "
 - Components that place a skeleton button inside them, such as DataTableSkeletonBase, keep the exact design.
 
 With this, all three Phase 3 items for the Carbon Button pilot are decisions: Resizer internal, sizes as code values (from code mode), and Skeleton as its own component. Button's and DataTableSkeletonBase's story tests pass (19/19).
+
+## 10. Enhance mode on Carbon's own stories
+
+Carbon's own `Button.stories.js` (from carbon-design-system/carbon) was checked against its Figma file:
+
+- **Shown in Carbon's stories (11):**
+  - Primary, Secondary, Tertiary, Ghost, Danger tertiary and Danger ghost
+  - Text + Icon, Icon only
+  - Large
+  - Enabled
+  - Skeleton (as `<ButtonSkeleton>`)
+- **Only reachable through a control (7):** 2X large, Extra large, Medium, Small and Extra small; Expressive (`isExpressive`); Disabled.
+- **Shown by interaction (3):** Hover, Active, Focus.
+- **Missing (1):** Danger primary as `kind="danger--primary"`. Carbon's stories use `danger`, another name for the same kind; the code map chose `danger--primary` because it matches the Figma name word for word.
+
+ds-sync writes `Button.figma.stories.jsx` next to Carbon's file:
+- **Stories:** 8, one for each value above that is a control only or missing.
+- **Title:** "Components/Button/Figma coverage".
+- **Import:** `default as Button` from `../Button`, as Carbon's own file does.
+- **Defaults:** Figma's label "Button".
+
+Rendered against the real `@carbon/react` Button, all 8 pass their accessibility tests. Carbon's file is unchanged.
