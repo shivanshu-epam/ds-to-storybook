@@ -207,7 +207,8 @@
     {
       "id": "usage",
       "required": true,
-      "status": "missing"
+      "status": "present",
+      "heading": "Usage"
     },
     {
       "id": "api",
@@ -256,15 +257,11 @@
     },
     "sections": {
       "required": 7,
-      "present": 6
+      "present": 7
     },
     "complete": true
   },
   "gaps": [
-    {
-      "item": "section:usage",
-      "message": "The docs page has no \"usage\" section (required for navigation components)."
-    },
     {
       "item": "description",
       "message": "No description in Figma or in decisions: the overview has no prose."

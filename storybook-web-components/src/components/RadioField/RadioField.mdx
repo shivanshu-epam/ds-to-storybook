@@ -22,6 +22,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.PositionAndState} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use a RadioField when users must pick exactly one option from a set, and each option needs its own value text."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Place RadioFields inside a RadioGroup, because selecting one radio clears the others in its group."}{" "}<small>{"(Figma docs, this design system)"}</small></li><li>{"Use a RadioField when an option needs an error or warning message shown with a status icon, through its Invalid and Warning states."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Keep the set small enough that every option is visible at once."}{" "}<small>{"(ds-sync guidance)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use a RadioField when users may choose several options: use a Checkbox, the equivalent control for multi-select lists."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Do not use a RadioField when you need only the circle with no label: use RadioControl."}{" "}<small>{"(Figma docs, this design system)"}</small></li><li>{"Do not use radio buttons for a long list of options: use a select."}{" "}<small>{"(ds-sync guidance)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Write the value as the option's own text, and give the RadioGroup a group label that names the choice being made."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Show Read-Only only on an option that is already selected, to display a prior choice."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Make the value text part of the clickable area, since the 28px control is smaller than the 44×44px touch target."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance

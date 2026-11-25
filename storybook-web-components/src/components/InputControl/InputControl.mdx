@@ -22,6 +22,16 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.State} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use InputControl as the bare field, without a label, helper or validation message row."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use it for short free-form text such as a name or a search term."}{" "}<small>{"(ds-sync guidance)"}</small></li><li>{"Use InputControl as the building block inside InputField, which adds the label, helper and validation message."}{" "}<small>{"(Figma docs, this design system)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not place a bare InputControl in a form where the field needs a visible label, helper or validation message: use InputField."}{" "}<small>{"(Figma docs, ds-sync guidance, this design system)"}</small></li><li>{"Do not use InputControl for long text: use a text area."}{" "}<small>{"(ds-sync guidance)"}</small></li><li>{"Do not use InputControl when the answer is one of a known set of options: use a select or radio buttons."}{" "}<small>{"(ds-sync guidance)"}</small></li></ul>
+
 ## Properties
 
 ### State

@@ -34,6 +34,24 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.Options} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use a dialog to focus the user on exactly one task or decision; it blocks the page until that is resolved."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use it to get an immediate response the user needs to continue something they just started."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use it to notify the user of urgent information tied to their current work."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use it to confirm a decision, especially a destructive or irreversible one."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use a dialog for information that isn't urgent: use an inline Alert instead."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Do not use a dialog for tasks users repeat often, or when even the largest size isn't enough room: let them complete it on the page, or use a full page."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Do not open a dialog from inside another dialog."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li></ul>
+
+### Variants
+
+<ul><li><strong>{"Confirmation"}</strong>: {"Use Confirmation to confirm a decision, as its name says."}{" "}<small>{"(Figma properties, Figma docs)"}</small></li><li><strong>{"Alert"}</strong>: {"Use Alert to alert the user to something, as its name says."}{" "}<small>{"(Figma properties)"}</small></li><li><strong>{"Form"}</strong>: {"Use Form when the dialog embeds form fields; it is the only type with an Error state, which shows an error banner and the fields to correct."}{" "}<small>{"(Figma docs)"}</small></li><li><strong>{"Full-screen"}</strong>: {"Use Full-screen when the content needs the whole viewport."}{" "}<small>{"(Figma docs)"}</small></li><li><strong>{"Side-drawer"}</strong>: {"Use Side-drawer for a full-height panel, available in three widths."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Write the title as a short, specific verb phrase that matches whatever opened the dialog; for a very short message, let the title carry it and skip the body."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Label buttons with short, specific verbs such as Delete, Save or Add, not vague labels like Done; OK is fine only for the acknowledgment pattern."}{" "}<small>{"(Figma docs)"}</small></li><li>{"For a destructive action, name the action in the title and use a danger-styled, specific button, and never use two primary buttons."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance

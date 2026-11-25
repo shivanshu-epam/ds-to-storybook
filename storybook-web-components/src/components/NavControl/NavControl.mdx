@@ -22,6 +22,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.DirectionAndState} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use NavControl as the Prev and Next buttons of a carousel, which you assemble from NavControl, PaginationDot and AutoplayToggle around your own viewport and slides."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use a carousel when items exceed the available space and only a subset should be visible at once."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Each NavControl advances by one slide, or by one page when several slides are in view, and the pagination updates with the slide."}{" "}<small>{"(Figma docs)"}</small></li><li>{"In a finite carousel, show the edge control as Disabled at the first and last slide."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use a carousel, and so its NavControls, for content users need to compare side by side or read in full."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Do not hide the navigation controls unless people have another way to advance, such as pagination or swipe."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Do not nest a horizontal carousel, with its own NavControls, inside another on the same axis."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"NavControl is icon-only, so give each Prev and Next control an accessible name."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance

@@ -22,6 +22,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.SizeAndState} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use a dropdown as a select control: a trigger field that opens a menu of options to choose from."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use it when there is not room to show all the options at once."}{" "}<small>{"(ds-sync guidance, Figma docs)"}</small></li><li>{"When the list needs it, compose the trigger and menu with group labels, a search row at the top of the menu, or a clear icon in the trigger."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use Dropdown when you need only the option list without a trigger field: use DropdownMenu."}{" "}<small>{"(Figma docs, this design system)"}</small></li><li>{"Do not use Dropdown to offer a list of actions: it is a select control for choosing an option."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Show the selected option in the trigger, or the placeholder \"Select an option\" when nothing is selected."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Show \"Loading options…\" with a loading icon while options load, and \"No results found\" when there are none."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Pair the dropdown with a visible label instead of relying on the placeholder, and in the Error state give a text error message, not just a red border."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance

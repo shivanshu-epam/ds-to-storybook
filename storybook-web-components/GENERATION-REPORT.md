@@ -97,9 +97,9 @@ One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a 
 
 ## Decisions
 
-From `ds-sync.decisions.json`: 27 component set(s): 1 accepted, 26 proposed, 0 rejected.
+From `ds-sync.decisions.json`: 27 component set(s): 27 accepted, 0 proposed, 0 rejected.
 Only accepted decisions are applied.
-Applied: 0 property name(s) and 0 description(s) in 1 set(s).
+Applied: 0 property name(s) and 0 description(s) in 27 set(s).
 
 ## Nested consistency
 

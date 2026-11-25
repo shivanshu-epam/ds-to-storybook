@@ -26,6 +26,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.Options} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use AvatarIdentity to identify someone next to their name and email."}{" "}<small>{"(Figma docs)"}</small></li><li>{"It pairs an AvatarGlyph with a name, an optional email and an optional trailing icon, such as a chevron for a menu."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use it for people and for entities that aren't people, such as system or bot accounts."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use its interactive states when the avatar opens a profile card or menu."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"When you only need the avatar (image, icon or initials) with no name, use AvatarGlyph instead."}{" "}<small>{"(Figma docs, this design system)"}</small></li><li>{"Don't use an avatar as the only way to identify a person: show their name too, which is what AvatarIdentity is for."}{" "}<small>{"(ds-sync guidance, Figma docs)"}</small></li><li>{"When the avatar is purely decorative and opens nothing, don't make it look clickable: a decorative avatar has no hover styling."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Set the name and email with the Name and Email text properties; the email is a secondary line."}{" "}<small>{"(Figma docs)"}</small></li><li>{"For initials, use the first letter of the first and last name (Jane Doe → JD), and if they don't fit, shrink the font rather than clip it."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Derive an initials avatar's color from a hash of the user's name or ID so the same person always gets the same color; don't assign a random color on each render."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Content

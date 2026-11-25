@@ -3,9 +3,9 @@
   "version": 1,
   "sets": {
     "AccordionItem": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.8,
         "setHash": "6ca7f0a902b756696c65bd9e59ed3151d43b9336d4b790d6b839b16c494284ab",
@@ -148,9 +148,9 @@
       }
     },
     "Alert": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.75,
         "setHash": "f2b298cc75f7547050b9aec9758adb4e3c6cc97019905238a06f47d81bf4c399",
@@ -290,9 +290,9 @@
       }
     },
     "AutoplayToggle": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.8,
         "setHash": "3ddfdd85c106ab25ec5ce3edaa3c6ec7c7f31b5bfa773264abb983cfbceb14fb",
@@ -419,9 +419,9 @@
       }
     },
     "AvatarGlyph": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.85,
         "setHash": "14c1924a97df2447d87fe43ee961535bd49e2c61f6287727557b1127617ecdac",
@@ -635,9 +635,9 @@
       }
     },
     "AvatarIdentity": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.85,
         "setHash": "7683d9618b5be79669732dd2589d5f54c4168e5214dfc87e403ab52412f9a51f",
@@ -817,9 +817,9 @@
       }
     },
     "Badge": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.75,
         "setHash": "d3a450cde81fe3218371fce8d07fe7168f6be8e167c2eb09ef91efff4fe7e9f4",
@@ -1051,9 +1051,9 @@
       }
     },
     "BreadcrumbItem": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.9,
         "setHash": "02de51f51c68f5363c943e01b5d825dec75562e05911c267d6363238cb92598b",
@@ -1433,9 +1433,9 @@
       }
     },
     "CheckboxControl": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.75,
         "setHash": "505b2df6d902fe8d5cb3333d2f3ff22c4bf7a60b005de4867747cc046f30a7ca",
@@ -1683,9 +1683,9 @@
       }
     },
     "Date Picker": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.75,
         "setHash": "d09f360e19f2c57b8bed3fe13d90ac0bb00a62e634d069d4068c5c8bee4d870c",
@@ -1812,9 +1812,9 @@
       }
     },
     "Dialog": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.85,
         "setHash": "a38264a63cc110c002c54e17aa0d9f9315fcb1de1c4e328aed370b4198d17dbb",
@@ -2064,9 +2064,9 @@
       }
     },
     "Divider": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.4,
         "setHash": "cc514baad6278a3ca947415d57e7870ad97f4e5a0df686042c90fb340162dcc9",
@@ -2161,9 +2161,9 @@
       }
     },
     "Dropdown": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.75,
         "setHash": "54fff8759d3ae3b01f10f3300bf13b68c2960bfbe96ed0b1617c56259f59a008",
@@ -2297,9 +2297,9 @@
       }
     },
     "DropdownMenu": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.8,
         "setHash": "d29e547fd13ffdfcbf89874d8d3d0813f55464a7e8ddaf85ba67d7eed1fb571e",
@@ -2429,9 +2429,9 @@
       }
     },
     "DropdownTrigger": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.7,
         "setHash": "fbe980245e789dae0cb267ebd4876a721fb5cc42bfc809c042bcbfba5c220b8a",
@@ -2568,9 +2568,9 @@
       }
     },
     "Form": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.55,
         "setHash": "43b24c5109eb82d149571ae0be3135e2be3b748856553ab4d51e243a90c9a719",
@@ -2661,9 +2661,9 @@
       }
     },
     "Input": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.55,
         "setHash": "a68cdb1c6bf88310934bfc5a5a9691f57f504792b401dafc079ac6074a61776f",
@@ -2830,9 +2830,9 @@
       }
     },
     "InputControl": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.45,
         "setHash": "3ec817858cedbeda0251a21803d2895e2832f8e9cfda30fc78fd4970a51212b0",
@@ -2911,9 +2911,9 @@
       }
     },
     "InputField": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.55,
         "setHash": "8835187e75ca4a9bcf32f1152eb5352c9e8b111e2328e2c8100e4736f6ac4b5f",
@@ -3032,9 +3032,9 @@
       }
     },
     "ListItem": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.9,
         "setHash": "a28613d0e43e200a8beba991229153eb3128aba82e23a6877860dafc5bf14167",
@@ -3248,9 +3248,9 @@
       }
     },
     "NavControl": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.85,
         "setHash": "b29b36a5b479a51a055803f79f16db28be8ce02809f1c6c3cb64b7fbea61d64b",
@@ -3376,9 +3376,9 @@
       }
     },
     "PaginationDot": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.8,
         "setHash": "c5065f5c197cb20966d05f021fbdac498aa3b5e0ae5e038a0aae4d9b593e2e86",
@@ -3506,9 +3506,9 @@
       }
     },
     "RadioControl": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.8,
         "setHash": "4546239a113658fcc2f4422f6f738106abb94390a96f37d49d704fbb1a03d3e8",
@@ -3632,9 +3632,9 @@
       }
     },
     "RadioField": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.8,
         "setHash": "22e1515e9f051520aef9f4f4cd11ef0c780c7693c036bb12f9bda9c3c2177e47",
@@ -3794,9 +3794,9 @@
       }
     },
     "RadioGroup": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.75,
         "setHash": "efe0db696beebebad3b9540a556a6142794d4e60aa00e85bc7113c26a4a387a3",
@@ -3979,9 +3979,9 @@
       }
     },
     "Separator": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.65,
         "setHash": "655f06db8cc57b668c69b74e1190377af1252919402771d2aaddfb92b7060389",
@@ -4123,9 +4123,9 @@
       }
     },
     "Switch": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.8,
         "setHash": "80fc2cc1626c52af2320c145bbe0083afb1c2bcfd2d290dcf93e843c74a5379a",

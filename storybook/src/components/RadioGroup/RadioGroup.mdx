@@ -24,6 +24,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.StateAndHorizontal} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use a RadioGroup when users must pick exactly one option from a set, shown as a titled group."}{" "}<small>{"(Figma docs)"}</small></li><li>{"A RadioGroup puts a group label above its RadioFields, so selecting one option clears the others in the group."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use it for a small set of options that are all visible at once."}{" "}<small>{"(ds-sync guidance)"}</small></li><li>{"Use the Read-Only state to show a choice that was already made; it always has one option selected."}{" "}<small>{"(Figma docs, Figma properties)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use a RadioGroup when users can choose more than one option: use a Checkbox."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Do not use a RadioGroup for a long list of options: use a select."}{" "}<small>{"(ds-sync guidance)"}</small></li><li>{"For a single labeled option, use RadioField, or RadioControl for the circle alone; for single-select lists, use a list item with a RadioControl."}{" "}<small>{"(Figma docs, this design system)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Give every RadioGroup a group label that names the choice being made."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Write each option's own text as its value, and make that text part of the clickable area."}{" "}<small>{"(Figma docs)"}</small></li><li>{"In the Invalid and Warning states, show the error or warning as text with a status icon, not color alone."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance

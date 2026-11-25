@@ -26,6 +26,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.SelectedAndState} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use a radio button to let users pick exactly one option from a set."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Use RadioControl, the circle alone with no label, when another component supplies the option's text, such as a list item in a single-select list."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Keep the options to a small set that users can see all at once."}{" "}<small>{"(ds-sync guidance)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use RadioControl when users may choose more than one option: use Checkbox."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Do not use RadioControl on its own for a labeled option: use RadioField, which adds the value text and an optional error or warning row, and wrap the fields in a RadioGroup with a group label."}{" "}<small>{"(Figma docs, this design system)"}</small></li><li>{"Do not use radio buttons for a long list of options: use a select."}{" "}<small>{"(ds-sync guidance)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"RadioControl has no label, so give each option its own text through a RadioField value or the component that contains the control."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Make the option's value text part of the clickable area, because the 28px control is below the 44×44px touch target."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### State

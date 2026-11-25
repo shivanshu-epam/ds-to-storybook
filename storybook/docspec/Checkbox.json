@@ -491,7 +491,8 @@
     {
       "id": "usage",
       "required": true,
-      "status": "missing"
+      "status": "present",
+      "heading": "Usage"
     },
     {
       "id": "api",
@@ -548,7 +549,7 @@
     },
     "sections": {
       "required": 7,
-      "present": 6
+      "present": 7
     },
     "complete": false
   },
@@ -556,10 +557,6 @@
     {
       "item": "Has label",
       "message": "Figma property \"Has label\" (boolean) has no prop, control or story."
-    },
-    {
-      "item": "section:usage",
-      "message": "The docs page has no \"usage\" section (required for checkbox components)."
     },
     {
       "item": "description",
