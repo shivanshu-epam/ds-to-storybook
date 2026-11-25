@@ -1,0 +1,188 @@
+{
+  "specVersion": "1.0",
+  "component": "Separator",
+  "title": "Components/Breadcrumb/Separator",
+  "kind": {
+    "id": "divider",
+    "title": "Divider",
+    "from": "name"
+  },
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420998788157412873",
+    "sets": [
+      {
+        "id": "224:1467",
+        "name": "Separator",
+        "page": "↳ breadcrumb",
+        "variants": 2
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1332:152",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1332:578",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1332:836",
+        "name": "Documentation / Accessibility"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "Type",
+      "type": "VARIANT",
+      "props": [
+        "type"
+      ],
+      "role": "appearance",
+      "default": "Slash",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Slash",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Chevron",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": []
+    },
+    {
+      "export": "Type",
+      "name": "Type",
+      "visibility": "dev",
+      "shows": [
+        "Type"
+      ]
+    },
+    {
+      "export": "Chevron",
+      "name": "Chevron",
+      "visibility": "dev",
+      "shows": [
+        "Type"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "Type"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "missing"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "separator",
+    "role": "separator (or presentation when decorative)",
+    "name": "None.",
+    "source": "reference"
+  },
+  "related": [],
+  "coverage": {
+    "properties": {
+      "total": 1,
+      "covered": 1
+    },
+    "values": {
+      "total": 2,
+      "shown": 2,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 2,
+      "rendered": 2
+    },
+    "sections": {
+      "required": 7,
+      "present": 6
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "section:usage",
+      "message": "The docs page has no \"usage\" section (required for divider components)."
+    },
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

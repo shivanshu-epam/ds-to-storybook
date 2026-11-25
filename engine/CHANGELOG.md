@@ -2,6 +2,16 @@
 
 All notable changes to ds-sync. The CLI (npm package `ds-sync`) and the Claude Code plugin (`ds-sync@ds-sync`) are released together under one version.
 
+## Unreleased
+
+### Documentation engine, phase 1
+
+- Each component gets a Component Doc Spec (`docspec/<Component>.json`, schema in `schemas/component-doc-spec.schema.json`) and the Storybook gets `DOCS-COVERAGE.md`. Together they check that every Figma property, value and designed variant is in Storybook, and that the docs page has the sections its kind requires. The standard is in `standards/production-ready.md`.
+- Reference specs for 23 component kinds plus a generic fallback (`references/*.yaml`). The kind comes from the behaviour found in the Figma structure, then from the name.
+- New stories, from the Carbon Button pilot (`docs/pilots/carbon-button.md`): one per value of the main appearance property (Secondary, Ghost, Danger and so on), one per state a prop sets (Disabled, Skeleton, Error and so on), and clicks shown in the Actions panel. Story exports never shadow JavaScript globals or the component's imports.
+- Code mode (`generate.code`): the API of components that already exist in code is read from the module the team imports (TypeScript, including `forwardRef` and polymorphic components), and each Figma property is mapped to it. The generated components take the code's prop and value names (`kind`, `hasIconOnly`, `size: 'lg'`). The output is `CODE-MAP.md` and `code-map.json`, listing every mapping, the props that exist only in code, and the Figma items with no code counterpart, for review.
+- The `react-code` target: a Storybook of the team's real components, imported from their package and set up from Figma through the code map. It writes stories for every Figma property, value and designed variant the code can express, controls from the code's types, and a docs page with the Figma-to-code table and the props that exist only in code. Hover, focus and pressed states count as interactive. Example data Figma lacks goes in `code.examples`, and parents in `code.parents`.
+
 ## 0.2.0
 
 The first public release. Version 0.1.0 was never published.

@@ -47,6 +47,24 @@ export const TypeAndState: Story = {
   },
 };
 
+/** Figma Type=Current. */
+export const Current: Story = {
+  name: 'Current',
+  args: { type: 'current' },
+};
+
+/** Figma Type=Collapse. */
+export const Collapse: Story = {
+  name: 'Collapse',
+  args: { type: 'collapse' },
+};
+
+/** Figma State=Disabled. */
+export const Disabled: Story = {
+  name: 'Disabled',
+  args: { disabled: true },
+};
+
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
   name: "Optional parts",

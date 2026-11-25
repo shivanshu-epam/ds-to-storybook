@@ -129,6 +129,30 @@ export const State: Story = {
   },
 };
 
+/** Figma Type=Alert. */
+export const Alert: Story = {
+  name: 'Alert',
+  args: { type: 'alert' },
+};
+
+/** Figma Type=Form. */
+export const Form: Story = {
+  name: 'Form',
+  args: { type: 'form' },
+};
+
+/** Figma Type=Full-screen. */
+export const FullScreen: Story = {
+  name: 'Full-screen',
+  args: { type: 'full-screen' },
+};
+
+/** Figma Type=Side-drawer. */
+export const SideDrawer: Story = {
+  name: 'Side-drawer',
+  args: { type: 'side-drawer' },
+};
+
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
   name: "Optional parts",

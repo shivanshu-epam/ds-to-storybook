@@ -64,6 +64,18 @@ export const Size: Story = {
   },
 };
 
+/** Figma Type=Icon. */
+export const IconStory: Story = {
+  name: 'Icon',
+  args: { type: 'icon' },
+};
+
+/** Figma Type=Image. */
+export const ImageStory: Story = {
+  name: 'Image',
+  args: { type: 'image' },
+};
+
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
   name: "Figma variants",

@@ -7,6 +7,7 @@
  * - Icons are the exported Figma SVGs; instances of other generated components render those components.
  * - Behaviour (keyboard, focus, ARIA roles) is NOT inferred: the report and docs say so.
  */
+import { codeAxis, codeBoolean } from '../../code/map.ts';
 import { decidedDescription, decidedName } from '../../decisions/decisions.ts';
 import type { IRComponentSet, IRPart, IRProperty, IRVariant } from '../../ir/types.ts';
 import { JS_RESERVED } from '../../util/reserved.ts';
@@ -80,14 +81,17 @@ export function analyzeAxes(set: IRComponentSet): AxisInfo[] {
         };
       }
       const isState = !isBool && opts.some((o) => PSEUDO.some((x) => x.test.test(o)) || /^disabled$/i.test(o));
+      // Code mode: the code prop and value names (code wins for the API); values code lacks keep Figma's name.
+      const code = isState ? undefined : codeAxis(set, p.name);
+      const val = (o: string) => code?.value(o) ?? kebab(o);
       const values: AxisValue[] = opts.map((o) => {
         const pseudo = PSEUDO.find((x) => x.test.test(o));
         if (isState && o === String(p.default)) return { figma: o, value: kebab(o), role: 'base' };
         if (isState && pseudo) return { figma: o, value: kebab(o), role: 'pseudo', state: pseudo.state };
         if (isState && /^disabled$/i.test(o)) return { figma: o, value: 'disabled', role: 'disabled' };
-        return { figma: o, value: kebab(o), role: 'enum' };
+        return { figma: o, value: val(o), role: 'enum' };
       });
-      let prop = decidedName(set, p.name) ?? camel(p.name);
+      let prop = decidedName(set, p.name) ?? code?.prop ?? camel(p.name);
       if (RESERVED.has(prop) || used.has(prop)) prop = `${prop}Variant`;
       used.add(prop);
       return {
@@ -97,8 +101,8 @@ export function analyzeAxes(set: IRComponentSet): AxisInfo[] {
         kind: isState ? ('state' as const) : ('variant' as const),
         values,
         options: values.filter((v) => v.role === 'base' || v.role === 'enum').map((v) => v.value),
-        defaultValue: kebab(String(p.default)),
-        ...(isBool ? { boolean: true } : {}),
+        defaultValue: isState ? kebab(String(p.default)) : val(String(p.default)),
+        ...(isBool || code?.boolean ? { boolean: true } : {}),
         ...(decidedDescription(set, p.name) ? { description: decidedDescription(set, p.name)! } : {}),
       };
     });
@@ -193,7 +197,7 @@ export function propPlan(set: IRComponentSet): PropPlan {
   const axes = analyzeAxes(set);
   const used = new Set(axes.map((a) => a.prop));
   const name = (p: IRProperty) => {
-    let n = decidedName(set, p.name) ?? camel(p.name);
+    let n = decidedName(set, p.name) ?? (p.type === 'BOOLEAN' ? codeBoolean(set, p.name) : undefined) ?? camel(p.name);
     if (RESERVED.has(n) || used.has(n)) n = `${n}${p.type === 'TEXT' ? 'Text' : 'Prop'}`;
     used.add(n);
     return n;
@@ -2220,10 +2224,13 @@ ${styles.css}${overlayFill()}`;
   const rowAxis = multi.find((a) => a !== stateAxis);
   const colAxis = stateAxis ?? multi.find((a) => a !== rowAxis);
   const storyNames = new Set(['Default']);
+  // Story exports must not shadow the component, its imports or JavaScript / DOM globals (Error, Image, Range...).
+  const TAKEN = new Set([name, `${name}Props`, 'Meta', 'StoryObj', 'Story', 'Labelled', 'Matrix', 'Row', 'Icon', 'expect', 'fn', 'userEvent', 'within', 'useState', 'Error', 'Map', 'Set', 'Date', 'Image', 'Option', 'Range', 'File', 'Text', 'Node', 'Element', 'Event', 'Object', 'Array', 'String', 'Number', 'Boolean', 'Symbol', 'Promise', 'JSON', 'Math', 'Intl', 'Proxy', 'Reflect', 'URL', 'Request', 'Response', 'Headers', 'Audio', 'Selection', 'Location', 'History', 'Navigator', 'Storage', 'Window', 'Document', 'Function', 'RegExp', 'Infinity', 'NaN']);
   const storyName = (s: string) => {
     let n = pascal(s) || 'Axis';
     if (/^[0-9]/.test(n)) n = `S${n}`;
-    for (let i = 2; storyNames.has(n); i++) n = `${pascal(s)}${i}`;
+    if (TAKEN.has(n)) n = `${n}Story`;
+    for (let i = 2; storyNames.has(n); i++) n = `${pascal(s)}${TAKEN.has(pascal(s)) ? 'Story' : ''}${i}`;
     storyNames.add(n);
     return n;
   };
@@ -2492,6 +2499,36 @@ export const ${n}: Story = {
 };`);
     sections.push({ heading: a.figma, story: n });
   }
+  // Reference specs (references/*.yaml): one story per value of the main appearance property, as design-system
+  // Storybooks list them (Primary, Secondary, Danger...), and one per state a prop sets (Disabled, Skeleton, Error).
+  const PRIMARY_AXIS = ['kind', 'variant', 'style', 'type', 'appearance', 'emphasis', 'intent', 'color', 'hierarchy', 'status', 'severity'];
+  const own = (a: AxisInfo) => a !== sw?.axis && a !== radio?.axis && a.options.length > 1;
+  const primaryAxis = PRIMARY_AXIS.map((n) => multi.find((a) => own(a) && a.kind === 'variant' && !a.boolean && a.figma.trim().toLowerCase() === n)).find(Boolean);
+  if (primaryAxis && primaryAxis.options.length <= 12) {
+    for (const v of primaryAxis.values.filter((x) => x.role === 'enum' && x.value !== primaryAxis.defaultValue)) {
+      stories.push(`/** Figma ${primaryAxis.figma}=${v.figma}. */
+export const ${storyName(v.figma)}: Story = {
+  name: ${q(v.figma)},
+  args: { ${primaryAxis.prop}: ${axisLiteral(primaryAxis, v.value, q)} },
+};`);
+    }
+  }
+  if (hasDisabled && !sw) {
+    stories.push(`/** Figma State=Disabled. */
+export const ${storyName('Disabled')}: Story = {
+  name: 'Disabled',
+  args: { disabled: true },
+};`);
+  }
+  for (const a of multi.filter((x) => own(x) && x.kind === 'state')) {
+    for (const v of a.values.filter((x) => x.role === 'enum' && x.value !== a.defaultValue)) {
+      stories.push(`/** Figma ${a.figma}=${v.figma}. */
+export const ${storyName(v.figma)}: Story = {
+  name: ${q(v.figma)},
+  args: { ${a.prop}: ${axisLiteral(a, v.value, q)} },
+};`);
+    }
+  }
   // Toggles merged into a slot: switched by passing the Figma icon (or null when Figma shows it by default).
   const toggled = slotList.filter((x) => x.toggle && (x.toggle.default || x.toggle.icon));
   if (booleans.length || toggled.length) {
@@ -2674,7 +2711,7 @@ ${storyIcons ? "import { Icon } from '../../icons/Icon';\n" : ''}import { ${name
 const meta = {
   title: ${q(opts.title)},
   component: ${name},
-${needsName || rootTag === 'a' ? `  args: { ${[...(needsName ? [`'aria-label': ${q(humanize(name.replace(/([a-z])([A-Z])/g, '$1 $2')))}`] : []), ...(rootTag === 'a' ? ["href: '#'"] : [])].join(', ')} },\n` : ''}${sw ? `  args: { ${sw.labelled ? '' : `'aria-label': ${q(sw.label)}, `}onCheckedChange: fn() },\n` : radio?.kind === 'control' ? `  args: { 'aria-label': ${q(radio.label)}, onChange: fn() },\n` : radio?.kind === 'field' || input ? '  args: { onChange: fn() },\n' : dialog ? '  // Variant stories show open, non-modal dialogs in the page.\n  args: { open: true, modal: false, onOpenChange: fn() },\n' : ''}  argTypes: {
+${needsName || rootTag === 'a' || rootTag === 'button' ? `  args: { ${[...(needsName ? [`'aria-label': ${q(humanize(name.replace(/([a-z])([A-Z])/g, '$1 $2')))}`] : []), ...(rootTag === 'a' ? ["href: '#'"] : []), ...(rootTag === 'button' ? ['onClick: fn()'] : [])].join(', ')} },\n` : ''}${sw ? `  args: { ${sw.labelled ? '' : `'aria-label': ${q(sw.label)}, `}onCheckedChange: fn() },\n` : radio?.kind === 'control' ? `  args: { 'aria-label': ${q(radio.label)}, onChange: fn() },\n` : radio?.kind === 'field' || input ? '  args: { onChange: fn() },\n' : dialog ? '  // Variant stories show open, non-modal dialogs in the page.\n  args: { open: true, modal: false, onOpenChange: fn() },\n' : ''}  argTypes: {
 ${argTypes.join('\n')}
   },
   parameters: { figma: { fileKey: ${q(ctx.fileKey)}, nodeId: ${q(set.nodeId)} }, generator: ${q(sw ? (sw.role === 'checkbox' ? 'checkbox' : 'switch') : radio ? 'radio' : input ? 'input' : dialog ? 'dialog' : 'generic')} },

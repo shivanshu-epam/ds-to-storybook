@@ -109,6 +109,36 @@ export const Size: Story = {
   },
 };
 
+/** Figma Type=Filled. */
+export const Filled: Story = {
+  name: 'Filled',
+  args: { appearance: 'filled' },
+};
+
+/** Figma Type=Borderless. */
+export const Borderless: Story = {
+  name: 'Borderless',
+  args: { appearance: 'borderless' },
+};
+
+/** Figma Type=Inline. */
+export const Inline: Story = {
+  name: 'Inline',
+  args: { appearance: 'inline' },
+};
+
+/** Figma State=Disabled. */
+export const Disabled: Story = {
+  name: 'Disabled',
+  args: { disabled: true },
+};
+
+/** Figma State=Error. */
+export const ErrorStory: Story = {
+  name: 'Error',
+  args: { state: 'error' },
+};
+
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
   name: "Optional parts",

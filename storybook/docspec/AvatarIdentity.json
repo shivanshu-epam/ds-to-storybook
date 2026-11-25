@@ -1,0 +1,286 @@
+{
+  "specVersion": "1.0",
+  "component": "AvatarIdentity",
+  "title": "Components/Avatar/AvatarIdentity",
+  "kind": {
+    "id": "avatar",
+    "title": "Avatar",
+    "from": "name"
+  },
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420998788157412873",
+    "sets": [
+      {
+        "id": "274:1803",
+        "name": "AvatarIdentity",
+        "page": "↳ avatar",
+        "variants": 6
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1337:116",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1337:388",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1337:800",
+        "name": "Documentation / Accessibility"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "Has name",
+      "type": "BOOLEAN",
+      "props": [
+        "hasName"
+      ],
+      "role": "option",
+      "default": true,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Has email",
+      "type": "BOOLEAN",
+      "props": [
+        "hasEmail"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Has trailing icon",
+      "type": "BOOLEAN",
+      "props": [
+        "hasTrailingIcon"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Name",
+      "type": "TEXT",
+      "props": [
+        "name"
+      ],
+      "role": "content",
+      "default": "Alex Johnson",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Email",
+      "type": "TEXT",
+      "props": [
+        "email"
+      ],
+      "role": "content",
+      "default": "alex.johnson@acme.com",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "state",
+        "disabled"
+      ],
+      "role": "state",
+      "default": "Default",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Default",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Hover",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Focused",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Active",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Disabled",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Selected",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": []
+    },
+    {
+      "export": "State",
+      "name": "State",
+      "visibility": "dev",
+      "shows": [
+        "Name",
+        "State"
+      ]
+    },
+    {
+      "export": "Disabled",
+      "name": "Disabled",
+      "visibility": "dev",
+      "shows": [
+        "Name",
+        "State"
+      ]
+    },
+    {
+      "export": "Selected",
+      "name": "Selected",
+      "visibility": "dev",
+      "shows": [
+        "Name",
+        "State"
+      ]
+    },
+    {
+      "export": "Options",
+      "name": "Optional parts",
+      "visibility": "dev",
+      "shows": [
+        "Has name",
+        "Has email",
+        "Has trailing icon",
+        "Name",
+        "Email"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "Name",
+        "State"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "present",
+      "heading": "State"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "missing"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "present",
+      "heading": "Composition"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "img",
+    "role": "img",
+    "name": "Alt text names the person.",
+    "source": "reference"
+  },
+  "related": [],
+  "coverage": {
+    "properties": {
+      "total": 6,
+      "covered": 6
+    },
+    "values": {
+      "total": 6,
+      "shown": 6,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 6,
+      "rendered": 6
+    },
+    "sections": {
+      "required": 7,
+      "present": 6
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "section:usage",
+      "message": "The docs page has no \"usage\" section (required for avatar components)."
+    },
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

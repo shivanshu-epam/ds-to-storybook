@@ -31,6 +31,8 @@
   "files": [
     "dist",
     "archetypes",
+    "references",
+    "standards",
     "templates",
     "README.md",
     "CHANGELOG.md",

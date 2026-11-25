@@ -1,0 +1,381 @@
+{
+  "specVersion": "1.0",
+  "component": "Button",
+  "title": "Components/Button",
+  "kind": {
+    "id": "button",
+    "title": "Button",
+    "from": "behaviour"
+  },
+  "behaviour": "action",
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420998788157412873",
+    "sets": [
+      {
+        "id": "102:122",
+        "name": "Button",
+        "page": "↳ button",
+        "variants": 180
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1320:168",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1320:507",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1320:1020",
+        "name": "Documentation / Accessibility"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "Has leading icon",
+      "type": "BOOLEAN",
+      "props": [
+        "leadingIcon"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "none",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Has trailing icon",
+      "type": "BOOLEAN",
+      "props": [
+        "trailingIcon"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "none",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Show label",
+      "type": "BOOLEAN",
+      "props": [
+        "children"
+      ],
+      "role": "option",
+      "default": true,
+      "control": "hidden",
+      "coverage": "control"
+    },
+    {
+      "figma": "Variant",
+      "type": "VARIANT",
+      "props": [
+        "variant"
+      ],
+      "role": "appearance",
+      "default": "Primary",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Primary",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Secondary",
+          "coverage": "control"
+        },
+        {
+          "figma": "Ghost",
+          "coverage": "control"
+        },
+        {
+          "figma": "Danger",
+          "coverage": "control"
+        }
+      ]
+    },
+    {
+      "figma": "Size",
+      "type": "VARIANT",
+      "props": [
+        "size"
+      ],
+      "role": "appearance",
+      "default": "Sm",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Sm",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Md",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Lg",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "—",
+        ":hover:not(:disabled) (CSS)",
+        ":active:not(:disabled) (CSS)",
+        ":focus-visible (CSS)",
+        "disabled"
+      ],
+      "role": "state",
+      "default": "Default",
+      "control": "hidden",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Default",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Hover",
+          "coverage": "test"
+        },
+        {
+          "figma": "Pressed",
+          "coverage": "test"
+        },
+        {
+          "figma": "Focused",
+          "coverage": "test"
+        },
+        {
+          "figma": "Disabled",
+          "coverage": "test"
+        }
+      ]
+    },
+    {
+      "figma": "Radius",
+      "type": "VARIANT",
+      "props": [
+        "radius"
+      ],
+      "role": "appearance",
+      "default": "Default",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Default",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Rounded",
+          "coverage": "shown"
+        },
+        {
+          "figma": "None",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": [
+        "Variant"
+      ]
+    },
+    {
+      "export": "VariantsAndStates",
+      "name": "Variants and states",
+      "visibility": "dev",
+      "shows": [
+        "Variant"
+      ]
+    },
+    {
+      "export": "Size",
+      "name": "Size",
+      "visibility": "dev",
+      "shows": [
+        "Size"
+      ]
+    },
+    {
+      "export": "Radius",
+      "name": "Radius",
+      "visibility": "dev",
+      "shows": [
+        "Radius"
+      ]
+    },
+    {
+      "export": "WithIcons",
+      "name": "With icons",
+      "visibility": "dev",
+      "shows": [
+        "Has leading icon",
+        "Has trailing icon"
+      ]
+    },
+    {
+      "export": "Disabled",
+      "name": "Disabled",
+      "visibility": "docs",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "Variant",
+        "Size",
+        "State",
+        "Radius"
+      ]
+    },
+    {
+      "export": "Keyboard",
+      "name": "Keyboard",
+      "visibility": "docs",
+      "shows": []
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "sizes",
+      "required": false,
+      "status": "present",
+      "heading": "Size"
+    },
+    {
+      "id": "icons",
+      "required": false,
+      "status": "present",
+      "heading": "Icons"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "present",
+      "heading": "State"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "missing"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "wai-aria/button",
+    "role": "button",
+    "name": "Visible label, or aria-label when icon-only.",
+    "keyboard": [
+      {
+        "key": "Enter",
+        "action": "activate"
+      },
+      {
+        "key": "Space",
+        "action": "activate"
+      }
+    ],
+    "source": "reference"
+  },
+  "related": [
+    "icon button",
+    "button group",
+    "button set",
+    "skeleton"
+  ],
+  "coverage": {
+    "properties": {
+      "total": 7,
+      "covered": 7
+    },
+    "values": {
+      "total": 15,
+      "shown": 8,
+      "control": 7,
+      "missing": 0
+    },
+    "variants": {
+      "total": 180,
+      "rendered": 180
+    },
+    "sections": {
+      "required": 7,
+      "present": 6
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "section:usage",
+      "message": "The docs page has no \"usage\" section (required for button components)."
+    },
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

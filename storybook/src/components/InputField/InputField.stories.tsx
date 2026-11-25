@@ -50,6 +50,30 @@ export const State: Story = {
   },
 };
 
+/** Figma State=Disabled. */
+export const Disabled: Story = {
+  name: 'Disabled',
+  args: { disabled: true },
+};
+
+/** Figma State=Invalid. */
+export const Invalid: Story = {
+  name: 'Invalid',
+  args: { state: 'invalid' },
+};
+
+/** Figma State=Success. */
+export const Success: Story = {
+  name: 'Success',
+  args: { state: 'success' },
+};
+
+/** Figma State=Read-only. */
+export const ReadOnly: Story = {
+  name: 'Read-only',
+  args: { state: 'read-only' },
+};
+
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
   name: "Optional parts",

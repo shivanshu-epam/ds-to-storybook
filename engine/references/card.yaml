@@ -1,0 +1,29 @@
+# Reference spec: Card. Structure for every design system; values (names, options) come from each system.
+id: card
+title: Card
+matches:
+  behaviours: []
+  names: ["card", "\\btile\\b", "panel"]
+primaryAxis: [type, variant, style, layout]
+sections:
+  - { id: overview, required: true }
+  - { id: preview, required: true }
+  - { id: variants, required: true }
+  - { id: states, required: false }
+  - { id: accessibility, required: true }
+  - { id: usage, required: true }
+  - { id: api, required: true }
+  - { id: anatomy, required: false }
+  - { id: related, required: false }
+  - { id: code, required: true }
+stories:
+  default: true
+  perPrimaryValue: true      # one story per value of the main variant property
+  perProperty: true          # one story per other property, all its values side by side
+  perOption: true            # one story per optional part (boolean or slot)
+  perPropState: true         # disabled, error, warning, read-only, loading, selected
+  allVariants: test          # every designed Figma variant, in a test-only story
+accessibility:
+  pattern: "none"
+  role: "none (presentational)"
+  name: "Not focusable; text content is read in place."

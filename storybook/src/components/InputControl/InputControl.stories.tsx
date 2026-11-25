@@ -43,6 +43,42 @@ export const State: Story = {
   },
 };
 
+/** Figma State=Disabled. */
+export const Disabled: Story = {
+  name: 'Disabled',
+  args: { disabled: true },
+};
+
+/** Figma State=Filled. */
+export const Filled: Story = {
+  name: 'Filled',
+  args: { state: 'filled' },
+};
+
+/** Figma State=Read-only. */
+export const ReadOnly: Story = {
+  name: 'Read-only',
+  args: { state: 'read-only' },
+};
+
+/** Figma State=Error. */
+export const ErrorStory: Story = {
+  name: 'Error',
+  args: { state: 'error' },
+};
+
+/** Figma State=Success. */
+export const Success: Story = {
+  name: 'Success',
+  args: { state: 'success' },
+};
+
+/** Figma State=State9. */
+export const State9: Story = {
+  name: 'State9',
+  args: { state: 'state9' },
+};
+
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
   name: "Figma variants",

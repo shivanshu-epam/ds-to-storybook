@@ -64,6 +64,24 @@ export const Expanded: Story = {
   },
 };
 
+/** Figma State=Disabled. */
+export const Disabled: Story = {
+  name: 'Disabled',
+  args: { disabled: true },
+};
+
+/** Figma State=Error. */
+export const ErrorStory: Story = {
+  name: 'Error',
+  args: { state: 'error' },
+};
+
+/** Figma State=Read-only. */
+export const ReadOnly: Story = {
+  name: 'Read-only',
+  args: { state: 'read-only' },
+};
+
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
   name: "Optional parts",

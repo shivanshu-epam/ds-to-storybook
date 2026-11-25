@@ -1,0 +1,273 @@
+{
+  "specVersion": "1.0",
+  "component": "BreadcrumbItem",
+  "title": "Components/Breadcrumb/BreadcrumbItem",
+  "kind": {
+    "id": "navigation",
+    "title": "Navigation",
+    "from": "name"
+  },
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2420998788157412873",
+    "sets": [
+      {
+        "id": "224:1461",
+        "name": "BreadcrumbItem",
+        "page": "↳ breadcrumb",
+        "variants": 8
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1332:152",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1332:578",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1332:836",
+        "name": "Documentation / Accessibility"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "Has icon",
+      "type": "BOOLEAN",
+      "props": [
+        "hasIcon"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Label",
+      "type": "TEXT",
+      "props": [
+        "label"
+      ],
+      "role": "content",
+      "default": "Breadcrumb",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Type",
+      "type": "VARIANT",
+      "props": [
+        "type"
+      ],
+      "role": "appearance",
+      "default": "Link",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Link",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Current",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Collapse",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "—",
+        "disabled"
+      ],
+      "role": "state",
+      "default": "Default",
+      "control": "boolean",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Default",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Hover",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Focused",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Disabled",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": []
+    },
+    {
+      "export": "TypeAndState",
+      "name": "Type and state",
+      "visibility": "dev",
+      "shows": [
+        "Label",
+        "Type",
+        "State"
+      ]
+    },
+    {
+      "export": "Current",
+      "name": "Current",
+      "visibility": "dev",
+      "shows": [
+        "Type"
+      ]
+    },
+    {
+      "export": "Collapse",
+      "name": "Collapse",
+      "visibility": "dev",
+      "shows": [
+        "Type"
+      ]
+    },
+    {
+      "export": "Disabled",
+      "name": "Disabled",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "Options",
+      "name": "Optional parts",
+      "visibility": "dev",
+      "shows": [
+        "Has icon",
+        "Label"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "Type",
+        "State"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "present",
+      "heading": "State"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "missing"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "navigation landmark",
+    "role": "navigation",
+    "name": "Landmark label (aria-label); current item marked aria-current.",
+    "source": "reference"
+  },
+  "related": [],
+  "coverage": {
+    "properties": {
+      "total": 4,
+      "covered": 4
+    },
+    "values": {
+      "total": 7,
+      "shown": 7,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 8,
+      "rendered": 8
+    },
+    "sections": {
+      "required": 7,
+      "present": 6
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "section:usage",
+      "message": "The docs page has no \"usage\" section (required for navigation components)."
+    },
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

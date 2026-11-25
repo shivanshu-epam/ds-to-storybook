@@ -52,6 +52,36 @@ export const PositionAndState: Story = {
   },
 };
 
+/** Figma State=Disabled. */
+export const Disabled: Story = {
+  name: 'Disabled',
+  args: { disabled: true },
+};
+
+/** Figma State=Invalid. */
+export const Invalid: Story = {
+  name: 'Invalid',
+  args: { state: 'invalid' },
+};
+
+/** Figma State=Warning. */
+export const Warning: Story = {
+  name: 'Warning',
+  args: { state: 'warning' },
+};
+
+/** Figma State=Read-Only. */
+export const ReadOnly: Story = {
+  name: 'Read-Only',
+  args: { state: 'read-only' },
+};
+
+/** Figma State=Skeleton. */
+export const Skeleton: Story = {
+  name: 'Skeleton',
+  args: { state: 'skeleton' },
+};
+
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
   name: "Figma variants",

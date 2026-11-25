@@ -1,0 +1,32 @@
+# Reference spec: Link. Structure for every design system; values (names, options) come from each system.
+id: link
+title: Link
+matches:
+  behaviours: [link]
+  names: ["\\blink\\b", "anchor"]
+primaryAxis: [kind, variant, style, appearance, color]
+sections:
+  - { id: overview, required: true }
+  - { id: preview, required: true }
+  - { id: variants, required: true }
+  - { id: icons, required: false }
+  - { id: states, required: false }
+  - { id: accessibility, required: true }
+  - { id: usage, required: true }
+  - { id: api, required: true }
+  - { id: anatomy, required: false }
+  - { id: related, required: false }
+  - { id: code, required: true }
+stories:
+  default: true
+  perPrimaryValue: true      # one story per value of the main variant property
+  perProperty: true          # one story per other property, all its values side by side
+  perOption: true            # one story per optional part (boolean or slot)
+  perPropState: true         # disabled, error, warning, read-only, loading, selected
+  allVariants: test          # every designed Figma variant, in a test-only story
+accessibility:
+  pattern: "wai-aria/link"
+  role: "link"
+  name: "Link text says where it goes."
+  keyboard:
+    - { key: "Enter", action: "follow" }

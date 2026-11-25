@@ -1,0 +1,34 @@
+# Reference spec: Menu. Structure for every design system; values (names, options) come from each system.
+id: menu
+title: Menu
+matches:
+  behaviours: [menu, menu-button]
+  names: ["menu", "overflow", "context"]
+primaryAxis: [type, variant, size]
+sections:
+  - { id: overview, required: true }
+  - { id: preview, required: true }
+  - { id: variants, required: true }
+  - { id: states, required: false }
+  - { id: accessibility, required: true }
+  - { id: usage, required: true }
+  - { id: api, required: true }
+  - { id: anatomy, required: false }
+  - { id: related, required: false }
+  - { id: code, required: true }
+stories:
+  default: true
+  perPrimaryValue: true      # one story per value of the main variant property
+  perProperty: true          # one story per other property, all its values side by side
+  perOption: true            # one story per optional part (boolean or slot)
+  perPropState: true         # disabled, error, warning, read-only, loading, selected
+  allVariants: test          # every designed Figma variant, in a test-only story
+accessibility:
+  pattern: "wai-aria/menu"
+  role: "menu / menuitem"
+  name: "The trigger names the menu."
+  keyboard:
+    - { key: "Arrow keys", action: "move" }
+    - { key: "Enter", action: "activate" }
+    - { key: "Escape", action: "close" }
+related: ["menu button", "overflow menu"]

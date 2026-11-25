@@ -1,6 +1,11 @@
 /** Scenario 2: Figma design system -> a fresh, tested Storybook project. */
 import { composition, docsPage, isBuildingBlock, polishStories, templateSections } from './docs.ts';
 import { activeDecisions, decidedSetDescription, decisionsReport, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel, type DecisionsFile } from '../decisions/decisions.ts';
+import { buildDocSpec, coverageReport, loadReferences, pickReference } from '../docspec/build.ts';
+import { matchExport, moduleExports, readComponentApis } from '../code/api.ts';
+import { codeMapReport, mapComponent, setActiveCodeMap, type CodeMapEntry } from '../code/map.ts';
+import type { ComponentApi } from '../code/api.ts';
+import { codeStories } from './code/stories.ts';
 import { BEHAVIOUR, buildScorecard, scorecardLines, scorecardReport } from './scorecard.ts';
 import { leadSentence } from './templates/common.ts';
 import { fontFaceCss, fontsReport, httpFontSource, planFonts, usedFonts, type FontOverride, type FontPlan } from './fonts.ts';
@@ -28,7 +33,8 @@ import type { ActionCore } from './templates/action.ts';
 import type { CheckboxCore } from './templates/checkbox.ts';
 import type { GenericCore } from './templates/generic.ts';
 
-export type Target = 'react' | 'web-components';
+/** react-code: a Storybook of the team's own components (code mode), set up from Figma through the code map. */
+export type Target = 'react' | 'web-components' | 'react-code';
 
 export interface TargetConfig {
   target: Target;
@@ -53,6 +59,12 @@ export interface GenerateConfig {
    * file defaults to ds-sync.decisions.json next to the config; apply defaults to "accepted".
    */
   decisions?: { file?: string; apply?: ApplyLevel };
+  /**
+   * Code mode: components that already exist in code. Their API (prop names, value names, shapes) comes from the
+   * module they are imported from; visuals and tokens still come from Figma. root: the folder whose node_modules
+   * resolve the module (default: the config folder). names: generated component -> export, where the names differ.
+   */
+  code?: { from: string; root?: string; names?: Record<string, string>; /** CSS the components need, e.g. "@carbon/styles/css/styles.css" (react-code target). */ styles?: string[]; /** Module of icon components for icon slots, e.g. "@carbon/icons-react" (react-code target). */ icons?: string; /** Example props Figma does not have, per generated component (react-code target), e.g. { "PaginationNav": { "totalItems": 10 } }. Reviewed like code. */ examples?: Record<string, Record<string, string | number | boolean>>; /** Parent export a component is rendered inside, where the name does not say it, e.g. { "ListItem": "UnorderedList" }. */ parents?: Record<string, string> };
   /**
    * Viewport values of Figma "Screen Size" / "Device" / "Breakpoint" axes -> CSS media conditions, e.g.
    * { "Mobile": "(max-width: 767px)" }. Such an axis then follows the viewport when its prop is not set.
@@ -145,7 +157,7 @@ function visualManifest(ir: FigmaIR, results: { c: PlannedComponent; result: Tem
 }
 
 /** Generated folders are replaced; files are only written under them, so the target stays clean between runs. */
-const OWNED = ['src', '.storybook', 'types'];
+const OWNED = ['src', '.storybook', 'types', 'docspec'];
 
 /** Descriptions by code prop, and the component description, from the applied decisions. */
 function decisionDocs(sets: IRComponentSet[]): { descriptions?: Record<string, string>; decidedDescription?: string } {
@@ -197,6 +209,37 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     const active = activeDecisions(usable, decisionLevel);
     log(`Decisions: ${Object.keys(decisionsFile.sets).length} set(s) in ${gen.decisions?.file ?? DECISIONS_FILE}; applying ${decisionLevel} → ${active.size} set(s)`);
   } else setActiveDecisions(new Map());
+  // Code mode (docs/DOCS-ENGINE.md, decision 2): map each component's Figma properties to its API in code.
+  let codeMap: CodeMapEntry[] = [];
+  let codeComponents: { c: PlannedComponent; sets: IRComponentSet[]; entry: CodeMapEntry; api: ComponentApi }[] = [];
+  let codeVersion: string | undefined;
+  let codeExports: string[] = [];
+  setActiveCodeMap([]);
+  if (gen.code) {
+    const src = { from: gen.code.from, root: resolve(config.baseDir, gen.code.root ?? '.') };
+    const exportsList = moduleExports(src);
+    const exportOf = (name: string) => gen.code!.names?.[name] ?? matchExport(name, exportsList);
+    const wanted = plan.map((c) => exportOf(c.name)).filter((e): e is string => Boolean(e));
+    const apis = readComponentApis(src, [...new Set(wanted)]);
+    const mapped = plan.map((c) => {
+      const sets = Object.values(c.sets).map((id) => setsById.get(id)!).filter(Boolean);
+      const exp = exportOf(c.name);
+      const api = exp ? apis.get(exp)! : { export: c.name, found: false, props: [], inherited: [], accepts: { children: false } };
+      return { sets, entry: mapComponent(c.name, sets, api, exportsList) };
+    });
+    setActiveCodeMap(mapped);
+    codeMap = mapped.map((m) => m.entry);
+    // One Figma component per code export: the exact name first, then "Default", then other names; a Figma
+    // building block ("NumberInputBase") is not documented as the code component another Figma set already is.
+    const rank = (name: string, exp: string) => (name === exp ? 0 : /Default$/.test(name) ? 1 : /Base$/.test(name) ? 3 : 2);
+    const best = new Map<string, number>();
+    mapped.forEach((m, i) => { if (m.entry.found) { const b = best.get(m.entry.export); if (b === undefined || rank(plan[i]!.name, m.entry.export) < rank(plan[b]!.name, m.entry.export)) best.set(m.entry.export, i); } });
+    codeComponents = mapped.flatMap((m, i) => (m.entry.found && best.get(m.entry.export) === i ? [{ c: plan[i]!, sets: m.sets, entry: m.entry, api: apis.get(m.entry.export)! }] : []));
+    codeExports = exportsList;
+    try { codeVersion = (readJson(join(src.root, 'node_modules', gen.code.from, 'package.json')) as { version?: string }).version; } catch { codeVersion = undefined; }
+    const found = codeMap.filter((e) => e.found);
+    log(`Code: ${found.length}/${codeMap.length} components found in ${gen.code.from}; ${found.reduce((n, e) => n + e.mappings.filter((m) => m.shape !== 'none').length, 0)}/${found.reduce((n, e) => n + e.mappings.length, 0)} Figma properties mapped to code props (CODE-MAP.md)`);
+  }
   const usedTargets = plan.flatMap((c) => Object.values(c.sets));
   const missing = usedTargets.filter((t) => !setsById.has(t));
   if (missing.length) throw new Error(`Component sets missing from the IR: ${missing.join(', ')}. Run "extract" first.`);
@@ -385,6 +428,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     ...tokenFiles,
     { path: 'token-map.json', content: JSON.stringify(tokenMap, null, 2) + '\n' },
     { path: 'GENERATION-REPORT.md', content: report(ir, reports, tokenMap.counts, icons, fonts, [...scorecardReport(cards), ...decisionsReport(decisionsFile, decisionLevel, decisionProblems)]) },
+    ...(gen.code ? [{ path: 'CODE-MAP.md', content: codeMapReport(codeMap, gen.code.from) }, { path: 'code-map.json', content: JSON.stringify({ from: gen.code.from, components: codeMap }, null, 2) + '\n' }] : []),
     { path: 'scorecard.json', content: JSON.stringify({ fileKey: ir.fileKey, version: ir.version, components: cards }, null, 2) + '\n' },
   ];
 
@@ -393,8 +437,62 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
   for (const t of targets) {
     const outFiles: GeneratedFile[] = [...shared, ...fontFiles];
     const packageName = t.packageName ?? gen.packageName ?? 'figma-storybook';
-    if (t.target === 'react') {
+    if (t.target === 'react-code') {
+      if (!gen.code) throw new Error('The react-code target needs "generate.code" (the module the components are imported from).');
+      const from = gen.code.from;
+      // The team's own components: one copy of each Figma component found in code, rendered by the code component.
+      // No Figma mode toolbars: the team's components are themed by their own CSS, not by the Figma variables.
+      const project = projectFiles({ name: packageName, figma: { fileKey: ir.fileKey, fileName: ir.fileName, version: ir.version }, modes: {}, modeAttributes: {}, testCollections: [], components: [], icons, foundations: foundationPagesList, page, fonts: { deps: fontDeps, imports: fontImports } });
+      for (const f of project) {
+        if (f.path === 'package.json' && codeVersion) {
+          const pkg = JSON.parse(f.content) as { dependencies: Record<string, string>; description: string };
+          pkg.dependencies[from] = codeVersion;
+          pkg.description = `Storybook of ${from} components, set up from the Figma file "${ir.fileName}" (${ir.fileKey}) by ds-sync.`;
+          f.content = JSON.stringify(pkg, null, 2) + '\n';
+        }
+        if (f.path === '.storybook/preview.tsx') f.content = f.content.replace("import '../src/styles/base.css';", ["import '../src/styles/base.css';", ...(gen.code.styles ?? []).map((x) => `import ${JSON.stringify(x)};`)].join('\n'));
+      }
+      outFiles.push(...project);
+      const iconModule = gen.code.icons;
+      const iconComponents = iconModule ? { from: iconModule, names: new Set(moduleExports({ from: iconModule, root: resolve(config.baseDir, gen.code.root ?? '.') })) } : undefined;
+      const refs = loadReferences();
+      const specs = [];
+      for (const { c, sets, entry, api } of codeComponents) {
+        const parent = gen.code.parents?.[c.name] ?? (/Item$/.test(api.export) && codeExports.includes(api.export.replace(/Item$/, '')) ? api.export.replace(/Item$/, '') : undefined);
+        const kindRef = pickReference(refs, effective.get(c.name), [sets[0]!.name, c.name]).ref;
+        const r = codeStories({ name: c.name, title: titleOf(c), from, sets, entry, api, fileKey: ir.fileKey, accessibility: kindRef.accessibility, ...(parent ? { parent } : {}), ...(gen.code.examples?.[c.name] ? { examples: gen.code.examples[c.name] } : {}), ...(iconComponents ? { icons: iconComponents } : {}) });
+        if (r.needsData.length) log(`react-code: ${c.name} needs example data (${r.needsData.join(', ')}); its stories are not in the test run`);
+        outFiles.push(...r.files);
+        specs.push(buildDocSpec({
+          name: c.name, title: titleOf(c), behaviour: effective.get(c.name), buildingBlock: false, sets, fileKey: ir.fileKey, version: ir.version, refs,
+          report: { name: c.name, figmaSets: sets.map((x) => x.nodeId), files: [], props: entry.mappings.filter((m) => m.code).map((m) => ({ prop: m.code!, figma: m.figma })), assumptions: [], gaps: [], dependencies: {} },
+          stories: r.files[0]!.content, mdx: r.files[1]!.content, interactive: r.interactive,
+        }));
+      }
+      outFiles.push(
+        ...specs.map((x) => ({ path: `docspec/${x.component}.json`, content: JSON.stringify(x, null, 2) + '\n' })),
+        { path: 'DOCS-COVERAGE.md', content: coverageReport(specs) },
+        { path: 'README.md', content: `# ${packageName}\n\nStorybook of the \`${from}\`${codeVersion ? ` ${codeVersion}` : ''} components that the Figma file "${ir.fileName}" designs, generated by ds-sync in code mode. Each story renders the real component; Figma decides what is shown (every property, value and designed variant), and the code decides how it is set (CODE-MAP.md).\n\n${codeComponents.length} of ${plan.length} Figma components are in ${from}; the others are listed in CODE-MAP.md.\n` },
+      );
+      log(`react-code: ${codeComponents.length} components render ${from}; docs coverage ${specs.filter((x) => x.coverage.complete).length}/${specs.length}`);
+    } else if (t.target === 'react') {
       applyDocs(files, 'react', packageName);
+      // Component Doc Spec v1 for every component, checked against the stories and docs page just written.
+      const refs = loadReferences();
+      const specs = results.map(({ c, ctx, result }) => {
+        const dir = `src/components/${c.name}/`;
+        const sets = Object.values(ctx.sets);
+        return buildDocSpec({
+          name: c.name, title: titleOf(c), behaviour: effective.get(c.name), buildingBlock: blockOf(c), sets,
+          fileKey: ir.fileKey, version: ir.version, report: result.report, refs,
+          stories: files.find((f) => f.path.startsWith(dir) && f.path.endsWith('.stories.tsx'))?.content,
+          mdx: files.find((f) => f.path.startsWith(dir) && f.path.endsWith('.mdx'))?.content,
+          ...decisionDocs(sets),
+        });
+      });
+      outFiles.push(...specs.map((s) => ({ path: `docspec/${s.component}.json`, content: JSON.stringify(s, null, 2) + '\n' })), { path: 'DOCS-COVERAGE.md', content: coverageReport(specs) });
+      const done = specs.filter((s) => s.coverage.complete).length;
+      log(`Docs coverage: ${done}/${specs.length} components have every Figma item in Storybook (DOCS-COVERAGE.md)`);
       outFiles.push(
         ...files,
         ...projectFiles({ name: packageName, figma: { fileKey: ir.fileKey, fileName: ir.fileName, version: ir.version }, modes: tokens.modes, modeAttributes, testCollections, components: plan.map((c) => c.name), icons, foundations: foundationPagesList, page, fonts: { deps: fontDeps, imports: fontImports } }),

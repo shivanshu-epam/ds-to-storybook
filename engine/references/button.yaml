@@ -1,0 +1,35 @@
+# Reference spec: Button. Structure for every design system; values (names, options) come from each system.
+id: button
+title: Button
+matches:
+  behaviours: [button, action]
+  names: ["button", "\\bbtn\\b", "cta"]
+primaryAxis: [kind, variant, style, type, appearance, emphasis, intent, color, hierarchy]
+sections:
+  - { id: overview, required: true }
+  - { id: preview, required: true }
+  - { id: variants, required: true }
+  - { id: sizes, required: false }
+  - { id: icons, required: false }
+  - { id: states, required: false }
+  - { id: accessibility, required: true }
+  - { id: usage, required: true }
+  - { id: api, required: true }
+  - { id: anatomy, required: false }
+  - { id: related, required: false }
+  - { id: code, required: true }
+stories:
+  default: true
+  perPrimaryValue: true      # one story per value of the main variant property
+  perProperty: true          # one story per other property, all its values side by side
+  perOption: true            # one story per optional part (boolean or slot)
+  perPropState: true         # disabled, error, warning, read-only, loading, selected
+  allVariants: test          # every designed Figma variant, in a test-only story
+accessibility:
+  pattern: "wai-aria/button"
+  role: "button"
+  name: "Visible label, or aria-label when icon-only."
+  keyboard:
+    - { key: "Enter", action: "activate" }
+    - { key: "Space", action: "activate" }
+related: ["icon button", "button group", "button set", "skeleton"]
