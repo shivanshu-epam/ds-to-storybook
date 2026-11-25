@@ -33,3 +33,10 @@ accessibility:
     - { key: "Enter", action: "activate" }
     - { key: "Space", action: "activate" }
 related: ["icon button", "button group", "button set", "skeleton"]
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a button to start an action on the current page, such as saving, submitting or opening a dialog."
+    - "Use one primary button per area for the main action; other actions use a lower-emphasis style."
+  whenNotToUse:
+    - "Do not use a button to go to another page or URL: use a link."
+    - "Do not use a button only to show or hide content inline: use a disclosure or accordion."

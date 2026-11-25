@@ -30,3 +30,8 @@ accessibility:
   keyboard:
     - { key: "Enter / Space", action: "toggle" }
 related: ["accordion item"]
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use an accordion to let people show and hide sections of related content, keeping long pages short."
+  whenNotToUse:
+    - "Do not hide content people need to compare or always read in an accordion."

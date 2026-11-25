@@ -30,3 +30,8 @@ accessibility:
   name: "Link text says where it goes."
   keyboard:
     - { key: "Enter", action: "follow" }
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a link to go to another page, another place on the page, or an external resource."
+  whenNotToUse:
+    - "Do not use a link to start an action that changes data: use a button."

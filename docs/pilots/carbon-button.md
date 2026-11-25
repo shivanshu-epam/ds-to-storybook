@@ -173,3 +173,24 @@ A third Storybook, `storybook-code`, renders Carbon's own components from `@carb
 **Not done yet:**
 - The visual comparison of real Carbon against Figma: it needs an export with variant renders.
 - Web Components.
+
+## 8. Usage guidance (write skill)
+
+Carbon's Figma file has no documentation frames, so Button's evidence pack (`.ds-sync/usage/Button.json`) has:
+- **Figma:** the description, and each property with its values.
+- **ds-sync guidance:** general guidance for buttons and the accessibility contract, from the reference spec.
+- **Code:** `@carbon/react`'s prop descriptions.
+- **System:** Carbon's other button components.
+
+**The draft.** It was written with the `write-usage` skill and recorded with `ds-sync usage --from`.
+- When to use: 3 sentences.
+- When not to use: 2 sentences.
+- Variants: guidance for Primary, Secondary and Danger primary.
+- Questions for the designers: Tertiary, Ghost and the other danger styles; `href` against Link; when to use Expressive.
+
+**Checks.** Every sentence cites its sources, and the cited text is stored with the draft. One test sentence cited a source that does not exist, and the engine dropped it.
+
+**Result.**
+- The Usage section appears on Button's page in both Carbon Storybooks, marked as a draft.
+- The gate reports the "usage" gap closed.
+- Confidence is 0.45, because most sentences rest on general guidance rather than Carbon's own words. Carbon's team would raise it by adding usage frames in Figma.

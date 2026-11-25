@@ -30,3 +30,9 @@ accessibility:
   keyboard:
     - { key: "Tab", action: "focus" }
 related: ["form"]
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a text input for short free-form text such as a name or a search term, with a visible label."
+  whenNotToUse:
+    - "Do not use a single-line text input for long text: use a text area."
+    - "Do not use a text input when the answer is one of a known set of options: use a select or radio buttons."

@@ -27,3 +27,8 @@ accessibility:
   pattern: "img"
   role: "img"
   name: "Alt text names the person."
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use an avatar to represent a person or entity with an image, initials or an icon."
+  whenNotToUse:
+    - "Do not use an avatar as the only way to identify a person: show their name too."

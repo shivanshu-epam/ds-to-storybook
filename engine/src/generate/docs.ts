@@ -1,7 +1,7 @@
 // Documentation pass (fidelity roadmap step 6): every component's Storybook entry follows docs/fidelity/STANDARD.md.
 // Runs after the templates, for React and Web Components alike: plain-language story names, test-only stories and
 // building blocks kept out of the sidebar, and one tiered documentation page per component.
-import { decidedInternal } from '../decisions/decisions.ts';
+import { decidedInternal, type UsageDecision } from '../decisions/decisions.ts';
 import type { IRComponentSet } from '../ir/types.ts';
 import type { ComponentReport } from './templates/common.ts';
 import { leadSentence } from './templates/common.ts';
@@ -108,6 +108,8 @@ export function composition(core: GenericCore | undefined, componentOf: (compone
 }
 
 export interface DocsInput {
+  /** Usage guidance from ds-sync.decisions.json (accepted, or proposed when previewing). */
+  usage?: UsageDecision;
   name: string;
   title: string;
   framework: 'react' | 'wc';
@@ -212,6 +214,9 @@ import * as Stories from './${d.name}.stories';`;
     if (sets.length === 1 && designed > 0 && designed < possible) out.push(p(`Figma designs ${designed} of the ${possible} possible combinations of these properties. The stories below show designed variants only; other combinations set in the controls are computed from the nearest designed styles and are not reviewed designs.`), '');
     for (const s of sections) out.push(`### ${plainLabel(s.heading)}`, '', ...(s.note ? [s.note, ''] : []), `<Canvas of={Stories.${s.story}} />`, '');
   }
+
+  // Usage guidance (decisions): every sentence shows what it rests on.
+  out.push(...usageSection(d.usage));
 
   // Properties
   // Properties decided internal (Figma construction, not API) stay out of the developer's table.
@@ -319,4 +324,25 @@ export function designReviewPage(d: DocsInput): string {
   const notes = [...d.report.assumptions, ...d.report.gaps];
   if (notes.length) out.push(`<details>\n  <summary>Generation notes: what Figma does not specify, and approximations</summary>\n  ${list(notes)}\n</details>`, '');
   return out.join('\n');
+}
+
+const SOURCE_LABEL: Record<string, string> = { 'figma-description': 'Figma description', 'figma-doc': 'Figma docs', 'figma-property': 'Figma properties', reference: 'ds-sync guidance', code: 'code', system: 'this design system' };
+
+/** The Usage section: when to use, when not to, per variant, content. Each sentence lists its sources' kinds; the
+ * cited text itself is in ds-sync.decisions.json for review. */
+export function usageSection(u: UsageDecision | undefined): string[] {
+  if (!u) return [];
+  const label = (ids: string[]) => [...new Set(ids.map((id) => SOURCE_LABEL[u.sources[id]?.kind ?? ''] ?? 'source'))].join(', ');
+  const item = (text: string, ids: string[], lead?: string) => `<li>${lead ? `<strong>{${js(lead)}}</strong>: ` : ''}{${js(text)}}{" "}<small>{${js(`(${label(ids)})`)}}</small></li>`;
+  const out = ['## Usage', ''];
+  if (u.status !== 'accepted') out.push(`<p><small>{${js(`Draft for review (${u.by ?? 'proposed'}): not yet accepted in ds-sync.decisions.json.`)}}</small></p>`, '');
+  const part = (heading: string, list: { text: string; sources: string[]; value?: string }[] | undefined) => {
+    if (!list?.length) return;
+    out.push(`### ${heading}`, '', `<ul>${list.map((x) => item(x.text, x.sources, x.value)).join('')}</ul>`, '');
+  };
+  part('When to use', u.whenToUse);
+  part('When not to use', u.whenNotToUse);
+  part('Variants', u.variants);
+  part('Content', u.content);
+  return out.length > 2 ? out : [];
 }

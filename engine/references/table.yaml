@@ -28,3 +28,8 @@ accessibility:
   role: "table"
   name: "Caption or label describes the table; headers are header cells."
 related: ["table row", "table cell", "table header", "toolbar", "pagination"]
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a table to compare structured data across rows and columns."
+  whenNotToUse:
+    - "Do not use a table for page layout."

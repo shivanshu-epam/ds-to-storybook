@@ -95,6 +95,12 @@ One line per fidelity measure (docs/fidelity/QUALITY.md); ✓ pass, ⚠ needs a 
 | InputField | ✗ | ✓ | ✓ | – | ⚠ | ✓ | ⚠ | ⚠ | ⚠ |
 | Form | ✗ | ✓ | ✓ | ✓ | – | ✓ | ⚠ | ⚠ | ⚠ |
 
+## Decisions
+
+From `ds-sync.decisions.json`: 27 component set(s): 0 accepted, 27 proposed, 0 rejected.
+Only accepted decisions are applied.
+Applied: 0 property name(s) and 0 description(s) in 0 set(s).
+
 ## Nested consistency
 
 For each nested component and each parent variant in its base state, the props the generated parent gives the nested component, compared with the Figma instance (its variant, booleans, texts and exposed nested instances).

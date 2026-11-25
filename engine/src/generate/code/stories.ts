@@ -3,7 +3,9 @@
 // is shown (every property, value and designed variant); code decides how it is called.
 import type { ComponentApi } from '../../code/api.ts';
 import type { CodeMapEntry, PropMapping, ValueTarget } from '../../code/map.ts';
+import type { UsageDecision } from '../../decisions/decisions.ts';
 import type { IRComponentSet } from '../../ir/types.ts';
+import { usageSection } from '../docs.ts';
 import { pascal, q, type GeneratedFile } from '../templates/common.ts';
 
 export interface CodeStoriesInput {
@@ -14,6 +16,8 @@ export interface CodeStoriesInput {
   entry: CodeMapEntry;
   api: ComponentApi;
   fileKey: string;
+  /** Usage guidance (decisions). */
+  usage?: UsageDecision;
   /** Accessibility contract of the component's kind (reference spec). */
   accessibility?: { pattern: string; role: string; name: string; keyboard?: { key: string; action: string }[] };
   /** Example props from the config (data Figma does not have). */
@@ -272,6 +276,8 @@ import * as Stories from './${name}.stories';
 ## Variants
 
 ${sections.map((s) => `### ${s.heading}\n\n${s.note ? `<p>{${JSON.stringify(s.note)}}</p>\n\n` : ''}<Canvas of={Stories.${s.story}} />`).join('\n\n')}
+
+${usageSection(x.usage).join('\n')}
 
 ## Properties
 

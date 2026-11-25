@@ -29,6 +29,7 @@ import { lintDocs, lintMarkdown } from './docs/lint.ts';
 import { VERSION } from './version.ts';
 import { ExportReader } from './figma/export.ts';
 import { claudeAvailable, interpret } from './ai/interpret.ts';
+import { mergeUsage, toUsageDecision, writeUsage, type UsageEvidence, type UsageProposal } from './ai/usage.ts';
 import { evalMarkdown, evaluate } from './eval/eval.ts';
 import { auditMarkdown, loadScorecards, testTallies, withTests, withVisual } from './audit/audit.ts';
 
@@ -53,6 +54,7 @@ Commands:
   review    Write the interpretation work list: one evidence file per component → out/review/
             (from the last generate; no Figma calls)
   interpret Answer the open review files with Claude (headless claude -p + the ds-sync plugin)
+  usage     Draft usage guidance with Claude, every sentence citing the component's evidence (--only, --all, --from <answer.json>)
             → proposals in ds-sync.decisions.json (optional; needs Claude Code)
   decisions validate | accept | reject: check ds-sync.decisions.json against Figma, or change
             the status of entries (--only A,B; --by <name>). Accepting is a person's call.
@@ -187,6 +189,7 @@ async function main() {
       concurrency: { type: 'string' },
       model: { type: 'string' },
       budget: { type: 'string' },
+      from: { type: 'string' },
       by: { type: 'string' },
       tests: { type: 'string' },
       strict: { type: 'boolean', default: false },
@@ -299,6 +302,41 @@ async function main() {
         ...(process.env.DS_SYNC_CLAUDE_ARGS ? { extraArgs: process.env.DS_SYNC_CLAUDE_ARGS.split(/\s+/).filter(Boolean) } : {}),
       });
       log(`Interpret: ${res.done.length} answered, ${res.failed.length} failed, about $${res.costUsd.toFixed(2)} → ${decisionsPath} (proposed; accept with "ds-sync decisions accept")`);
+      if (res.failed.length) process.exitCode = 1;
+      break;
+    }
+    case 'usage': {
+      // Usage guidance (roadmap phase 5): drafts in which every sentence cites the component's evidence.
+      const dir = join(p.out, 'usage');
+      const decisionsPath = resolve(config.baseDir, config.generate?.decisions?.file ?? DECISIONS_FILE);
+      const ir = exists(join(p.out, 'figma-ir.auto.json')) ? lastRun(p.out).ir : undefined;
+      if (values.from) {
+        // An answer written elsewhere (an interactive session, another tool): checked and merged the same way.
+        const only = values.only?.split(',').map((x) => x.trim()) ?? [];
+        if (only.length !== 1) throw new Error('With --from, name one component: --only <Component>.');
+        const evFile = join(dir, `${only[0]}.json`);
+        if (!exists(evFile)) throw new Error(`No usage evidence for ${only[0]} (${evFile}): run "ds-sync generate" first.`);
+        const ev = JSON.parse(readFileSync(evFile, 'utf8')) as UsageEvidence;
+        const { usage, dropped } = toUsageDecision(ev, JSON.parse(readFileSync(resolve(values.from), 'utf8')) as UsageProposal, `ai:${values.model ?? 'claude'}`);
+        for (const d of dropped) log(`Usage: ${ev.component}: dropped ${d}`);
+        const file = loadDecisions(decisionsPath) ?? { version: 1 as const, sets: {} };
+        const merged = mergeUsage(file, ev.set, usage);
+        const problems = validateDecisions(file, ir).filter((x) => x.severity === 'error' && x.set === ev.set);
+        if (problems.length) { for (const pr of problems) log(`error: ${pr.set}: ${pr.message}`); throw new Error('The usage proposal is not valid; nothing written.'); }
+        writeJson(decisionsPath, file);
+        log(`Usage: ${ev.component}: ${merged} → ${decisionsPath} (proposed; accept with "ds-sync decisions accept --only ${ev.set}")`);
+        break;
+      }
+      if (!(await claudeAvailable())) throw new Error('Claude Code (the "claude" command) is not available. Install it, or write the guidance in a Claude Code session (the write-usage skill) and record it with --from.');
+      const res = await writeUsage({
+        dir, decisionsPath, ir, cwd: config.baseDir, log, all: values.all!,
+        ...(values.only ? { only: values.only.split(',').map((x) => x.trim()) } : {}),
+        ...(values.concurrency ? { concurrency: Number(values.concurrency) } : {}),
+        ...(values.model ? { model: values.model } : {}),
+        ...(values.budget ? { budget: Number(values.budget) } : {}),
+        ...(process.env.DS_SYNC_CLAUDE_ARGS ? { extraArgs: process.env.DS_SYNC_CLAUDE_ARGS.split(/\s+/).filter(Boolean) } : {}),
+      });
+      log(`Usage: ${res.done.length} drafted, ${res.failed.length} failed, about $${res.costUsd.toFixed(2)} → ${decisionsPath} (proposed; accept with "ds-sync decisions accept")`);
       if (res.failed.length) process.exitCode = 1;
       break;
     }

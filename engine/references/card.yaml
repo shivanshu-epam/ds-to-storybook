@@ -27,3 +27,8 @@ accessibility:
   pattern: "none"
   role: "none (presentational)"
   name: "Not focusable; text content is read in place."
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a card to group information and actions about one subject."
+  whenNotToUse:
+    - "Do not nest cards inside cards."

@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/shivanshu-epam/ds-to-storybook/engine/schemas/usage.schema.json",
+  "title": "ds-sync usage proposal",
+  "description": "Usage guidance for one component, as the write-usage skill answers it. Every sentence cites evidence source ids.",
+  "type": "object",
+  "required": [
+    "confidence"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "whenToUse": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "text",
+          "sources"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "One plain sentence."
+          },
+          "sources": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "description": "Ids of the evidence sources the sentence rests on (F1, D3, P2, R1, C4, S1)."
+          }
+        }
+      }
+    },
+    "whenNotToUse": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "text",
+          "sources"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "One plain sentence."
+          },
+          "sources": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "description": "Ids of the evidence sources the sentence rests on (F1, D3, P2, R1, C4, S1)."
+          }
+        }
+      }
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "value",
+          "text",
+          "sources"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "A value of the main variant property, copied exactly."
+          },
+          "text": {
+            "type": "string",
+            "description": "One plain sentence."
+          },
+          "sources": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "description": "Ids of the evidence sources the sentence rests on (F1, D3, P2, R1, C4, S1)."
+          }
+        }
+      }
+    },
+    "content": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "text",
+          "sources"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "One plain sentence."
+          },
+          "sources": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "description": "Ids of the evidence sources the sentence rests on (F1, D3, P2, R1, C4, S1)."
+          }
+        }
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

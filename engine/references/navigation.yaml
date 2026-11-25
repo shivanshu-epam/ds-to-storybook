@@ -27,3 +27,8 @@ accessibility:
   pattern: "navigation landmark"
   role: "navigation"
   name: "Landmark label (aria-label); current item marked aria-current."
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use navigation to move between pages or sections of the product, and to show where people are."
+  whenNotToUse:
+    - "Do not use navigation components to start actions: use buttons."

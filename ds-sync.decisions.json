@@ -1,0 +1,4211 @@
+{
+  "$schema": "./node_modules/ds-sync/schemas/decisions.schema.json",
+  "version": 1,
+  "sets": {
+    "AccordionItem": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.8,
+        "setHash": "6ca7f0a902b756696c65bd9e59ed3151d43b9336d4b790d6b839b16c494284ab",
+        "whenToUse": [
+          {
+            "text": "Use an accordion to condense long content into scannable headers that users open on demand.",
+            "sources": [
+              "D1",
+              "D15"
+            ]
+          },
+          {
+            "text": "Use an accordion for FAQ-style content, where users pick the questions they need.",
+            "sources": [
+              "D16"
+            ]
+          },
+          {
+            "text": "Users reveal one or more panels on demand, so content stays hidden until they open it.",
+            "sources": [
+              "D8"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use an accordion for primary navigation.",
+            "sources": [
+              "D18"
+            ]
+          },
+          {
+            "text": "Do not put content users must read in full or need to compare in an accordion, because collapsed panels hide it.",
+            "sources": [
+              "D19",
+              "D8",
+              "R2"
+            ]
+          },
+          {
+            "text": "Avoid nesting accordions; if you must, indent and limit to one level.",
+            "sources": [
+              "D25"
+            ]
+          }
+        ],
+        "variants": [
+          {
+            "property": "Style",
+            "value": "Bordered",
+            "text": "Use Bordered when you want full dividers separating the items.",
+            "sources": [
+              "D12",
+              "D14",
+              "D50"
+            ]
+          },
+          {
+            "property": "Style",
+            "value": "Borderless",
+            "text": "Use Borderless when items should be separated only by spacing, with no outline, and keep the spacing between items consistent.",
+            "sources": [
+              "D13",
+              "D25"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Write each title as a start-aligned label that names its section.",
+            "sources": [
+              "D21",
+              "D24"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: An accordion is a vertical stack of collapsible sections that condenses long content into scannable headers."
+          },
+          "D12": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Items separated by full dividers."
+          },
+          "D13": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Items separated only by spacing; no outline."
+          },
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Single- vs multiple-expand is behavior (expandMode), not a Figma variant. Bordered and Borderless are the Style variant."
+          },
+          "D15": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To condense long content into scannable headers that users open on demand."
+          },
+          "D16": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • For FAQ-style content, where users pick the questions they need."
+          },
+          "D18": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • For primary navigation."
+          },
+          "D19": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • For content users must read in full."
+          },
+          "D21": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ② Title — start-aligned label for the section."
+          },
+          "D24": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: The title is start-aligned and the icon end-aligned on the same row. The trigger spans the full header width."
+          },
+          "D25": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Items stack vertically at full width — never side by side. Spacing between items is consistent; borderless accordions rely on it as their only separator. Avoid nesting accordions; if you must, indent and limit to one level."
+          },
+          "D50": {
+            "kind": "figma-doc",
+            "text": "Documentation / Style: border/strong (bottom, 1px)"
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: An accordion condenses long content into scannable headers. Users reveal one or more panels on demand — which also means content stays hidden until they open it."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Accordion guidance: Do not hide content people need to compare or always read in an accordion."
+          }
+        },
+        "questions": [
+          "When should you choose Bordered over Borderless? The docs describe how each looks, but not when to use it.",
+          "What should people use instead of an accordion for primary navigation? The evidence names no other component in this system.",
+          "Is there guidance on title length or wording, for example phrasing FAQ titles as questions?"
+        ]
+      }
+    },
+    "Alert": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.75,
+        "setHash": "f2b298cc75f7547050b9aec9758adb4e3c6cc97019905238a06f47d81bf4c399",
+        "whenToUse": [
+          {
+            "text": "Use an alert to show a short, sentiment-coded message inline on the page.",
+            "sources": [
+              "D1"
+            ]
+          },
+          {
+            "text": "Use an alert to give feedback inline, for example the result of an action or a change in status.",
+            "sources": [
+              "D8",
+              "R1"
+            ]
+          },
+          {
+            "text": "Add an action when the person can respond to the message, and a close button when they can dismiss it.",
+            "sources": [
+              "D1",
+              "D28",
+              "D29"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use an alert for an urgent message that must interrupt the page: use a Dialog, because alerts stay inline.",
+            "sources": [
+              "D34"
+            ]
+          },
+          {
+            "text": "Do not use an alert for information that belongs in the page content, and do not show several alerts for one event.",
+            "sources": [
+              "R2",
+              "R3"
+            ]
+          },
+          {
+            "text": "Do not put a large primary button in an alert: use a Ghost, Sm Button for the action.",
+            "sources": [
+              "D20",
+              "D21"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Keep the message short.",
+            "sources": [
+              "D1"
+            ]
+          },
+          {
+            "text": "Give every alert a headline.",
+            "sources": [
+              "D13",
+              "D22"
+            ]
+          },
+          {
+            "text": "Add supporting text below the headline only when the message needs a description.",
+            "sources": [
+              "D14",
+              "D24"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: An alert shows a short, sentiment-coded message inline on the page, with an optional action and close button."
+          },
+          "D13": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ③ Headline — required title."
+          },
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ④ Supporting text — optional description."
+          },
+          "D20": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Use a Ghost, Sm Button for the action — matching the alert's compact footprint."
+          },
+          "D21": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't use a large primary button — it overpowers the alert."
+          },
+          "D22": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Required on every alert."
+          },
+          "D24": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Optional description below the headline."
+          },
+          "D28": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Close — dismisses the alert, collapsing it out of the layout."
+          },
+          "D29": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Action — runs the alert's action; while it's running, the action button shows its loading state."
+          },
+          "D34": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Dialog — for urgent messages that must interrupt the page; alerts stay inline."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Alerts surface feedback inline on the page. Each sentiment has its own colors and icon. The action and close buttons are real Button instances, and the icon is a real Icon instance."
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Notification guidance: Use a notification to tell people about the result of an action or a change in status."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Notification guidance: Do not use a notification for information that belongs in the page content."
+          },
+          "R3": {
+            "kind": "reference",
+            "text": "Notification guidance: Do not show several notifications for one event."
+          }
+        },
+        "questions": [
+          "The evidence has no `primary` field; this draft assumes Sentiment is the main variant property. Is that right?",
+          "The sources say what each Sentiment looks like (colors and icon) but not when to use it. When should designers pick Neutral rather than Info, and what situations call for Warning versus Danger?",
+          "Should alerts that use role=\"alert\" (assertive) map to particular sentiments, such as Danger and Warning?",
+          "When should an alert be dismissible (With Close), and when should it stay on the page?",
+          "Is there guidance on writing the action label, such as length or wording?",
+          "Size has Sm and Md: when should each be used?"
+        ]
+      }
+    },
+    "AutoplayToggle": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.8,
+        "setHash": "3ddfdd85c106ab25ec5ce3edaa3c6ec7c7f31b5bfa773264abb983cfbceb14fb",
+        "whenToUse": [
+          {
+            "text": "Use AutoplayToggle as the pause and play control in a carousel that advances on a timer.",
+            "sources": [
+              "D8",
+              "D11",
+              "D37"
+            ]
+          },
+          {
+            "text": "Add it whenever a carousel autoplays: always pair autoplay with a visible, reachable pause control.",
+            "sources": [
+              "D24",
+              "D25"
+            ]
+          },
+          {
+            "text": "It gives users a way to stop autoplay at any time.",
+            "sources": [
+              "D82"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not add AutoplayToggle to a carousel that advances only manually: use NavControl and PaginationDot for advancing.",
+            "sources": [
+              "D8",
+              "D10",
+              "D18",
+              "D20"
+            ]
+          },
+          {
+            "text": "Do not use AutoplayToggle as a general on/off setting outside a carousel: use Switch.",
+            "sources": [
+              "R1",
+              "S1"
+            ]
+          },
+          {
+            "text": "Do not use AutoplayToggle as the only way to move between slides: give users controls, pagination or swipe as well.",
+            "sources": [
+              "D26",
+              "D27"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "AutoplayToggle is icon-only, so give it an accessible name.",
+            "sources": [
+              "D88"
+            ]
+          }
+        ],
+        "sources": {
+          "D10": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Manual advance, finite — the edge control disables at the first and last slide."
+          },
+          "D11": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Advances on a timer, always paired with a visible pause control."
+          },
+          "D18": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ② Navigation controls — Prev and Next NavControl buttons."
+          },
+          "D20": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ④ Pagination — PaginationDots showing position and count; the active dot is larger."
+          },
+          "D24": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Always pair autoplay with a visible, reachable pause control."
+          },
+          "D25": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't autoplay without a pause control."
+          },
+          "D26": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't hide navigation with no alternative way to advance."
+          },
+          "D27": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Give users a way to advance — controls, pagination or swipe."
+          },
+          "D37": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Autoplay — Playing or Paused (AutoplayToggle)."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A carousel shows a subset of items at once when they exceed the available space. In this system it's assembled from three components — NavControl, PaginationDot and AutoplayToggle — around your own viewport and slides."
+          },
+          "D82": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • An AutoplayToggle with Playing and Paused states, so autoplay can always be stopped."
+          },
+          "D88": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • Prev, Next, pause and dot controls are icon-only — each needs an accessible name."
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Switch guidance: Use a switch for a setting that takes effect as soon as it is turned on or off."
+          },
+          "S1": {
+            "kind": "system",
+            "text": "Other switch components in this design system: Switch."
+          }
+        },
+        "questions": [
+          "Should AutoplayToggle switch to Paused automatically when autoplay pauses on hover, focus or a hidden tab, or only when the user presses it?",
+          "Once autoplay stops after the user interacts with a control, can the user restart it with AutoplayToggle, or does it stay Paused?",
+          "What accessible names should the Playing and Paused states use (for example, \"Pause slides\" and \"Play slides\")?",
+          "AutoplayToggle is 32px, below the 44×44px touch target in the component rules: should it get a larger hit area?"
+        ]
+      }
+    },
+    "AvatarGlyph": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.85,
+        "setHash": "14c1924a97df2447d87fe43ee961535bd49e2c61f6287727557b1127617ecdac",
+        "whenToUse": [
+          {
+            "text": "Use AvatarGlyph to represent a person or entity at a glance with an image, an icon or initials.",
+            "sources": [
+              "D8",
+              "D10",
+              "D1"
+            ]
+          },
+          {
+            "text": "Use it on its own when you need the avatar alone, without a name or email beside it.",
+            "sources": [
+              "D8",
+              "D10"
+            ]
+          },
+          {
+            "text": "Use it to represent a person with their photo or initials, or a system account, bot or non-person entity with an icon.",
+            "sources": [
+              "D14",
+              "D15"
+            ]
+          },
+          {
+            "text": "Use AvatarGlyph where it is static and decorative: it has no hover or interactive states, so it does not look clickable.",
+            "sources": [
+              "D30",
+              "D38"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use AvatarGlyph alone to identify someone next to their name and email: use AvatarIdentity.",
+            "sources": [
+              "D16",
+              "D8",
+              "S1"
+            ]
+          },
+          {
+            "text": "Do not use AvatarGlyph when the avatar opens a profile card or menu: use AvatarIdentity, which has hover, focus and other interactive states.",
+            "sources": [
+              "D30",
+              "D38",
+              "S1"
+            ]
+          },
+          {
+            "text": "Do not rely on the avatar as the only way to identify a person: show their name too.",
+            "sources": [
+              "R2"
+            ]
+          }
+        ],
+        "variants": [
+          {
+            "property": "Type",
+            "value": "Text",
+            "text": "Use Text for initials, the first letter of the first and last name, when you have no photo of the person.",
+            "sources": [
+              "D13",
+              "D14",
+              "P2"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Icon",
+            "text": "Use Icon for system or bot accounts, placeholders and entities that aren't people.",
+            "sources": [
+              "D12",
+              "D15",
+              "P2"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Image",
+            "text": "Use Image for a photo of the person.",
+            "sources": [
+              "D11",
+              "D14",
+              "P2"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Build initials from the first letter of the first and last name (Jane Doe → JD), and shrink the font to fit rather than clip.",
+            "sources": [
+              "D25",
+              "D26"
+            ]
+          },
+          {
+            "text": "Derive an initials avatar's color from a hash of the user's name or ID so the same person always gets the same color; don't assign a random color on each render.",
+            "sources": [
+              "D22",
+              "D23",
+              "D24"
+            ]
+          },
+          {
+            "text": "Give image avatars alt text that names the person, not \"avatar\" or \"user photo\", and if the image fails to load, fall back to the icon (if configured), then to initials.",
+            "sources": [
+              "D27",
+              "D68",
+              "D28"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: An avatar represents a user or entity with an image, an icon or initials, optionally paired with a name and email."
+          },
+          "D10": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: The avatar alone — image, icon or initials."
+          },
+          "D11": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A photo of the person."
+          },
+          "D12": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: For system or bot accounts, placeholders and entities that aren't people."
+          },
+          "D13": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Initials — first letter of the first and last name."
+          },
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To represent a person with their photo or initials."
+          },
+          "D15": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To represent a system account, bot or non-person entity — Icon type."
+          },
+          "D16": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To identify someone next to their name and email — AvatarIdentity."
+          },
+          "D22": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Derive an initials avatar's color from a hash of the user's name or ID, so the same person always gets the same color."
+          },
+          "D23": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: The same person gets the same color everywhere."
+          },
+          "D24": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't assign a random color on each render."
+          },
+          "D25": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • First letter of the first and last name — Jane Doe → JD."
+          },
+          "D26": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • If the initials don't fit, shrink the font to fit rather than clip."
+          },
+          "D27": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Needs alt text that names the person."
+          },
+          "D28": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • If the image fails to load, fall back to the icon (if configured), then to initials."
+          },
+          "D30": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: AvatarGlyph is static. AvatarIdentity has interactive states for when it opens a profile card or menu."
+          },
+          "D38": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: An avatar that opens a profile card or menu needs hover and focus states like a button. A purely decorative avatar has no hover styling, so it doesn't look clickable."
+          },
+          "D68": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • Image avatars need alt text that names the person — not \"avatar\" or \"user photo\"."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Avatars represent people and entities at a glance. Use AvatarGlyph on its own, or AvatarIdentity to pair it with a name, email and optional trailing icon."
+          },
+          "P2": {
+            "kind": "figma-property",
+            "text": "Type: Text, Icon, Image"
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Avatar guidance: Do not use an avatar as the only way to identify a person: show their name too."
+          },
+          "S1": {
+            "kind": "system",
+            "text": "Other avatar components in this design system: AvatarIdentity."
+          }
+        },
+        "questions": [
+          "Text avatars come in five colors (Color 1–5): should the name or ID hash pick one of these five, and is any color reserved for a specific use?",
+          "Should a Badge or a presence/status dot ever sit on an AvatarGlyph, or only on AvatarIdentity?",
+          "When should a team pick Sm (24), Md (32, the default) or Lg (40)?"
+        ]
+      }
+    },
+    "AvatarIdentity": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.85,
+        "setHash": "7683d9618b5be79669732dd2589d5f54c4168e5214dfc87e403ab52412f9a51f",
+        "whenToUse": [
+          {
+            "text": "Use AvatarIdentity to identify someone next to their name and email.",
+            "sources": [
+              "D16",
+              "D8"
+            ]
+          },
+          {
+            "text": "It pairs an AvatarGlyph with a name, an optional email and an optional trailing icon, such as a chevron for a menu.",
+            "sources": [
+              "D9",
+              "D17",
+              "D18",
+              "D19",
+              "D20"
+            ]
+          },
+          {
+            "text": "Use it for people and for entities that aren't people, such as system or bot accounts.",
+            "sources": [
+              "D1",
+              "D12",
+              "D15"
+            ]
+          },
+          {
+            "text": "Use its interactive states when the avatar opens a profile card or menu.",
+            "sources": [
+              "D30",
+              "D38"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "When you only need the avatar (image, icon or initials) with no name, use AvatarGlyph instead.",
+            "sources": [
+              "D8",
+              "D10",
+              "S1"
+            ]
+          },
+          {
+            "text": "Don't use an avatar as the only way to identify a person: show their name too, which is what AvatarIdentity is for.",
+            "sources": [
+              "R2",
+              "D16"
+            ]
+          },
+          {
+            "text": "When the avatar is purely decorative and opens nothing, don't make it look clickable: a decorative avatar has no hover styling.",
+            "sources": [
+              "D38",
+              "D71"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Set the name and email with the Name and Email text properties; the email is a secondary line.",
+            "sources": [
+              "D29",
+              "D19"
+            ]
+          },
+          {
+            "text": "For initials, use the first letter of the first and last name (Jane Doe → JD), and if they don't fit, shrink the font rather than clip it.",
+            "sources": [
+              "D25",
+              "D26"
+            ]
+          },
+          {
+            "text": "Derive an initials avatar's color from a hash of the user's name or ID so the same person always gets the same color; don't assign a random color on each render.",
+            "sources": [
+              "D22",
+              "D24"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: An avatar represents a user or entity with an image, an icon or initials, optionally paired with a name and email."
+          },
+          "D10": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: The avatar alone — image, icon or initials."
+          },
+          "D12": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: For system or bot accounts, placeholders and entities that aren't people."
+          },
+          "D15": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To represent a system account, bot or non-person entity — Icon type."
+          },
+          "D16": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To identify someone next to their name and email — AvatarIdentity."
+          },
+          "D17": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ① Avatar — an AvatarGlyph instance (image, icon or initials)."
+          },
+          "D18": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ② Name — the person's or entity's name (Has name, Name)."
+          },
+          "D19": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ③ Email (optional) — secondary line (Has email, Email)."
+          },
+          "D20": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ④ Trailing icon (optional) — e.g. a chevron for a menu (Has trailing icon)."
+          },
+          "D22": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Derive an initials avatar's color from a hash of the user's name or ID, so the same person always gets the same color."
+          },
+          "D24": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't assign a random color on each render."
+          },
+          "D25": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • First letter of the first and last name — Jane Doe → JD."
+          },
+          "D26": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • If the initials don't fit, shrink the font to fit rather than clip."
+          },
+          "D29": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Set with the Name and Email text properties."
+          },
+          "D30": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: AvatarGlyph is static. AvatarIdentity has interactive states for when it opens a profile card or menu."
+          },
+          "D38": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: An avatar that opens a profile card or menu needs hover and focus states like a button. A purely decorative avatar has no hover styling, so it doesn't look clickable."
+          },
+          "D71": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • Interactive avatars need hover and focus states like a button; decorative avatars have none."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Avatars represent people and entities at a glance. Use AvatarGlyph on its own, or AvatarIdentity to pair it with a name, email and optional trailing icon."
+          },
+          "D9": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: An AvatarGlyph with name, optional email and optional trailing icon."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Avatar guidance: Do not use an avatar as the only way to identify a person: show their name too."
+          },
+          "S1": {
+            "kind": "system",
+            "text": "Other avatar components in this design system: AvatarGlyph."
+          }
+        },
+        "questions": [
+          "Should the trailing icon only appear on interactive AvatarIdentity (for example as a menu chevron), or is it also allowed on static ones?",
+          "When should 'Has name' be turned off? With the name hidden, the component is close to a bare AvatarGlyph, which goes against 'show their name too' (R2).",
+          "Is there guidance for long names or emails, such as truncating or wrapping?",
+          "Should the main variant property be set in ds-sync, so this component can get variant guidance?"
+        ]
+      }
+    },
+    "Badge": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.75,
+        "setHash": "d3a450cde81fe3218371fce8d07fe7168f6be8e167c2eb09ef91efff4fe7e9f4",
+        "whenToUse": [
+          {
+            "text": "Use a badge to show a status, a count, a label or a notification on another element.",
+            "sources": [
+              "D1",
+              "D8"
+            ]
+          },
+          {
+            "text": "Use Status to show an item's state: success, warning, error, info or neutral.",
+            "sources": [
+              "D11",
+              "P4"
+            ]
+          },
+          {
+            "text": "Use a Numeric badge to show a count, such as unread notifications, and a Dot badge to show that something needs attention without a count.",
+            "sources": [
+              "D12",
+              "D13",
+              "P6"
+            ]
+          },
+          {
+            "text": "Use a Text badge to tag an item with a short label, and make it dismissible when users should be able to remove it.",
+            "sources": [
+              "D14",
+              "P2"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Don't use a badge as a primary action, a button or a main navigation target: use a Button.",
+            "sources": [
+              "D16",
+              "D46",
+              "R2"
+            ]
+          },
+          {
+            "text": "Don't use a badge for anything longer than a short label, a single count or one icon: no paragraphs, multiple icons or nested badges.",
+            "sources": [
+              "D17",
+              "D36"
+            ]
+          },
+          {
+            "text": "Don't reuse a status color for an unrelated meaning.",
+            "sources": [
+              "D10",
+              "D34",
+              "D35"
+            ]
+          }
+        ],
+        "variants": [
+          {
+            "property": "Style",
+            "value": "Filled",
+            "text": "Use Filled as the default style; the docs preview the default badge with Style=Filled.",
+            "sources": [
+              "D3",
+              "P5"
+            ]
+          },
+          {
+            "property": "Style",
+            "value": "Outlined",
+            "text": "Use Outlined for a badge drawn with a border instead of a fill, as its name says.",
+            "sources": [
+              "P5",
+              "D72"
+            ]
+          },
+          {
+            "property": "Style",
+            "value": "Subtle",
+            "text": "Use Subtle for a lower-emphasis fill, as its name says.",
+            "sources": [
+              "P5",
+              "D54"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Keep a text label short, and make the label carry the meaning so it doesn't rely on color alone.",
+            "sources": [
+              "D36",
+              "D91",
+              "R3"
+            ]
+          },
+          {
+            "text": "Cap large counts at {max-count}+ (for example 99+) instead of showing the full number.",
+            "sources": [
+              "D32",
+              "D33",
+              "D37"
+            ]
+          },
+          {
+            "text": "Place a badge next to or on the element it describes, and don't let its content overflow or stretch the parent layout.",
+            "sources": [
+              "D29"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A badge is a small element that communicates a status, a count, a label or a notification on another element."
+          },
+          "D10": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Each status color maps to exactly one meaning and is never reused for another."
+          },
+          "D11": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To show the status of an item — success, warning, error, info or neutral."
+          },
+          "D12": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To show a count, such as unread notifications — Numeric."
+          },
+          "D13": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To show that something needs attention without a count — Dot."
+          },
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To tag an item with a short label — Text; a dismissible badge lets users remove it."
+          },
+          "D16": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • As a primary action, button or main navigation target — use a Button."
+          },
+          "D17": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • For more than a short label, a single count or one icon — no paragraphs, multiple icons or nested badges."
+          },
+          "D29": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Place a badge next to or on the element it describes. Content must never overflow, break or expand the parent layout."
+          },
+          "D3": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Preview of the default variant (Status=Success, Style=Filled, Type=Text, Size=Sm) in the light and dark modes of semantic.color. Static preview — no interactive source (Storybook or prototype) is linked yet."
+          },
+          "D32": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Cap large counts: show {max-count}+ (e.g. 99+)."
+          },
+          "D33": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't render a wider raw count."
+          },
+          "D34": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Use a status color only for its meaning."
+          },
+          "D35": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't reuse a status color for an unrelated meaning."
+          },
+          "D36": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • A short label or a single count — nothing longer."
+          },
+          "D37": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • If the count is above max-count (default 99), show {max-count}+."
+          },
+          "D46": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Button — use for actions; a badge must never act as a primary action."
+          },
+          "D54": {
+            "kind": "figma-doc",
+            "text": "Documentation / Style: surface/bg/success"
+          },
+          "D72": {
+            "kind": "figma-doc",
+            "text": "Documentation / Style: Dot badges use the same fill (Filled, Subtle) or border (Outlined) tokens."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A badge annotates another element with a status, a count or a short label. It never stands alone as a primary control."
+          },
+          "D91": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • Text badges carry their meaning in the label, not in color alone."
+          },
+          "P2": {
+            "kind": "figma-property",
+            "text": "Is dismissible (on/off, default off)"
+          },
+          "P4": {
+            "kind": "figma-property",
+            "text": "Status: Success, Warning, Error, Info, Neutral"
+          },
+          "P5": {
+            "kind": "figma-property",
+            "text": "Style: Filled, Outlined, Subtle"
+          },
+          "P6": {
+            "kind": "figma-property",
+            "text": "Type: Text, Numeric, Dot"
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Badge guidance: Do not use a badge for actions: use a button or link."
+          },
+          "R3": {
+            "kind": "reference",
+            "text": "Badge guidance: Do not use colour alone to carry the meaning; use the text too."
+          }
+        },
+        "questions": [
+          "When should someone pick Filled, Outlined or Subtle? The sources only show which tokens each one uses, not what it's for.",
+          "Is Subtle meant for lower emphasis, and Filled for the most important statuses?",
+          "What is the guidance for choosing Size (Sm, Md, Lg)?",
+          "What should a clickable badge's one action be? D42 and D43 mention clickable badges, but no source says when to make one."
+        ]
+      }
+    },
+    "BreadcrumbItem": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.9,
+        "setHash": "02de51f51c68f5363c943e01b5d825dec75562e05911c267d6363238cb92598b",
+        "whenToUse": [
+          {
+            "text": "Use a breadcrumb to show where the current page sits in a content hierarchy.",
+            "sources": [
+              "D1",
+              "D12"
+            ]
+          },
+          {
+            "text": "Use it to give one-click navigation back to each parent level.",
+            "sources": [
+              "D8",
+              "D13"
+            ]
+          },
+          {
+            "text": "Treat breadcrumbs as secondary navigation that sits alongside your main navigation.",
+            "sources": [
+              "D8"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use a breadcrumb as the primary navigation of the app.",
+            "sources": [
+              "D15"
+            ]
+          },
+          {
+            "text": "Do not use breadcrumb items to start actions: use a button.",
+            "sources": [
+              "R2"
+            ]
+          }
+        ],
+        "variants": [
+          {
+            "property": "Type",
+            "value": "Link",
+            "text": "Use Link for each ancestor level in the trail, which the user can click to go to that level.",
+            "sources": [
+              "D16",
+              "D42"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Current",
+            "text": "Use Current for the final item only, the page the user is on, shown as plain text that is not interactive.",
+            "sources": [
+              "D19",
+              "D26",
+              "D38"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Collapse",
+            "text": "Use Collapse when the trail has more items than maxItems, so the middle levels hide behind an ellipsis while the root and current page stay visible.",
+            "sources": [
+              "D18",
+              "D36"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Give each item except the last the name of the parent level it links to, and give the final item the name of the current page.",
+            "sources": [
+              "D32",
+              "D34"
+            ]
+          },
+          {
+            "text": "Let long labels truncate with an ellipsis, and keep the full label available in a tooltip.",
+            "sources": [
+              "D33",
+              "D80"
+            ]
+          },
+          {
+            "text": "Use one separator style, chevron or slash, for the whole trail.",
+            "sources": [
+              "D21",
+              "D28",
+              "D29"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A breadcrumb shows where the current page sits in a content hierarchy and links back to each parent level."
+          },
+          "D12": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To show the user's position within a content hierarchy."
+          },
+          "D13": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To give quick, one-click navigation back to parent levels."
+          },
+          "D15": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • As the primary navigation of the app."
+          },
+          "D16": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ① Item (link) — a clickable ancestor level."
+          },
+          "D18": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ③ Collapse trigger (optional) — an ellipsis that reveals hidden middle items."
+          },
+          "D19": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ④ Current page — the final item; the active location, not interactive."
+          },
+          "D21": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Items and separators sit on one horizontal line, with equal spacing around each separator. Use one separator style for the whole trail."
+          },
+          "D26": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Show the current page as plain, non-interactive text."
+          },
+          "D28": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Use one separator style per trail."
+          },
+          "D29": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't mix separator styles within one trail."
+          },
+          "D32": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Each item except the last names and links to its parent level."
+          },
+          "D33": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Long labels truncate with an ellipsis; the full label stays available in a tooltip."
+          },
+          "D34": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • The final item names the page the user is on."
+          },
+          "D36": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: When the trail has more items than maxItems, the middle items collapse behind the ellipsis trigger. The root and the current page always stay visible."
+          },
+          "D38": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Current — Default only; never interactive."
+          },
+          "D42": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Clicking a link goes to that level. Clicking the collapse trigger reveals the hidden items. The current page and separators do nothing."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Breadcrumbs are secondary navigation. They show the user's current position in a hierarchy and give one-click access to every ancestor level."
+          },
+          "D80": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • Truncated labels keep their full text available via a title or tooltip."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Navigation guidance: Do not use navigation components to start actions: use buttons."
+          }
+        },
+        "questions": [
+          "Should Link · Disabled be documented as a variant choice, or is it meant to stay rare (an ancestor with no valid target)?",
+          "What is the default value of maxItems, and how many levels count as a 'deep' trail?",
+          "The when-not-to-use section names only primary navigation. Should it point to another component for that, such as NavControl?"
+        ]
+      }
+    },
+    "Button": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.9,
+        "setHash": "5e65221861d7f0970d2ffa0484b4dd1931dde1fcf020b9675710ae4fbeb02125",
+        "whenToUse": [
+          {
+            "text": "Use a button to trigger an immediate action in the current context, such as submitting a form, confirming a choice, opening something or deleting an item.",
+            "sources": [
+              "D8",
+              "D10"
+            ]
+          },
+          {
+            "text": "Use the button's emphasis levels to keep the most important action on a screen the easiest one to find.",
+            "sources": [
+              "D8"
+            ]
+          },
+          {
+            "text": "Use one primary action in a context and pair it with lower-emphasis actions.",
+            "sources": [
+              "D30",
+              "D11",
+              "D12"
+            ]
+          },
+          {
+            "text": "Keep every button in a group the same size.",
+            "sources": [
+              "D32",
+              "D33"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use a button when activating it takes the user to another page or location: use a text link instead.",
+            "sources": [
+              "D9",
+              "D15",
+              "R3"
+            ]
+          },
+          {
+            "text": "Do not place two primary buttons in the same context, because they read as equally important.",
+            "sources": [
+              "D31"
+            ]
+          },
+          {
+            "text": "Do not use a button only to show or hide content inline: use a disclosure or accordion.",
+            "sources": [
+              "R4"
+            ]
+          }
+        ],
+        "variants": [
+          {
+            "property": "Variant",
+            "value": "Primary",
+            "text": "Use Primary to mark the single most important action in a context.",
+            "sources": [
+              "D11",
+              "D30"
+            ]
+          },
+          {
+            "property": "Variant",
+            "value": "Secondary",
+            "text": "Use Secondary for supporting actions of lower weight next to a primary one.",
+            "sources": [
+              "D12"
+            ]
+          },
+          {
+            "property": "Variant",
+            "value": "Ghost",
+            "text": "Use Ghost for supporting actions of lower weight next to a primary one.",
+            "sources": [
+              "D12"
+            ]
+          },
+          {
+            "property": "Variant",
+            "value": "Danger",
+            "text": "Use Danger only for destructive or irreversible actions such as delete or remove; for anything else use Primary, Secondary or Ghost.",
+            "sources": [
+              "D13",
+              "D34",
+              "D16",
+              "D35"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Write the label as a verb that describes the action, such as Save, Delete or Open.",
+            "sources": [
+              "D36"
+            ]
+          },
+          {
+            "text": "Give every button a label unless it is icon-only.",
+            "sources": [
+              "D19",
+              "D37"
+            ]
+          }
+        ],
+        "sources": {
+          "D10": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To let users submit, confirm, open or delete something immediately."
+          },
+          "D11": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To mark the single most important action in a context — Primary."
+          },
+          "D12": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To offer supporting actions of lower weight next to a primary one — Secondary or Ghost."
+          },
+          "D13": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To trigger destructive or irreversible actions such as delete or remove — Danger."
+          },
+          "D15": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • When the action navigates to another page or location — use a text link instead."
+          },
+          "D16": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Don't use Danger styling for actions that aren't destructive — use Primary, Secondary or Ghost."
+          },
+          "D19": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ③ Label — text describing the action. Required unless the button is icon-only."
+          },
+          "D30": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Use one primary action, paired with lower-emphasis actions."
+          },
+          "D31": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't place two primary buttons in the same context — they read as equally important."
+          },
+          "D32": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Keep every button in a group the same size."
+          },
+          "D33": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't mix sizes in one group."
+          },
+          "D34": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Use Danger only for destructive or irreversible actions."
+          },
+          "D35": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't use Danger styling for a non-destructive action."
+          },
+          "D36": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Use a verb that describes the action, e.g. Save, Delete, Open."
+          },
+          "D37": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Required on every button unless it is icon-only."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A button triggers an immediate action in the current context — submitting a form, confirming a choice, opening something or deleting an item. Four emphasis levels (Primary, Secondary, Ghost, Danger) keep the most important action on a screen the easiest one to find."
+          },
+          "D9": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Use buttons for actions only. If activating it takes the user to another page or location, it is navigation and must not be a button."
+          },
+          "R3": {
+            "kind": "reference",
+            "text": "Button guidance: Do not use a button to go to another page or URL: use a link."
+          },
+          "R4": {
+            "kind": "reference",
+            "text": "Button guidance: Do not use a button only to show or hide content inline: use a disclosure or accordion."
+          }
+        },
+        "questions": [
+          "Secondary and Ghost share the same guidance (supporting actions of lower weight): when should a designer pick Ghost over Secondary?",
+          "Should buttons that only show or hide content inline use another component in this system (for example an accordion)? No source in the team's docs covers this case."
+        ]
+      }
+    },
+    "CheckboxControl": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.75,
+        "setHash": "505b2df6d902fe8d5cb3333d2f3ff22c4bf7a60b005de4867747cc046f30a7ca",
+        "whenToUse": [
+          {
+            "text": "Use a checkbox for a square control that people select or clear, on its own, as a labeled field, or as a titled group of fields.",
+            "sources": [
+              "D1"
+            ]
+          },
+          {
+            "text": "Use it to turn one option on or off, or to let people choose any number of options from a list.",
+            "sources": [
+              "R1"
+            ]
+          },
+          {
+            "text": "Pick the layer you need: CheckboxControl for the bare box, CheckboxField for the control with its label and messages, or CheckboxGroup for a titled group of fields.",
+            "sources": [
+              "D8",
+              "D10",
+              "D11",
+              "D12",
+              "D109",
+              "D111"
+            ]
+          },
+          {
+            "text": "Use CheckboxControl as the leading or trailing control of a list item in multi-select lists.",
+            "sources": [
+              "D47"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use a checkbox when people may choose only one of several options: use radio buttons.",
+            "sources": [
+              "R2"
+            ]
+          },
+          {
+            "text": "Do not use a checkbox for a setting that applies at once: use a switch.",
+            "sources": [
+              "R3"
+            ]
+          },
+          {
+            "text": "Do not place CheckboxControl alone where the option needs a visible label: use CheckboxField, which adds the label and value text.",
+            "sources": [
+              "D10",
+              "D11",
+              "R4"
+            ]
+          }
+        ],
+        "variants": [
+          {
+            "property": "Type",
+            "value": "Unselected",
+            "text": "Use Unselected when the option is not chosen.",
+            "sources": [
+              "P2",
+              "D34"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Selected",
+            "text": "Use Selected when the option is chosen; the box shows a check.",
+            "sources": [
+              "D14",
+              "D34"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Indeterminate",
+            "text": "Use Indeterminate for a mixed selection; the box shows a dash and is exposed as aria-checked=\"mixed\".",
+            "sources": [
+              "D15",
+              "D119"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Error-Unselected",
+            "text": "Use Error-Unselected for an unchosen option in a field in the Invalid state, which adds an error border and message.",
+            "sources": [
+              "D34",
+              "D37",
+              "P2"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Error-Selected",
+            "text": "Use Error-Selected for a chosen option in a field in the Invalid state.",
+            "sources": [
+              "D34",
+              "D37",
+              "P2"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Error-Indeterminate",
+            "text": "Use Error-Indeterminate for a mixed selection in a field in the Invalid state.",
+            "sources": [
+              "D34",
+              "D37",
+              "D119",
+              "P2"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Write the Value text to describe what checking the box means.",
+            "sources": [
+              "D19",
+              "D27"
+            ]
+          },
+          {
+            "text": "Use the Label text for the field or group title.",
+            "sources": [
+              "D26"
+            ]
+          },
+          {
+            "text": "Add a description under the label or helper text under the field only when the option needs supporting text.",
+            "sources": [
+              "D17",
+              "D21",
+              "D29"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A checkbox is a square control that users select or clear — used on its own, as a labeled field, or as a titled group of fields."
+          },
+          "D10": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: The box alone — border, fill, focus ring and check or dash icon. No label."
+          },
+          "D109": {
+            "kind": "figma-doc",
+            "text": "Documentation / Style: CheckboxField — 21 variants"
+          },
+          "D11": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Label, control, value text, and optional description, helper and error or warning messages."
+          },
+          "D111": {
+            "kind": "figma-doc",
+            "text": "Documentation / Style: CheckboxGroup — 8 variants"
+          },
+          "D119": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • An Indeterminate type for mixed selection."
+          },
+          "D12": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A group label with three CheckboxFields, vertical or horizontal."
+          },
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Chosen — shows a check."
+          },
+          "D15": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Mixed — shows a dash; exposed as aria-checked=\"mixed\"."
+          },
+          "D17": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ② Description (optional) — text below the label (Has description)."
+          },
+          "D19": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ④ Value — the checkbox's own text, describing what checking it means (Value)."
+          },
+          "D21": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ⑥ Helper text (optional) — supporting text below the field (Has helper)."
+          },
+          "D26": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • The field or group title, set with the Label text property."
+          },
+          "D27": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • The checkbox's own text, set with the Value text property — describes what checking it means."
+          },
+          "D29": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Optional supporting text — description sits under the label, helper text under the field."
+          },
+          "D34": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Each field has a selection type — Unselected, Selected or Indeterminate — and a field state. Field states map to the control's type and state; for example, Invalid switches the control to its Error type."
+          },
+          "D37": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Invalid — error border and an error message."
+          },
+          "D47": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • List item — uses CheckboxControl as its leading or trailing control for multi-select lists."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Checkbox is built as three layered components, from atom to organism. Use the one that matches what you need: the bare control, a control with its label and messages, or a titled group of fields."
+          },
+          "P2": {
+            "kind": "figma-property",
+            "text": "Type: Unselected, Selected, Indeterminate, Error-Unselected, Error-Selected, Error-Indeterminate"
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Checkbox guidance: Use a checkbox to turn one option on or off, or to choose any number of options from a list."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Checkbox guidance: Do not use a checkbox when only one option of several may be chosen: use radio buttons."
+          },
+          "R3": {
+            "kind": "reference",
+            "text": "Checkbox guidance: Do not use a checkbox for a setting that applies at once: use a switch."
+          },
+          "R4": {
+            "kind": "reference",
+            "text": "Checkbox accessibility: wai-aria/checkbox; role checkbox. Visible label linked to the control. Space: toggle."
+          }
+        },
+        "questions": [
+          "When should designers use Indeterminate? The sources say only \"mixed selection\" — is it for a parent checkbox over a partly selected group?",
+          "When should a CheckboxGroup be Horizontal rather than Vertical (the default)?",
+          "When should a field use Warning rather than Invalid? Warning has no matching Error type on the control.",
+          "Is there guidance on how long the Value text should be, given that it wraps and truncation isn't available as a property yet?",
+          "Does this system have Radio and Switch components to name as the alternatives?"
+        ]
+      }
+    },
+    "Date Picker": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.75,
+        "setHash": "d09f360e19f2c57b8bed3fe13d90ac0bb00a62e634d069d4068c5c8bee4d870c",
+        "whenToUse": [
+          {
+            "text": "Use a date picker to choose a single date, a date range, or a date with a time, from one component.",
+            "sources": [
+              "D1",
+              "P2"
+            ]
+          },
+          {
+            "text": "Use the presets side list when people often pick common periods such as Today, Yesterday, Last 7 or 30 days, or This or Last month.",
+            "sources": [
+              "D4"
+            ]
+          },
+          {
+            "text": "Use it when a selection should take effect only after people confirm it, since the footer's Clear, Cancel and Apply actions keep a stray click from committing a half-made range.",
+            "sources": [
+              "D6"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use a date picker to choose one option from a list of values that are not dates: use DropdownTrigger.",
+            "sources": [
+              "R1",
+              "S1"
+            ]
+          },
+          {
+            "text": "Do not use a date picker to start actions: use a menu.",
+            "sources": [
+              "R3"
+            ]
+          }
+        ],
+        "variants": [
+          {
+            "property": "Type",
+            "value": "Single",
+            "text": "Use Single when people pick one date.",
+            "sources": [
+              "D1",
+              "P2"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Range",
+            "text": "Use Range when people pick a start and an end date; it shows two fields side by side that share one popover.",
+            "sources": [
+              "D1",
+              "D3"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "DateTime",
+            "text": "Use DateTime when people pick a date together with a time.",
+            "sources": [
+              "D1",
+              "P2"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Name presets after the period they select, for example Today, Yesterday, Last 7 days, Last 30 days, This month and Last month.",
+            "sources": [
+              "D4"
+            ]
+          },
+          {
+            "text": "Label the footer actions Clear, Cancel and Apply.",
+            "sources": [
+              "D6"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation: A single component set covering single-date, date-range, and date+time selection, with the calendar panel handled as a boolean property."
+          },
+          "D3": {
+            "kind": "figma-doc",
+            "text": "Documentation: ① Date field(s) — every field carries a trailing calendar icon, never leading. A range field renders two side by side sharing one popover."
+          },
+          "D4": {
+            "kind": "figma-doc",
+            "text": "Documentation: ② Presets — Today, Yesterday, Last 7/30 days, This/Last month; a side list next to the calendar."
+          },
+          "D6": {
+            "kind": "figma-doc",
+            "text": "Documentation: ④ Footer actions — Clear / Cancel / Apply, so a stray click never commits a half-made range selection."
+          },
+          "P2": {
+            "kind": "figma-property",
+            "text": "Type: Single, Range, DateTime"
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Select guidance: Use a select to choose one option from a list that is too long to show all at once."
+          },
+          "R3": {
+            "kind": "reference",
+            "text": "Select guidance: Do not use a select to start actions: use a menu."
+          },
+          "S1": {
+            "kind": "system",
+            "text": "Other select components in this design system: DropdownTrigger."
+          }
+        },
+        "questions": [
+          "The docs say what each Type covers but not when to pick one over another. For example, should DateTime be used only when the time matters to the task?",
+          "When should the presets list be shown, and is it available for Single and DateTime or only for Range?",
+          "Are the footer actions (Clear / Cancel / Apply) required for every Type, or only for Range?",
+          "Does this component have any guidance on field labels or placeholder and date-format text?",
+          "ds-sync classes this as a select, but does DatePicker have an alternative closer to it in this system, such as a plain text field for typing a known date?"
+        ]
+      }
+    },
+    "Dialog": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.85,
+        "setHash": "a38264a63cc110c002c54e17aa0d9f9315fcb1de1c4e328aed370b4198d17dbb",
+        "whenToUse": [
+          {
+            "text": "Use a dialog to focus the user on exactly one task or decision; it blocks the page until that is resolved.",
+            "sources": [
+              "D1",
+              "D8"
+            ]
+          },
+          {
+            "text": "Use it to get an immediate response the user needs to continue something they just started.",
+            "sources": [
+              "D23"
+            ]
+          },
+          {
+            "text": "Use it to notify the user of urgent information tied to their current work.",
+            "sources": [
+              "D24"
+            ]
+          },
+          {
+            "text": "Use it to confirm a decision, especially a destructive or irreversible one.",
+            "sources": [
+              "D25"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use a dialog for information that isn't urgent: use an inline Alert instead.",
+            "sources": [
+              "D27",
+              "D69",
+              "R2"
+            ]
+          },
+          {
+            "text": "Do not use a dialog for tasks users repeat often, or when even the largest size isn't enough room: let them complete it on the page, or use a full page.",
+            "sources": [
+              "D28",
+              "D29",
+              "D37"
+            ]
+          },
+          {
+            "text": "Do not open a dialog from inside another dialog.",
+            "sources": [
+              "D42",
+              "R3"
+            ]
+          }
+        ],
+        "variants": [
+          {
+            "property": "Type",
+            "value": "Confirmation",
+            "text": "Use Confirmation to confirm a decision, as its name says.",
+            "sources": [
+              "P8",
+              "D25"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Alert",
+            "text": "Use Alert to alert the user to something, as its name says.",
+            "sources": [
+              "P8"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Form",
+            "text": "Use Form when the dialog embeds form fields; it is the only type with an Error state, which shows an error banner and the fields to correct.",
+            "sources": [
+              "D9",
+              "D57"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Full-screen",
+            "text": "Use Full-screen when the content needs the whole viewport.",
+            "sources": [
+              "D10"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Side-drawer",
+            "text": "Use Side-drawer for a full-height panel, available in three widths.",
+            "sources": [
+              "D11",
+              "D83"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Write the title as a short, specific verb phrase that matches whatever opened the dialog; for a very short message, let the title carry it and skip the body.",
+            "sources": [
+              "D30",
+              "D47",
+              "D48"
+            ]
+          },
+          {
+            "text": "Label buttons with short, specific verbs such as Delete, Save or Add, not vague labels like Done; OK is fine only for the acknowledgment pattern.",
+            "sources": [
+              "D51",
+              "D52",
+              "D20"
+            ]
+          },
+          {
+            "text": "For a destructive action, name the action in the title and use a danger-styled, specific button, and never use two primary buttons.",
+            "sources": [
+              "D45",
+              "D46",
+              "D44"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A dialog is a focused window layered over the page that blocks interaction until a task or decision is resolved."
+          },
+          "D10": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Fills the viewport (1280 × 800)."
+          },
+          "D11": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A full-height panel (800px tall) in three widths."
+          },
+          "D20": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A single button (commonly OK)"
+          },
+          "D23": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To get an immediate response needed to continue something the user just started."
+          },
+          "D24": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To notify the user of urgent information tied to their current work."
+          },
+          "D25": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To confirm a decision — especially a destructive or irreversible one."
+          },
+          "D27": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • For information that isn't urgent — use an inline Alert instead."
+          },
+          "D28": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • For tasks users repeat often — let them complete it on the page."
+          },
+          "D29": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • When even the largest size isn't enough room — use a full page."
+          },
+          "D30": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ① Title — a short, specific verb phrase naming the task."
+          },
+          "D37": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Choose the size by content: brief text fits Small; complex embedded content needs Medium or Large. If content keeps scrolling, move up a size; if the largest isn't enough, use a full page."
+          },
+          "D42": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Center the dialog vertically for short, predictable content, or pin it at a fixed offset from the top for longer or variable content. Use a dimmed backdrop by default. Clicking the backdrop may close passive dialogs, but never transactional or destructive ones. Avoid opening a dialog from inside another dialog."
+          },
+          "D44": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't use two primary buttons — the user can't tell which action is safe."
+          },
+          "D45": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: For destructive actions, name the action in the title and use a danger-styled, specific button."
+          },
+          "D46": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't use vague titles or buttons like OK for a destructive action."
+          },
+          "D47": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • A short, specific verb phrase that matches whatever opened the dialog."
+          },
+          "D48": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • For a very short message, let the title carry it and skip the body."
+          },
+          "D51": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Short, specific verbs — Delete, Save, Add — not vague labels like Done."
+          },
+          "D52": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • OK is fine only for the acknowledgment pattern."
+          },
+          "D57": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Error — Form only: an error banner at the top of the body, with the fields to correct."
+          },
+          "D69": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Alert — for inline, non-urgent feedback that shouldn't interrupt the page."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A dialog interrupts the page to focus the user on exactly one task or decision. It's the most disruptive surface available — it blocks everything else until it's resolved — so use it sparingly."
+          },
+          "D83": {
+            "kind": "figma-doc",
+            "text": "Documentation / Style: Side-drawer height"
+          },
+          "D9": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Embedded form fields; the only type with an Error state."
+          },
+          "P8": {
+            "kind": "figma-property",
+            "text": "Type: Confirmation, Alert, Form, Full-screen, Side-drawer"
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Dialog guidance: Do not use a dialog for information that can sit on the page."
+          },
+          "R3": {
+            "kind": "reference",
+            "text": "Dialog guidance: Do not open a dialog from another dialog."
+          }
+        },
+        "questions": [
+          "Which footer patterns (no decision/dismiss only, acknowledge/single OK, destructive/danger primary, multi-step) belong to the Alert type, and which to Confirmation?",
+          "The Alert type shares its name with the inline Alert component (D27, D69): should the type be renamed, or should the docs explain how they differ?",
+          "When should a designer choose Full-screen or Side-drawer over a Large dialog or a full page? D10 and D11 describe only their size.",
+          "Is there a Type for tasks in several steps (D21, D22), or can any Type use the Cancel / Previous / Next footer?"
+        ]
+      }
+    },
+    "Divider": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.4,
+        "setHash": "cc514baad6278a3ca947415d57e7870ad97f4e5a0df686042c90fb340162dcc9",
+        "whenToUse": [
+          {
+            "text": "Use a divider to draw a rule line that separates groups of content.",
+            "sources": [
+              "D1",
+              "R1"
+            ]
+          },
+          {
+            "text": "Inside a List Item or Tabs, you can use a divider with State=Selected or Focused to draw a heavier, tinted line next to the active row or tab.",
+            "sources": [
+              "D11",
+              "D7"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use a divider where spacing alone already separates the content.",
+            "sources": [
+              "R2"
+            ]
+          },
+          {
+            "text": "Do not use a divider as something people click or interact with: its State is a visual signal that you set, not a response to the user.",
+            "sources": [
+              "D11"
+            ]
+          }
+        ],
+        "variants": [
+          {
+            "property": "Style",
+            "value": "Solid",
+            "text": "Use Solid for a continuous line, as its name says.",
+            "sources": [
+              "P2"
+            ]
+          },
+          {
+            "property": "Style",
+            "value": "Dotted",
+            "text": "Use Dotted for a dotted line, as its name says.",
+            "sources": [
+              "P2"
+            ]
+          },
+          {
+            "property": "Style",
+            "value": "Dash",
+            "text": "Use Dash for a dashed line, as its name says.",
+            "sources": [
+              "P2"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation: A rule line in five true Figma variant axes — Orientation, Style, Size, Color, and State — all directly switchable, matching how every other component in this file exposes its options."
+          },
+          "D11": {
+            "kind": "figma-doc",
+            "text": "Documentation: Divider itself is not clickable — State is a visual signal set by the consumer, not user interaction. A List Item or Tabs component might instance a divider with State=Selected/Focused to draw a heavier, tinted line next to an active row/tab. Decorative — use role=separator when semantically meaningful, otherwise aria-hidden=true."
+          },
+          "D7": {
+            "kind": "figma-doc",
+            "text": "Documentation: Focused/Selected render at the strong stroke width (2px); Default/Hover/Disabled render at 1px — a difference easy to miss at grid thumbnail size. Shown here at Color=Dark, Style=Solid, Size=Md."
+          },
+          "P2": {
+            "kind": "figma-property",
+            "text": "Style: Solid, Dotted, Dash"
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Divider guidance: Use a divider to separate groups of content."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Divider guidance: Do not use dividers where spacing alone separates the content."
+          }
+        },
+        "questions": [
+          "When should someone pick Dotted or Dash instead of Solid? Is there a default?",
+          "This system also has a Separator component. How does it differ from Divider, and when should someone use each?",
+          "When should each Color be used (for example Danger or Success, or Transparent at 0 opacity), and when does Size Sm or Md apply?",
+          "Besides showing the active item in List Item or Tabs, are Hover, Focused and Selected meant for other uses?"
+        ]
+      }
+    },
+    "Dropdown": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.75,
+        "setHash": "54fff8759d3ae3b01f10f3300bf13b68c2960bfbe96ed0b1617c56259f59a008",
+        "whenToUse": [
+          {
+            "text": "Use a dropdown as a select control: a trigger field that opens a menu of options to choose from.",
+            "sources": [
+              "D1"
+            ]
+          },
+          {
+            "text": "Use it when there is not room to show all the options at once.",
+            "sources": [
+              "R1",
+              "D1"
+            ]
+          },
+          {
+            "text": "When the list needs it, compose the trigger and menu with group labels, a search row at the top of the menu, or a clear icon in the trigger.",
+            "sources": [
+              "D13",
+              "D14",
+              "D15",
+              "D16"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use Dropdown when you need only the option list without a trigger field: use DropdownMenu.",
+            "sources": [
+              "D8",
+              "D11",
+              "S1"
+            ]
+          },
+          {
+            "text": "Do not use Dropdown to offer a list of actions: it is a select control for choosing an option.",
+            "sources": [
+              "D1",
+              "R1"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Show the selected option in the trigger, or the placeholder \"Select an option\" when nothing is selected.",
+            "sources": [
+              "D24"
+            ]
+          },
+          {
+            "text": "Show \"Loading options…\" with a loading icon while options load, and \"No results found\" when there are none.",
+            "sources": [
+              "D25",
+              "D26"
+            ]
+          },
+          {
+            "text": "Pair the dropdown with a visible label instead of relying on the placeholder, and in the Error state give a text error message, not just a red border.",
+            "sources": [
+              "D68",
+              "D69"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A dropdown is a select control: a trigger field that opens a menu of options."
+          },
+          "D11": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: The option list."
+          },
+          "D13": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Options under a group label (Grouped)."
+          },
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Search row at the top of the menu (Show Search)."
+          },
+          "D15": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A clear icon in the trigger (Clearable)."
+          },
+          "D16": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: These are example compositions on the page, built from the trigger and menu — not variants of Dropdown."
+          },
+          "D24": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Shows the selected option, or placeholder text (\"Select an option\") when nothing is selected."
+          },
+          "D25": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Loading — \"Loading options…\" with a loading icon."
+          },
+          "D26": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Empty — \"No results found\"."
+          },
+          "D68": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • Placeholder text must not replace a visible label (WCAG rules SEM-002) — pair the dropdown with a label."
+          },
+          "D69": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • In the Error state, give a text error message, not just a red border — and set aria-invalid."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Dropdown is built from three components: DropdownTrigger (the field), DropdownMenu (the option list, made of List item instances) and Dropdown (the two combined, collapsed or expanded)."
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Menu guidance: Use a menu to offer a list of actions or options from one trigger, when there is not room to show them all."
+          },
+          "S1": {
+            "kind": "system",
+            "text": "Other menu components in this design system: DropdownMenu."
+          }
+        },
+        "questions": [
+          "ds-sync filed Dropdown under the Menu kind, but your docs call it a select control (D1). The Menu reference (R2, R3) says menus should not choose form values and uses role menu/menuitem. Should Dropdown move to the Select kind?",
+          "The evidence names no primary variant property. Should Size or State be the main one? What should each Size (Small, Medium, Large) be used for, for example dense tables against forms?",
+          "What should people use for a list of actions instead of Dropdown? Is DropdownMenu meant for that, or is there another component?",
+          "When should someone add search, grouping or Clearable? For example, is there a number of options above which search is recommended?"
+        ]
+      }
+    },
+    "DropdownMenu": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.8,
+        "setHash": "d29e547fd13ffdfcbf89874d8d3d0813f55464a7e8ddaf85ba67d7eed1fb571e",
+        "whenToUse": [
+          {
+            "text": "Use DropdownMenu as the option list of a dropdown, which is a select control: a trigger field that opens a menu of options.",
+            "sources": [
+              "D1",
+              "D8",
+              "D11"
+            ]
+          },
+          {
+            "text": "Use it with DropdownTrigger, or use Dropdown, which puts the trigger and the menu together and shows them collapsed or expanded.",
+            "sources": [
+              "D8",
+              "D12"
+            ]
+          },
+          {
+            "text": "Turn on Show Search to add a search row at the top of the menu.",
+            "sources": [
+              "D14",
+              "P1"
+            ]
+          },
+          {
+            "text": "Turn on Grouped to show options under a group label.",
+            "sources": [
+              "D13",
+              "P2"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "If you need the whole select control, use Dropdown instead of DropdownMenu by itself.",
+            "sources": [
+              "D8",
+              "D12",
+              "S1"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "In the Loading state, show \"Loading options…\" with a loading icon.",
+            "sources": [
+              "D25",
+              "P3"
+            ]
+          },
+          {
+            "text": "In the Empty state, show \"No results found\".",
+            "sources": [
+              "D26",
+              "P3"
+            ]
+          },
+          {
+            "text": "Give the dropdown a visible label, because placeholder text can't replace it.",
+            "sources": [
+              "D68"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A dropdown is a select control: a trigger field that opens a menu of options."
+          },
+          "D11": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: The option list."
+          },
+          "D12": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Trigger and menu together."
+          },
+          "D13": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Options under a group label (Grouped)."
+          },
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Search row at the top of the menu (Show Search)."
+          },
+          "D25": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Loading — \"Loading options…\" with a loading icon."
+          },
+          "D26": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Empty — \"No results found\"."
+          },
+          "D68": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • Placeholder text must not replace a visible label (WCAG rules SEM-002) — pair the dropdown with a label."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Dropdown is built from three components: DropdownTrigger (the field), DropdownMenu (the option list, made of List item instances) and Dropdown (the two combined, collapsed or expanded)."
+          },
+          "P1": {
+            "kind": "figma-property",
+            "text": "Show Search (on/off, default off)"
+          },
+          "P2": {
+            "kind": "figma-property",
+            "text": "Grouped (on/off, default off)"
+          },
+          "P3": {
+            "kind": "figma-property",
+            "text": "State: Default, Loading, Empty"
+          },
+          "S1": {
+            "kind": "system",
+            "text": "Other menu components in this design system: Dropdown."
+          }
+        },
+        "questions": [
+          "ds-sync treats this as a menu, and its general menu guidance says not to use a menu to choose a form value: use a select (R2). The team's docs call the dropdown a select control (D1). Should this component be treated as a select instead?",
+          "Is DropdownMenu ever used without DropdownTrigger, for example as an action menu? If so, when?",
+          "The evidence file names no main variant property. Should State (Default, Loading, Empty) be the main one, so its values get variant guidance?",
+          "The Usage page lists a 'Related' section (D2), but the file has none of its text. Which components should people use instead of this one?"
+        ]
+      }
+    },
+    "DropdownTrigger": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.7,
+        "setHash": "fbe980245e789dae0cb267ebd4876a721fb5cc42bfc809c042bcbfba5c220b8a",
+        "whenToUse": [
+          {
+            "text": "Use DropdownTrigger as the field of a dropdown, the select control that opens a menu of options.",
+            "sources": [
+              "D1",
+              "D8"
+            ]
+          },
+          {
+            "text": "The trigger shows the selected option, or placeholder text when nothing is selected.",
+            "sources": [
+              "D10",
+              "D24"
+            ]
+          },
+          {
+            "text": "Pair it with DropdownMenu for the option list, or use Dropdown, which combines the trigger and the menu.",
+            "sources": [
+              "D8",
+              "D12"
+            ]
+          },
+          {
+            "text": "Use a dropdown when people choose one option from a list that is too long to show all at once.",
+            "sources": [
+              "R1"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use a dropdown for two to five options that fit on screen: use radio buttons.",
+            "sources": [
+              "R2"
+            ]
+          },
+          {
+            "text": "Do not use a dropdown to start actions: use a menu.",
+            "sources": [
+              "R3"
+            ]
+          },
+          {
+            "text": "When you need the field and its open option list together, use Dropdown instead of placing DropdownTrigger on its own.",
+            "sources": [
+              "D8",
+              "D12"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Do not let placeholder text such as \"Select an option\" replace a visible label: pair the dropdown with a label.",
+            "sources": [
+              "D24",
+              "D68"
+            ]
+          },
+          {
+            "text": "In the Error state, give a text error message, not only a red border.",
+            "sources": [
+              "D69"
+            ]
+          },
+          {
+            "text": "Use \"Loading options…\" while options load and \"No results found\" when the menu is empty.",
+            "sources": [
+              "D25",
+              "D26"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A dropdown is a select control: a trigger field that opens a menu of options."
+          },
+          "D10": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: The field showing the selected value or placeholder."
+          },
+          "D12": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Trigger and menu together."
+          },
+          "D24": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Shows the selected option, or placeholder text (\"Select an option\") when nothing is selected."
+          },
+          "D25": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Loading — \"Loading options…\" with a loading icon."
+          },
+          "D26": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Empty — \"No results found\"."
+          },
+          "D68": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • Placeholder text must not replace a visible label (WCAG rules SEM-002) — pair the dropdown with a label."
+          },
+          "D69": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • In the Error state, give a text error message, not just a red border — and set aria-invalid."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Dropdown is built from three components: DropdownTrigger (the field), DropdownMenu (the option list, made of List item instances) and Dropdown (the two combined, collapsed or expanded)."
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Select guidance: Use a select to choose one option from a list that is too long to show all at once."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Select guidance: Do not use a select for two to five options that fit on screen: use radio buttons."
+          },
+          "R3": {
+            "kind": "reference",
+            "text": "Select guidance: Do not use a select to start actions: use a menu."
+          }
+        },
+        "questions": [
+          "The evidence file names no primary variant property, so there is no per-variant guidance: should guidance be written for State (Default, Hover, Focused, Disabled, Error, Read-only) or Size (Small, Medium, Large)?",
+          "When should designers choose Small, Medium or Large? The sources give only the heights (32 / 40 / 48).",
+          "When should a dropdown be Read-only rather than Disabled?",
+          "When should Clearable be turned on?",
+          "DatePicker is another select component in this system: should the guidance say to use it for dates instead of a dropdown?",
+          "Is there a maximum or minimum number of options the team recommends for a dropdown?"
+        ]
+      }
+    },
+    "Form": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.55,
+        "setHash": "43b24c5109eb82d149571ae0be3135e2be3b748856553ab4d51e243a90c9a719",
+        "whenToUse": [
+          {
+            "text": "Use Form as the page-level wrapper that composes several InputField rows under a heading, with Cancel and Submit actions.",
+            "sources": [
+              "D1",
+              "D14"
+            ]
+          },
+          {
+            "text": "Give each group of fields a section heading that labels the group, such as \"Shipping address\".",
+            "sources": [
+              "D4",
+              "D5"
+            ]
+          },
+          {
+            "text": "Arrange related fields in multi-column rows (first and last name; city, state and zip), and give a field like country the full width.",
+            "sources": [
+              "D6"
+            ]
+          },
+          {
+            "text": "End the form with its actions: a secondary Button and a primary Button.",
+            "sources": [
+              "D7"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use Form for a single labelled field: use InputField, which adds a label, helper text and a validation message row to the field.",
+            "sources": [
+              "D14"
+            ]
+          },
+          {
+            "text": "Do not use Form when you only need the bare field: use InputControl.",
+            "sources": [
+              "D14"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Label the actions Cancel and Submit, with Cancel as the secondary Button and Submit as the primary one.",
+            "sources": [
+              "D7",
+              "D14"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation: This page builds three separate component families — InputControl, InputField, and a page-level Form wrapper — rather than one cohesive \"Form\" component."
+          },
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation: InputControl is the bare field; InputField adds a label, helper, and validation message row; Form composes multiple InputField rows with a heading and Cancel/Submit actions, plus page-level submission states (Submitting/Success/Error/Disabled)."
+          },
+          "D4": {
+            "kind": "figma-doc",
+            "text": "Documentation: Shipping address"
+          },
+          "D5": {
+            "kind": "figma-doc",
+            "text": "Documentation: ① Section heading — labels the field group."
+          },
+          "D6": {
+            "kind": "figma-doc",
+            "text": "Documentation: ② Field rows — InputField instances, grouped in multi-column rows (name/last-name, city/state/zip) plus a full-width country field."
+          },
+          "D7": {
+            "kind": "figma-doc",
+            "text": "Documentation: ③ Actions — secondary + primary Button instances."
+          }
+        },
+        "questions": [
+          "The evidence names no primary variant property. Should State (Default, Submitting, Success, Error, Disabled) be treated as the primary one? If so, what should each state show? D14 only calls them page-level submission states.",
+          "form-label-skill.md is a placeholder (D2, D15). Can the designers write down when to use Form, and what rules apply to its labels and copy?",
+          "Is the Cancel and Submit pairing required, or can a form have only one action, or other action labels?",
+          "D15 is cut off at \"Possible page overlap with ↳ Input\". What overlap is meant, and does it change when to use Form or InputField?",
+          "Is the multi-column layout a rule for related fields, or just one example (D3 calls it a \"real Multi-column example\")?"
+        ]
+      }
+    },
+    "Input": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.55,
+        "setHash": "a68cdb1c6bf88310934bfc5a5a9691f57f504792b401dafc079ac6074a61776f",
+        "whenToUse": [
+          {
+            "text": "Use an input for typed content in a single-line or multi-line field.",
+            "sources": [
+              "D1"
+            ]
+          },
+          {
+            "text": "Use it for short free-form text such as a name or a search term.",
+            "sources": [
+              "R1"
+            ]
+          },
+          {
+            "text": "Always pair the field with a persistent label, and mark it with the required indicator when the field is required.",
+            "sources": [
+              "D3",
+              "P4"
+            ]
+          },
+          {
+            "text": "Add helper text below the field when people need supporting information or a validation message.",
+            "sources": [
+              "D5"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use an input when the answer is one of a known set of options: use a select or radio buttons.",
+            "sources": [
+              "R3"
+            ]
+          },
+          {
+            "text": "Do not use a single-line input for long text: use a multi-line field or a text area.",
+            "sources": [
+              "D1",
+              "R2"
+            ]
+          }
+        ],
+        "variants": [
+          {
+            "property": "Type",
+            "value": "Outlined",
+            "text": "Use Outlined when you want the field's container drawn with an outline (as its name says).",
+            "sources": [
+              "D4",
+              "P12"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Filled",
+            "text": "Use Filled when you want the field's container shown with a fill (as its name says).",
+            "sources": [
+              "D4",
+              "P12"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Borderless",
+            "text": "Use Borderless when the field should have no visible border, and keep its focus ring visible like the other types.",
+            "sources": [
+              "D4",
+              "D9",
+              "P12"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Inline",
+            "text": "Use Inline for the compact row where the label sits inline with the field.",
+            "sources": [
+              "D13",
+              "P12"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Keep the label visible at all times; do not let the placeholder stand in for it.",
+            "sources": [
+              "D3"
+            ]
+          },
+          {
+            "text": "Use helper text below the field for supporting or validation messages, and link it to the field so screen readers announce it on focus.",
+            "sources": [
+              "D5",
+              "D12"
+            ]
+          },
+          {
+            "text": "Show the error message when the field loses focus, not only at submit, and clear it as soon as the value becomes valid.",
+            "sources": [
+              "D9"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation: A single- or multi-line field for typed content, with specialized variants layered on the same underlying anatomy per the skill (not all present as Figma variants — see Flags)."
+          },
+          "D12": {
+            "kind": "figma-doc",
+            "text": "Documentation: Show the clear icon only once the field has content; if it would collide with a suffix icon, the clear icon takes precedence while content is present. Match the mobile keyboard type to expected content. Associate error/helper text via the field's accessible description so screen readers announce it on focus, not just visually beside the field."
+          },
+          "D13": {
+            "kind": "figma-doc",
+            "text": "Documentation: Gap: the skill's Variants table specifies Outlined, Filled, Underlined, Borderless. The actual build's Type axis is Outlined, Filled, Borderless, Inline — there is no Underlined variant anywhere in the 60-variant set, and Inline (visible above as the compact inline-label row) is not described anywhere in the skill at all. Gap: the skill lists nine states (Default, Filled, Hover, Focus, Disabled, Read-only, Warning, Error, Loading). The build only implements five: Default, Hover, …"
+          },
+          "D3": {
+            "kind": "figma-doc",
+            "text": "Documentation: ① Label — persistent, always paired with the field (with an optional required indicator)."
+          },
+          "D4": {
+            "kind": "figma-doc",
+            "text": "Documentation: ② Container — holds the value/placeholder text; visual treatment set by variant (Outlined/Filled/Borderless/Inline)."
+          },
+          "D5": {
+            "kind": "figma-doc",
+            "text": "Documentation: ③ Helper text — optional supporting or validation message below the field."
+          },
+          "D9": {
+            "kind": "figma-doc",
+            "text": "Documentation: Whichever container variant is chosen, the focus state must stay clearly visible — even Borderless needs a visible ring/underline on focus (confirmed above: Borderless/Focus shows the same blue ring as the other types). Validate on blur, not just at submit; clear the error the moment the value becomes valid again."
+          },
+          "P12": {
+            "kind": "figma-property",
+            "text": "Type: Outlined, Filled, Borderless, Inline"
+          },
+          "P4": {
+            "kind": "figma-property",
+            "text": "Required (on/off, default on)"
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Text input guidance: Use a text input for short free-form text such as a name or a search term, with a visible label."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Text input guidance: Do not use a single-line text input for long text: use a text area."
+          },
+          "R3": {
+            "kind": "reference",
+            "text": "Text input guidance: Do not use a text input when the answer is one of a known set of options: use a select or radio buttons."
+          }
+        },
+        "questions": [
+          "Outlined, Filled and Borderless have no stated purpose beyond their visual treatment: when should a designer pick each one (for example, dense tables, forms, or toolbars)?",
+          "Inline is not described in the guidance (D13): what is it for, and where should it not be used?",
+          "How should Input be chosen against InputControl and InputField in this system?",
+          "Is multi-line entry part of this Input, or is there a separate text area component to point people to for long text?",
+          "Underlined, and the Warning, Read-only and Loading states, are in the guidance but not in the build: should usage mention them, or will they be added?",
+          "Is there guidance on placeholder copy and on writing labels and error messages (length, tone)?"
+        ]
+      }
+    },
+    "InputControl": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.45,
+        "setHash": "3ec817858cedbeda0251a21803d2895e2832f8e9cfda30fc78fd4970a51212b0",
+        "whenToUse": [
+          {
+            "text": "Use InputControl as the bare field, without a label, helper or validation message row.",
+            "sources": [
+              "D14"
+            ]
+          },
+          {
+            "text": "Use it for short free-form text such as a name or a search term.",
+            "sources": [
+              "R1"
+            ]
+          },
+          {
+            "text": "Use InputControl as the building block inside InputField, which adds the label, helper and validation message.",
+            "sources": [
+              "D14",
+              "S1"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not place a bare InputControl in a form where the field needs a visible label, helper or validation message: use InputField.",
+            "sources": [
+              "D14",
+              "R1",
+              "S1"
+            ]
+          },
+          {
+            "text": "Do not use InputControl for long text: use a text area.",
+            "sources": [
+              "R2"
+            ]
+          },
+          {
+            "text": "Do not use InputControl when the answer is one of a known set of options: use a select or radio buttons.",
+            "sources": [
+              "R3"
+            ]
+          }
+        ],
+        "sources": {
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation: InputControl is the bare field; InputField adds a label, helper, and validation message row; Form composes multiple InputField rows with a heading and Cancel/Submit actions, plus page-level submission states (Submitting/Success/Error/Disabled)."
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Text input guidance: Use a text input for short free-form text such as a name or a search term, with a visible label."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Text input guidance: Do not use a single-line text input for long text: use a text area."
+          },
+          "R3": {
+            "kind": "reference",
+            "text": "Text input guidance: Do not use a text input when the answer is one of a known set of options: use a select or radio buttons."
+          },
+          "S1": {
+            "kind": "system",
+            "text": "Other text input components in this design system: Input, InputField."
+          }
+        },
+        "questions": [
+          "The evidence file names no primary variant property, so no variant guidance was written. Should State be treated as the main property?",
+          "InputControl has a state named \"State9\" that the team's own docs flag as an unrenamed Figma default. What is it for, or should it be renamed or removed?",
+          "form-label-skill.md is an empty placeholder. Can the team add guidance on labels, placeholder text and helper copy?",
+          "Is there ever a case for using a bare InputControl without InputField, for example a search field with its label provided another way?",
+          "The docs flag a possible overlap with the Input component. How should designers choose between Input and InputControl?"
+        ]
+      }
+    },
+    "InputField": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.55,
+        "setHash": "8835187e75ca4a9bcf32f1152eb5352c9e8b111e2328e2c8100e4736f6ac4b5f",
+        "whenToUse": [
+          {
+            "text": "Use InputField when a field needs a label, helper text or a validation message around the bare input.",
+            "sources": [
+              "D14"
+            ]
+          },
+          {
+            "text": "Use InputField for the field rows of a form, grouped in multi-column rows such as first and last name or city, state and zip, or full width such as country.",
+            "sources": [
+              "D6"
+            ]
+          },
+          {
+            "text": "Use it for short free-form text such as a name or an email address, with a visible label.",
+            "sources": [
+              "R1",
+              "P3"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use InputField when you need only the bare field without a label or message row: use InputControl.",
+            "sources": [
+              "D14",
+              "S1"
+            ]
+          },
+          {
+            "text": "Do not use InputField for long text: use a text area.",
+            "sources": [
+              "R2"
+            ]
+          },
+          {
+            "text": "Do not use InputField when the answer is one of a known set of options: use a select or radio buttons.",
+            "sources": [
+              "R3"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Write the label as a short noun phrase that names the information, such as \"Email address\".",
+            "sources": [
+              "P3"
+            ]
+          },
+          {
+            "text": "Write error messages that tell people what to do, such as \"Enter a valid email address\".",
+            "sources": [
+              "P6"
+            ]
+          },
+          {
+            "text": "Use helper text for extra context people need before they type, such as \"We'll never share your email\".",
+            "sources": [
+              "P5",
+              "P2"
+            ]
+          }
+        ],
+        "sources": {
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation: InputControl is the bare field; InputField adds a label, helper, and validation message row; Form composes multiple InputField rows with a heading and Cancel/Submit actions, plus page-level submission states (Submitting/Success/Error/Disabled)."
+          },
+          "D6": {
+            "kind": "figma-doc",
+            "text": "Documentation: ② Field rows — InputField instances, grouped in multi-column rows (name/last-name, city/state/zip) plus a full-width country field."
+          },
+          "P2": {
+            "kind": "figma-property",
+            "text": "Helper Message (on/off, default off)"
+          },
+          "P3": {
+            "kind": "figma-property",
+            "text": "Label/Text (text, default \"Email address\")"
+          },
+          "P5": {
+            "kind": "figma-property",
+            "text": "Helper/Text (text, default \"We'll never share your email\")"
+          },
+          "P6": {
+            "kind": "figma-property",
+            "text": "Error/Text (text, default \"Enter a valid email address\")"
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Text input guidance: Use a text input for short free-form text such as a name or a search term, with a visible label."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Text input guidance: Do not use a single-line text input for long text: use a text area."
+          },
+          "R3": {
+            "kind": "reference",
+            "text": "Text input guidance: Do not use a text input when the answer is one of a known set of options: use a select or radio buttons."
+          },
+          "S1": {
+            "kind": "system",
+            "text": "Other text input components in this design system: Input, InputControl."
+          }
+        },
+        "questions": [
+          "The team's skill file (form-label-skill.md) is a placeholder: can designers add when-to-use guidance for InputField?",
+          "How should InputField differ from the separate Input component? The documentation flags a possible page overlap.",
+          "Is Invalid the same as InputControl's Error state? The names differ between the two families.",
+          "What does Read-only look like versus Disabled, and when should each be chosen?",
+          "How should Required be marked in the label, and should optional fields be marked instead?"
+        ]
+      }
+    },
+    "ListItem": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.9,
+        "setHash": "a28613d0e43e200a8beba991229153eb3128aba82e23a6877860dafc5bf14167",
+        "whenToUse": [
+          {
+            "text": "Use a list item for one row in a list, menu or file browser that shows a headline and, depending on its type, an icon, supporting text, metadata or a selection control.",
+            "sources": [
+              "D1"
+            ]
+          },
+          {
+            "text": "Stack list items in a List container to show a vertical set of related items.",
+            "sources": [
+              "D36",
+              "D12",
+              "R1"
+            ]
+          },
+          {
+            "text": "Choose the type that matches what the row represents, because each type has a fixed set of content.",
+            "sources": [
+              "D8"
+            ]
+          },
+          {
+            "text": "To let people pick items, add a Checkbox as a leading or trailing control for multi-select lists, or a Radio for single-select lists.",
+            "sources": [
+              "D16",
+              "D58",
+              "D59"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use a list for data people compare across attributes: use a table.",
+            "sources": [
+              "R2"
+            ]
+          },
+          {
+            "text": "Do not put a leading control and a leading icon in the same row: use one or the other.",
+            "sources": [
+              "D34",
+              "D35"
+            ]
+          }
+        ],
+        "variants": [
+          {
+            "property": "Type",
+            "value": "Default",
+            "text": "Use Default to show a vertical set of related items.",
+            "sources": [
+              "D12"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Menu",
+            "text": "Use Menu to list actions or destinations in a menu; it has a fixed trailing chevron.",
+            "sources": [
+              "D13",
+              "D109"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "File",
+            "text": "Use File to show files with a leading icon, a headline, supporting text and metadata such as a file size.",
+            "sources": [
+              "D14",
+              "D18",
+              "D20",
+              "D21"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Setting",
+            "text": "Use Setting to show a setting with a short description, with any control placed after the content.",
+            "sources": [
+              "D15",
+              "D33"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Give every row a headline: it is required on every type and always visible.",
+            "sources": [
+              "D19",
+              "D37"
+            ]
+          },
+          {
+            "text": "Use supporting text for secondary detail under the headline, on File and Setting types only.",
+            "sources": [
+              "D39",
+              "D20"
+            ]
+          },
+          {
+            "text": "Use metadata for short trailing text such as a timestamp, size or count, on the File type only.",
+            "sources": [
+              "D40",
+              "D21"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A list item is a single row in a list, menu or file browser that shows a headline and, depending on its type, an icon, supporting text, metadata or a selection control."
+          },
+          "D109": {
+            "kind": "figma-doc",
+            "text": "Documentation / Style: The leading icon is 16 / 20 / 24px for Sm / Md / Lg, bound to icon/size/{sm|md|lg}. The Menu type has a fixed trailing chevron. Leading and trailing controls are 20px Checkbox instances by default, swappable to Radio."
+          },
+          "D12": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To show a vertical set of related items — Default."
+          },
+          "D13": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To list actions or destinations in a menu — Menu."
+          },
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To show files with an icon, details and metadata — File."
+          },
+          "D15": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To show a setting with a short description — Setting."
+          },
+          "D16": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • To let users pick one or several items — add a Radio or Checkbox as a leading or trailing control."
+          },
+          "D18": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ② Leading icon — File and Setting types only."
+          },
+          "D19": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ③ Headline — required title text, on every type."
+          },
+          "D20": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ④ Supporting text — File and Setting types only."
+          },
+          "D21": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ⑤ Metadata — trailing text such as a count or file size; File type only."
+          },
+          "D33": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: The control sits after the content — e.g. settings lists."
+          },
+          "D34": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Use either a leading icon or a leading control in a row."
+          },
+          "D35": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't combine a leading control with the leading icon — they are mutually exclusive."
+          },
+          "D36": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: List items are stacked in a List container (vertical, no fill, stretches to its parent's width). The List component isn't built yet."
+          },
+          "D37": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Required on every type and always visible."
+          },
+          "D39": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Secondary detail under the headline — File and Setting types."
+          },
+          "D40": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Short trailing text such as a timestamp, size or count — File type."
+          },
+          "D58": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Checkbox — CheckboxControl is the atomic check box used as a leading or trailing control in multi-select lists."
+          },
+          "D59": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Radio — RadioControl is the atomic radio circle used as a control in single-select lists."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: List items are the rows that make up a list. Each type has a fixed set of content, so choose the type that matches what the row represents. Any type can also hold a Checkbox or Radio at its start or end, for multi-select or single-select lists."
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "List guidance: Use a list to show a set of related items in a column."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "List guidance: Do not use a list for data people compare across attributes: use a table."
+          }
+        },
+        "questions": [
+          "Which content does the Default type hold? The anatomy notes (headline with chevron; icon, headline, supporting text and metadata; icon, headline and supporting text) are not labelled with their types.",
+          "Should Menu items be used inside a Menu component of this system? No other menu components appear in the evidence.",
+          "When should designers turn truncation on versus letting text wrap, once truncate-text is exposed as a Figma property?",
+          "Is there guidance on how many items, or how many nesting levels, a list should show before using another pattern?"
+        ]
+      }
+    },
+    "NavControl": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.85,
+        "setHash": "b29b36a5b479a51a055803f79f16db28be8ce02809f1c6c3cb64b7fbea61d64b",
+        "whenToUse": [
+          {
+            "text": "Use NavControl as the Prev and Next buttons of a carousel, which you assemble from NavControl, PaginationDot and AutoplayToggle around your own viewport and slides.",
+            "sources": [
+              "D8",
+              "D18"
+            ]
+          },
+          {
+            "text": "Use a carousel when items exceed the available space and only a subset should be visible at once.",
+            "sources": [
+              "D13"
+            ]
+          },
+          {
+            "text": "Each NavControl advances by one slide, or by one page when several slides are in view, and the pagination updates with the slide.",
+            "sources": [
+              "D41"
+            ]
+          },
+          {
+            "text": "In a finite carousel, show the edge control as Disabled at the first and last slide.",
+            "sources": [
+              "D10",
+              "D34",
+              "D81"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use a carousel, and so its NavControls, for content users need to compare side by side or read in full.",
+            "sources": [
+              "D15",
+              "D16"
+            ]
+          },
+          {
+            "text": "Do not hide the navigation controls unless people have another way to advance, such as pagination or swipe.",
+            "sources": [
+              "D26",
+              "D27"
+            ]
+          },
+          {
+            "text": "Do not nest a horizontal carousel, with its own NavControls, inside another on the same axis.",
+            "sources": [
+              "D23"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "NavControl is icon-only, so give each Prev and Next control an accessible name.",
+            "sources": [
+              "D88"
+            ]
+          }
+        ],
+        "sources": {
+          "D10": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Manual advance, finite — the edge control disables at the first and last slide."
+          },
+          "D13": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • When items exceed the available space and only a subset should be visible at once."
+          },
+          "D15": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • For content users need to compare side by side."
+          },
+          "D16": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • For content users need to read in full."
+          },
+          "D18": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ② Navigation controls — Prev and Next NavControl buttons."
+          },
+          "D23": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Reserve the viewport height up front so loading media doesn't shift the layout. Don't nest a horizontal carousel inside another on the same axis."
+          },
+          "D26": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't hide navigation with no alternative way to advance."
+          },
+          "D27": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Give users a way to advance — controls, pagination or swipe."
+          },
+          "D34": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Disabled navigation — in finite mode, Prev or Next disables at the edges (NavControl · Disabled)."
+          },
+          "D41": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Prev and Next advance by one slide, or one page when several slides are in view, and the pagination updates with the slide. Swipe and drag commit past about 25% of the slide width or on a fast flick, otherwise snap back — and never hijack vertical page scroll."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A carousel shows a subset of items at once when they exceed the available space. In this system it's assembled from three components — NavControl, PaginationDot and AutoplayToggle — around your own viewport and slides."
+          },
+          "D81": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • A Disabled NavControl state for the edges of finite carousels."
+          },
+          "D88": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • Prev, Next, pause and dot controls are icon-only — each needs an accessible name."
+          }
+        },
+        "questions": [
+          "What accessible names should Prev and Next use (for example, \"Previous slide\" / \"Next slide\"), and should they include the slide count?",
+          "ds-sync classifies NavControl as a navigation component, but the team's docs describe it only as a carousel control. Is it ever used outside a carousel, for example to page through other content?",
+          "In infinite mode, does either control ever disable, or are both always enabled because the carousel wraps?",
+          "NavControl is 36px, which is below the 44×44px touch target in the component rules. Is a larger hit area planned for touch layouts?"
+        ]
+      }
+    },
+    "PaginationDot": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.8,
+        "setHash": "c5065f5c197cb20966d05f021fbdac498aa3b5e0ae5e038a0aae4d9b593e2e86",
+        "whenToUse": [
+          {
+            "text": "Use PaginationDots in a carousel to show which slide is in view and how many slides there are.",
+            "sources": [
+              "D20",
+              "D30"
+            ]
+          },
+          {
+            "text": "Use them as one of the three parts that make up a carousel in this system, together with NavControl and AutoplayToggle, around your own viewport and slides.",
+            "sources": [
+              "D8",
+              "D3"
+            ]
+          },
+          {
+            "text": "Use pagination as one way to advance through the slides, alongside controls or swipe.",
+            "sources": [
+              "D27"
+            ]
+          },
+          {
+            "text": "Use a carousel, and so its dots, only when the items exceed the available space and only some should be visible at once.",
+            "sources": [
+              "D13",
+              "D8"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use a carousel with PaginationDots for content that users need to compare side by side or read in full.",
+            "sources": [
+              "D15",
+              "D16"
+            ]
+          },
+          {
+            "text": "Do not rely on dots alone to move one slide forward or back: use the Prev and Next NavControl buttons for that.",
+            "sources": [
+              "D18",
+              "D41",
+              "S1"
+            ]
+          },
+          {
+            "text": "Do not hide the navigation without giving users another way to advance.",
+            "sources": [
+              "D26",
+              "D27"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Give every dot an accessible name, because the dots are icon-only.",
+            "sources": [
+              "D88"
+            ]
+          }
+        ],
+        "sources": {
+          "D13": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • When items exceed the available space and only a subset should be visible at once."
+          },
+          "D15": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • For content users need to compare side by side."
+          },
+          "D16": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • For content users need to read in full."
+          },
+          "D18": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ② Navigation controls — Prev and Next NavControl buttons."
+          },
+          "D20": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ④ Pagination — PaginationDots showing position and count; the active dot is larger."
+          },
+          "D26": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't hide navigation with no alternative way to advance."
+          },
+          "D27": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Give users a way to advance — controls, pagination or swipe."
+          },
+          "D3": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Preview of the standard carousel, assembled from NavControl and PaginationDot instances, in the light and dark modes of semantic.color. Static preview — no interactive source (Storybook or prototype) is linked yet."
+          },
+          "D30": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Dots show position and count; the active dot is larger."
+          },
+          "D41": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Prev and Next advance by one slide, or one page when several slides are in view, and the pagination updates with the slide. Swipe and drag commit past about 25% of the slide width or on a fast flick, otherwise snap back — and never hijack vertical page scroll."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A carousel shows a subset of items at once when they exceed the available space. In this system it's assembled from three components — NavControl, PaginationDot and AutoplayToggle — around your own viewport and slides."
+          },
+          "D88": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • Prev, Next, pause and dot controls are icon-only — each needs an accessible name."
+          },
+          "S1": {
+            "kind": "system",
+            "text": "Other navigation components in this design system: BreadcrumbItem, NavControl."
+          }
+        },
+        "questions": [
+          "Are pagination dots always interactive (click or keyboard to jump to a slide), or are they sometimes display-only? D87 says they must be operable, D108 says 'if dots are interactive'.",
+          "What accessible name should each dot use (for example 'Slide 3 of 5')?",
+          "Should dots be used when a carousel shows several slides per view, and do they then represent slides or pages?",
+          "Is there a maximum number of slides beyond which dots should be replaced by another indicator?"
+        ]
+      }
+    },
+    "RadioControl": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.8,
+        "setHash": "4546239a113658fcc2f4422f6f738106abb94390a96f37d49d704fbb1a03d3e8",
+        "whenToUse": [
+          {
+            "text": "Use a radio button to let users pick exactly one option from a set.",
+            "sources": [
+              "D1",
+              "R1"
+            ]
+          },
+          {
+            "text": "Use RadioControl, the circle alone with no label, when another component supplies the option's text, such as a list item in a single-select list.",
+            "sources": [
+              "D10",
+              "D36"
+            ]
+          },
+          {
+            "text": "Keep the options to a small set that users can see all at once.",
+            "sources": [
+              "R1"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use RadioControl when users may choose more than one option: use Checkbox.",
+            "sources": [
+              "D37",
+              "R2"
+            ]
+          },
+          {
+            "text": "Do not use RadioControl on its own for a labeled option: use RadioField, which adds the value text and an optional error or warning row, and wrap the fields in a RadioGroup with a group label.",
+            "sources": [
+              "D9",
+              "D10",
+              "D11",
+              "S1"
+            ]
+          },
+          {
+            "text": "Do not use radio buttons for a long list of options: use a select.",
+            "sources": [
+              "R3"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "RadioControl has no label, so give each option its own text through a RadioField value or the component that contains the control.",
+            "sources": [
+              "D10",
+              "D14",
+              "D36"
+            ]
+          },
+          {
+            "text": "Make the option's value text part of the clickable area, because the 28px control is below the 44×44px touch target.",
+            "sources": [
+              "D104"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A radio button lets users pick exactly one option from a set — shown on its own, as a labeled field, or in a titled group."
+          },
+          "D10": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: The circle alone — outer ring and inner dot. No label."
+          },
+          "D104": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: The control frame is 28px — above the 24×24px AA minimum but below the 44×44px touch target in the component rules. Make the value text part of the clickable area."
+          },
+          "D11": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A group label with RadioFields, vertical or horizontal."
+          },
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ② Value — the option's own text."
+          },
+          "D36": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • List item — uses RadioControl as its control for single-select lists."
+          },
+          "D37": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Checkbox — the equivalent control for multi-select lists."
+          },
+          "D9": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A control with its value text and optional error or warning row."
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Radio guidance: Use radio buttons to choose exactly one option from a small set that is all visible at once."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Radio guidance: Do not use radio buttons when several options may be chosen: use checkboxes."
+          },
+          "R3": {
+            "kind": "reference",
+            "text": "Radio guidance: Do not use radio buttons for long lists of options: use a select."
+          },
+          "S1": {
+            "kind": "system",
+            "text": "Other radio components in this design system: RadioField, RadioGroup."
+          }
+        },
+        "questions": [
+          "Apart from list items, when should RadioControl be used on its own rather than inside a RadioField?",
+          "The evidence names no main variant property, so this draft has no variant guidance. Should State or Selected get per-value usage notes?",
+          "Is there a maximum number of options before the team recommends a select instead of radios?"
+        ]
+      }
+    },
+    "RadioField": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.8,
+        "setHash": "22e1515e9f051520aef9f4f4cd11ef0c780c7693c036bb12f9bda9c3c2177e47",
+        "whenToUse": [
+          {
+            "text": "Use a RadioField when users must pick exactly one option from a set, and each option needs its own value text.",
+            "sources": [
+              "D1",
+              "D9",
+              "D14"
+            ]
+          },
+          {
+            "text": "Place RadioFields inside a RadioGroup, because selecting one radio clears the others in its group.",
+            "sources": [
+              "D11",
+              "D29",
+              "S1"
+            ]
+          },
+          {
+            "text": "Use a RadioField when an option needs an error or warning message shown with a status icon, through its Invalid and Warning states.",
+            "sources": [
+              "D9",
+              "D15",
+              "D16",
+              "D82"
+            ]
+          },
+          {
+            "text": "Keep the set small enough that every option is visible at once.",
+            "sources": [
+              "R1"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use a RadioField when users may choose several options: use a Checkbox, the equivalent control for multi-select lists.",
+            "sources": [
+              "D37",
+              "R2"
+            ]
+          },
+          {
+            "text": "Do not use a RadioField when you need only the circle with no label: use RadioControl.",
+            "sources": [
+              "D10",
+              "S1"
+            ]
+          },
+          {
+            "text": "Do not use radio buttons for a long list of options: use a select.",
+            "sources": [
+              "R3"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Write the value as the option's own text, and give the RadioGroup a group label that names the choice being made.",
+            "sources": [
+              "D14",
+              "D25",
+              "D26"
+            ]
+          },
+          {
+            "text": "Show Read-Only only on an option that is already selected, to display a prior choice.",
+            "sources": [
+              "D29"
+            ]
+          },
+          {
+            "text": "Make the value text part of the clickable area, since the 28px control is smaller than the 44×44px touch target.",
+            "sources": [
+              "D104"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A radio button lets users pick exactly one option from a set — shown on its own, as a labeled field, or in a titled group."
+          },
+          "D10": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: The circle alone — outer ring and inner dot. No label."
+          },
+          "D104": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: The control frame is 28px — above the 24×24px AA minimum but below the 44×44px touch target in the component rules. Make the value text part of the clickable area."
+          },
+          "D11": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A group label with RadioFields, vertical or horizontal."
+          },
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ② Value — the option's own text."
+          },
+          "D15": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ③ Status icon — error or warning icon, shown in the Invalid and Warning states."
+          },
+          "D16": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ④ Message — the error or warning text."
+          },
+          "D25": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Required on every RadioGroup — names the choice being made."
+          },
+          "D26": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • The text of each option."
+          },
+          "D29": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Selecting a radio clears the other radios in its group. Read-only only ever shows an option that's already selected — it displays a prior choice, so there is no read-only radio with nothing selected."
+          },
+          "D37": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Checkbox — the equivalent control for multi-select lists."
+          },
+          "D82": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • Invalid and Warning states with a text message and icon, not color alone."
+          },
+          "D9": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A control with its value text and optional error or warning row."
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Radio guidance: Use radio buttons to choose exactly one option from a small set that is all visible at once."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Radio guidance: Do not use radio buttons when several options may be chosen: use checkboxes."
+          },
+          "R3": {
+            "kind": "reference",
+            "text": "Radio guidance: Do not use radio buttons for long lists of options: use a select."
+          },
+          "S1": {
+            "kind": "system",
+            "text": "Other radio components in this design system: RadioControl, RadioGroup."
+          }
+        },
+        "questions": [
+          "The evidence file has no `primary` variant property, so no variant guidance was drafted. Should Position (Left, Right) be the primary property? The sources only say Left puts the control before the value and Right puts the value before it (D20, D21), not when to choose each.",
+          "Is a RadioField ever used on its own, outside a RadioGroup? D1 says a radio can be 'shown on its own', but D29 implies it always belongs to a group.",
+          "Is there a maximum number of options before the team recommends a select or another component instead?",
+          "What should error and warning messages say, and when should Warning be used instead of Invalid?"
+        ]
+      }
+    },
+    "RadioGroup": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.75,
+        "setHash": "efe0db696beebebad3b9540a556a6142794d4e60aa00e85bc7113c26a4a387a3",
+        "whenToUse": [
+          {
+            "text": "Use a RadioGroup when users must pick exactly one option from a set, shown as a titled group.",
+            "sources": [
+              "D1",
+              "D8"
+            ]
+          },
+          {
+            "text": "A RadioGroup puts a group label above its RadioFields, so selecting one option clears the others in the group.",
+            "sources": [
+              "D11",
+              "D17",
+              "D29"
+            ]
+          },
+          {
+            "text": "Use it for a small set of options that are all visible at once.",
+            "sources": [
+              "R1"
+            ]
+          },
+          {
+            "text": "Use the Read-Only state to show a choice that was already made; it always has one option selected.",
+            "sources": [
+              "D29",
+              "P1"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use a RadioGroup when users can choose more than one option: use a Checkbox.",
+            "sources": [
+              "D37",
+              "R2"
+            ]
+          },
+          {
+            "text": "Do not use a RadioGroup for a long list of options: use a select.",
+            "sources": [
+              "R3"
+            ]
+          },
+          {
+            "text": "For a single labeled option, use RadioField, or RadioControl for the circle alone; for single-select lists, use a list item with a RadioControl.",
+            "sources": [
+              "D9",
+              "D10",
+              "D36",
+              "S1"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Give every RadioGroup a group label that names the choice being made.",
+            "sources": [
+              "D25"
+            ]
+          },
+          {
+            "text": "Write each option's own text as its value, and make that text part of the clickable area.",
+            "sources": [
+              "D14",
+              "D26",
+              "D104"
+            ]
+          },
+          {
+            "text": "In the Invalid and Warning states, show the error or warning as text with a status icon, not color alone.",
+            "sources": [
+              "D15",
+              "D16",
+              "D28",
+              "D82"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A radio button lets users pick exactly one option from a set — shown on its own, as a labeled field, or in a titled group."
+          },
+          "D10": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: The circle alone — outer ring and inner dot. No label."
+          },
+          "D104": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: The control frame is 28px — above the 24×24px AA minimum but below the 44×44px touch target in the component rules. Make the value text part of the clickable area."
+          },
+          "D11": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A group label with RadioFields, vertical or horizontal."
+          },
+          "D14": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ② Value — the option's own text."
+          },
+          "D15": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ③ Status icon — error or warning icon, shown in the Invalid and Warning states."
+          },
+          "D16": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ④ Message — the error or warning text."
+          },
+          "D17": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: In a RadioGroup, a group label sits above the fields."
+          },
+          "D25": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Required on every RadioGroup — names the choice being made."
+          },
+          "D26": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • The text of each option."
+          },
+          "D28": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Text with a status icon, shown in the Invalid and Warning states."
+          },
+          "D29": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Selecting a radio clears the other radios in its group. Read-only only ever shows an option that's already selected — it displays a prior choice, so there is no read-only radio with nothing selected."
+          },
+          "D36": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • List item — uses RadioControl as its control for single-select lists."
+          },
+          "D37": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Checkbox — the equivalent control for multi-select lists."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Radio is built as three layered components, from atom to organism. Only one radio in a group can be selected at a time."
+          },
+          "D82": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • Invalid and Warning states with a text message and icon, not color alone."
+          },
+          "D9": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: A control with its value text and optional error or warning row."
+          },
+          "P1": {
+            "kind": "figma-property",
+            "text": "State: Enabled, Read-Only, Invalid, Warning"
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Radio guidance: Use radio buttons to choose exactly one option from a small set that is all visible at once."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Radio guidance: Do not use radio buttons when several options may be chosen: use checkboxes."
+          },
+          "R3": {
+            "kind": "reference",
+            "text": "Radio guidance: Do not use radio buttons for long lists of options: use a select."
+          },
+          "S1": {
+            "kind": "system",
+            "text": "Other radio components in this design system: RadioControl, RadioField."
+          }
+        },
+        "questions": [
+          "The evidence file names no primary variant property: should variant guidance cover State (Enabled, Read-Only, Invalid, Warning) or Horizontal?",
+          "When should designers use a horizontal group instead of a vertical one? The sources say only that fields sit in one row or stack under the label.",
+          "Is there a maximum number of options before a select should replace the RadioGroup?",
+          "When should a field show Warning rather than Invalid?",
+          "Should a RadioGroup have an option selected by default?"
+        ]
+      }
+    },
+    "Separator": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.65,
+        "setHash": "655f06db8cc57b668c69b74e1190377af1252919402771d2aaddfb92b7060389",
+        "whenToUse": [
+          {
+            "text": "Use Separator between the items of a breadcrumb trail, as a decorative divider between one level and the next.",
+            "sources": [
+              "D17",
+              "D3"
+            ]
+          },
+          {
+            "text": "Place items and separators on one horizontal line, with equal spacing around each separator.",
+            "sources": [
+              "D21"
+            ]
+          },
+          {
+            "text": "Treat the separator as decoration only: it has no states, does nothing when clicked, and keyboard focus skips it.",
+            "sources": [
+              "D40",
+              "D42",
+              "D45",
+              "D78"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use Separator to separate groups of content outside a breadcrumb: use Divider.",
+            "sources": [
+              "D17",
+              "R1",
+              "S1"
+            ]
+          },
+          {
+            "text": "Do not mix separator types within one trail: pick Slash or Chevron and use it for the whole trail.",
+            "sources": [
+              "D21",
+              "D28",
+              "D29"
+            ]
+          }
+        ],
+        "variants": [
+          {
+            "property": "Type",
+            "value": "Slash",
+            "text": "Use Slash when the trail is drawn with slash separators, as its name says.",
+            "sources": [
+              "P1",
+              "D23",
+              "D56"
+            ]
+          },
+          {
+            "property": "Type",
+            "value": "Chevron",
+            "text": "Use Chevron when the trail is drawn with chevron separators, as its name says.",
+            "sources": [
+              "P1",
+              "D22",
+              "D57"
+            ]
+          }
+        ],
+        "sources": {
+          "D17": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • ② Separator — a decorative divider between items (chevron or slash)."
+          },
+          "D21": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Items and separators sit on one horizontal line, with equal spacing around each separator. Use one separator style for the whole trail."
+          },
+          "D22": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Chevron separator"
+          },
+          "D23": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Slash separator"
+          },
+          "D28": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Use one separator style per trail."
+          },
+          "D29": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Don't mix separator styles within one trail."
+          },
+          "D3": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Preview of the standard trail (BreadcrumbItem + Separator instances) in the light and dark modes of semantic.color. Static preview — no interactive source (Storybook or prototype) is linked yet."
+          },
+          "D40": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: • Separators have no states."
+          },
+          "D42": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: Clicking a link goes to that level. Clicking the collapse trigger reveals the hidden items. The current page and separators do nothing."
+          },
+          "D45": {
+            "kind": "figma-doc",
+            "text": "Documentation / Usage: The current page and separators are skipped. Full keyboard details are on the Accessibility tab."
+          },
+          "D56": {
+            "kind": "figma-doc",
+            "text": "Documentation / Style: Separator · Slash"
+          },
+          "D57": {
+            "kind": "figma-doc",
+            "text": "Documentation / Style: Separator · Chevron"
+          },
+          "D78": {
+            "kind": "figma-doc",
+            "text": "Documentation / Accessibility: • Separators are decorative: aria-hidden=\"true\", not focusable, not clickable."
+          },
+          "P1": {
+            "kind": "figma-property",
+            "text": "Type: Slash, Chevron"
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Divider guidance: Use a divider to separate groups of content."
+          },
+          "S1": {
+            "kind": "system",
+            "text": "Other divider components in this design system: Divider."
+          }
+        },
+        "questions": [
+          "When should a team choose Slash over Chevron? Is one the default, or does it depend on the product or context?",
+          "Should a product use the same separator type everywhere, or only within one trail?",
+          "Is Separator meant only for the breadcrumb, or can it go between other inline items (for example, metadata) where Divider is not a fit?"
+        ]
+      }
+    },
+    "Switch": {
+      "status": "proposed",
+      "usage": {
+        "status": "proposed",
+        "by": "ai:claude",
+        "confidence": 0.8,
+        "setHash": "80fc2cc1626c52af2320c145bbe0083afb1c2bcfd2d290dcf93e843c74a5379a",
+        "whenToUse": [
+          {
+            "text": "Use a switch for a two-state setting whose change applies the instant it is toggled.",
+            "sources": [
+              "D1",
+              "R1"
+            ]
+          },
+          {
+            "text": "Use the Medium size for general use and the Small size in dense contexts.",
+            "sources": [
+              "D8",
+              "P4"
+            ]
+          }
+        ],
+        "whenNotToUse": [
+          {
+            "text": "Do not use a switch for a selection that is confirmed later, such as on form submit: use a checkbox.",
+            "sources": [
+              "D1",
+              "R2"
+            ]
+          }
+        ],
+        "content": [
+          {
+            "text": "Label the switch by what the setting controls, such as \"Notifications\", not by its current state.",
+            "sources": [
+              "D11"
+            ]
+          },
+          {
+            "text": "Keep the inner On/Off icon shown so the resulting state reads at a glance, not only from the handle position.",
+            "sources": [
+              "D8",
+              "P1"
+            ]
+          }
+        ],
+        "sources": {
+          "D1": {
+            "kind": "figma-doc",
+            "text": "Documentation: A two-state control that applies its change the instant it's toggled — distinct from a checkbox, which marks a selection typically confirmed later."
+          },
+          "D11": {
+            "kind": "figma-doc",
+            "text": "Documentation: Click/tap anywhere on the track toggles state, not just the handle. Keyboard: focusable, toggles via Space. Loading shows a pending indicator on the handle, distinct from Disabled. Implement with real switch semantics (role=switch, aria-checked), not a generic checkbox role. Label by what the setting controls (\"Notifications\"), not by its current state."
+          },
+          "D8": {
+            "kind": "figma-doc",
+            "text": "Documentation: Two sizes: Medium (default/general use) and Small (dense contexts). Inner icon content swaps between On/Off glyphs immediately as state changes, reinforcing the resulting state at a glance rather than relying on handle position alone."
+          },
+          "P1": {
+            "kind": "figma-property",
+            "text": "Show Inner Content (on/off, default on)"
+          },
+          "P4": {
+            "kind": "figma-property",
+            "text": "Size: Medium, Small"
+          },
+          "R1": {
+            "kind": "reference",
+            "text": "Switch guidance: Use a switch for a setting that takes effect as soon as it is turned on or off."
+          },
+          "R2": {
+            "kind": "reference",
+            "text": "Switch guidance: Do not use a switch for a choice that applies only when a form is submitted: use a checkbox."
+          }
+        },
+        "questions": [
+          "The evidence has no primary variant property: should Value, Interaction or Size be treated as the main variant for usage guidance?",
+          "When, if ever, should Show Inner Content be turned off?",
+          "When should a product use AutoplayToggle instead of Switch?",
+          "How should a switch behave while its change is pending in the Loading state, and how should a failed change be handled?"
+        ]
+      }
+    }
+  }
+}

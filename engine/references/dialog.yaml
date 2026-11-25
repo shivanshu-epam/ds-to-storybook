@@ -30,3 +30,9 @@ accessibility:
   keyboard:
     - { key: "Escape", action: "close" }
     - { key: "Tab", action: "stays inside" }
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a dialog for a short task or decision that needs attention before people continue."
+  whenNotToUse:
+    - "Do not use a dialog for information that can sit on the page."
+    - "Do not open a dialog from another dialog."

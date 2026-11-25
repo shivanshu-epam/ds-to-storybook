@@ -29,3 +29,8 @@ accessibility:
   name: "Describes its trigger (aria-describedby)."
   keyboard:
     - { key: "Escape", action: "dismiss" }
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a tooltip for a short label or hint about an element, shown on hover or focus."
+  whenNotToUse:
+    - "Do not put essential information or interactive content in a tooltip."

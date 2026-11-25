@@ -27,3 +27,8 @@ accessibility:
   pattern: "none"
   role: "none (presentational)"
   name: "Not focusable; text content is read in place."
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use typography styles to set the hierarchy of the page: headings, body and supporting text."
+  whenNotToUse:
+    - "Do not use heading styles for text that is not a heading."

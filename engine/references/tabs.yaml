@@ -30,3 +30,9 @@ accessibility:
   keyboard:
     - { key: "Arrow keys", action: "move between tabs" }
     - { key: "Home / End", action: "first / last" }
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use tabs to switch between views of related content at the same level, one view at a time."
+  whenNotToUse:
+    - "Do not use tabs to step through a sequence: use a progress indicator."
+    - "Do not use tabs for navigation between unrelated pages: use navigation."

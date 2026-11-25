@@ -27,3 +27,8 @@ accessibility:
   pattern: "separator"
   role: "separator (or presentation when decorative)"
   name: "None."
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a divider to separate groups of content."
+  whenNotToUse:
+    - "Do not use dividers where spacing alone separates the content."

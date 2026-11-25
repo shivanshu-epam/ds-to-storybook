@@ -27,3 +27,8 @@ accessibility:
   pattern: "list"
   role: "list / listitem"
   name: "List label where it has a heading."
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a list to show a set of related items in a column."
+  whenNotToUse:
+    - "Do not use a list for data people compare across attributes: use a table."

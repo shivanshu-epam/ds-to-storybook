@@ -1,11 +1,13 @@
 /** Scenario 2: Figma design system -> a fresh, tested Storybook project. */
 import { composition, designReviewPage, docsPage, isBuildingBlock, polishStories, templateSections } from './docs.ts';
-import { activeDecisions, decidedSetDescription, decisionsReport, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel, type DecisionsFile } from '../decisions/decisions.ts';
+import { activeDecisions, decidedDescription as decidedPropDescription, decidedInternal, decidedSetDescription, decidedUsage, decisionsReport, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel, type DecisionsFile } from '../decisions/decisions.ts';
 import { buildDocSpec, coverageReport, loadReferences, pickReference } from '../docspec/build.ts';
 import { matchExport, moduleExports, readComponentApis } from '../code/api.ts';
 import { codeMapReport, mapComponent, setActiveCodeMap, type CodeMapEntry } from '../code/map.ts';
 import type { ComponentApi } from '../code/api.ts';
+import type { UsageDecision } from '../decisions/decisions.ts';
 import { codeStories } from './code/stories.ts';
+import { usageEvidence } from '../ai/usage.ts';
 import { BEHAVIOUR, buildScorecard, scorecardLines, scorecardReport } from './scorecard.ts';
 import { leadSentence } from './templates/common.ts';
 import { fontFaceCss, fontsReport, httpFontSource, planFonts, usedFonts, type FontOverride, type FontPlan } from './fonts.ts';
@@ -160,7 +162,7 @@ function visualManifest(ir: FigmaIR, results: { c: PlannedComponent; result: Tem
 const OWNED = ['src', '.storybook', 'types', 'docspec'];
 
 /** Descriptions by code prop, and the component description, from the applied decisions. */
-function decisionDocs(sets: IRComponentSet[]): { descriptions?: Record<string, string>; decidedDescription?: string } {
+function decisionDocs(sets: IRComponentSet[]): { descriptions?: Record<string, string>; decidedDescription?: string; usage?: UsageDecision } {
   const descriptions: Record<string, string> = {};
   for (const set of sets) {
     const plan = propPlan(set);
@@ -168,7 +170,8 @@ function decisionDocs(sets: IRComponentSet[]): { descriptions?: Record<string, s
     for (const b of [...plan.booleans, ...plan.texts]) if (b.description) descriptions[b.prop] = b.description;
   }
   const decided = sets.map((s) => decidedSetDescription(s)).find(Boolean);
-  return { ...(Object.keys(descriptions).length ? { descriptions } : {}), ...(decided ? { decidedDescription: decided } : {}) };
+  const usage = sets.map((s) => decidedUsage(s)).find(Boolean);
+  return { ...(Object.keys(descriptions).length ? { descriptions } : {}), ...(decided ? { decidedDescription: decided } : {}), ...(usage ? { usage } : {}) };
 }
 
 export async function generateStorybook(config: LoadedConfig, gen: GenerateConfig, ir: FigmaIR, renderer: FigmaRenderer, log: (m: string) => void, plan: PlannedComponent[] = gen.components ?? []) {
@@ -355,6 +358,30 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     });
   });
   const cardOf = new Map(cards.map((x) => [x.component, x]));
+
+  // Usage evidence (roadmap phase 5): one file per public component, numbered sources the write-usage skill cites.
+  {
+    const refs = loadReferences();
+    const kinds = new Map(results.map(({ c, ctx }) => [c.name, pickReference(refs, effective.get(c.name), [Object.values(ctx.sets)[0]!.name, c.name]).ref]));
+    const usageDir = join(config.baseDir, '.ds-sync', 'usage');
+    rmSync(usageDir, { recursive: true, force: true });
+    for (const { c, ctx } of results) {
+      if (blockOf(c)) continue;
+      const sets = Object.values(ctx.sets);
+      const ref = kinds.get(c.name)!;
+      const code = codeComponents.find((x) => x.c.name === c.name);
+      const accepted = sets.map((st) => decisionsFile?.sets[st.name]?.usage).find((u) => u?.status === 'accepted');
+      const descriptions = Object.fromEntries(sets.flatMap((st) => st.properties.flatMap((p) => { const d = decidedPropDescription(st, p.name); return d ? [[p.name, d]] : []; })));
+      const ev = usageEvidence({
+        name: c.name, title: titleOf(c), sets, ref, descriptions,
+        siblings: results.filter((x) => x.c.name !== c.name && !blockOf(x.c) && kinds.get(x.c.name)?.id === ref.id && ref.id !== 'component').map((x) => x.c.name),
+        ...(code ? { code: { entry: code.entry, props: code.api.props, from: gen.code!.from } } : {}),
+        ...(accepted ? { accepted } : {}),
+        internal: new Set(sets.flatMap((st) => st.properties.filter((p) => decidedInternal(st, p.name)).map((p) => p.name))),
+      });
+      writeText(join(usageDir, `${c.name}.json`), JSON.stringify(ev, null, 2) + '\n');
+    }
+  }
   const applyDocs = (list: GeneratedFile[], framework: 'react' | 'wc', packageName: string): GeneratedFile[] => {
     const reviews: GeneratedFile[] = [];
     for (const { c, ctx, result } of results) {
@@ -464,7 +491,8 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
       for (const { c, sets, entry, api } of codeComponents) {
         const parent = gen.code.parents?.[c.name] ?? (/Item$/.test(api.export) && codeExports.includes(api.export.replace(/Item$/, '')) ? api.export.replace(/Item$/, '') : undefined);
         const kindRef = pickReference(refs, effective.get(c.name), [sets[0]!.name, c.name]).ref;
-        const r = codeStories({ name: c.name, title: titleOf(c), from, sets, entry, api, fileKey: ir.fileKey, accessibility: kindRef.accessibility, ...(parent ? { parent } : {}), ...(gen.code.examples?.[c.name] ? { examples: gen.code.examples[c.name] } : {}), ...(iconComponents ? { icons: iconComponents } : {}) });
+        const usage = sets.map((st) => decidedUsage(st)).find(Boolean);
+        const r = codeStories({ name: c.name, title: titleOf(c), from, sets, entry, api, fileKey: ir.fileKey, accessibility: kindRef.accessibility, ...(usage ? { usage } : {}), ...(parent ? { parent } : {}), ...(gen.code.examples?.[c.name] ? { examples: gen.code.examples[c.name] } : {}), ...(iconComponents ? { icons: iconComponents } : {}) });
         if (r.needsData.length) log(`react-code: ${c.name} needs example data (${r.needsData.join(', ')}); its stories are not in the test run`);
         outFiles.push(...r.files);
         specs.push(buildDocSpec({

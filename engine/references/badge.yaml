@@ -27,3 +27,9 @@ accessibility:
   pattern: "none"
   role: "none (presentational)"
   name: "Not focusable; text content is read in place."
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a badge or tag to label, categorise or show the status of an item in a few words."
+  whenNotToUse:
+    - "Do not use a badge for actions: use a button or link."
+    - "Do not use colour alone to carry the meaning; use the text too."

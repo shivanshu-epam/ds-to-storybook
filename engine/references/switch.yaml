@@ -30,3 +30,8 @@ accessibility:
   keyboard:
     - { key: "Space", action: "toggle" }
     - { key: "Enter", action: "toggle" }
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a switch for a setting that takes effect as soon as it is turned on or off."
+  whenNotToUse:
+    - "Do not use a switch for a choice that applies only when a form is submitted: use a checkbox."

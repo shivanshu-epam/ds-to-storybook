@@ -145,6 +145,163 @@
               "combobox"
             ],
             "description": "Behaviour template for this set, when structure and names cannot tell."
+          },
+          "usage": {
+            "type": "object",
+            "required": [
+              "status",
+              "sources"
+            ],
+            "additionalProperties": false,
+            "description": "Usage guidance with its own review status; every sentence cites ids in sources.",
+            "properties": {
+              "status": {
+                "enum": [
+                  "proposed",
+                  "accepted",
+                  "rejected"
+                ]
+              },
+              "by": {
+                "type": "string"
+              },
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "setHash": {
+                "type": "string"
+              },
+              "whenToUse": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "text",
+                    "sources"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "sources": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "whenNotToUse": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "text",
+                    "sources"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "sources": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "variants": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "property",
+                    "value",
+                    "text",
+                    "sources"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "property": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "sources": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "content": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "text",
+                    "sources"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "sources": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "sources": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "required": [
+                    "kind",
+                    "text"
+                  ],
+                  "properties": {
+                    "kind": {
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "questions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }

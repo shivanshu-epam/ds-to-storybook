@@ -32,3 +32,8 @@ accessibility:
     - { key: "Enter", action: "activate" }
     - { key: "Escape", action: "close" }
 related: ["menu button", "overflow menu"]
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a menu to offer a list of actions or options from one trigger, when there is not room to show them all."
+  whenNotToUse:
+    - "Do not use a menu to choose a form value: use a select."

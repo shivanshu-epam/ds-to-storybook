@@ -31,3 +31,9 @@ accessibility:
     - { key: "Arrow keys", action: "move selection" }
     - { key: "Space", action: "select" }
 related: ["radio group"]
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use radio buttons to choose exactly one option from a small set that is all visible at once."
+  whenNotToUse:
+    - "Do not use radio buttons when several options may be chosen: use checkboxes."
+    - "Do not use radio buttons for long lists of options: use a select."

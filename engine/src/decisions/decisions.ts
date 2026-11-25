@@ -28,6 +28,32 @@ export interface PropDecision {
   evidence?: string[];
 }
 
+/** One sentence of usage guidance and the evidence it rests on (ids into UsageDecision.sources). */
+export interface UsageSentence {
+  text: string;
+  sources: string[];
+}
+
+/** Usage guidance for a component (the write-usage skill drafts it; a person accepts it). Every sentence cites
+ * sources; the cited text is kept here so the pull request shows what each sentence rests on. */
+export interface UsageDecision {
+  status: DecisionStatus;
+  by?: string;
+  confidence?: number;
+  /** Hash of the Figma set the guidance was written for. */
+  setHash?: string;
+  whenToUse?: UsageSentence[];
+  whenNotToUse?: UsageSentence[];
+  /** Guidance for values of the main variant property ("Use Ghost for ..."). */
+  variants?: (UsageSentence & { property: string; value: string })[];
+  /** Guidance on labels and copy. */
+  content?: UsageSentence[];
+  sources: Record<string, { kind: string; text: string }>;
+  questions?: string[];
+}
+
+export const USAGE_SECTIONS = ['whenToUse', 'whenNotToUse', 'variants', 'content'] as const;
+
 /** Behaviour templates a decision can choose for a component set (when structure and names cannot tell). */
 export const ARCHETYPES = ['generic', 'button', 'link', 'checkbox', 'switch', 'disclosure', 'combobox'] as const;
 export type Archetype = (typeof ARCHETYPES)[number];
@@ -48,6 +74,8 @@ export interface SetDecision {
   questions?: string[];
   /** Hash of the Figma set the decision was made for: a different hash means Figma changed since. */
   setHash?: string;
+  /** Usage guidance (when to use, when not, per variant, content), with its own review status. */
+  usage?: UsageDecision;
 }
 
 export interface DecisionsFile {
@@ -101,6 +129,24 @@ export function validateDecisions(file: unknown, ir?: FigmaIR): DecisionProblem[
     if (sets && sets.length > 1) warn(setName, `${sets.length} Figma sets share this name; the decision applies to all of them.`);
     if (sets && d.setHash && !sets.some((s) => s.hash === d.setHash)) warn(setName, 'Figma changed this set since the decision was made: check it is still right.');
     const figmaProps = new Set(sets?.flatMap((s) => s.properties.map((p) => p.name)) ?? []);
+    if (d.usage) {
+      const u = d.usage;
+      if (!['proposed', 'accepted', 'rejected'].includes(u.status)) err(setName, 'usage.status must be proposed, accepted or rejected.');
+      for (const key of USAGE_SECTIONS) {
+        for (const [i, x] of ((u[key] ?? []) as UsageSentence[]).entries()) {
+          const where = `usage.${key}[${i}]`;
+          if (!x.text?.trim()) err(setName, `${where}: empty sentence.`);
+          if (!x.sources?.length) err(setName, `${where}: cites no source.`);
+          for (const id of x.sources ?? []) if (!u.sources?.[id]) err(setName, `${where}: cites "${id}", which is not in usage.sources.`);
+          if (key === 'variants') {
+            const v = x as UsageSentence & { property: string; value: string };
+            const fp = sets?.flatMap((st) => st.properties).find((p) => p.name === v.property);
+            if (ir && (!fp || !(fp.options ?? []).includes(v.value))) err(setName, `${where}: "${v.property}=${v.value}" is not a Figma value of this set.`);
+          }
+        }
+      }
+      if (sets && u.setHash && !sets.some((st) => st.hash === u.setHash)) warn(setName, 'Figma changed this set since the usage guidance was written: check it is still right.');
+    }
     const names = new Map<string, string>();
     for (const [prop, pd] of Object.entries(d.props ?? {})) {
       if (ir && !figmaProps.has(prop)) { err(setName, 'Not a property of this Figma set.', prop); continue; }
@@ -141,6 +187,7 @@ export function validateDecisions(file: unknown, ir?: FigmaIR): DecisionProblem[
 export interface ActiveDecision {
   archetype?: Archetype;
   description?: string;
+  usage?: UsageDecision;
   props: Map<string, { name?: string; description?: string; role?: 'api' | 'internal'; values?: Record<string, string> }>;
   status: DecisionStatus;
 }
@@ -166,7 +213,8 @@ export function activeDecisions(file: DecisionsFile | undefined, level: ApplyLev
     }
     const description = ok(d.status) ? d.description : undefined;
     const archetype = ok(d.status) ? d.archetype : undefined;
-    if (props.size || description || archetype) out.set(setName, { ...(archetype ? { archetype } : {}), ...(description ? { description } : {}), props, status: d.status });
+    const usage = d.usage && ok(d.usage.status) ? d.usage : undefined;
+    if (props.size || description || archetype || usage) out.set(setName, { ...(archetype ? { archetype } : {}), ...(description ? { description } : {}), ...(usage ? { usage } : {}), props, status: d.status });
   }
   return out;
 }
@@ -196,6 +244,11 @@ export function decidedDescription(set: Pick<IRComponentSet, 'name'>, figmaProp:
   return ACTIVE.get(set.name)?.props.get(figmaProp)?.description;
 }
 
+/** Usage guidance for a set, when accepted (or proposed, when previewing proposals). */
+export function decidedUsage(set: Pick<IRComponentSet, 'name'>): UsageDecision | undefined {
+  return ACTIVE.get(set.name)?.usage;
+}
+
 export function decidedSetDescription(set: Pick<IRComponentSet, 'name'>): string | undefined {
   return ACTIVE.get(set.name)?.description;
 }
@@ -206,7 +259,8 @@ export function decidedSetDescription(set: Pick<IRComponentSet, 'name'>): string
 export function mergeProposal(file: DecisionsFile, setName: string, proposal: SetDecision): 'added' | 'updated' | 'revised' | 'kept' {
   const current = file.sets[setName];
   if (!current) { file.sets[setName] = { ...proposal, status: 'proposed' }; return 'added'; }
-  if (current.status === 'proposed') { file.sets[setName] = { ...proposal, status: 'proposed' }; return 'updated'; }
+  // Usage guidance has its own status and its own skill: a new interpretation keeps it.
+  if (current.status === 'proposed') { file.sets[setName] = { ...proposal, ...(current.usage ? { usage: current.usage } : {}), status: 'proposed' }; return 'updated'; }
   if (current.status === 'rejected') return 'kept';
   let revised = false;
   for (const [figma, pd] of Object.entries(proposal.props ?? {})) {
@@ -225,12 +279,13 @@ export function mergeProposal(file: DecisionsFile, setName: string, proposal: Se
 
 /** Sets with something waiting for a person: a proposed set, or revisions of properties in an accepted set. */
 export function hasProposals(d: SetDecision): boolean {
-  return d.status === 'proposed' || Object.values(d.props ?? {}).some((p) => p.revision);
+  return d.status === 'proposed' || Object.values(d.props ?? {}).some((p) => p.revision) || d.usage?.status === 'proposed';
 }
 
 /** Accepts or rejects a set's proposals: the set itself when proposed, otherwise the revisions in it. */
 export function decide(d: SetDecision, action: 'accept' | 'reject'): void {
   if (d.status === 'proposed') d.status = action === 'accept' ? 'accepted' : 'rejected';
+  if (d.usage?.status === 'proposed') d.usage.status = action === 'accept' ? 'accepted' : 'rejected';
   for (const p of Object.values(d.props ?? {})) {
     if (!p.revision) continue;
     if (action === 'accept') {

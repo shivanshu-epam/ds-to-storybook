@@ -278,7 +278,7 @@ All ten questions are answered.
 | 2. Spec builder | Done: a doc spec and coverage check for every component of every system (`docspec/`, `DOCS-COVERAGE.md`). Diagnostics moved to a Design review page per component |
 | 3. Decisions | Partly done: `role: internal` (Carbon Button's Resizer) and value names. Separate components such as Skeleton come from code mode (`<ButtonSkeleton>`); there is no decision role for them yet |
 | 4. Generation | Done for the pilot: per-value and per-state stories, and code mode (`generate.code`, the `react-code` target). See docs/pilots/carbon-button.md |
-| 5. *write* skill | Not started: usage guidance is the one section missing on every component in all three systems |
+| 5. *write* skill | Built: evidence packs, the write-usage skill, `ds-sync usage`, cited-source checks, and the Usage section. Piloted on Carbon Button (draft, not yet accepted). The other components still need drafting and review |
 | 6. Validation | Done: `ds-sync docs check` against a reviewed baseline, in the GitHub workflow |
 | 7. Expand | Coverage runs on every component already. Each reference spec still needs checking on two systems |
 | 8. Product | Not started |

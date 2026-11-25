@@ -10,6 +10,8 @@ export interface Reference {
   stories: Record<string, boolean | string>;
   accessibility: { pattern: string; role: string; name: string; keyboard?: { key: string; action: string }[] };
   related?: string[];
+  /** General guidance for this kind (ds-sync standard), citable by usage drafts. */
+  guidance?: { whenToUse: string[]; whenNotToUse: string[] };
 }
 
 /** Where something in the spec came from. */

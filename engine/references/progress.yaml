@@ -27,3 +27,8 @@ accessibility:
   pattern: "progressbar / status"
   role: "progressbar or status"
   name: "Label says what is loading; aria-busy on the region."
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a progress or loading indicator to show that work is in progress, and how far it has got when that is known."
+  whenNotToUse:
+    - "Do not use a loading indicator for actions that finish almost at once."

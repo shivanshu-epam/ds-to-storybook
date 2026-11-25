@@ -29,3 +29,9 @@ accessibility:
   name: "Title and message are read when it appears."
   keyboard:
     - { key: "Tab", action: "reach actions" }
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a notification to tell people about the result of an action or a change in status."
+  whenNotToUse:
+    - "Do not use a notification for information that belongs in the page content."
+    - "Do not show several notifications for one event."

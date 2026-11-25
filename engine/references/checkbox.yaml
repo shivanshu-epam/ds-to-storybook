@@ -30,3 +30,9 @@ accessibility:
   keyboard:
     - { key: "Space", action: "toggle" }
 related: ["checkbox group"]
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a checkbox to turn one option on or off, or to choose any number of options from a list."
+  whenNotToUse:
+    - "Do not use a checkbox when only one option of several may be chosen: use radio buttons."
+    - "Do not use a checkbox for a setting that applies at once: use a switch."
