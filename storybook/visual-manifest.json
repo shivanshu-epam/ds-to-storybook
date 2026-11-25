@@ -1,7 +1,7 @@
 {
   "note": "Written by ds-sync generate; read by ds-sync visual. Figma renders come from this file key and version.",
   "fileKey": "I983NcgqSiY14YkpJbwjG8",
-  "version": "2420998788157412873",
+  "version": "2425019839612435738",
   "components": [
     {
       "name": "Button",
@@ -1248,6 +1248,72 @@
           "name": "Variant=Danger, Size=Lg, State=Disabled, Radius=None",
           "width": 93,
           "height": 48
+        }
+      ]
+    },
+    {
+      "name": "Accordion",
+      "story": "components-accordion--figma-variants",
+      "variants": [
+        {
+          "nodeId": "236:1535",
+          "name": "Style=Bordered, State=Default",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1569",
+          "name": "Style=Bordered, State=Hover",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1603",
+          "name": "Style=Bordered, State=Focused",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1637",
+          "name": "Style=Bordered, State=Expanded",
+          "width": 360,
+          "height": 93
+        },
+        {
+          "nodeId": "236:1671",
+          "name": "Style=Bordered, State=Disabled",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1705",
+          "name": "Style=Borderless, State=Default",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1739",
+          "name": "Style=Borderless, State=Hover",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1773",
+          "name": "Style=Borderless, State=Focused",
+          "width": 360,
+          "height": 37
+        },
+        {
+          "nodeId": "236:1807",
+          "name": "Style=Borderless, State=Expanded",
+          "width": 360,
+          "height": 93
+        },
+        {
+          "nodeId": "236:1841",
+          "name": "Style=Borderless, State=Disabled",
+          "width": 360,
+          "height": 37
         }
       ]
     },
@@ -3612,72 +3678,6 @@
           "name": "Type=Chevron",
           "width": 16,
           "height": 16
-        }
-      ]
-    },
-    {
-      "name": "Accordion",
-      "story": "components-accordion--figma-variants",
-      "variants": [
-        {
-          "nodeId": "236:1535",
-          "name": "Style=Bordered, State=Default",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1569",
-          "name": "Style=Bordered, State=Hover",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1603",
-          "name": "Style=Bordered, State=Focused",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1637",
-          "name": "Style=Bordered, State=Expanded",
-          "width": 360,
-          "height": 93
-        },
-        {
-          "nodeId": "236:1671",
-          "name": "Style=Bordered, State=Disabled",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1705",
-          "name": "Style=Borderless, State=Default",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1739",
-          "name": "Style=Borderless, State=Hover",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1773",
-          "name": "Style=Borderless, State=Focused",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1807",
-          "name": "Style=Borderless, State=Expanded",
-          "width": 360,
-          "height": 93
-        },
-        {
-          "nodeId": "236:1841",
-          "name": "Style=Borderless, State=Disabled",
-          "width": 360,
-          "height": 37
         }
       ]
     },

@@ -742,6 +742,129 @@
       "reason": "bound"
     },
     {
+      "value": "#f9fafb",
+      "hint": [
+        "bg",
+        "surface",
+        "bordered",
+        "default"
+      ],
+      "variableId": "VariableID:11:3",
+      "token": "--surface-bg-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#4b5563",
+      "hint": [
+        "border",
+        "focus",
+        "bordered",
+        "default"
+      ],
+      "variableId": "VariableID:11:32",
+      "token": "--border-strong",
+      "reason": "bound"
+    },
+    {
+      "value": "8px",
+      "hint": [
+        "block",
+        "stack",
+        "inset",
+        "space",
+        "bordered",
+        "default"
+      ],
+      "variableId": "VariableID:14:9",
+      "token": "--space-stack-xs",
+      "reason": "bound"
+    },
+    {
+      "value": "12px",
+      "hint": [
+        "inline",
+        "inset",
+        "space",
+        "bordered",
+        "default"
+      ],
+      "variableId": "VariableID:14:10",
+      "token": "--space-inline-md",
+      "reason": "bound"
+    },
+    {
+      "value": "#f3f4f6",
+      "hint": [
+        "bg",
+        "surface",
+        "bordered",
+        "hover"
+      ],
+      "variableId": "VariableID:11:4",
+      "token": "--surface-bg-subtle",
+      "reason": "bound"
+    },
+    {
+      "value": "#111827",
+      "hint": [
+        "fg",
+        "text",
+        "bordered",
+        "default"
+      ],
+      "variableId": "VariableID:11:14",
+      "token": "--interactive-fg-secondary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#6b7280",
+      "hint": [
+        "fg",
+        "text",
+        "bordered",
+        "disabled"
+      ],
+      "variableId": "VariableID:11:17",
+      "token": "--interactive-fg-primary-disabled",
+      "reason": "bound"
+    },
+    {
+      "value": "#4b5563",
+      "hint": [
+        "icon",
+        "fg",
+        "bordered",
+        "default"
+      ],
+      "variableId": "VariableID:11:39",
+      "token": "--icon-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#6b7280",
+      "hint": [
+        "icon",
+        "fg",
+        "bordered",
+        "disabled"
+      ],
+      "variableId": "VariableID:11:40",
+      "token": "--icon-subtle",
+      "reason": "bound"
+    },
+    {
+      "value": "#4b5563",
+      "hint": [
+        "fg",
+        "text",
+        "bordered",
+        "expanded"
+      ],
+      "variableId": "VariableID:11:15",
+      "token": "--interactive-fg-readonly",
+      "reason": "bound"
+    },
+    {
       "value": "#ffffff",
       "hint": [
         "bg",
@@ -1329,23 +1452,6 @@
       "reason": "bound"
     },
     {
-      "value": "#f9fafb",
-      "hint": [
-        "bg",
-        "surface",
-        "control",
-        "interactive",
-        "sm",
-        "unchecked",
-        "unselected",
-        "default",
-        "enabled"
-      ],
-      "variableId": "VariableID:11:3",
-      "token": "--surface-bg-default",
-      "reason": "bound"
-    },
-    {
       "value": "4px",
       "hint": [
         "radius",
@@ -1359,22 +1465,6 @@
       ],
       "variableId": null,
       "reason": "raw-in-figma"
-    },
-    {
-      "value": "#f3f4f6",
-      "hint": [
-        "bg",
-        "surface",
-        "control",
-        "interactive",
-        "sm",
-        "unchecked",
-        "unselected",
-        "disabled"
-      ],
-      "variableId": "VariableID:11:4",
-      "token": "--surface-bg-subtle",
-      "reason": "bound"
     },
     {
       "value": "#c81e1e",
@@ -1410,20 +1500,6 @@
       "reason": "bound"
     },
     {
-      "value": "#6b7280",
-      "hint": [
-        "icon",
-        "fg",
-        "sm",
-        "checked",
-        "selected",
-        "disabled"
-      ],
-      "variableId": "VariableID:11:40",
-      "token": "--icon-subtle",
-      "reason": "bound"
-    },
-    {
       "value": "8px",
       "hint": [
         "stack",
@@ -1436,47 +1512,6 @@
       ],
       "variableId": null,
       "reason": "raw-in-figma"
-    },
-    {
-      "value": "#111827",
-      "hint": [
-        "fg",
-        "text",
-        "unchecked",
-        "unselected",
-        "default",
-        "enabled"
-      ],
-      "variableId": "VariableID:11:14",
-      "token": "--interactive-fg-secondary-default",
-      "reason": "bound"
-    },
-    {
-      "value": "#6b7280",
-      "hint": [
-        "fg",
-        "text",
-        "unchecked",
-        "unselected",
-        "disabled"
-      ],
-      "variableId": "VariableID:11:17",
-      "token": "--interactive-fg-primary-disabled",
-      "reason": "bound"
-    },
-    {
-      "value": "#4b5563",
-      "hint": [
-        "fg",
-        "text",
-        "unchecked",
-        "unselected",
-        "default",
-        "enabled"
-      ],
-      "variableId": "VariableID:11:15",
-      "token": "--interactive-fg-readonly",
-      "reason": "bound"
     },
     {
       "value": "#c81e1e",
@@ -1872,18 +1907,6 @@
       "reason": "bound"
     },
     {
-      "value": "#4b5563",
-      "hint": [
-        "icon",
-        "fg",
-        "link",
-        "default"
-      ],
-      "variableId": "VariableID:11:39",
-      "token": "--icon-default",
-      "reason": "bound"
-    },
-    {
       "value": "#4f46e5",
       "hint": [
         "fg",
@@ -1893,45 +1916,6 @@
       ],
       "variableId": "VariableID:11:20",
       "token": "--interactive-fg-ghost-default",
-      "reason": "bound"
-    },
-    {
-      "value": "#4b5563",
-      "hint": [
-        "border",
-        "focus",
-        "bordered",
-        "default"
-      ],
-      "variableId": "VariableID:11:32",
-      "token": "--border-strong",
-      "reason": "bound"
-    },
-    {
-      "value": "8px",
-      "hint": [
-        "block",
-        "stack",
-        "inset",
-        "space",
-        "bordered",
-        "default"
-      ],
-      "variableId": "VariableID:14:9",
-      "token": "--space-stack-xs",
-      "reason": "bound"
-    },
-    {
-      "value": "12px",
-      "hint": [
-        "inline",
-        "inset",
-        "space",
-        "bordered",
-        "default"
-      ],
-      "variableId": "VariableID:14:10",
-      "token": "--space-inline-md",
       "reason": "bound"
     },
     {
