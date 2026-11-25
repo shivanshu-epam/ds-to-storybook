@@ -1,0 +1,38 @@
+# Reference spec: Dialog. Structure for every design system; values (names, options) come from each system.
+id: dialog
+title: Dialog
+matches:
+  behaviours: [dialog]
+  names: ["dialog", "modal", "drawer", "sheet", "side panel"]
+primaryAxis: [size, type, variant]
+sections:
+  - { id: overview, required: true }
+  - { id: preview, required: true }
+  - { id: variants, required: true }
+  - { id: states, required: false }
+  - { id: accessibility, required: true }
+  - { id: usage, required: true }
+  - { id: api, required: true }
+  - { id: anatomy, required: false }
+  - { id: related, required: false }
+  - { id: code, required: true }
+stories:
+  default: true
+  perPrimaryValue: true      # one story per value of the main variant property
+  perProperty: true          # one story per other property, all its values side by side
+  perOption: true            # one story per optional part (boolean or slot)
+  perPropState: true         # disabled, error, warning, read-only, loading, selected
+  allVariants: test          # every designed Figma variant, in a test-only story
+accessibility:
+  pattern: "wai-aria/dialog (modal)"
+  role: "dialog"
+  name: "The title labels the dialog."
+  keyboard:
+    - { key: "Escape", action: "close" }
+    - { key: "Tab", action: "stays inside" }
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a dialog for a short task or decision that needs attention before people continue."
+  whenNotToUse:
+    - "Do not use a dialog for information that can sit on the page."
+    - "Do not open a dialog from another dialog."

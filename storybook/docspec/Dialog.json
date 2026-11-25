@@ -1,0 +1,407 @@
+{
+  "specVersion": "1.0",
+  "component": "Dialog",
+  "title": "Components/Dialog",
+  "kind": {
+    "id": "dialog",
+    "title": "Dialog",
+    "from": "behaviour"
+  },
+  "behaviour": "dialog",
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2425654086033038120",
+    "sets": [
+      {
+        "id": "348:627",
+        "name": "Dialog",
+        "page": "↳ dialog",
+        "variants": 30
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1341:976",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1341:1657",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1341:1947",
+        "name": "Documentation / Accessibility"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "Has close button",
+      "type": "BOOLEAN",
+      "props": [
+        "hasCloseButton"
+      ],
+      "role": "option",
+      "default": true,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Has secondary action",
+      "type": "BOOLEAN",
+      "props": [
+        "hasSecondaryAction"
+      ],
+      "role": "option",
+      "default": true,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Has subtitle",
+      "type": "BOOLEAN",
+      "props": [
+        "hasSubtitle"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Scrollable content",
+      "type": "BOOLEAN",
+      "props": [
+        "scrollableContent"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Title",
+      "type": "TEXT",
+      "props": [
+        "title"
+      ],
+      "role": "content",
+      "default": "Dialog title",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Subtitle",
+      "type": "TEXT",
+      "props": [
+        "subtitle"
+      ],
+      "role": "content",
+      "default": "Supporting context text",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Body content",
+      "type": "TEXT",
+      "props": [
+        "bodyContent"
+      ],
+      "role": "content",
+      "default": "Dialog body copy goes here.",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Type",
+      "type": "VARIANT",
+      "props": [
+        "type"
+      ],
+      "role": "appearance",
+      "default": "Confirmation",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Confirmation",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Alert",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Form",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Full-screen",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Side-drawer",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Size",
+      "type": "VARIANT",
+      "props": [
+        "size"
+      ],
+      "role": "appearance",
+      "default": "Small",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Small",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Medium",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Large",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Full",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "state"
+      ],
+      "role": "state",
+      "default": "Open",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Open",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Loading",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Error",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": [
+        "Title",
+        "Type"
+      ]
+    },
+    {
+      "export": "CloseButton",
+      "name": "Close button",
+      "visibility": "docs",
+      "shows": []
+    },
+    {
+      "export": "AlertRole",
+      "name": "Alert role",
+      "visibility": "docs",
+      "shows": [
+        "Type"
+      ]
+    },
+    {
+      "export": "TypeAndSize",
+      "name": "Type and size",
+      "visibility": "dev",
+      "shows": [
+        "Type",
+        "Size",
+        "State"
+      ]
+    },
+    {
+      "export": "State",
+      "name": "State",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "Alert",
+      "name": "Alert",
+      "visibility": "dev",
+      "shows": [
+        "Type"
+      ]
+    },
+    {
+      "export": "Form",
+      "name": "Form",
+      "visibility": "dev",
+      "shows": [
+        "Type"
+      ]
+    },
+    {
+      "export": "FullScreen",
+      "name": "Full-screen",
+      "visibility": "dev",
+      "shows": [
+        "Type"
+      ]
+    },
+    {
+      "export": "SideDrawer",
+      "name": "Side-drawer",
+      "visibility": "dev",
+      "shows": [
+        "Type"
+      ]
+    },
+    {
+      "export": "Options",
+      "name": "Optional parts",
+      "visibility": "dev",
+      "shows": [
+        "Has close button",
+        "Has secondary action",
+        "Has subtitle",
+        "Scrollable content",
+        "Subtitle"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "Title",
+        "Type",
+        "Size",
+        "State"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "present",
+      "heading": "State"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "present",
+      "heading": "Usage"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "present",
+      "heading": "Composition"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "wai-aria/dialog (modal)",
+    "role": "dialog",
+    "name": "The title labels the dialog.",
+    "keyboard": [
+      {
+        "key": "Escape",
+        "action": "close"
+      },
+      {
+        "key": "Tab",
+        "action": "stays inside"
+      }
+    ],
+    "source": "reference"
+  },
+  "related": [],
+  "coverage": {
+    "properties": {
+      "total": 10,
+      "covered": 10
+    },
+    "values": {
+      "total": 12,
+      "shown": 12,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 30,
+      "rendered": 30
+    },
+    "sections": {
+      "required": 7,
+      "present": 7
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

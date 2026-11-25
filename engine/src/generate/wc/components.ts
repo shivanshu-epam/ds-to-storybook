@@ -8,6 +8,7 @@ import { docTabs, kebab, leadSentence, pascal } from '../templates/common.ts';
 import type { AccordionCore } from '../templates/accordion.ts';
 import type { ActionCore } from '../templates/action.ts';
 import type { CheckboxCore } from '../templates/checkbox.ts';
+import { decidedInternal } from '../../decisions/decisions.ts';
 import { axisControl, axisData, figmaNote, axisDefault, axisType, behaviourLine, isIcon, packName, lookupExpr, SHAPES, type GenericCore, type InstanceProp, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRComponentSet, IRPart } from '../../ir/types.ts';
 import { wcRadio } from './radio.ts';
@@ -37,7 +38,15 @@ const js = (v: unknown) => JSON.stringify(v);
 export const wcText = (l: LayerInfo, plain: string) => (l.textByAxis ? lookupExpr(l.textByAxis, (p) => (p === '$checked' ? 'this.checked' : `this.${wcProp(p)}`), 'string') : plain);
 
 /** Properties every HTMLElement already has: a generated prop with one of these names gets a "Text"/"Value" suffix. */
-const ELEMENT_RESERVED = new Set(['title', 'hidden', 'id', 'slot', 'style', 'role', 'dir', 'lang', 'draggable', 'inert', 'popover', 'translate', 'spellcheck', 'tabIndex', 'className', 'children', 'part', 'nonce', 'autofocus', 'accessKey', 'enterKeyHint', 'inputMode', 'contentEditable']);
+const ELEMENT_RESERVED = new Set([
+  // HTMLElement attributes and properties
+  'title', 'hidden', 'id', 'slot', 'style', 'role', 'dir', 'lang', 'draggable', 'inert', 'popover', 'translate', 'spellcheck', 'tabIndex', 'className', 'children', 'part', 'nonce', 'autofocus', 'accessKey', 'enterKeyHint', 'inputMode', 'contentEditable',
+  'attributes', 'classList', 'dataset', 'innerHTML', 'outerHTML', 'innerText', 'textContent', 'shadowRoot', 'isConnected', 'nodeName', 'nodeType', 'localName', 'tagName', 'offsetWidth', 'offsetHeight',
+  // Element and HTMLElement methods: a Figma property named "Focus" or "Remove" would replace them
+  'focus', 'blur', 'click', 'remove', 'append', 'prepend', 'after', 'before', 'replaceWith', 'closest', 'matches', 'animate', 'scroll', 'scrollTo', 'scrollBy', 'attachShadow', 'getAttribute', 'setAttribute', 'hasAttribute', 'removeAttribute', 'toggleAttribute', 'dispatchEvent', 'addEventListener', 'removeEventListener',
+  // LitElement members
+  'render', 'update', 'updated', 'firstUpdated', 'willUpdate', 'requestUpdate', 'updateComplete', 'renderRoot', 'connectedCallback', 'disconnectedCallback', 'attributeChangedCallback', 'properties', 'styles', 'shadowRootOptions',
+]);
 export const wcProp = (prop: string) => (ELEMENT_RESERVED.has(prop) ? `${prop}Value` : prop);
 /** A parent prop as Lit code. */
 export const wcRef = (prop: string) => (prop === '$checked' ? 'this.checked' : `this.${wcProp(prop)}`);
@@ -251,7 +260,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     } else {
       const kids = children(l.path);
       const box = sw || inHeader(l) || core.rootTag ? 'span' : 'div'; // a <button> or <a> may only hold phrasing content
-      if (dis && l.path === dis.headerPath) {
+      if (dis && l.path === dis.headerPath && !dis.triggerPath) {
         const btn = `<button type="button" ${c} aria-expanded=\${this.${disProp} ? 'true' : 'false'} aria-controls="panel" @click=\${this.toggleExpanded}${hasDisabled ? ' ?disabled=\${this.disabled}' : ''}>\n${kids.map((k) => render(k, indent + '  ')).join('\n')}\n${indent}</button>`;
         const b0 = boolFor(p.refs?.visible);
         return b0 ? `${indent}\${this.${b0} ? html\`${btn}\` : nothing}` : `${indent}${btn}`;
@@ -270,6 +279,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     if (cb?.popup === l.path) el = el.replace(/^<([\w-]+) /, '<$1 id="popup" ');
     if (cb?.label === l.path) el = el.replace(/^<([\w-]+) /, '<$1 id="label" ');
     // The trigger's own button reports the state (aria-controls cannot point across shadow roots).
+    if (dis?.triggerPath === l.path) el = el.replace(/<(ds-[\w-]+)(?=[ >])/, `<$1 @click=\${this.toggleExpanded} .accessibleExpanded=\${this.${disProp} ? 'true' : 'false'}`);
     if (core.trigger?.trigger === l.path) el = el.replace(/<(ds-[\w-]+)(?=[ >])/, `<$1 @click=\${this.toggleExpanded} .accessibleExpanded=\${this.${wcProp(core.trigger.prop)} ? 'true' : 'false'}`);
     const b = boolFor(p.refs?.visible);
     return b ? `${indent}\${this.${b} ? html\`${el}\` : nothing}` : `${indent}${el}`;
@@ -307,7 +317,7 @@ export function wcGeneric(ctx: TemplateContext, name: string, core: GenericCore,
     ...(hasDisabled ? ['?data-disabled=${this.disabled}', sw || core.rootTag === 'button' ? '?disabled=${this.disabled}' : "aria-disabled=${this.disabled ? 'true' : nothing}"] : []),
     ...(core.busyProp ? [`aria-busy=\${this.${wcProp(core.busyProp)} ? 'true' : nothing}`] : []),
     ...(core.rootTag === 'a' ? ['href=${this.href ?? nothing}'] : []),
-    ...(core.rootTag ? ['aria-label=${this.accessibleLabel ?? nothing}'] : []),
+    ...(core.rootTag ? [core.nameFrom ? `aria-label=\${this.accessibleLabel ?? (${core.rootTag === 'a' ? 'this.href ? ' : ''}this.${wcProp(core.nameFrom)}${core.rootTag === 'a' ? ' : nothing' : ''})}` : 'aria-label=${this.accessibleLabel ?? nothing}'] : []),
     ...(core.rootTag === 'button' ? ['aria-expanded=${this.accessibleExpanded ?? nothing}'] : []),
     ...(lc ? (() => {
       // Where Figma shows no items (loading, empty), the list is not one: no role, no keyboard, aria-busy while loading.
@@ -391,11 +401,11 @@ ${lc ? `${lc.item === 'option' ? `  /** Whether option i is selected: the user's
     }
   };
 
-` : ''}${cb ? `  /** Whether the popup is open: ${cb.axis.prop} is ${js(cb.open)}. */
+` : ''}${cb ? `${cb.axis.boolean && wcProp(cb.axis.prop) === 'open' ? '' : `  /** Whether the popup is open: ${cb.axis.prop} is ${js(cb.open)}. */
   get open() {
     return ${cb.axis.boolean ? `this.${wcProp(cb.axis.prop)}` : `this.${wcProp(cb.axis.prop)} === ${js(cb.open)}`};
   }
-
+`}
   setOpen(next: boolean) {
     ${hasDisabled ? 'if (this.disabled) return;\n    ' : ''}this.${wcProp(cb.axis.prop)} = ${cb.axis.boolean ? 'next' : `next ? ${js(cb.open)} : ${js(cb.closed)}`};
     this.dispatchEvent(new CustomEvent('open-change', { detail: next, bubbles: true, composed: true }));
@@ -654,14 +664,17 @@ ${a.values.map((v) => `    labelled(${js(v.figma)}, ${el(overFor(a, v.figma))}),
 };`);
     sections.push({ heading: a.figma, story: n });
   }
-  if (booleans.length) {
+  // Internal Figma properties (a decision): kept at their Figma default, not shown as API.
+  const internal = (figma: string) => decidedInternal(ctx.sets.main ?? Object.values(ctx.sets)[0]!, figma);
+  const shownBooleans = booleans.filter((b) => !internal(b.p.name));
+  if (shownBooleans.length) {
     const n = storyName('Options');
     stories.push(`/** Figma boolean properties, each switched from its default. */
 export const ${n}: Story = {
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled('Default', ${el()}),
-${booleans.map((b) => `    labelled(${js(`${b.p.name}: ${String(b.p.default) === 'true' ? 'off' : 'on'}`)}, ${el({ [b.prop]: String(b.p.default) !== 'true' })}),`).join('\n')}
+${shownBooleans.map((b) => `    labelled(${js(`${b.p.name}: ${String(b.p.default) === 'true' ? 'off' : 'on'}`)}, ${el({ [b.prop]: String(b.p.default) !== 'true' })}),`).join('\n')}
   ]),
 };`);
     sections.push({ heading: 'Options', story: n });
@@ -802,10 +815,10 @@ const meta = {
   argTypes: {
 ${[
     ...(sw ? [`    checked: { control: 'boolean', description: ${js(`On or off. Figma: ${sw.axis.figma}`)} },`, `    accessibleLabel: { control: 'text', description: 'Accessible name (Figma has no label)' },`] : []),
-    ...enumAxes.map((a) => `    ${a.prop}: ${axisControl(a, js)},`),
+    ...enumAxes.map((a) => `    ${a.prop}: ${internal(a.figma) ? `{ table: { disable: true }, description: ${js(`Internal (Figma ${a.figma}).`)} }` : axisControl(a, js)},`),
     ...(hasDisabled ? [`    disabled: { control: 'boolean', description: 'Figma: State=Disabled' },`] : []),
-    ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${js(figmaNote(b.p.name, b.description))} },`),
-    ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${js(figmaNote(t.p.name, t.description))} },`),
+    ...booleans.map((b) => `    ${b.prop}: ${internal(b.p.name) ? `{ table: { disable: true }, description: ${js(`Internal (Figma ${b.p.name}).`)} }` : `{ control: 'boolean', description: ${js(figmaNote(b.p.name, b.description))} }`},`),
+    ...texts.map((t) => `    ${t.prop}: ${internal(t.p.name) ? `{ table: { disable: true }, description: ${js(`Internal (Figma ${t.p.name}).`)} }` : `{ control: 'text', description: ${js(figmaNote(t.p.name, t.description))} }`},`),
     ...exposed.map((e) => `    ${e.prop}: ${e.axis ? axisControl({ ...e.axis, figma: `${e.exposed!.name} › ${e.axis.figma}` }, js) : `{ control: '${e.type === 'boolean' ? 'boolean' : 'text'}', description: ${js(`Figma: ${e.exposed!.name} › ${e.figma}`)} }`},`),
   ].join('\n')}
   },
@@ -1411,12 +1424,12 @@ let uid = 0;
 export class ${cls} extends LitElement {
   static override styles = [unsafeCSS(':host { display: contents; }'), unsafeCSS(css)];
   static override properties = {
-${core.styleAxis ? '    variant: { type: String, reflect: true },\n' : ''}    expandMode: { type: String, attribute: 'expand-mode' },
+${core.styleAxis ? '    variant: { type: String, reflect: true },\n' : ''}${core.extraAxes.map((a) => `    ${a.prop}: { type: String, reflect: true },\n`).join('')}    expandMode: { type: String, attribute: 'expand-mode' },
     headingLevel: { type: Number, attribute: 'heading-level' },
     value: { type: Array },
   };
 
-${core.styleAxis ? `  /** Figma: ${core.set.name} ${core.styleAxis.figma}. */\n  declare variant: ${variants.map(js).join(' | ')};\n` : ''}  /** Figma docs: single- or multiple-expand. */
+${core.styleAxis ? `  /** Figma: ${core.set.name} ${core.styleAxis.figma}. */\n  declare variant: ${variants.map(js).join(' | ')};\n` : ''}${core.extraAxes.map((a) => `  /** Figma: ${core.set.name} ${a.figma}. */\n  declare ${a.prop}: ${a.options.map((o) => js(o.value)).join(' | ')};\n`).join('')}  /** Figma docs: single- or multiple-expand. */
   declare expandMode: 'single' | 'multiple';
   /** Not specified in Figma; default 3. */
   declare headingLevel: number;
@@ -1425,7 +1438,7 @@ ${core.styleAxis ? `  /** Figma: ${core.set.name} ${core.styleAxis.figma}. */\n 
 
   constructor() {
     super();
-${core.styleAxis ? `    this.variant = ${js(core.styleAxis.default)};\n` : ''}    this.expandMode = 'single';
+${core.styleAxis ? `    this.variant = ${js(core.styleAxis.default)};\n` : ''}${core.extraAxes.map((a) => `    this.${a.prop} = ${js(a.default)};\n`).join('')}    this.expandMode = 'single';
     this.headingLevel = 3;
     this.value = [];
     this.addEventListener('accordion-toggle', (e) => this.toggle((e as CustomEvent<string>).detail));
@@ -1455,7 +1468,7 @@ ${core.styleAxis ? `    this.variant = ${js(core.styleAxis.default)};\n` : ''}  
   override updated() {
     for (const item of this.items) {
       item.open = this.value.includes(item.value);
-${core.styleAxis ? '      item.variant = this.variant;\n' : ''}      item.headingLevel = this.headingLevel;
+${core.styleAxis ? '      item.variant = this.variant;\n' : ''}${core.extraAxes.map((a) => `      item.${a.prop} = this.${a.prop};\n`).join('')}      item.headingLevel = this.headingLevel;
     }
   }
 
@@ -1473,7 +1486,7 @@ export class ${itemCls} extends LitElement {
     disabled: { type: Boolean, reflect: true },
     open: { type: Boolean, reflect: true },
     variant: { type: String },
-    headingLevel: { type: Number },
+${core.extraAxes.map((a) => `    ${a.prop}: { type: String },\n`).join('')}    headingLevel: { type: Number },
     forceState: { type: String, attribute: 'data-force-state' },
   };
 
@@ -1485,7 +1498,7 @@ export class ${itemCls} extends LitElement {
   /** Set by the parent accordion. */
   declare open: boolean;
   declare variant: string | undefined;
-  declare headingLevel: number;
+${core.extraAxes.map((a) => `  declare ${a.prop}: string | undefined;\n`).join('')}  declare headingLevel: number;
   declare forceState: string | undefined;
   private readonly uid = \`acc-\${++uid}\`;
 
@@ -1507,7 +1520,7 @@ export class ${itemCls} extends LitElement {
   }
 
   override render() {
-    return html\`<div class="item" data-variant=\${this.variant ?? nothing} data-state=\${this.open ? 'open' : 'closed'} ?data-disabled=\${this.disabled}>
+    return html\`<div class="item" data-variant=\${this.variant ?? nothing}${core.extraAxes.map((a) => ` data-${a.attr}=\${this.${a.prop} ?? nothing}`).join('')} data-state=\${this.open ? 'open' : 'closed'} ?data-disabled=\${this.disabled}>
       <div class="heading" role="heading" aria-level=\${this.headingLevel}>
         <button type="button" id=\${\`\${this.uid}-header\`} class="header" aria-expanded=\${this.open ? 'true' : 'false'} aria-controls=\${\`\${this.uid}-panel\`} ?disabled=\${this.disabled} data-force-state=\${this.forceState ?? nothing}
           @click=\${() => this.dispatchEvent(new CustomEvent('accordion-toggle', { detail: this.value, bubbles: true, composed: true }))}>
@@ -1532,7 +1545,7 @@ declare global {
 }
 `;
 
-  const acc = (attrs: string, items: string) => `html\`<${tag} ${core.styleAxis ? 'variant=${args.variant} ' : ''}expand-mode=\${args.expandMode} heading-level=\${args.headingLevel}${attrs ? ' ' + attrs : ''}>${items}</${tag}>\``;
+  const acc = (attrs: string, items: string) => `html\`<${tag} ${core.styleAxis ? 'variant=${args.variant} ' : ''}${core.extraAxes.map((a) => `${a.attr.toLowerCase()}=\${args.${a.prop}} `).join('')}expand-mode=\${args.expandMode} heading-level=\${args.headingLevel}${attrs ? ' ' + attrs : ''}>${items}</${tag}>\``;
   const item = (v: string, n: number, extra = '') => `<${itemTag} value="${v}" heading=\${t(${n})}${extra ? ' ' + extra : ''}>\${BODY}</${itemTag}>`;
   const headers = `const headers = (canvas: HTMLElement) => [...canvas.querySelectorAll('${itemTag}')].map((i) => within(i.shadowRoot as unknown as HTMLElement).getByRole('button'));`;
   const stateItem = (s: string, i: number) => {
@@ -1557,9 +1570,9 @@ ${headers}
 const meta = {
   title: 'Components/${name}',
   component: '${tag}',
-  args: { ${core.styleAxis ? `variant: ${js(core.styleAxis.default)}, ` : ''}expandMode: 'single', headingLevel: 3 },
+  args: { ${core.styleAxis ? `variant: ${js(core.styleAxis.default)}, ` : ''}${core.extraAxes.map((a) => `${a.prop}: ${js(a.default)}, `).join('')}expandMode: 'single', headingLevel: 3 },
   argTypes: {
-${core.styleAxis ? `    variant: { control: 'inline-radio', options: ${js(variants)}, description: ${js(`Figma: ${core.styleAxis.figma}`)} },\n` : ''}    expandMode: { control: 'inline-radio', options: ['single', 'multiple'], description: 'Figma docs: single- or multiple-expand' },
+${core.styleAxis ? `    variant: { control: 'inline-radio', options: ${js(variants)}, description: ${js(`Figma: ${core.styleAxis.figma}`)} },\n` : ''}${core.extraAxes.map((a) => `    ${a.prop}: { control: 'inline-radio', options: ${js(a.options.map((o) => o.value))}, description: ${js(`Figma: ${a.figma}`)} },\n`).join('')}    expandMode: { control: 'inline-radio', options: ['single', 'multiple'], description: 'Figma docs: single- or multiple-expand' },
     headingLevel: { control: 'inline-radio', options: [2, 3, 4, 5, 6], description: 'Not in Figma (archetype default 3)' },
   },
   decorators: [(story) => html\`<div style="width:${core.width}px;max-width:100%">\${story()}</div>\`],
@@ -1615,6 +1628,16 @@ ${core.styleAxis.options.map((x, i) => `    labelled(${js(x.figma)}, ${acc(`vari
   ]),
 };
 ` : ''}
+${core.extraAxes.map((a) => `
+/** Figma ${a.figma}. */
+export const ${a.prop.charAt(0).toUpperCase()}${a.prop.slice(1)}Values: Story = {
+  name: ${js(a.figma)},
+  parameters: { controls: { disable: true } },
+  render: (args) => stack([
+${a.options.map((x, i) => `    labelled(${js(x.figma)}, ${acc(`${a.attr.toLowerCase()}=${js(x.value)} .value=\${['x${i}']}`, `${item(`x${i}`, i * 2 + 1)}${item(`y${i}`, i * 2 + 2)}`).replace(`${a.attr.toLowerCase()}=\${args.${a.prop}} `, '')}),`).join('\n')}
+  ]),
+};
+`).join('')}
 /** Figma ${core.stateAxis} axis. Pseudo states are forced with data-force-state. */
 export const States: Story = {
   parameters: { controls: { disable: true } },
@@ -1652,6 +1675,7 @@ export const Keyboard: Story = {
         path: `${dir}/${name}.mdx`,
         content: mdx(name, core.set.description || leadSentence(core.set.docFrames), [
           ...(core.styleAxis ? [{ heading: 'Styles', story: 'Styles' }] : []),
+          ...core.extraAxes.map((a) => ({ heading: a.figma, story: `${a.prop.charAt(0).toUpperCase()}${a.prop.slice(1)}Values` })),
           { heading: 'States', story: 'States' },
           { heading: 'Single and multiple expand', story: 'MultipleExpand' },
         ], usage(o, tag, '', `\n  <${itemTag} value="one" heading=${js(core.title)}>${core.body}</${itemTag}>\n`, 'value-change'), docs),
@@ -1660,7 +1684,7 @@ export const Keyboard: Story = {
     tags: [tag, itemTag],
     module: tag,
     typings: [
-      { tag, className: cls, props: [...(core.styleAxis ? [{ name: 'variant', type: variants.map(js).join(' | ') }] : []), { name: 'expandMode', type: "'single' | 'multiple'" }, { name: 'headingLevel', type: 'number' }, { name: 'value', type: 'string[]' }] },
+      { tag, className: cls, props: [...(core.styleAxis ? [{ name: 'variant', type: variants.map(js).join(' | ') }] : []), ...core.extraAxes.map((a) => ({ name: a.prop, type: a.options.map((o) => js(o.value)).join(' | ') })), { name: 'expandMode', type: "'single' | 'multiple'" }, { name: 'headingLevel', type: 'number' }, { name: 'value', type: 'string[]' }] },
       { tag: itemTag, className: itemCls, props: [{ name: 'value', type: 'string' }, { name: 'heading', type: 'string' }, { name: 'disabled', type: 'boolean' }] },
     ],
     notes: [],

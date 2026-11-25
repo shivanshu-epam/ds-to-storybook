@@ -47,6 +47,42 @@ export const TypeAndState: Story = {
   },
 };
 
+/** Figma Type=Range. */
+export const RangeStory: Story = {
+  name: 'Range',
+  args: { type: 'range' },
+};
+
+/** Figma Type=DateTime. */
+export const DateTime: Story = {
+  name: 'DateTime',
+  args: { type: 'date-time' },
+};
+
+/** Figma State=Disabled. */
+export const Disabled: Story = {
+  name: 'Disabled',
+  args: { disabled: true },
+};
+
+/** Figma State=Filled. */
+export const Filled: Story = {
+  name: 'Filled',
+  args: { state: 'filled' },
+};
+
+/** Figma State=Read-only. */
+export const ReadOnly: Story = {
+  name: 'Read-only',
+  args: { state: 'read-only' },
+};
+
+/** Figma State=Error. */
+export const ErrorStory: Story = {
+  name: 'Error',
+  args: { state: 'error' },
+};
+
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
   name: "Optional parts",

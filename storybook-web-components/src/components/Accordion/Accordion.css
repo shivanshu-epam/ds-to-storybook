@@ -22,32 +22,66 @@
   display: flex;
   flex-direction: row;
   opacity: 1;
-  padding: var(--space-stack-xs) var(--space-inline-md) var(--space-stack-xs) var(--space-inline-md);
 }
 
 .item .label {
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 14px;
   font-weight: 600;
-  line-height: 21px;
-}
-
-.item .chevron {
-  height: 20px;
-  width: 20px;
 }
 
 .item .header {
   background: var(--surface-bg-default);
 }
 
+.item:where([data-size="medium"]) .header {
+  padding: var(--space-stack-xs) var(--space-inline-md) var(--space-stack-xs) var(--space-inline-md);
+}
+
+.item:where([data-size="small"]) .header {
+  padding: var(--space-inset-xs) var(--space-stack-xs) var(--space-inset-xs) var(--space-stack-xs);
+}
+
+.item:where([data-size="large"]) .header {
+  padding: var(--space-inline-md) var(--space-inline-lg) var(--space-inline-md) var(--space-inline-lg);
+}
+
 .item .label {
   color: var(--interactive-fg-secondary-default);
+}
+
+.item:where([data-size="medium"]) .label {
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.item:where([data-size="small"]) .label {
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.item:where([data-size="large"]) .label {
+  font-size: 16px;
+  line-height: 24px;
 }
 
 .item .chevron {
   color: var(--icon-default);
   transform: none;
+}
+
+.item:where([data-size="medium"]) .chevron {
+  height: 20px;
+  width: 20px;
+}
+
+.item:where([data-size="small"]) .chevron {
+  height: 16px;
+  width: 16px;
+}
+
+.item:where([data-size="large"]) .chevron {
+  height: 24px;
+  width: 24px;
 }
 
 .item .panel {
@@ -84,15 +118,12 @@
   display: flex;
   flex-direction: column;
   opacity: 1;
-  padding: var(--space-stack-xs) var(--space-inline-md) var(--space-inline-md) var(--space-inline-md);
 }
 
 .item:where([data-state="open"]) .body {
   color: var(--interactive-fg-readonly);
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  font-size: 12px;
   font-weight: 400;
-  line-height: 18px;
 }
 
 .item:where([data-variant="bordered"]) .header:where(:is(:focus-visible, [data-force-state~="focus"])) {
@@ -101,4 +132,31 @@
 
 .item:where([data-variant="borderless"]) .header:where(:is(:focus-visible, [data-force-state~="focus"])) {
   box-shadow: inset 0 0 0 3px var(--border-interactive-focus);
+}
+
+.item:where([data-size="medium"][data-state="open"]) .panel {
+  padding: var(--space-stack-xs) var(--space-inline-md) var(--space-inline-md) var(--space-inline-md);
+}
+
+.item:where([data-size="small"][data-state="open"]) .panel {
+  padding: var(--space-inset-xs) var(--space-stack-xs) var(--space-stack-xs) var(--space-stack-xs);
+}
+
+.item:where([data-size="large"][data-state="open"]) .panel {
+  padding: var(--space-inline-md) var(--space-inline-lg) var(--space-inline-lg) var(--space-inline-lg);
+}
+
+.item:where([data-size="medium"][data-state="open"]) .body {
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.item:where([data-size="small"][data-state="open"]) .body {
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.item:where([data-size="large"][data-state="open"]) .body {
+  font-size: 14px;
+  line-height: 21px;
 }

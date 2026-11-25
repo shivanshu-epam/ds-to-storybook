@@ -30,6 +30,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.Options} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use a switch for a two-state setting whose change applies the instant it is toggled."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Use the Medium size for general use and the Small size in dense contexts."}{" "}<small>{"(Figma docs, Figma properties)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use a switch for a selection that is confirmed later, such as on form submit: use a checkbox."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Label the switch by what the setting controls, such as \"Notifications\", not by its current state."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Keep the inner On/Off icon shown so the resulting state reads at a glance, not only from the handle position."}{" "}<small>{"(Figma docs, Figma properties)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance
@@ -85,14 +99,7 @@ This is a standard Web Component: it works in any framework, or none.
 
 <Source language="html" code={"<script>import 'figma-design-system-web-components';</script>\n<ds-switch accessible-label=\"Switch\" name=\"switch\" on:change={handle}></ds-switch>"} dark />
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=723-3038">{"Switch"}</a> · version 2425019839612435738 · 12 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 12 designed variants shown"}</li><li>{"✓ Properties: 5/5 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"✓ Interaction: WAI-ARIA switch pattern, tested in the stories"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 1 accessible-name note to confirm"}</li><li>{"⚠ Documentation: description; 0/5 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 1 generator note"}</li></ul>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-switch-design-review--docs" target="_top">{"Switch › Design review"}</a></small></p>
 
 <h2>{"Documentation"}</h2>
 <p style={{ whiteSpace: 'pre-line' }}>{"A two-state control that applies its change the instant it's toggled — distinct from a checkbox, which marks a selection typically confirmed later."}</p>

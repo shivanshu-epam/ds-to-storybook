@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 
 import { loadConfig } from './config.ts';
-import { FigmaClient } from './figma/client.ts';
+import { FigmaClient, type FigmaReader, type FigmaRenderer } from './figma/client.ts';
 import { discover, discoveryMarkdown, targetsFromDiscovery, type Discovery } from './discover/discover.ts';
 import { generateStorybook, type PlannedComponent } from './generate/index.ts';
 import { runInit } from './init.ts';
@@ -22,11 +22,14 @@ import { existsSync as exists, readFileSync } from 'node:fs';
 import { extractIR } from './ir/extract.ts';
 import { loadIR, paths, stepAnalyze, stepExtract, stepReport, stepSpecs } from './pipeline.ts';
 import { loadDotEnv, writeJson, writeText } from './util/core.ts';
+import { baselineOf, checkMarkdown, checkSpecs, loadSpecs, type Baseline, type CheckResult } from './docspec/check.ts';
 import { decide, hasProposals, activeDecisions, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel } from './decisions/decisions.ts';
 import { buildReview, writeReview } from './review/review.ts';
 import { lintDocs, lintMarkdown } from './docs/lint.ts';
 import { VERSION } from './version.ts';
+import { ExportReader } from './figma/export.ts';
 import { claudeAvailable, interpret } from './ai/interpret.ts';
+import { mergeUsage, toUsageDecision, writeUsage, type UsageEvidence, type UsageProposal } from './ai/usage.ts';
 import { evalMarkdown, evaluate } from './eval/eval.ts';
 import { auditMarkdown, loadScorecards, testTallies, withTests, withVisual } from './audit/audit.ts';
 
@@ -51,17 +54,22 @@ Commands:
   review    Write the interpretation work list: one evidence file per component → out/review/
             (from the last generate; no Figma calls)
   interpret Answer the open review files with Claude (headless claude -p + the ds-sync plugin)
+  enhance apply  Add the previewed .figma.stories files next to your existing stories (generate.code.stories)
+  usage     Draft usage guidance with Claude, every sentence citing the component's evidence (--only, --all, --from <answer.json>)
             → proposals in ds-sync.decisions.json (optional; needs Claude Code)
   decisions validate | accept | reject: check ds-sync.decisions.json against Figma, or change
             the status of entries (--only A,B; --by <name>). Accepting is a person's call.
   eval      Compare the generated API with a reference library: --reference <components folder>
   docs lint Check every generated docs page against the documentation standard → out/docs-lint.md
+  docs check  Fail on documentation gaps not in the reviewed baseline (--update-baseline, --strict) → out/docs-check.md
             (--dir <generated project>; --strict fails on any error)
   audit     Scorecards of the generated project, one status per fidelity measure → out/audit.md
             (--tests <vitest json report> adds real test results; --strict fails on any ✗)
 
 Options:
   --version, -v     Print the ds-sync version
+  --source <auto|api|export>  Read Figma from the REST API or from the ds-sync plugin's export
+                    (figma.export in the config); auto uses the export when it is there
   --config <file>   Config file (default: ds-sync.config.json)
   --out <dir>       Working directory for reports and cache (default: .ds-sync)
   --figma-version <id>  Read this Figma version instead of the latest (discover, generate)
@@ -74,9 +82,18 @@ Options:
   --help            Show this help
 `;
 
-function figmaClient() {
+/** Where Figma is read from: the ds-sync plugin's export when it is configured and present (no API limits, any
+ * plan), otherwise the REST API. --source api|export forces one. */
+function figmaClient(): FigmaClient | ExportReader {
+  const wantExport = CTX.source === 'export' || (CTX.source !== 'api' && CTX.exportPath !== '' && existsSync(CTX.exportPath));
+  if (wantExport) {
+    const reader = new ExportReader(CTX.exportPath || 'figma-export.zip');
+    if (reader.manifest.fileKey && reader.manifest.fileKey !== CTX.fileKey) CTX.log(`Figma export is of file ${reader.manifest.fileKey}, the configuration names ${CTX.fileKey}: using the export.`);
+    CTX.log(`Figma: reading the plugin export ${CTX.exportPath} ("${reader.manifest.fileName}", exported ${reader.manifest.exportedAt}).`);
+    return reader;
+  }
   const token = process.env.FIGMA_TOKEN;
-  if (!token) throw new Error('FIGMA_TOKEN is not set. Copy .env.example to .env and add a Figma personal access token.');
+  if (!token) throw new Error('FIGMA_TOKEN is not set. Add a Figma personal access token to .env, or export the file with the ds-sync Figma plugin and set "figma.export" in ds-sync.config.json.');
   return new FigmaClient({ token, cacheDir: CTX.cache, log: CTX.log, ...(CTX.refresh ? { refresh: true } : {}) });
 }
 
@@ -86,9 +103,9 @@ function pageLabel(page: string): string {
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
-const CTX = { cache: '', out: '', fileKey: '', version: undefined as string | undefined, refresh: false, overrides: {} as NonNullable<NonNullable<ReturnType<typeof loadConfig>['generate']>['overrides']>, log: (_m: string) => {} };
+const CTX = { source: 'auto' as string, exportPath: '', cache: '', out: '', fileKey: '', version: undefined as string | undefined, refresh: false, overrides: {} as NonNullable<NonNullable<ReturnType<typeof loadConfig>['generate']>['overrides']>, log: (_m: string) => {} };
 
-async function runDiscovery(client: FigmaClient): Promise<Discovery> {
+async function runDiscovery(client: FigmaReader): Promise<Discovery> {
   const d = await discover(client, CTX.fileKey, CTX.overrides, CTX.log, CTX.version);
   writeJson(join(CTX.out, 'discovery.json'), d);
   writeText(join(CTX.out, 'discovery.md'), discoveryMarkdown(d));
@@ -109,11 +126,31 @@ function generatedVersion(config: ReturnType<typeof loadConfig>): string | undef
 }
 
 /** Diffs the Figma file at an earlier version against an IR already read at the new one; writes changes.md and .json. */
-async function writeChanges(client: FigmaClient, config: ReturnType<typeof loadConfig>, since: string, after: FigmaIR, names: Record<string, string>): Promise<ChangeSet> {
-  CTX.log(`Changes: reading Figma version ${since} to compare`);
-  const quiet = () => {};
-  const old = await discover(client, CTX.fileKey, CTX.overrides, quiet, since);
-  const before = await extractIR(client, { ...config, components: targetsFromDiscovery(old) }, quiet, since);
+/** The IR of each Figma version generated recently: an export has no version history, so changes compare with these. */
+const irHistory = (version: string) => join(CTX.out, 'ir-history', `${version.replace(/[^A-Za-z0-9._-]+/g, '_')}.json`);
+function keepIR(ir: FigmaIR): void {
+  writeJson(irHistory(ir.version), ir);
+  const dir = join(CTX.out, 'ir-history');
+  const files = readdirSync(dir).map((f) => ({ f, t: statSync(join(dir, f)).mtimeMs })).sort((a, b) => b.t - a.t);
+  for (const { f } of files.slice(3)) rmSync(join(dir, f));
+}
+
+async function writeChanges(client: FigmaReader & FigmaRenderer, config: ReturnType<typeof loadConfig>, since: string, after: FigmaIR, names: Record<string, string>): Promise<ChangeSet> {
+  let before: FigmaIR;
+  if (client instanceof ExportReader) {
+    // An export is one moment of the file: the earlier version comes from the IR kept when it was generated.
+    if (!existsSync(irHistory(since))) {
+      CTX.log(`Changes: version ${since} is not in ${join(CTX.out, 'ir-history')}; the change summary needs the earlier generation's IR. Skipped.`);
+      return { fileKey: after.fileKey, fileName: after.fileName, from: since, to: after.version, components: [], labels: [] };
+    }
+    CTX.log(`Changes: comparing with the IR kept for version ${since}`);
+    before = JSON.parse(readFileSync(irHistory(since), 'utf8')) as FigmaIR;
+  } else {
+    CTX.log(`Changes: reading Figma version ${since} to compare`);
+    const quiet = () => {};
+    const old = await discover(client, CTX.fileKey, CTX.overrides, quiet, since);
+    before = await extractIR(client, { ...config, components: targetsFromDiscovery(old) }, quiet, since);
+  }
   const changes = diffIR(before, after, names);
   const imagesDir = join(CTX.out, 'changes');
   const shown = await changeImages(client, changes, imagesDir, (path, data) => (typeof data === 'string' ? writeText(path, data) : writeBinary(path, data)));
@@ -153,13 +190,16 @@ async function main() {
       concurrency: { type: 'string' },
       model: { type: 'string' },
       budget: { type: 'string' },
+      from: { type: 'string' },
       by: { type: 'string' },
       tests: { type: 'string' },
       strict: { type: 'boolean', default: false },
+      'update-baseline': { type: 'boolean', default: false },
       yes: { type: 'boolean', default: false },
       ci: { type: 'boolean', default: false },
       refresh: { type: 'boolean', default: false },
       help: { type: 'boolean', default: false },
+      source: { type: 'string' },
       version: { type: 'boolean', short: 'v', default: false },
     },
   });
@@ -181,7 +221,8 @@ async function main() {
   const config = loadConfig(values.config!);
   loadDotEnv(join(config.baseDir, '.env'));
   const p = paths(config, values.out);
-  Object.assign(CTX, { cache: p.cache, out: p.out, fileKey: config.figma.fileKey, version: values['figma-version'], refresh: values.refresh!, overrides: config.generate?.overrides ?? {}, log });
+  if (values.source && !['auto', 'api', 'export'].includes(values.source)) throw new Error('--source must be auto, api or export.');
+  Object.assign(CTX, { source: values.source ?? 'auto', exportPath: config.figma.export ? resolve(config.baseDir, config.figma.export) : '', cache: p.cache, out: p.out, fileKey: config.figma.fileKey, version: values['figma-version'], refresh: values.refresh!, overrides: config.generate?.overrides ?? {}, log });
 
   switch (command) {
     case 'extract': {
@@ -225,7 +266,8 @@ async function main() {
     }
     case 'status': {
       // For CI: one cheap call (no document tree) to see whether Figma moved since the last generation.
-      const latest = (await new FigmaClient({ token: process.env.FIGMA_TOKEN ?? '', cacheDir: CTX.cache, refresh: true }).file(CTX.fileKey, 1)).version;
+      const source = figmaClient();
+      const latest = source instanceof ExportReader ? source.version : (await new FigmaClient({ token: process.env.FIGMA_TOKEN ?? '', cacheDir: CTX.cache, refresh: true }).file(CTX.fileKey, 1)).version;
       const generated = generatedVersion(config) ?? '';
       const changed = latest !== generated;
       log(changed ? `Figma version ${latest}; generated from ${generated || 'nothing yet'}: regenerate.` : `Figma is still at version ${latest}, the generated version: nothing to do.`);
@@ -264,6 +306,56 @@ async function main() {
       if (res.failed.length) process.exitCode = 1;
       break;
     }
+    case 'enhance': {
+      // Adds the previewed .figma.stories files next to the team's stories; never touches their other files.
+      if ((positionals[1] ?? 'apply') !== 'apply') throw new Error(`Unknown enhance action "${positionals[1]}" (apply).`);
+      const preview = join(p.out, 'enhance');
+      const manifestFile = join(preview, 'manifest.json');
+      if (!exists(manifestFile)) throw new Error('Nothing to add: set "generate.code.stories" and run "ds-sync generate" first.');
+      const manifest = JSON.parse(readFileSync(manifestFile, 'utf8')) as { root: string; files: string[] };
+      for (const f of manifest.files) {
+        if (!/\.figma\.stories\.[jt]sx?$/.test(f)) continue;
+        writeText(join(manifest.root, f), readFileSync(join(preview, 'stories', f), 'utf8'));
+        log(`Enhance: added ${join(manifest.root, f)}`);
+      }
+      log(`Enhance: ${manifest.files.length} file(s) added; the report is ${join(preview, 'ENHANCE-REPORT.md')}`);
+      break;
+    }
+    case 'usage': {
+      // Usage guidance (roadmap phase 5): drafts in which every sentence cites the component's evidence.
+      const dir = join(p.out, 'usage');
+      const decisionsPath = resolve(config.baseDir, config.generate?.decisions?.file ?? DECISIONS_FILE);
+      const ir = exists(join(p.out, 'figma-ir.auto.json')) ? lastRun(p.out).ir : undefined;
+      if (values.from) {
+        // An answer written elsewhere (an interactive session, another tool): checked and merged the same way.
+        const only = values.only?.split(',').map((x) => x.trim()) ?? [];
+        if (only.length !== 1) throw new Error('With --from, name one component: --only <Component>.');
+        const evFile = join(dir, `${only[0]}.json`);
+        if (!exists(evFile)) throw new Error(`No usage evidence for ${only[0]} (${evFile}): run "ds-sync generate" first.`);
+        const ev = JSON.parse(readFileSync(evFile, 'utf8')) as UsageEvidence;
+        const { usage, dropped } = toUsageDecision(ev, JSON.parse(readFileSync(resolve(values.from), 'utf8')) as UsageProposal, `ai:${values.model ?? 'claude'}`);
+        for (const d of dropped) log(`Usage: ${ev.component}: dropped ${d}`);
+        const file = loadDecisions(decisionsPath) ?? { version: 1 as const, sets: {} };
+        const merged = mergeUsage(file, ev.set, usage);
+        const problems = validateDecisions(file, ir).filter((x) => x.severity === 'error' && x.set === ev.set);
+        if (problems.length) { for (const pr of problems) log(`error: ${pr.set}: ${pr.message}`); throw new Error('The usage proposal is not valid; nothing written.'); }
+        writeJson(decisionsPath, file);
+        log(`Usage: ${ev.component}: ${merged} → ${decisionsPath} (proposed; accept with "ds-sync decisions accept --only ${ev.set}")`);
+        break;
+      }
+      if (!(await claudeAvailable())) throw new Error('Claude Code (the "claude" command) is not available. Install it, or write the guidance in a Claude Code session (the write-usage skill) and record it with --from.');
+      const res = await writeUsage({
+        dir, decisionsPath, ir, cwd: config.baseDir, log, all: values.all!,
+        ...(values.only ? { only: values.only.split(',').map((x) => x.trim()) } : {}),
+        ...(values.concurrency ? { concurrency: Number(values.concurrency) } : {}),
+        ...(values.model ? { model: values.model } : {}),
+        ...(values.budget ? { budget: Number(values.budget) } : {}),
+        ...(process.env.DS_SYNC_CLAUDE_ARGS ? { extraArgs: process.env.DS_SYNC_CLAUDE_ARGS.split(/\s+/).filter(Boolean) } : {}),
+      });
+      log(`Usage: ${res.done.length} drafted, ${res.failed.length} failed, about $${res.costUsd.toFixed(2)} → ${decisionsPath} (proposed; accept with "ds-sync decisions accept")`);
+      if (res.failed.length) process.exitCode = 1;
+      break;
+    }
     case 'decisions': {
       const action = positionals[1] ?? 'validate';
       const decisionsPath = resolve(config.baseDir, config.generate?.decisions?.file ?? DECISIONS_FILE);
@@ -290,8 +382,33 @@ async function main() {
       break;
     }
     case 'docs': {
-      if ((positionals[1] ?? 'lint') !== 'lint') throw new Error(`Unknown docs action "${positionals[1]}" (lint).`);
+      const action = positionals[1] ?? 'lint';
+      if (action !== 'lint' && action !== 'check') throw new Error(`Unknown docs action "${action}" (lint, check).`);
       const g = config.generate;
+      if (action === 'check') {
+        // The documentation gate: doc specs against the reviewed baseline; new gaps fail.
+        const dirs = values.dir ? [values.dir] : g?.targets?.length ? g.targets.map((t) => t.outDir) : g ? [g.outDir] : [];
+        // Next to the config, committed: gaps accepted for now are reviewed in the pull request like decisions.
+        const baselineFile = resolve(config.baseDir, 'ds-sync.docs-baseline.json');
+        const baseline: Baseline = exists(baselineFile) ? (JSON.parse(readFileSync(baselineFile, 'utf8')) as Baseline) : { version: 1, targets: {} };
+        const results: CheckResult[] = [];
+        for (const d of dirs) {
+          const specs = loadSpecs(resolve(config.baseDir, d));
+          if (!specs) { log(`Docs check: no docspec/ in ${d} (run ds-sync generate first)`); continue; }
+          if (values['update-baseline']) baseline.targets[d] = baselineOf(specs);
+          results.push(checkSpecs(d, specs, values.strict ? {} : baseline.targets[d]));
+        }
+        if (values['update-baseline']) { writeJson(baselineFile, baseline); log(`Docs check: baseline updated → ${baselineFile} (review it in the pull request)`); }
+        const file = join(p.out, 'docs-check.md');
+        writeText(file, checkMarkdown(results, Boolean(values.strict)));
+        for (const r of results) {
+          log(`Docs check (${r.dir}): ${r.complete}/${r.components} complete; ${r.added.length} new gap(s), ${r.known} known, ${r.fixed.length} closed`);
+          for (const a of r.added.slice(0, 10)) log(`  ✗ ${a.component}: ${a.message}`);
+        }
+        log(`Docs check → ${file}`);
+        if (results.some((r) => r.added.length)) process.exitCode = 1;
+        break;
+      }
       const dirs = values.dir ? [values.dir] : g?.targets?.length ? g.targets.map((t) => t.outDir) : g ? [g.outDir] : [];
       const results = dirs.map((d) => ({ ...lintDocs(resolve(config.baseDir, d)), dir: d }));
       const file = join(p.out, 'docs-lint.md');
@@ -362,6 +479,7 @@ async function main() {
         const targets = targetsFromDiscovery(d);
         ir = await extractIR(client, { ...config, components: targets }, log, CTX.version);
         writeJson(join(p.out, 'figma-ir.auto.json'), ir);
+        keepIR(ir);
         const perPage = new Map<string, number>();
         for (const x of d.proposals) perPage.set(x.page, (perPage.get(x.page) ?? 0) + 1);
         plan = d.proposals.map((x) => ({

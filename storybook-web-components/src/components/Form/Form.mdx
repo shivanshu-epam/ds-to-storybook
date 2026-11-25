@@ -22,6 +22,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.State} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use Form as the page-level wrapper that composes several InputField rows under a heading, with Cancel and Submit actions."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Give each group of fields a section heading that labels the group, such as \"Shipping address\"."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Arrange related fields in multi-column rows (first and last name; city, state and zip), and give a field like country the full width."}{" "}<small>{"(Figma docs)"}</small></li><li>{"End the form with its actions: a secondary Button and a primary Button."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use Form for a single labelled field: use InputField, which adds a label, helper text and a validation message row to the field."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Do not use Form when you only need the bare field: use InputControl."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Label the actions Cancel and Submit, with Cancel as the secondary Button and Submit as the primary one."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### State
@@ -75,19 +89,7 @@ This is a standard Web Component: it works in any framework, or none.
 
 <Source language="html" code={"<script>import 'figma-design-system-web-components';</script>\n<ds-form state=\"default\"></ds-form>"} dark />
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=435-8">{"Form"}</a> · version 2425019839612435738 · 5 designed variants</li><li>{"Nested consistency: 17/17 nested values match Figma (3 nested component layers; 4 state variants not compared)."}</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 5 designed variants shown"}</li><li>{"✓ Properties: 2/2 Figma properties mapped"}</li><li>{"✓ Nested consistency: 17/17 nested values match Figma (3 nested layers)"}</li><li>{"– Interaction: visuals only (display component)"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 2 accepted known issues"}</li><li>{"⚠ Documentation: description; 0/2 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 4 generator notes"}</li></ul>
-
-<details>
-  <summary>Generation notes: what Figma does not specify, and approximations</summary>
-  <ul><li>{"Layer \"_fields/_field-terms\" is an instance of \"Type=Unselected, State=Enabled\", which is not generated here; rendered as an empty box."}</li><li>{"Layer \"_status-banner\" is an instance of \"Sentiment=Success, Size=Sm, Density=Compact\", which is not generated here; rendered as an empty box."}</li></ul>
-</details>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-form-form-design-review--docs" target="_top">{"Form › Design review"}</a></small></p>
 
 <h2>{"Documentation"}</h2>
 <p style={{ whiteSpace: 'pre-line' }}>{"This page builds three separate component families — InputControl, InputField, and a page-level Form wrapper — rather than one cohesive \"Form\" component."}</p>

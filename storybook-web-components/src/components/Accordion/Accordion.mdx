@@ -22,6 +22,10 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.Styles} />
 
+### Size
+
+<Canvas of={Stories.SizeValues} />
+
 ### States
 
 <Canvas of={Stories.States} />
@@ -30,11 +34,29 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.MultipleExpand} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use an accordion to condense long content into scannable headers that users open on demand."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use an accordion for FAQ-style content, where users pick the questions they need."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Users reveal one or more panels on demand, so content stays hidden until they open it."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use an accordion for primary navigation."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Do not put content users must read in full or need to compare in an accordion, because collapsed panels hide it."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Avoid nesting accordions; if you must, indent and limit to one level."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### Variants
+
+<ul><li><strong>{"Bordered"}</strong>: {"Use Bordered when you want full dividers separating the items."}{" "}<small>{"(Figma docs)"}</small></li><li><strong>{"Borderless"}</strong>: {"Use Borderless when items should be separated only by spacing, with no outline, and keep the spacing between items consistent."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Write each title as a start-aligned label that names its section."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance
 
-<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Variant"}</td><td><code>{"variant"}</code></td><td>—</td><td>—</td><td>{""}</td><td>{"Style (variant)"}</td></tr></tbody></table>
+<table><thead><tr><th scope="col">Property</th><th scope="col">Code</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th><th scope="col">Figma</th></tr></thead><tbody><tr><td>{"Variant"}</td><td><code>{"variant"}</code></td><td>—</td><td>—</td><td>{""}</td><td>{"Style (variant)"}</td></tr><tr><td>{"Size"}</td><td><code>{"size"}</code></td><td>—</td><td>—</td><td>{""}</td><td>{"Size (variant)"}</td></tr></tbody></table>
 
 ### State
 
@@ -80,19 +102,7 @@ This is a standard Web Component: it works in any framework, or none.
 
 <Source language="html" code={"<script>import 'figma-design-system-web-components';</script>\n<ds-accordion on:value-change={handle}>\n  <ds-accordion-item value=\"one\" heading=\"Accordion section title\">Panel content goes here. This text explains the section in more detail once expanded.</ds-accordion-item>\n</ds-accordion>"} dark />
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=236-1875">{"AccordionItem"}</a> · version 2425019839612435738 · 10 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 10 designed variants shown"}</li><li>{"✓ Properties: 6/6 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"✓ Interaction: WAI-ARIA accordion pattern, tested in the stories"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"✓ Accessibility: axe in every Figma mode"}</li><li>{"⚠ Documentation: description; 0/6 props described"}</li><li>{"✓ Open decisions: 0 open questions; 0 generator notes"}</li></ul>
-
-<details>
-  <summary>Generation notes: what Figma does not specify, and approximations</summary>
-  <ul><li>{"Item width 360px is the Figma item width, applied in stories only; the component fills its container."}</li><li>{"Spacing between items is not in the item set; items stack with no gap."}</li></ul>
-</details>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-accordion-design-review--docs" target="_top">{"Accordion › Design review"}</a></small></p>
 
 <h2>{"Usage"}</h2>
 <p style={{ whiteSpace: 'pre-line' }}>{"An accordion is a vertical stack of collapsible sections that condenses long content into scannable headers."}</p>
@@ -242,25 +252,25 @@ This is a standard Web Component: it works in any framework, or none.
 <p style={{ whiteSpace: 'pre-line' }}>{"Element"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"Tokens"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"Rendered size"}</p>
+<p style={{ whiteSpace: 'pre-line' }}>{"Small 12px · Medium 14px · Large 16px"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"Title"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"text-style/heading/xs/*"}</p>
-<p style={{ whiteSpace: 'pre-line' }}>{"14px"}</p>
+<p style={{ whiteSpace: 'pre-line' }}>{"Small 12px · Medium 12px · Large 14px"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"Body"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"text-style/body/sm/*"}</p>
-<p style={{ whiteSpace: 'pre-line' }}>{"12px"}</p>
 <h3>{"Structure"}</h3>
 <p style={{ whiteSpace: 'pre-line' }}>{"Property"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"Value"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"Header and panel padding (horizontal)"}</p>
-<p style={{ whiteSpace: 'pre-line' }}>{"space/inset/md · 12"}</p>
+<p style={{ whiteSpace: 'pre-line' }}>{"Small: space/inset/sm · 8; Medium: space/inset/md · 12; Large: space/inset/lg · 16"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"Header and panel padding (vertical)"}</p>
-<p style={{ whiteSpace: 'pre-line' }}>{"space/inset/sm · 8"}</p>
+<p style={{ whiteSpace: 'pre-line' }}>{"Small: space/inset/xs · 4; Medium: space/inset/sm · 8; Large: space/inset/md · 12"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"Chevron"}</p>
-<p style={{ whiteSpace: 'pre-line' }}>{"Icon/nav/chevron-down/20 · 20px"}</p>
+<p style={{ whiteSpace: 'pre-line' }}>{"Chevron instance · Small 16px · Medium 20px · Large 24px"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"Item width"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"360 (fixed)"}</p>
 <h3>{"Variants & states"}</h3>
-<p style={{ whiteSpace: 'pre-line' }}>{"10 variants: Style (2) × State (5)."}</p>
+<p style={{ whiteSpace: 'pre-line' }}>{"30 variants: Size (3) × Style (2) × State (5). Grid below shows Medium; see the size comparison for all sizes."}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"State \\ Style"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"Bordered"}</p>
 <p style={{ whiteSpace: 'pre-line' }}>{"Borderless"}</p>

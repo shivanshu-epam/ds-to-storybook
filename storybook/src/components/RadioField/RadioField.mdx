@@ -24,6 +24,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.PositionAndState} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use a RadioField when users must pick exactly one option from a set, and each option needs its own value text."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Place RadioFields inside a RadioGroup, because selecting one radio clears the others in its group."}{" "}<small>{"(Figma docs, this design system)"}</small></li><li>{"Use a RadioField when an option needs an error or warning message shown with a status icon, through its Invalid and Warning states."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Keep the set small enough that every option is visible at once."}{" "}<small>{"(ds-sync guidance)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use a RadioField when users may choose several options: use a Checkbox, the equivalent control for multi-select lists."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Do not use a RadioField when you need only the circle with no label: use RadioControl."}{" "}<small>{"(Figma docs, this design system)"}</small></li><li>{"Do not use radio buttons for a long list of options: use a select."}{" "}<small>{"(ds-sync guidance)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Write the value as the option's own text, and give the RadioGroup a group label that names the choice being made."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Show Read-Only only on an option that is already selected, to display a prior choice."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Make the value text part of the clickable area, since the 28px control is smaller than the 44×44px touch target."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance
@@ -67,13 +81,6 @@ The default configuration (every property at its Figma default).
 
 Each story shows its code under "Show code".
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=522-125">{"RadioField"}</a> · version 2425019839612435738 · 14 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 14 designed variants shown"}</li><li>{"✓ Properties: 4/4 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"✓ Interaction: WAI-ARIA radio (label) pattern, tested in the stories"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"✓ Accessibility: axe in every Figma mode"}</li><li>{"⚠ Documentation: description; 0/4 props described"}</li><li>{"✓ Open decisions: 0 open questions; 0 generator notes"}</li></ul>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-radio-radiofield-design-review--docs" target="_top">{"RadioField › Design review"}</a></small></p>
 
 <FigmaDocs docs={docs} only="tabs" />

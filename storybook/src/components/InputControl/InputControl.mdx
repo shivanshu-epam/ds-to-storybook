@@ -24,6 +24,16 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.State} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use InputControl as the bare field, without a label, helper or validation message row."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use it for short free-form text such as a name or a search term."}{" "}<small>{"(ds-sync guidance)"}</small></li><li>{"Use InputControl as the building block inside InputField, which adds the label, helper and validation message."}{" "}<small>{"(Figma docs, this design system)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not place a bare InputControl in a form where the field needs a visible label, helper or validation message: use InputField."}{" "}<small>{"(Figma docs, ds-sync guidance, this design system)"}</small></li><li>{"Do not use InputControl for long text: use a text area."}{" "}<small>{"(ds-sync guidance)"}</small></li><li>{"Do not use InputControl when the answer is one of a known set of options: use a select or radio buttons."}{" "}<small>{"(ds-sync guidance)"}</small></li></ul>
+
 ## Properties
 
 ### State
@@ -44,13 +54,6 @@ The default configuration (every property at its Figma default).
 
 Each story shows its code under "Show code".
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=427-2001">{"InputControl"}</a> · version 2425019839612435738 · 9 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 9 designed variants shown"}</li><li>{"✓ Properties: 2/2 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"⚠ Interaction: visuals only: the name suggests behaviour that no template provides (add an archetype decision)"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 1 accepted known issue"}</li><li>{"⚠ Documentation: description; 0/2 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 1 generator note"}</li></ul>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-form-inputcontrol-design-review--docs" target="_top">{"InputControl › Design review"}</a></small></p>
 
 <FigmaDocs docs={docs} only="tabs" />

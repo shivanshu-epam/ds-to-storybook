@@ -1,40 +1,112 @@
 <style>
   body { font: 12px/1.5 Inter, system-ui, sans-serif; margin: 12px; color: #1e1e1e; }
-  textarea { width: 100%; height: 170px; font: 11px ui-monospace, Menlo, monospace; box-sizing: border-box; }
+  h1 { font-size: 13px; margin: 0 0 4px; }
+  p { margin: 4px 0 8px; }
+  fieldset { border: 1px solid #e6e6e6; border-radius: 6px; margin: 8px 0; padding: 6px 8px; max-height: 120px; overflow: auto; }
+  legend { padding: 0 4px; }
+  label { display: block; }
   button { margin: 8px 8px 0 0; padding: 6px 12px; border-radius: 6px; border: 1px solid #c7c7c7; background: #fff; cursor: pointer; }
   button.primary { background: #0d99ff; border-color: #0d99ff; color: #fff; }
+  button:disabled { opacity: 0.5; cursor: default; }
+  #status { min-height: 36px; }
   .error { color: #b42318; }
 </style>
-<p id="status">Reading variables…</p>
-<textarea id="out" readonly aria-label="Exported variables JSON"></textarea>
+<h1>Export for ds-sync</h1>
+<p>Saves <strong>figma-export.zip</strong>: this file's components, styles, variables and renders, read inside Figma (no API limits, any plan). Put it next to <code>ds-sync.config.json</code> and set <code>"figma": { "export": "figma-export.zip" }</code>.</p>
+<label><input type="checkbox" id="renders" checked /> Include variant renders (for the visual check; on large files, try a first export without them)</label>
+<fieldset><legend>Pages</legend><div id="pages">Loading…</div></fieldset>
+<p id="status" role="status" aria-live="polite"></p>
 <div>
-  <button class="primary" id="download">Download figma-variables.json</button>
-  <button id="copy">Copy</button>
+  <button class="primary" id="export">Export for ds-sync</button>
+  <button id="variables">Export variables only</button>
+  <button id="cancel" disabled>Cancel</button>
   <button id="close">Close</button>
 </div>
 <script>
-  const out = document.getElementById('out');
+  // CRC-32 for the zip entries.
+  const CRC = new Uint32Array(256).map((_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
+  const crc32 = (bytes) => { let c = 0xffffffff; for (let i = 0; i < bytes.length; i++) c = CRC[(c ^ bytes[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
+  const enc = new TextEncoder();
+  async function deflate(bytes) {
+    const stream = new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+
+  // Zip entries as they arrive, so large files are never held as one string.
+  let entries = [];
+  async function addEntry(name, bytes) {
+    const data = await deflate(bytes);
+    entries.push({ name: enc.encode(name), crc: crc32(bytes), size: bytes.length, data });
+  }
+  function buildZip() {
+    const parts = [];
+    const central = [];
+    let offset = 0;
+    for (const e of entries) {
+      const head = new DataView(new ArrayBuffer(30));
+      head.setUint32(0, 0x04034b50, true); head.setUint16(4, 20, true); head.setUint16(8, 8, true);
+      head.setUint32(14, e.crc, true); head.setUint32(18, e.data.length, true); head.setUint32(22, e.size, true); head.setUint16(26, e.name.length, true);
+      parts.push(head, e.name, e.data);
+      const c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(10, 8, true);
+      c.setUint32(16, e.crc, true); c.setUint32(20, e.data.length, true); c.setUint32(24, e.size, true); c.setUint16(28, e.name.length, true); c.setUint32(42, offset, true);
+      central.push(c, e.name);
+      offset += 30 + e.name.length + e.data.length;
+    }
+    const size = central.reduce((n, p) => n + p.byteLength, 0);
+    const end = new DataView(new ArrayBuffer(22));
+    end.setUint32(0, 0x06054b50, true); end.setUint16(8, entries.length, true); end.setUint16(10, entries.length, true);
+    end.setUint32(12, size, true); end.setUint32(16, offset, true);
+    return new Blob([...parts, ...central, end], { type: 'application/zip' });
+  }
+
   const status = document.getElementById('status');
+  const say = (text, error) => { status.textContent = text; status.className = error ? 'error' : ''; };
+  const download = (blob, name) => { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); };
+  const buttons = () => document.querySelectorAll('button.primary, #variables');
+  let pending = Promise.resolve();
+
   onmessage = (e) => {
     const msg = e.data.pluginMessage;
-    if (msg.error) {
-      status.textContent = 'Export failed: ' + msg.error;
-      status.className = 'error';
-      return;
+    if (msg.type === 'ready') {
+      document.getElementById('pages').innerHTML = msg.pages.map((p) => `<label><input type="checkbox" name="page" value="${p.id}" checked /> ${p.name.replace(/[<&]/g, '')}</label>`).join('');
+    } else if (msg.type === 'begin') {
+      entries = [];
+      say(`Exporting ${msg.total} page(s)…`);
+    } else if (msg.type === 'progress') {
+      say(msg.text);
+    } else if (msg.type === 'entry') {
+      const bytes = msg.text !== undefined ? enc.encode(msg.text) : new Uint8Array(msg.bytes);
+      pending = pending.then(() => addEntry(msg.name, bytes));
+    } else if (msg.type === 'done') {
+      pending.then(() => {
+        download(buildZip(), 'figma-export.zip');
+        const s = msg.summary;
+        say(`Saved figma-export.zip: ${s.pages} pages (${s.layers.toLocaleString()} layers), ${s.sets} component sets, ${s.styles} styles, ${s.variables} variables, ${s.svg} SVG and ${s.png} PNG renders.${s.warnings ? ` ${s.warnings} layer(s) Figma could not read were skipped (listed in the export).` : ''}`);
+        idle();
+      });
+    } else if (msg.type === 'variables') {
+      download(new Blob([msg.json], { type: 'application/json' }), 'figma-variables.json');
+      say('Saved figma-variables.json. Set generate.variablesExport to it.');
+      idle();
+    } else if (msg.type === 'error') {
+      say(msg.message === 'Export cancelled.' ? 'Cancelled. Nothing was saved.' : 'Export failed: ' + msg.message, msg.message !== 'Export cancelled.');
+      idle();
     }
-    out.value = msg.json;
-    status.textContent = msg.count + ' variables in ' + msg.collections + ' collections' + (msg.skipped ? ' (' + msg.skipped + ' boolean variables skipped)' : '') + '. Save the file next to ds-sync.config.json and set generate.variablesExport.';
   };
-  document.getElementById('download').onclick = () => {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([out.value], { type: 'application/json' }));
-    a.download = 'figma-variables.json';
-    a.click();
+
+  const cancel = document.getElementById('cancel');
+  const busy = () => { buttons().forEach((b) => (b.disabled = true)); cancel.disabled = false; };
+  const idle = () => { buttons().forEach((b) => (b.disabled = false)); cancel.disabled = true; };
+  cancel.onclick = () => { cancel.disabled = true; say('Cancelling…'); parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*'); };
+  document.getElementById('export').onclick = () => {
+    busy();
+    const pages = [...document.querySelectorAll('input[name=page]:checked')].map((i) => i.value);
+    parent.postMessage({ pluginMessage: { type: 'export', options: { pages, renders: document.getElementById('renders').checked, scale: 2 } } }, '*');
   };
-  document.getElementById('copy').onclick = () => {
-    out.select();
-    document.execCommand('copy');
-    status.textContent = 'Copied. Paste it into figma-variables.json.';
+  document.getElementById('variables').onclick = () => {
+    busy();
+    parent.postMessage({ pluginMessage: { type: 'variables' } }, '*');
   };
   document.getElementById('close').onclick = () => parent.postMessage({ pluginMessage: { type: 'close' } }, '*');
 </script>

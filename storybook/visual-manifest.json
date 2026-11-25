@@ -1,7 +1,7 @@
 {
   "note": "Written by ds-sync generate; read by ds-sync visual. Figma renders come from this file key and version.",
   "fileKey": "I983NcgqSiY14YkpJbwjG8",
-  "version": "2425019839612435738",
+  "version": "2425654086033038120",
   "components": [
     {
       "name": "Button",
@@ -1248,72 +1248,6 @@
           "name": "Variant=Danger, Size=Lg, State=Disabled, Radius=None",
           "width": 93,
           "height": 48
-        }
-      ]
-    },
-    {
-      "name": "Accordion",
-      "story": "components-accordion--figma-variants",
-      "variants": [
-        {
-          "nodeId": "236:1535",
-          "name": "Style=Bordered, State=Default",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1569",
-          "name": "Style=Bordered, State=Hover",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1603",
-          "name": "Style=Bordered, State=Focused",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1637",
-          "name": "Style=Bordered, State=Expanded",
-          "width": 360,
-          "height": 93
-        },
-        {
-          "nodeId": "236:1671",
-          "name": "Style=Bordered, State=Disabled",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1705",
-          "name": "Style=Borderless, State=Default",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1739",
-          "name": "Style=Borderless, State=Hover",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1773",
-          "name": "Style=Borderless, State=Focused",
-          "width": 360,
-          "height": 37
-        },
-        {
-          "nodeId": "236:1807",
-          "name": "Style=Borderless, State=Expanded",
-          "width": 360,
-          "height": 93
-        },
-        {
-          "nodeId": "236:1841",
-          "name": "Style=Borderless, State=Disabled",
-          "width": 360,
-          "height": 37
         }
       ]
     },
@@ -3678,6 +3612,192 @@
           "name": "Type=Chevron",
           "width": 16,
           "height": 16
+        }
+      ]
+    },
+    {
+      "name": "Accordion",
+      "story": "components-accordion--figma-variants",
+      "variants": [
+        {
+          "nodeId": "236:1535",
+          "name": "Style=Bordered, State=Default, Size=Medium",
+          "width": 360,
+          "height": 40
+        },
+        {
+          "nodeId": "236:1569",
+          "name": "Style=Bordered, State=Hover, Size=Medium",
+          "width": 360,
+          "height": 40
+        },
+        {
+          "nodeId": "236:1603",
+          "name": "Style=Bordered, State=Focused, Size=Medium",
+          "width": 360,
+          "height": 40
+        },
+        {
+          "nodeId": "236:1637",
+          "name": "Style=Bordered, State=Expanded, Size=Medium",
+          "width": 360,
+          "height": 96
+        },
+        {
+          "nodeId": "236:1671",
+          "name": "Style=Bordered, State=Disabled, Size=Medium",
+          "width": 360,
+          "height": 40
+        },
+        {
+          "nodeId": "236:1705",
+          "name": "Style=Borderless, State=Default, Size=Medium",
+          "width": 360,
+          "height": 40
+        },
+        {
+          "nodeId": "236:1739",
+          "name": "Style=Borderless, State=Hover, Size=Medium",
+          "width": 360,
+          "height": 40
+        },
+        {
+          "nodeId": "236:1773",
+          "name": "Style=Borderless, State=Focused, Size=Medium",
+          "width": 360,
+          "height": 40
+        },
+        {
+          "nodeId": "236:1807",
+          "name": "Style=Borderless, State=Expanded, Size=Medium",
+          "width": 360,
+          "height": 96
+        },
+        {
+          "nodeId": "236:1841",
+          "name": "Style=Borderless, State=Disabled, Size=Medium",
+          "width": 360,
+          "height": 40
+        },
+        {
+          "nodeId": "1835:225",
+          "name": "Style=Bordered, State=Default, Size=Small",
+          "width": 360,
+          "height": 32
+        },
+        {
+          "nodeId": "1835:231",
+          "name": "Style=Bordered, State=Hover, Size=Small",
+          "width": 360,
+          "height": 32
+        },
+        {
+          "nodeId": "1835:237",
+          "name": "Style=Bordered, State=Focused, Size=Small",
+          "width": 360,
+          "height": 32
+        },
+        {
+          "nodeId": "1835:243",
+          "name": "Style=Bordered, State=Expanded, Size=Small",
+          "width": 360,
+          "height": 80
+        },
+        {
+          "nodeId": "1835:249",
+          "name": "Style=Bordered, State=Disabled, Size=Small",
+          "width": 360,
+          "height": 32
+        },
+        {
+          "nodeId": "1835:255",
+          "name": "Style=Borderless, State=Default, Size=Small",
+          "width": 360,
+          "height": 32
+        },
+        {
+          "nodeId": "1835:261",
+          "name": "Style=Borderless, State=Hover, Size=Small",
+          "width": 360,
+          "height": 32
+        },
+        {
+          "nodeId": "1835:267",
+          "name": "Style=Borderless, State=Focused, Size=Small",
+          "width": 360,
+          "height": 32
+        },
+        {
+          "nodeId": "1835:273",
+          "name": "Style=Borderless, State=Expanded, Size=Small",
+          "width": 360,
+          "height": 80
+        },
+        {
+          "nodeId": "1835:279",
+          "name": "Style=Borderless, State=Disabled, Size=Small",
+          "width": 360,
+          "height": 32
+        },
+        {
+          "nodeId": "1835:285",
+          "name": "Style=Bordered, State=Default, Size=Large",
+          "width": 360,
+          "height": 48
+        },
+        {
+          "nodeId": "1835:291",
+          "name": "Style=Bordered, State=Hover, Size=Large",
+          "width": 360,
+          "height": 48
+        },
+        {
+          "nodeId": "1835:297",
+          "name": "Style=Bordered, State=Focused, Size=Large",
+          "width": 360,
+          "height": 48
+        },
+        {
+          "nodeId": "1835:303",
+          "name": "Style=Bordered, State=Expanded, Size=Large",
+          "width": 360,
+          "height": 118
+        },
+        {
+          "nodeId": "1835:309",
+          "name": "Style=Bordered, State=Disabled, Size=Large",
+          "width": 360,
+          "height": 48
+        },
+        {
+          "nodeId": "1835:315",
+          "name": "Style=Borderless, State=Default, Size=Large",
+          "width": 360,
+          "height": 48
+        },
+        {
+          "nodeId": "1835:321",
+          "name": "Style=Borderless, State=Hover, Size=Large",
+          "width": 360,
+          "height": 48
+        },
+        {
+          "nodeId": "1835:327",
+          "name": "Style=Borderless, State=Focused, Size=Large",
+          "width": 360,
+          "height": 48
+        },
+        {
+          "nodeId": "1835:333",
+          "name": "Style=Borderless, State=Expanded, Size=Large",
+          "width": 360,
+          "height": 118
+        },
+        {
+          "nodeId": "1835:339",
+          "name": "Style=Borderless, State=Disabled, Size=Large",
+          "width": 360,
+          "height": 48
         }
       ]
     },

@@ -34,6 +34,24 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.WithIcons} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use a button to trigger an immediate action in the current context, such as submitting a form, confirming a choice, opening something or deleting an item."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use the button's emphasis levels to keep the most important action on a screen the easiest one to find."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use one primary action in a context and pair it with lower-emphasis actions."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Keep every button in a group the same size."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use a button when activating it takes the user to another page or location: use a text link instead."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Do not place two primary buttons in the same context, because they read as equally important."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Do not use a button only to show or hide content inline: use a disclosure or accordion."}{" "}<small>{"(ds-sync guidance)"}</small></li></ul>
+
+### Variants
+
+<ul><li><strong>{"Primary"}</strong>: {"Use Primary to mark the single most important action in a context."}{" "}<small>{"(Figma docs)"}</small></li><li><strong>{"Secondary"}</strong>: {"Use Secondary for supporting actions of lower weight next to a primary one."}{" "}<small>{"(Figma docs)"}</small></li><li><strong>{"Ghost"}</strong>: {"Use Ghost for supporting actions of lower weight next to a primary one."}{" "}<small>{"(Figma docs)"}</small></li><li><strong>{"Danger"}</strong>: {"Use Danger only for destructive or irreversible actions such as delete or remove; for anything else use Primary, Secondary or Ghost."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Write the label as a verb that describes the action, such as Save, Delete or Open."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Give every button a label unless it is icon-only."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance
@@ -84,19 +102,7 @@ This is a standard Web Component: it works in any framework, or none.
 
 <Source language="html" code={"<script>import 'figma-design-system-web-components';</script>\n<ds-button variant=\"primary\" on:click={handle}>Button</ds-button>"} dark />
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=102-122">{"Button"}</a> · version 2425019839612435738 · 180 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 180 designed variants shown"}</li><li>{"⚠ Properties: 10/11 Figma properties mapped; not exposed: State=Default"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"✓ Interaction: WAI-ARIA button pattern, tested in the stories"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 1 accepted known issue"}</li><li>{"⚠ Documentation: description; 0/10 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 1 generator note"}</li></ul>
-
-<details>
-  <summary>Generation notes: what Figma does not specify, and approximations</summary>
-  <ul><li>{"Figma strokes are rendered as box-shadow so they do not change layout (inside, outside and centre alignment kept)."}</li></ul>
-</details>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-button-design-review--docs" target="_top">{"Button › Design review"}</a></small></p>
 
 <h2>{"Usage"}</h2>
 <p style={{ whiteSpace: 'pre-line' }}>{"A button triggers an immediate action, such as submit, confirm, open or delete."}</p>

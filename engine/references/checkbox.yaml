@@ -1,0 +1,38 @@
+# Reference spec: Checkbox. Structure for every design system; values (names, options) come from each system.
+id: checkbox
+title: Checkbox
+matches:
+  behaviours: [checkbox, checkbox-single]
+  names: ["checkbox"]
+primaryAxis: [type, variant, style]
+sections:
+  - { id: overview, required: true }
+  - { id: preview, required: true }
+  - { id: variants, required: true }
+  - { id: states, required: false }
+  - { id: accessibility, required: true }
+  - { id: usage, required: true }
+  - { id: api, required: true }
+  - { id: anatomy, required: false }
+  - { id: related, required: false }
+  - { id: code, required: true }
+stories:
+  default: true
+  perPrimaryValue: true      # one story per value of the main variant property
+  perProperty: true          # one story per other property, all its values side by side
+  perOption: true            # one story per optional part (boolean or slot)
+  perPropState: true         # disabled, error, warning, read-only, loading, selected
+  allVariants: test          # every designed Figma variant, in a test-only story
+accessibility:
+  pattern: "wai-aria/checkbox"
+  role: "checkbox"
+  name: "Visible label linked to the control."
+  keyboard:
+    - { key: "Space", action: "toggle" }
+related: ["checkbox group"]
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a checkbox to turn one option on or off, or to choose any number of options from a list."
+  whenNotToUse:
+    - "Do not use a checkbox when only one option of several may be chosen: use radio buttons."
+    - "Do not use a checkbox for a setting that applies at once: use a switch."

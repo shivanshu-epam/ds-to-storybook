@@ -1,0 +1,40 @@
+# Reference spec: Select. Structure for every design system; values (names, options) come from each system.
+id: select
+title: Select
+matches:
+  behaviours: [combobox, listbox]
+  names: ["select", "dropdown", "combo ?box", "picker", "autocomplete"]
+primaryAxis: [type, variant, style]
+sections:
+  - { id: overview, required: true }
+  - { id: preview, required: true }
+  - { id: variants, required: true }
+  - { id: states, required: false }
+  - { id: accessibility, required: true }
+  - { id: usage, required: true }
+  - { id: api, required: true }
+  - { id: anatomy, required: false }
+  - { id: related, required: false }
+  - { id: code, required: true }
+stories:
+  default: true
+  perPrimaryValue: true      # one story per value of the main variant property
+  perProperty: true          # one story per other property, all its values side by side
+  perOption: true            # one story per optional part (boolean or slot)
+  perPropState: true         # disabled, error, warning, read-only, loading, selected
+  allVariants: test          # every designed Figma variant, in a test-only story
+accessibility:
+  pattern: "wai-aria/combobox (select-only)"
+  role: "combobox + listbox"
+  name: "Visible label linked to the field."
+  keyboard:
+    - { key: "Enter / Space / ArrowDown", action: "open" }
+    - { key: "Arrow keys", action: "move" }
+    - { key: "Escape", action: "close" }
+related: ["list box", "menu"]
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a select to choose one option from a list that is too long to show all at once."
+  whenNotToUse:
+    - "Do not use a select for two to five options that fit on screen: use radio buttons."
+    - "Do not use a select to start actions: use a menu."

@@ -2,14 +2,14 @@
 // Add this file to your React app's tsconfig "include" (or copy it into your project).
 import type * as React from 'react';
 import type { DsButton } from '../src/index';
-import type { DsAccordion } from '../src/index';
-import type { DsAccordionItem } from '../src/index';
 import type { DsListItem } from '../src/index';
 import type { DsCheckbox } from '../src/index';
 import type { DsCheckboxGroup } from '../src/index';
 import type { DsBadge } from '../src/index';
 import type { DsBreadcrumbItem } from '../src/index';
 import type { DsSeparator } from '../src/index';
+import type { DsAccordion } from '../src/index';
+import type { DsAccordionItem } from '../src/index';
 import type { DsNavControl } from '../src/index';
 import type { DsPaginationDot } from '../src/index';
 import type { DsAutoplayToggle } from '../src/index';
@@ -37,14 +37,14 @@ declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
       'ds-button': El<DsButton, { variant?: "primary" | "secondary" | "ghost" | "danger"; size?: "sm" | "md" | "lg"; radius?: "default" | "rounded" | "none"; disabled?: boolean; type?: 'button' | 'submit' | 'reset'; leadingIcon?: string | undefined; trailingIcon?: string | undefined; label?: string | undefined; accessibleExpanded?: string | undefined }>;
-      'ds-accordion': El<DsAccordion, { variant?: "bordered" | "borderless"; expandMode?: 'single' | 'multiple'; headingLevel?: number; value?: string[] }>;
-      'ds-accordion-item': El<DsAccordionItem, { value?: string; heading?: string; disabled?: boolean }>;
       'ds-list-item': El<DsListItem, { type?: "default" | "menu" | "file" | "setting"; state?: "default" | "selected" | "activated" | "dragged" | "skeleton"; size?: "sm" | "md" | "lg"; disabled?: boolean; hasLeadingControl?: boolean; hasTrailingControl?: boolean }>;
       'ds-checkbox': El<DsCheckbox, { size?: "sm" | "md" | "lg"; label?: string; heading?: string; checked?: boolean; indeterminate?: boolean; error?: string; invalid?: boolean; warning?: string; readOnly?: boolean; disabled?: boolean; name?: string; value?: string; accessibleLabel?: string }>;
       'ds-checkbox-group': El<DsCheckboxGroup, { legend?: string; orientation?: string; error?: string; warning?: string; readOnly?: boolean; disabled?: boolean }>;
       'ds-badge': El<DsBadge, { status?: "success" | "warning" | "error" | "info" | "neutral"; styleVariant?: "filled" | "outlined" | "subtle"; type?: "text" | "numeric" | "dot"; size?: "sm" | "md" | "lg"; hasLeadingIcon?: boolean; isDismissible?: boolean; label?: string }>;
       'ds-breadcrumb-item': El<DsBreadcrumbItem, { type?: "link" | "current" | "collapse"; disabled?: boolean; hasIcon?: boolean; label?: string }>;
       'ds-separator': El<DsSeparator, { type?: "slash" | "chevron" }>;
+      'ds-accordion': El<DsAccordion, { variant?: "bordered" | "borderless"; size?: "small" | "large" | "medium"; expandMode?: 'single' | 'multiple'; headingLevel?: number; value?: string[] }>;
+      'ds-accordion-item': El<DsAccordionItem, { value?: string; heading?: string; disabled?: boolean }>;
       'ds-nav-control': El<DsNavControl, { direction?: "prev" | "next"; disabled?: boolean }>;
       'ds-pagination-dot': El<DsPaginationDot, {  }>;
       'ds-autoplay-toggle': El<DsAutoplayToggle, { state?: "playing" | "paused" }>;

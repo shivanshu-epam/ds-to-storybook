@@ -32,6 +32,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.Options} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use DropdownTrigger as the field of a dropdown, the select control that opens a menu of options."}{" "}<small>{"(Figma docs)"}</small></li><li>{"The trigger shows the selected option, or placeholder text when nothing is selected."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Pair it with DropdownMenu for the option list, or use Dropdown, which combines the trigger and the menu."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use a dropdown when people choose one option from a list that is too long to show all at once."}{" "}<small>{"(ds-sync guidance)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use a dropdown for two to five options that fit on screen: use radio buttons."}{" "}<small>{"(ds-sync guidance)"}</small></li><li>{"Do not use a dropdown to start actions: use a menu."}{" "}<small>{"(ds-sync guidance)"}</small></li><li>{"When you need the field and its open option list together, use Dropdown instead of placing DropdownTrigger on its own."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Do not let placeholder text such as \"Select an option\" replace a visible label: pair the dropdown with a label."}{" "}<small>{"(Figma docs)"}</small></li><li>{"In the Error state, give a text error message, not only a red border."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use \"Loading options…\" while options load and \"No results found\" when the menu is empty."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance
@@ -78,14 +92,7 @@ This is a standard Web Component: it works in any framework, or none.
 
 <Source language="html" code={"<script>import 'figma-design-system-web-components';</script>\n<ds-dropdown-trigger size=\"small\"></ds-dropdown-trigger>"} dark />
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=396-1799">{"DropdownTrigger"}</a> · version 2425019839612435738 · 21 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 21 designed variants shown; 15 computed combinations labelled"}</li><li>{"✓ Properties: 5/5 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"⚠ Interaction: visuals only: the name suggests behaviour that no template provides (add an archetype decision)"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 1 accepted known issue"}</li><li>{"⚠ Documentation: description; 0/5 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 1 generator note"}</li></ul>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-dropdown-dropdowntrigger-design-review--docs" target="_top">{"DropdownTrigger › Design review"}</a></small></p>
 
 <h2>{"Usage"}</h2>
 <h3>{"Dropdown"}</h3>

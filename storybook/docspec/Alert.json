@@ -1,0 +1,259 @@
+{
+  "specVersion": "1.0",
+  "component": "Alert",
+  "title": "Components/Alert",
+  "kind": {
+    "id": "notification",
+    "title": "Notification",
+    "from": "name"
+  },
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2425654086033038120",
+    "sets": [
+      {
+        "id": "516:2837",
+        "name": "Alert",
+        "page": "↳ alert",
+        "variants": 40
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1340:767",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1340:1159",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1340:1663",
+        "name": "Documentation / Accessibility"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "Sentiment",
+      "type": "VARIANT",
+      "props": [
+        "sentiment"
+      ],
+      "role": "state",
+      "default": "Neutral",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Danger",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Neutral",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Info",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Success",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Warning",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Size",
+      "type": "VARIANT",
+      "props": [
+        "size"
+      ],
+      "role": "appearance",
+      "default": "Sm",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Md",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Sm",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "state"
+      ],
+      "role": "appearance",
+      "default": "Default",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "With Action + Close",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Default",
+          "coverage": "shown"
+        },
+        {
+          "figma": "With Action",
+          "coverage": "shown"
+        },
+        {
+          "figma": "With Close",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": []
+    },
+    {
+      "export": "SentimentAndSize",
+      "name": "Sentiment and size",
+      "visibility": "dev",
+      "shows": [
+        "Sentiment",
+        "Size",
+        "State"
+      ]
+    },
+    {
+      "export": "State",
+      "name": "State",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "Sentiment",
+        "Size",
+        "State"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "present",
+      "heading": "State"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "present",
+      "heading": "Usage"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "present",
+      "heading": "Composition"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "status / alert region",
+    "role": "status or alert",
+    "name": "Title and message are read when it appears.",
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "reach actions"
+      }
+    ],
+    "source": "reference"
+  },
+  "related": [],
+  "coverage": {
+    "properties": {
+      "total": 3,
+      "covered": 3
+    },
+    "values": {
+      "total": 11,
+      "shown": 11,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 40,
+      "rendered": 40
+    },
+    "sections": {
+      "required": 7,
+      "present": 7
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

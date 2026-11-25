@@ -24,6 +24,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.SelectedAndState} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use a radio button to let users pick exactly one option from a set."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Use RadioControl, the circle alone with no label, when another component supplies the option's text, such as a list item in a single-select list."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Keep the options to a small set that users can see all at once."}{" "}<small>{"(ds-sync guidance)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use RadioControl when users may choose more than one option: use Checkbox."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Do not use RadioControl on its own for a labeled option: use RadioField, which adds the value text and an optional error or warning row, and wrap the fields in a RadioGroup with a group label."}{" "}<small>{"(Figma docs, this design system)"}</small></li><li>{"Do not use radio buttons for a long list of options: use a select."}{" "}<small>{"(ds-sync guidance)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"RadioControl has no label, so give each option its own text through a RadioField value or the component that contains the control."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Make the option's value text part of the clickable area, because the 28px control is below the 44×44px touch target."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### State
@@ -71,14 +85,7 @@ This is a standard Web Component: it works in any framework, or none.
 
 <Source language="html" code={"<script>import 'figma-design-system-web-components';</script>\n<ds-radio-control accessible-label=\"Radio\" name=\"choice\" value=\"a\" on:change={handle}></ds-radio-control>"} dark />
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=521-2681">{"RadioControl"}</a> · version 2425019839612435738 · 17 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 17 designed variants shown; 1 computed combinations labelled"}</li><li>{"✓ Properties: 3/3 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"✓ Interaction: WAI-ARIA radio pattern, tested in the stories"}</li><li>{"⚠ Tokens: 1 raw colour value (not bound to a variable in Figma)"}</li><li>{"✓ Accessibility: axe in every Figma mode"}</li><li>{"⚠ Documentation: description; 0/3 props described"}</li><li>{"✓ Open decisions: 0 open questions; 0 generator notes"}</li></ul>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-radio-radiocontrol-design-review--docs" target="_top">{"RadioControl › Design review"}</a></small></p>
 
 <h2>{"Usage"}</h2>
 <h3>{"Radio"}</h3>

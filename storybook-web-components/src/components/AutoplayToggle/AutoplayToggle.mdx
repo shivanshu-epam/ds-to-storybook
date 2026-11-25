@@ -22,6 +22,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.State} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use AutoplayToggle as the pause and play control in a carousel that advances on a timer."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Add it whenever a carousel autoplays: always pair autoplay with a visible, reachable pause control."}{" "}<small>{"(Figma docs)"}</small></li><li>{"It gives users a way to stop autoplay at any time."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not add AutoplayToggle to a carousel that advances only manually: use NavControl and PaginationDot for advancing."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Do not use AutoplayToggle as a general on/off setting outside a carousel: use Switch."}{" "}<small>{"(ds-sync guidance, this design system)"}</small></li><li>{"Do not use AutoplayToggle as the only way to move between slides: give users controls, pagination or swipe as well."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"AutoplayToggle is icon-only, so give it an accessible name."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance
@@ -60,14 +74,7 @@ This is a standard Web Component: it works in any framework, or none.
 
 <Source language="html" code={"<script>import 'figma-design-system-web-components';</script>\n<ds-autoplay-toggle state=\"playing\"></ds-autoplay-toggle>"} dark />
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=241-1883">{"AutoplayToggle"}</a> · version 2425019839612435738 · 2 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 2 designed variants shown"}</li><li>{"✓ Properties: 1/1 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"⚠ Interaction: visuals only: the name suggests behaviour that no template provides (add an archetype decision)"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"✓ Accessibility: axe in every Figma mode"}</li><li>{"⚠ Documentation: description; 0/1 props described"}</li><li>{"✓ Open decisions: 0 open questions; 0 generator notes"}</li></ul>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-carousel-autoplaytoggle-design-review--docs" target="_top">{"AutoplayToggle › Design review"}</a></small></p>
 
 <h2>{"Usage"}</h2>
 <h3>{"Carousel"}</h3>

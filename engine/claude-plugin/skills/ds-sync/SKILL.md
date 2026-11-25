@@ -85,7 +85,8 @@ Figma names properties for designers (`Show Leading Icon`, `isIntermediate`, `Sc
    - **In this session, a few components:** run the `interpret-component` skill on each review file, or hand a batch to the `component-interpreter` agent, and record the answers in the decisions file as proposed.
 3. Hand over to the `review-decisions` skill: the user accepts, edits or rejects. Never accept on their behalf.
 4. `ds-sync generate` applies accepted decisions. `--decisions proposed` previews proposals; the report marks it.
-5. When the team has existing component code, `ds-sync eval --reference <components folder> --decisions proposed` measures how many of its props the generated API matches. The reference is only for measuring: never give it to the interpret step.
+5. **Usage guidance** (the docs Usage section, missing until written): `ds-sync generate` writes one evidence file per component to `.ds-sync/usage/`. Run `ds-sync usage` (headless, same cost note as interpret) or, for a few components, the `write-usage` skill in this session, then record each answer with `ds-sync usage --from <answer.json> --only <Component>`. Every sentence must cite the evidence; the engine drops sentences that do not. The team accepts with `ds-sync decisions accept --only <set>`.
+6. When the team has existing component code, `ds-sync eval --reference <components folder> --decisions proposed` measures how many of its props the generated API matches. The reference is only for measuring: never give it to the interpret step.
 
 ## 6. Keep it in sync
 

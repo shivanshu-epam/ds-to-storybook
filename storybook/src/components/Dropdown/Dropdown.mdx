@@ -24,6 +24,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.SizeAndState} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use a dropdown as a select control: a trigger field that opens a menu of options to choose from."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use it when there is not room to show all the options at once."}{" "}<small>{"(ds-sync guidance, Figma docs)"}</small></li><li>{"When the list needs it, compose the trigger and menu with group labels, a search row at the top of the menu, or a clear icon in the trigger."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use Dropdown when you need only the option list without a trigger field: use DropdownMenu."}{" "}<small>{"(Figma docs, this design system)"}</small></li><li>{"Do not use Dropdown to offer a list of actions: it is a select control for choosing an option."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Show the selected option in the trigger, or the placeholder \"Select an option\" when nothing is selected."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Show \"Loading options…\" with a loading icon while options load, and \"No results found\" when there are none."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Pair the dropdown with a visible label instead of relying on the placeholder, and in the Error state give a text error message, not just a red border."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance
@@ -54,13 +68,6 @@ The default configuration (every property at its Figma default).
 
 Each story shows its code under "Show code".
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=401-2471">{"Dropdown"}</a> · version 2425019839612435738 · 6 designed variants</li><li>{"Nested consistency: 36/36 nested values match Figma (2 nested component layers; 0 state variants not compared)."}</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 6 designed variants shown"}</li><li>{"✓ Properties: 2/2 Figma properties mapped"}</li><li>{"✓ Nested consistency: 36/36 nested values match Figma (2 nested layers)"}</li><li>{"✓ Interaction: WAI-ARIA menu button pattern, tested in the stories"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 2 accepted known issues"}</li><li>{"⚠ Documentation: description; 0/2 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 2 generator notes"}</li></ul>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-dropdown-dropdown-design-review--docs" target="_top">{"Dropdown › Design review"}</a></small></p>
 
 <FigmaDocs docs={docs} only="tabs" />

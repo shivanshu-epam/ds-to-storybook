@@ -33,7 +33,7 @@
   gap: var(--space-inline-lg);
   opacity: 1;
   overflow: hidden;
-  padding: var(--space-stack-lg) var(--space-stack-lg) var(--space-stack-md) var(--space-stack-lg);
+  padding: var(--space-stack-lg) var(--space-stack-lg) var(--space-inline-lg) var(--space-stack-lg);
 }
 
 .root .headerTextCol {

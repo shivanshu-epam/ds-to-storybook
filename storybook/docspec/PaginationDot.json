@@ -1,0 +1,179 @@
+{
+  "specVersion": "1.0",
+  "component": "PaginationDot",
+  "title": "Components/Carousel/PaginationDot",
+  "kind": {
+    "id": "navigation",
+    "title": "Navigation",
+    "from": "name"
+  },
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2425654086033038120",
+    "sets": [
+      {
+        "id": "241:1815",
+        "name": "PaginationDot",
+        "page": "↳ carousel",
+        "variants": 2
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1336:73",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1336:417",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1336:649",
+        "name": "Documentation / Accessibility"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "—"
+      ],
+      "role": "state",
+      "default": "Default",
+      "control": "hidden",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Default",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Active",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": []
+    },
+    {
+      "export": "State",
+      "name": "State",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": []
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "present",
+      "heading": "State"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "present",
+      "heading": "Usage"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "missing"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "navigation landmark",
+    "role": "navigation",
+    "name": "Landmark label (aria-label); current item marked aria-current.",
+    "source": "reference"
+  },
+  "related": [],
+  "coverage": {
+    "properties": {
+      "total": 1,
+      "covered": 1
+    },
+    "values": {
+      "total": 2,
+      "shown": 2,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 2,
+      "rendered": 2
+    },
+    "sections": {
+      "required": 7,
+      "present": 6
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "section:api",
+      "message": "The docs page has no \"api\" section (required for navigation components)."
+    },
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

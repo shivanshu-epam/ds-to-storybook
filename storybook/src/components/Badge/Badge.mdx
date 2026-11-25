@@ -36,6 +36,24 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.Options} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use a badge to show a status, a count, a label or a notification on another element."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use Status to show an item's state: success, warning, error, info or neutral."}{" "}<small>{"(Figma docs, Figma properties)"}</small></li><li>{"Use a Numeric badge to show a count, such as unread notifications, and a Dot badge to show that something needs attention without a count."}{" "}<small>{"(Figma docs, Figma properties)"}</small></li><li>{"Use a Text badge to tag an item with a short label, and make it dismissible when users should be able to remove it."}{" "}<small>{"(Figma docs, Figma properties)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Don't use a badge as a primary action, a button or a main navigation target: use a Button."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Don't use a badge for anything longer than a short label, a single count or one icon: no paragraphs, multiple icons or nested badges."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Don't reuse a status color for an unrelated meaning."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### Variants
+
+<ul><li><strong>{"Filled"}</strong>: {"Use Filled as the default style; the docs preview the default badge with Style=Filled."}{" "}<small>{"(Figma docs, Figma properties)"}</small></li><li><strong>{"Outlined"}</strong>: {"Use Outlined for a badge drawn with a border instead of a fill, as its name says."}{" "}<small>{"(Figma properties, Figma docs)"}</small></li><li><strong>{"Subtle"}</strong>: {"Use Subtle for a lower-emphasis fill, as its name says."}{" "}<small>{"(Figma properties, Figma docs)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Keep a text label short, and make the label carry the meaning so it doesn't rely on color alone."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Cap large counts at {max-count}+ (for example 99+) instead of showing the full number."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Place a badge next to or on the element it describes, and don't let its content overflow or stretch the parent layout."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance
@@ -60,13 +78,6 @@ The default configuration (every property at its Figma default).
 
 Each story shows its code under "Show code".
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=211-1961">{"Badge"}</a> · version 2425019839612435738 · 135 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 135 designed variants shown"}</li><li>{"✓ Properties: 7/7 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"– Interaction: visuals only (display component)"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 1 accepted known issue"}</li><li>{"⚠ Documentation: description; 0/7 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 1 generator note"}</li></ul>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-badge-design-review--docs" target="_top">{"Badge › Design review"}</a></small></p>
 
 <FigmaDocs docs={docs} only="tabs" />

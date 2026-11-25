@@ -1,0 +1,222 @@
+{
+  "specVersion": "1.0",
+  "component": "RadioGroup",
+  "title": "Components/Radio/RadioGroup",
+  "kind": {
+    "id": "radio",
+    "title": "Radio",
+    "from": "behaviour"
+  },
+  "behaviour": "radio-group",
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2425654086033038120",
+    "sets": [
+      {
+        "id": "529:749",
+        "name": "RadioGroup",
+        "page": "↳ Radio",
+        "variants": 8
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1344:351",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1344:699",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1344:1389",
+        "name": "Documentation / Accessibility"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "state"
+      ],
+      "role": "state",
+      "default": "Enabled",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Enabled",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Read-Only",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Invalid",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Warning",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Horizontal",
+      "type": "VARIANT",
+      "props": [
+        "horizontal"
+      ],
+      "role": "appearance",
+      "default": "false",
+      "control": "boolean",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "false",
+          "coverage": "shown"
+        },
+        {
+          "figma": "true",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": []
+    },
+    {
+      "export": "StateAndHorizontal",
+      "name": "State and horizontal",
+      "visibility": "dev",
+      "shows": [
+        "State",
+        "Horizontal"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "State",
+        "Horizontal"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "present",
+      "heading": "Usage"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "present",
+      "heading": "Composition"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "wai-aria/radio",
+    "role": "radio / radiogroup",
+    "name": "Group label and option labels.",
+    "keyboard": [
+      {
+        "key": "Arrow keys",
+        "action": "move selection"
+      },
+      {
+        "key": "Space",
+        "action": "select"
+      }
+    ],
+    "source": "reference"
+  },
+  "related": [
+    "radio group"
+  ],
+  "coverage": {
+    "properties": {
+      "total": 2,
+      "covered": 2
+    },
+    "values": {
+      "total": 6,
+      "shown": 6,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 8,
+      "rendered": 8
+    },
+    "sections": {
+      "required": 7,
+      "present": 7
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

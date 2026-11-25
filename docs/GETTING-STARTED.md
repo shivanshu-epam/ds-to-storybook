@@ -24,7 +24,7 @@ From one Figma file, ds-sync writes a complete Storybook project (or two):
 | Access to the design system file | The token's owner must be able to open the file. For a community file, duplicate it into your account first. |
 | The file link | For example `https://www.figma.com/design/AbC123…/My-Design-System` |
 | (Optional) GitHub repository | For the sync workflow. |
-| (Optional) Figma desktop app | To export variables on non-Enterprise plans (section 4). |
+| (Optional) Figma desktop app | To run the ds-sync plugin: no API limits, and variables on any plan (section 4.3). |
 
 ## 3. Install
 
@@ -71,16 +71,21 @@ It checks that the token can open the file, looks at your project (React? Vue? A
 
 It writes `ds-sync.config.json`. Add `--yes` to accept every suggestion, and `--ci` to also install the GitHub workflow (section 7).
 
-**4.3 Variables (tokens).**
+**4.3 How ds-sync reads Figma: the API or the plugin export.**
 
-- **Figma Enterprise:** nothing to do; ds-sync reads variables through the API.
-- **Other plans:** the Variables API is not available. Export them with the ds-sync Figma plugin:
-  1. In the Figma desktop app, open the design system file.
-  2. **Plugins → Development → Import plugin from manifest…**, pick `plugin/manifest.json` from the ds-sync repository.
-  3. Run **ds-sync: export variables**, click **Download figma-variables.json**.
-  4. Put the file next to `ds-sync.config.json` and set `"variablesExport": "figma-variables.json"` under `generate`.
+ds-sync reads Figma in one of two ways, and gives the same result either way:
 
-  Without variables, generation still works, but colours and spacing are raw values instead of tokens.
+- **The REST API** (a personal access token, section 4.1). Figma limits REST reads by plan and seat. Figma's documentation gives a file you can **edit** (Full or Dev seat) 10 or more reads a minute, and a file you can only **view** about 20 reads a month. In practice, large files on the Starter plan can still be blocked for days even for their owner. The API suits small files and paid plans; for anything else, use the plugin. Variables come through the API only on Enterprise.
+- **The ds-sync Figma plugin's export.** The plugin reads the file inside Figma and saves `figma-export.zip`, so there are no API limits, on any plan, and variables are included. Use it when the API is limited, or when you want tokens on a non-Enterprise plan:
+  1. In the Figma desktop app, **Plugins → Development → Import plugin from manifest…**, then pick `plugin/manifest.json` from the ds-sync repository (once).
+  2. Open the design system file (duplicate a Community file into your drafts first) and run **ds-sync → Export for ds-sync**.
+  3. Save `figma-export.zip` next to `ds-sync.config.json` and add `"export": "figma-export.zip"` under `figma` in the config.
+
+  ds-sync then reads the export whenever it is there (`--source api` or `--source export` forces one). Re-export when the design changes; with the GitHub workflow, committing a new export starts a sync, and no Figma token is needed. Details: [plugin/README.md](../plugin/README.md).
+
+If you stay on the API without Enterprise, the plugin can export variables alone (**Export variables only**, then `"variablesExport": "figma-variables.json"` under `generate`). Without variables, generation still works, but colours and spacing are raw values instead of tokens.
+
+When Figma's API asks for a long wait (its limit for this token and file is used up), ds-sync stops at once and says how long. It never waits for hours.
 
 ## 5. Generate
 
@@ -254,7 +259,8 @@ Things to know:
 | Problem | What to do |
 | --- | --- |
 | `Figma rejected FIGMA_TOKEN` or HTTP 403 on the file | The token is wrong or expired, or its owner cannot open the file. Create a new token with *File content: read*; for community files, duplicate the file first. |
-| `Variables API needs an Enterprise plan` | Expected on other plans: export variables with the plugin (section 4.3). |
+| `Variables API needs an Enterprise plan` | Expected on other plans: use the plugin export, which includes variables (section 4.3). |
+| `Figma's rate limit for this token: it asks to wait …` | Figma's API allowance for this file is used up. Use the plugin export (section 4.3), or a token with edit access to the file. |
 | "Figma rate limit hit; waiting…" | Normal on large files: ds-sync waits and retries. Responses are cached in `.ds-sync/cache`, so a second run is fast. |
 | Discovery finds few components | Make sure component pages are not named like QA/test/archive pages and do not start with `_`. Check `.ds-sync/discovery.md`; force pages or sets with overrides. |
 | A component is "visuals only" | It has no behaviour template (only button, checkbox, radio, switch, input, dialog and accordion patterns do). Its docs say so; the behaviour must be added by your team or a future template. |

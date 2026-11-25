@@ -104,6 +104,12 @@ export const Size: Story = {
   },
 };
 
+/** Figma Interaction=Loading. */
+export const Loading: Story = {
+  name: 'Loading',
+  args: { interaction: 'loading' },
+};
+
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
   name: "Optional parts",

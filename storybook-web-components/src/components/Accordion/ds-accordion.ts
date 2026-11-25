@@ -11,6 +11,7 @@ export class DsAccordion extends LitElement {
   static override styles = [unsafeCSS(':host { display: contents; }'), unsafeCSS(css)];
   static override properties = {
     variant: { type: String, reflect: true },
+    size: { type: String, reflect: true },
     expandMode: { type: String, attribute: 'expand-mode' },
     headingLevel: { type: Number, attribute: 'heading-level' },
     value: { type: Array },
@@ -18,6 +19,8 @@ export class DsAccordion extends LitElement {
 
   /** Figma: AccordionItem Style. */
   declare variant: "bordered" | "borderless";
+  /** Figma: AccordionItem Size. */
+  declare size: "small" | "large" | "medium";
   /** Figma docs: single- or multiple-expand. */
   declare expandMode: 'single' | 'multiple';
   /** Not specified in Figma; default 3. */
@@ -28,6 +31,7 @@ export class DsAccordion extends LitElement {
   constructor() {
     super();
     this.variant = "bordered";
+    this.size = "medium";
     this.expandMode = 'single';
     this.headingLevel = 3;
     this.value = [];
@@ -59,6 +63,7 @@ export class DsAccordion extends LitElement {
     for (const item of this.items) {
       item.open = this.value.includes(item.value);
       item.variant = this.variant;
+      item.size = this.size;
       item.headingLevel = this.headingLevel;
     }
   }
@@ -77,6 +82,7 @@ export class DsAccordionItem extends LitElement {
     disabled: { type: Boolean, reflect: true },
     open: { type: Boolean, reflect: true },
     variant: { type: String },
+    size: { type: String },
     headingLevel: { type: Number },
     forceState: { type: String, attribute: 'data-force-state' },
   };
@@ -89,6 +95,7 @@ export class DsAccordionItem extends LitElement {
   /** Set by the parent accordion. */
   declare open: boolean;
   declare variant: string | undefined;
+  declare size: string | undefined;
   declare headingLevel: number;
   declare forceState: string | undefined;
   private readonly uid = `acc-${++uid}`;
@@ -111,7 +118,7 @@ export class DsAccordionItem extends LitElement {
   }
 
   override render() {
-    return html`<div class="item" data-variant=${this.variant ?? nothing} data-state=${this.open ? 'open' : 'closed'} ?data-disabled=${this.disabled}>
+    return html`<div class="item" data-variant=${this.variant ?? nothing} data-size=${this.size ?? nothing} data-state=${this.open ? 'open' : 'closed'} ?data-disabled=${this.disabled}>
       <div class="heading" role="heading" aria-level=${this.headingLevel}>
         <button type="button" id=${`${this.uid}-header`} class="header" aria-expanded=${this.open ? 'true' : 'false'} aria-controls=${`${this.uid}-panel`} ?disabled=${this.disabled} data-force-state=${this.forceState ?? nothing}
           @click=${() => this.dispatchEvent(new CustomEvent('accordion-toggle', { detail: this.value, bubbles: true, composed: true }))}>

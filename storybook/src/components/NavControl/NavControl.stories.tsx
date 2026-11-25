@@ -40,6 +40,12 @@ export const DirectionAndState: Story = {
   },
 };
 
+/** Figma State=Disabled. */
+export const Disabled: Story = {
+  name: 'Disabled',
+  args: { disabled: true },
+};
+
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
   name: "Figma variants",

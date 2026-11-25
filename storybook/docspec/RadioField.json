@@ -1,0 +1,276 @@
+{
+  "specVersion": "1.0",
+  "component": "RadioField",
+  "title": "Components/Radio/RadioField",
+  "kind": {
+    "id": "radio",
+    "title": "Radio",
+    "from": "behaviour"
+  },
+  "behaviour": "radio-field",
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2425654086033038120",
+    "sets": [
+      {
+        "id": "522:125",
+        "name": "RadioField",
+        "page": "↳ Radio",
+        "variants": 14
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1344:351",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1344:699",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1344:1389",
+        "name": "Documentation / Accessibility"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "state",
+        "disabled"
+      ],
+      "role": "state",
+      "default": "Enabled",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Enabled",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Focused",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Invalid",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Warning",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Read-Only",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Disabled",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Skeleton",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Position",
+      "type": "VARIANT",
+      "props": [
+        "position"
+      ],
+      "role": "appearance",
+      "default": "Left",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Left",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Right",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": []
+    },
+    {
+      "export": "PositionAndState",
+      "name": "Position and state",
+      "visibility": "dev",
+      "shows": [
+        "State",
+        "Position"
+      ]
+    },
+    {
+      "export": "Disabled",
+      "name": "Disabled",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "Invalid",
+      "name": "Invalid",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "Warning",
+      "name": "Warning",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "ReadOnly",
+      "name": "Read-Only",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "Skeleton",
+      "name": "Skeleton",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "State",
+        "Position"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "present",
+      "heading": "State"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "present",
+      "heading": "Usage"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "present",
+      "heading": "Composition"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "wai-aria/radio",
+    "role": "radio / radiogroup",
+    "name": "Group label and option labels.",
+    "keyboard": [
+      {
+        "key": "Arrow keys",
+        "action": "move selection"
+      },
+      {
+        "key": "Space",
+        "action": "select"
+      }
+    ],
+    "source": "reference"
+  },
+  "related": [
+    "radio group"
+  ],
+  "coverage": {
+    "properties": {
+      "total": 2,
+      "covered": 2
+    },
+    "values": {
+      "total": 9,
+      "shown": 9,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 14,
+      "rendered": 14
+    },
+    "sections": {
+      "required": 7,
+      "present": 7
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

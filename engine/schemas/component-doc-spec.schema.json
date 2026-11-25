@@ -1,0 +1,475 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/shivanshu-epam/ds-to-storybook/engine/schemas/component-doc-spec.schema.json",
+  "title": "Component Doc Spec v1",
+  "description": "What one component's Storybook documentation must contain, built from Figma and checked against the generated stories and docs page (docs/DOCS-ENGINE.md, engine/standards/production-ready.md).",
+  "type": "object",
+  "required": [
+    "specVersion",
+    "component",
+    "title",
+    "kind",
+    "buildingBlock",
+    "figma",
+    "properties",
+    "stories",
+    "sections",
+    "accessibility",
+    "related",
+    "coverage",
+    "gaps"
+  ],
+  "properties": {
+    "specVersion": {
+      "const": "1.0"
+    },
+    "component": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "from"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "from": {
+          "enum": [
+            "behaviour",
+            "name",
+            "fallback"
+          ]
+        }
+      }
+    },
+    "behaviour": {
+      "type": "string"
+    },
+    "buildingBlock": {
+      "type": "boolean"
+    },
+    "figma": {
+      "type": "object",
+      "required": [
+        "fileKey",
+        "version",
+        "sets",
+        "docFrames"
+      ],
+      "properties": {
+        "fileKey": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "sets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "name",
+              "page",
+              "variants"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "page": {
+                "type": "string"
+              },
+              "variants": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "docFrames": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "name"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "description": {
+      "type": "object",
+      "required": [
+        "text",
+        "source"
+      ],
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "figma",
+            "figma-doc",
+            "decision",
+            "reference",
+            "generator"
+          ]
+        }
+      }
+    },
+    "properties": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "figma",
+          "type",
+          "props",
+          "role",
+          "default",
+          "control",
+          "coverage"
+        ],
+        "properties": {
+          "figma": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "VARIANT",
+              "BOOLEAN",
+              "TEXT",
+              "INSTANCE_SWAP"
+            ]
+          },
+          "props": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "role": {
+            "enum": [
+              "appearance",
+              "state",
+              "content",
+              "option",
+              "slot"
+            ]
+          },
+          "default": {
+            "type": [
+              "string",
+              "boolean"
+            ]
+          },
+          "control": {
+            "type": "string"
+          },
+          "coverage": {
+            "enum": [
+              "shown",
+              "control",
+              "test",
+              "interactive",
+              "missing",
+              "n/a"
+            ]
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "figma",
+                "coverage"
+              ],
+              "properties": {
+                "figma": {
+                  "type": "string"
+                },
+                "coverage": {
+                  "enum": [
+                    "shown",
+                    "control",
+                    "test",
+                    "interactive",
+                    "missing",
+                    "n/a"
+                  ]
+                }
+              }
+            }
+          },
+          "description": {
+            "type": "object",
+            "required": [
+              "text",
+              "source"
+            ],
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "source": {
+                "enum": [
+                  "figma",
+                  "figma-doc",
+                  "decision",
+                  "reference",
+                  "generator"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "stories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "export",
+          "name",
+          "visibility",
+          "shows"
+        ],
+        "properties": {
+          "export": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "visibility": {
+            "enum": [
+              "dev",
+              "docs",
+              "test"
+            ]
+          },
+          "shows": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "required",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "present",
+              "missing"
+            ]
+          },
+          "heading": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "accessibility": {
+      "type": "object",
+      "required": [
+        "pattern",
+        "role",
+        "name",
+        "source"
+      ],
+      "properties": {
+        "pattern": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "source": {
+          "const": "reference"
+        },
+        "keyboard": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "action"
+            ],
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "action": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "related": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "properties",
+        "values",
+        "variants",
+        "sections",
+        "complete"
+      ],
+      "properties": {
+        "properties": {
+          "type": "object",
+          "required": [
+            "total",
+            "covered"
+          ],
+          "properties": {
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "covered": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "values": {
+          "type": "object",
+          "required": [
+            "total",
+            "shown",
+            "control",
+            "missing"
+          ],
+          "properties": {
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "shown": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "control": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "missing": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "variants": {
+          "type": "object",
+          "required": [
+            "total",
+            "rendered"
+          ],
+          "properties": {
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "rendered": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "interactive": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "sections": {
+          "type": "object",
+          "required": [
+            "required",
+            "present"
+          ],
+          "properties": {
+            "required": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "present": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "complete": {
+          "type": "boolean"
+        }
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "item",
+          "message"
+        ],
+        "properties": {
+          "item": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

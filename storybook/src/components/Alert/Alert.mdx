@@ -28,6 +28,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.State} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use an alert to show a short, sentiment-coded message inline on the page."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use an alert to give feedback inline, for example the result of an action or a change in status."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li><li>{"Add an action when the person can respond to the message, and a close button when they can dismiss it."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use an alert for an urgent message that must interrupt the page: use a Dialog, because alerts stay inline."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Do not use an alert for information that belongs in the page content, and do not show several alerts for one event."}{" "}<small>{"(ds-sync guidance)"}</small></li><li>{"Do not put a large primary button in an alert: use a Ghost, Sm Button for the action."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Keep the message short."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Give every alert a headline."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Add supporting text below the headline only when the message needs a description."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### Appearance
@@ -58,18 +72,6 @@ The default configuration (every property at its Figma default).
 
 Each story shows its code under "Show code".
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=516-2837">{"Alert"}</a> · version 2425019839612435738 · 40 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 40 designed variants shown"}</li><li>{"✓ Properties: 3/3 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"– Interaction: visuals only (display component)"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 1 accepted known issue"}</li><li>{"⚠ Documentation: description; 0/3 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 2 generator notes"}</li></ul>
-
-<details>
-  <summary>Generation notes: what Figma does not specify, and approximations</summary>
-  <ul><li>{"Icon-only Button \"_interaction-wrapper/_visual-container/close-button\" is named \"Close\" from its Figma layer name; confirm the wording."}</li></ul>
-</details>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-alert-design-review--docs" target="_top">{"Alert › Design review"}</a></small></p>
 
 <FigmaDocs docs={docs} only="tabs" />

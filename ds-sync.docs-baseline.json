@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "targets": {
+    "storybook": {
+      "Accordion": [
+        "description"
+      ],
+      "Alert": [
+        "description"
+      ],
+      "AutoplayToggle": [
+        "description"
+      ],
+      "AvatarGlyph": [
+        "description"
+      ],
+      "AvatarIdentity": [
+        "description"
+      ],
+      "Badge": [
+        "description"
+      ],
+      "BreadcrumbItem": [
+        "description"
+      ],
+      "Button": [
+        "description"
+      ],
+      "Checkbox": [
+        "Has label",
+        "description"
+      ],
+      "DatePicker": [
+        "description"
+      ],
+      "Dialog": [
+        "description"
+      ],
+      "Divider": [
+        "description"
+      ],
+      "Dropdown": [
+        "description"
+      ],
+      "DropdownMenu": [
+        "description"
+      ],
+      "DropdownTrigger": [
+        "description"
+      ],
+      "Form": [
+        "description"
+      ],
+      "Input": [
+        "description"
+      ],
+      "InputControl": [
+        "description"
+      ],
+      "InputField": [
+        "description"
+      ],
+      "ListItem": [
+        "description"
+      ],
+      "NavControl": [
+        "description"
+      ],
+      "PaginationDot": [
+        "section:api",
+        "description"
+      ],
+      "RadioControl": [
+        "description"
+      ],
+      "RadioField": [
+        "description"
+      ],
+      "RadioGroup": [
+        "description"
+      ],
+      "Separator": [
+        "description"
+      ],
+      "Switch": [
+        "description"
+      ]
+    }
+  }
+}

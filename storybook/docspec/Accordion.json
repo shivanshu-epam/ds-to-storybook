@@ -1,0 +1,281 @@
+{
+  "specVersion": "1.0",
+  "component": "Accordion",
+  "title": "Components/Accordion",
+  "kind": {
+    "id": "accordion",
+    "title": "Accordion",
+    "from": "behaviour"
+  },
+  "behaviour": "accordion",
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2425654086033038120",
+    "sets": [
+      {
+        "id": "236:1875",
+        "name": "AccordionItem",
+        "page": "↳ accordion",
+        "variants": 30
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1333:182",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1333:457",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1333:814",
+        "name": "Documentation / Accessibility"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "Style",
+      "type": "VARIANT",
+      "props": [
+        "variant"
+      ],
+      "role": "appearance",
+      "default": "Bordered",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Bordered",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Borderless",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "value / defaultValue",
+        "AccordionItem disabled"
+      ],
+      "role": "state",
+      "default": "Default",
+      "control": "hidden",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Default",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Hover",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Focused",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Expanded",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Disabled",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Size",
+      "type": "VARIANT",
+      "props": [
+        "size"
+      ],
+      "role": "appearance",
+      "default": "Medium",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Small",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Large",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Medium",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": []
+    },
+    {
+      "export": "SingleExpand",
+      "name": "Single expand",
+      "visibility": "docs",
+      "shows": []
+    },
+    {
+      "export": "MultipleExpand",
+      "name": "Multiple expand",
+      "visibility": "dev",
+      "shows": []
+    },
+    {
+      "export": "Styles",
+      "name": "Styles",
+      "visibility": "dev",
+      "shows": [
+        "Style"
+      ]
+    },
+    {
+      "export": "SizeValues",
+      "name": "Size",
+      "visibility": "dev",
+      "shows": [
+        "Size"
+      ]
+    },
+    {
+      "export": "States",
+      "name": "States",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "Keyboard",
+      "name": "Keyboard",
+      "visibility": "docs",
+      "shows": []
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "Style",
+        "Size"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "present",
+      "heading": "States"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "present",
+      "heading": "Usage"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "wai-aria/accordion",
+    "role": "button (header) + region (panel)",
+    "name": "The header text names the panel.",
+    "keyboard": [
+      {
+        "key": "Enter / Space",
+        "action": "toggle"
+      }
+    ],
+    "source": "reference"
+  },
+  "related": [
+    "accordion item"
+  ],
+  "coverage": {
+    "properties": {
+      "total": 3,
+      "covered": 3
+    },
+    "values": {
+      "total": 10,
+      "shown": 10,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 30,
+      "rendered": 30
+    },
+    "sections": {
+      "required": 7,
+      "present": 7
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

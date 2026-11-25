@@ -1,0 +1,566 @@
+{
+  "specVersion": "1.0",
+  "component": "Checkbox",
+  "title": "Components/Checkbox",
+  "kind": {
+    "id": "checkbox",
+    "title": "Checkbox",
+    "from": "behaviour"
+  },
+  "behaviour": "checkbox",
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2425654086033038120",
+    "sets": [
+      {
+        "id": "178:1224",
+        "name": "CheckboxControl",
+        "page": "↳ checkbox",
+        "variants": 90
+      },
+      {
+        "id": "190:1205",
+        "name": "CheckboxField",
+        "page": "↳ checkbox",
+        "variants": 18
+      },
+      {
+        "id": "192:1420",
+        "name": "CheckboxGroup",
+        "page": "↳ checkbox",
+        "variants": 8
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1328:1001",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1328:1387",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1328:2585",
+        "name": "Documentation / Accessibility"
+      },
+      {
+        "id": "1328:1001",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1328:1387",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1328:2585",
+        "name": "Documentation / Accessibility"
+      },
+      {
+        "id": "1328:1001",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1328:1387",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1328:2585",
+        "name": "Documentation / Accessibility"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "Size",
+      "type": "VARIANT",
+      "props": [
+        "size"
+      ],
+      "role": "appearance",
+      "default": "Sm",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Sm",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Md",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Lg",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Type",
+      "type": "VARIANT",
+      "props": [
+        "checked / defaultChecked",
+        "indeterminate",
+        "invalid"
+      ],
+      "role": "state",
+      "default": "Unselected",
+      "control": "hidden",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Unselected",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Selected",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Indeterminate",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Error-Unselected",
+          "coverage": "test"
+        },
+        {
+          "figma": "Error-Selected",
+          "coverage": "test"
+        },
+        {
+          "figma": "Error-Indeterminate",
+          "coverage": "test"
+        }
+      ]
+    },
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "error",
+        "warning",
+        "readOnly",
+        "disabled"
+      ],
+      "role": "state",
+      "default": "Enabled",
+      "control": "text",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Enabled",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Hovered",
+          "coverage": "test"
+        },
+        {
+          "figma": "Focused",
+          "coverage": "test"
+        },
+        {
+          "figma": "Disabled",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Pressed",
+          "coverage": "test"
+        }
+      ]
+    },
+    {
+      "figma": "Has label",
+      "type": "BOOLEAN",
+      "props": [],
+      "role": "option",
+      "default": true,
+      "control": "none",
+      "coverage": "missing"
+    },
+    {
+      "figma": "Has description",
+      "type": "BOOLEAN",
+      "props": [
+        "description"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "text",
+      "coverage": "control"
+    },
+    {
+      "figma": "Has helper",
+      "type": "BOOLEAN",
+      "props": [
+        "helperText"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "text",
+      "coverage": "control"
+    },
+    {
+      "figma": "Label",
+      "type": "TEXT",
+      "props": [
+        "heading"
+      ],
+      "role": "content",
+      "default": "Label",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Value",
+      "type": "TEXT",
+      "props": [
+        "label"
+      ],
+      "role": "content",
+      "default": "Checkbox label",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Type",
+      "type": "VARIANT",
+      "props": [
+        "checked / defaultChecked",
+        "indeterminate",
+        "invalid"
+      ],
+      "role": "state",
+      "default": "Unselected",
+      "control": "hidden",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Unselected",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Selected",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Indeterminate",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "error",
+        "warning",
+        "readOnly",
+        "disabled"
+      ],
+      "role": "state",
+      "default": "Enabled",
+      "control": "text",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Enabled",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Focus",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Invalid",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Warning",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Read-Only",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Disabled",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "error",
+        "warning",
+        "readOnly",
+        "disabled"
+      ],
+      "role": "state",
+      "default": "Enabled",
+      "control": "text",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Enabled",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Invalid",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Warning",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Read-Only",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Orientation",
+      "type": "VARIANT",
+      "props": [
+        "CheckboxGroup orientation"
+      ],
+      "role": "appearance",
+      "default": "Vertical",
+      "control": "hidden",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Vertical",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Horizontal",
+          "coverage": "test"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": [
+        "Value"
+      ]
+    },
+    {
+      "export": "SelectionTypes",
+      "name": "Selection types",
+      "visibility": "dev",
+      "shows": [
+        "Type",
+        "Label",
+        "Value",
+        "Type"
+      ]
+    },
+    {
+      "export": "ControlTypesAndStates",
+      "name": "Control types and states",
+      "visibility": "dev",
+      "shows": [
+        "Size",
+        "Value"
+      ]
+    },
+    {
+      "export": "Sizes",
+      "name": "Sizes",
+      "visibility": "dev",
+      "shows": [
+        "Size",
+        "Label",
+        "Value"
+      ]
+    },
+    {
+      "export": "FieldStates",
+      "name": "Field states",
+      "visibility": "dev",
+      "shows": [
+        "Value"
+      ]
+    },
+    {
+      "export": "ReadOnly",
+      "name": "Read only",
+      "visibility": "docs",
+      "shows": [
+        "State",
+        "State",
+        "State"
+      ]
+    },
+    {
+      "export": "Keyboard",
+      "name": "Keyboard",
+      "visibility": "docs",
+      "shows": []
+    },
+    {
+      "export": "Group",
+      "name": "Group",
+      "visibility": "dev",
+      "shows": [
+        "Size",
+        "Type",
+        "Value",
+        "Type"
+      ]
+    },
+    {
+      "export": "GroupOrientation",
+      "name": "Group orientation",
+      "visibility": "dev",
+      "shows": [
+        "Size",
+        "Value"
+      ]
+    },
+    {
+      "export": "GroupStates",
+      "name": "Group states",
+      "visibility": "dev",
+      "shows": [
+        "Size",
+        "State",
+        "Value",
+        "State",
+        "State"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "Size",
+        "Type",
+        "State",
+        "Label",
+        "Value",
+        "Type",
+        "State",
+        "State"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "present",
+      "heading": "State"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "present",
+      "heading": "Usage"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "wai-aria/checkbox",
+    "role": "checkbox",
+    "name": "Visible label linked to the control.",
+    "keyboard": [
+      {
+        "key": "Space",
+        "action": "toggle"
+      }
+    ],
+    "source": "reference"
+  },
+  "related": [
+    "checkbox group"
+  ],
+  "coverage": {
+    "properties": {
+      "total": 12,
+      "covered": 11
+    },
+    "values": {
+      "total": 29,
+      "shown": 22,
+      "control": 7,
+      "missing": 0
+    },
+    "variants": {
+      "total": 116,
+      "rendered": 116
+    },
+    "sections": {
+      "required": 7,
+      "present": 7
+    },
+    "complete": false
+  },
+  "gaps": [
+    {
+      "item": "Has label",
+      "message": "Figma property \"Has label\" (boolean) has no prop, control or story."
+    },
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

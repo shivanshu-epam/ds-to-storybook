@@ -1,0 +1,360 @@
+{
+  "specVersion": "1.0",
+  "component": "Divider",
+  "title": "Components/Divider",
+  "kind": {
+    "id": "divider",
+    "title": "Divider",
+    "from": "name"
+  },
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2425654086033038120",
+    "sets": [
+      {
+        "id": "697:1083",
+        "name": "Divider",
+        "page": "↳ divider",
+        "variants": 540
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "975:3",
+        "name": "Documentation"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "Orientation",
+      "type": "VARIANT",
+      "props": [
+        "orientation"
+      ],
+      "role": "appearance",
+      "default": "Horizontal",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Horizontal",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Vertical",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Style",
+      "type": "VARIANT",
+      "props": [
+        "styleVariant"
+      ],
+      "role": "appearance",
+      "default": "Solid",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Solid",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Dotted",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Dash",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Size",
+      "type": "VARIANT",
+      "props": [
+        "size"
+      ],
+      "role": "appearance",
+      "default": "Sm",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Sm",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Md",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Color",
+      "type": "VARIANT",
+      "props": [
+        "color"
+      ],
+      "role": "state",
+      "default": "Light",
+      "control": "select",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Light",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Dark",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Subtle",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Transparent",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Danger",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Success",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Neutral",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Warning",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Info",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "state",
+        "disabled"
+      ],
+      "role": "state",
+      "default": "Default",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Default",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Hover",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Focused",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Selected",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Disabled",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": []
+    },
+    {
+      "export": "OrientationAndState",
+      "name": "Orientation and state",
+      "visibility": "dev",
+      "shows": [
+        "Orientation",
+        "State"
+      ]
+    },
+    {
+      "export": "Style",
+      "name": "Style",
+      "visibility": "dev",
+      "shows": [
+        "Style"
+      ]
+    },
+    {
+      "export": "Size",
+      "name": "Size",
+      "visibility": "dev",
+      "shows": [
+        "Size"
+      ]
+    },
+    {
+      "export": "Color",
+      "name": "Color",
+      "visibility": "dev",
+      "shows": [
+        "Color"
+      ]
+    },
+    {
+      "export": "Dotted",
+      "name": "Dotted",
+      "visibility": "dev",
+      "shows": [
+        "Style"
+      ]
+    },
+    {
+      "export": "Dash",
+      "name": "Dash",
+      "visibility": "dev",
+      "shows": [
+        "Style"
+      ]
+    },
+    {
+      "export": "Disabled",
+      "name": "Disabled",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "Selected",
+      "name": "Selected",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "Orientation",
+        "Style",
+        "Size",
+        "Color",
+        "State"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "present",
+      "heading": "State"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "present",
+      "heading": "Usage"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "separator",
+    "role": "separator (or presentation when decorative)",
+    "name": "None.",
+    "source": "reference"
+  },
+  "related": [],
+  "coverage": {
+    "properties": {
+      "total": 5,
+      "covered": 5
+    },
+    "values": {
+      "total": 21,
+      "shown": 21,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 540,
+      "rendered": 540
+    },
+    "sections": {
+      "required": 7,
+      "present": 7
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

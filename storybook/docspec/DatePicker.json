@@ -1,0 +1,303 @@
+{
+  "specVersion": "1.0",
+  "component": "DatePicker",
+  "title": "Components/DatePicker",
+  "kind": {
+    "id": "select",
+    "title": "Select",
+    "from": "name"
+  },
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2425654086033038120",
+    "sets": [
+      {
+        "id": "660:4998",
+        "name": "Date Picker",
+        "page": "↳ Date Picker",
+        "variants": 21
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1009:669",
+        "name": "Documentation"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "Show Calendar",
+      "type": "BOOLEAN",
+      "props": [
+        "showCalendar"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Type",
+      "type": "VARIANT",
+      "props": [
+        "type"
+      ],
+      "role": "appearance",
+      "default": "Single",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Single",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Range",
+          "coverage": "shown"
+        },
+        {
+          "figma": "DateTime",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "state",
+        "disabled"
+      ],
+      "role": "state",
+      "default": "Default",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Default",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Hover",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Focused",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Filled",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Disabled",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Read-only",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Error",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": []
+    },
+    {
+      "export": "TypeAndState",
+      "name": "Type and state",
+      "visibility": "dev",
+      "shows": [
+        "Type",
+        "State"
+      ]
+    },
+    {
+      "export": "RangeStory",
+      "name": "Range",
+      "visibility": "dev",
+      "shows": [
+        "Type"
+      ]
+    },
+    {
+      "export": "DateTime",
+      "name": "DateTime",
+      "visibility": "dev",
+      "shows": [
+        "Type"
+      ]
+    },
+    {
+      "export": "Disabled",
+      "name": "Disabled",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "Filled",
+      "name": "Filled",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "ReadOnly",
+      "name": "Read-only",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "ErrorStory",
+      "name": "Error",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "Options",
+      "name": "Optional parts",
+      "visibility": "dev",
+      "shows": [
+        "Show Calendar"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "Type",
+        "State"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "present",
+      "heading": "State"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "present",
+      "heading": "Usage"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "present",
+      "heading": "Composition"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "wai-aria/combobox (select-only)",
+    "role": "combobox + listbox",
+    "name": "Visible label linked to the field.",
+    "keyboard": [
+      {
+        "key": "Enter / Space / ArrowDown",
+        "action": "open"
+      },
+      {
+        "key": "Arrow keys",
+        "action": "move"
+      },
+      {
+        "key": "Escape",
+        "action": "close"
+      }
+    ],
+    "source": "reference"
+  },
+  "related": [
+    "list box",
+    "menu"
+  ],
+  "coverage": {
+    "properties": {
+      "total": 3,
+      "covered": 3
+    },
+    "values": {
+      "total": 10,
+      "shown": 10,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 21,
+      "rendered": 21
+    },
+    "sections": {
+      "required": 7,
+      "present": 7
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

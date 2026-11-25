@@ -24,6 +24,20 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.State} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use PaginationDots in a carousel to show which slide is in view and how many slides there are."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use them as one of the three parts that make up a carousel in this system, together with NavControl and AutoplayToggle, around your own viewport and slides."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use pagination as one way to advance through the slides, alongside controls or swipe."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use a carousel, and so its dots, only when the items exceed the available space and only some should be visible at once."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use a carousel with PaginationDots for content that users need to compare side by side or read in full."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Do not rely on dots alone to move one slide forward or back: use the Prev and Next NavControl buttons for that."}{" "}<small>{"(Figma docs, this design system)"}</small></li><li>{"Do not hide the navigation without giving users another way to advance."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Give every dot an accessible name, because the dots are icon-only."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Accessibility
 
 <ul><li>{"Every story is checked with axe in each Figma mode (project-a, project-b, light, dark)."}</li></ul>
@@ -34,13 +48,6 @@ The default configuration (every property at its Figma default).
 
 Each story shows its code under "Show code".
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=241-1815">{"PaginationDot"}</a> · version 2425019839612435738 · 2 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 2 designed variants shown"}</li><li>{"✓ Properties: 1/1 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"⚠ Interaction: visuals only: the name suggests behaviour that no template provides (add an archetype decision)"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"✓ Accessibility: axe in every Figma mode"}</li><li>{"✓ Documentation: description; 0/0 props described"}</li><li>{"✓ Open decisions: 0 open questions; 0 generator notes"}</li></ul>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-carousel-paginationdot-design-review--docs" target="_top">{"PaginationDot › Design review"}</a></small></p>
 
 <FigmaDocs docs={docs} only="tabs" />

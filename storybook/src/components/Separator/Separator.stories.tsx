@@ -37,6 +37,12 @@ export const Type: Story = {
   },
 };
 
+/** Figma Type=Chevron. */
+export const Chevron: Story = {
+  name: 'Chevron',
+  args: { type: 'chevron' },
+};
+
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
   name: "Figma variants",

@@ -1,11 +1,11 @@
 // Importing this module registers every custom element.
 export * from './components/Button/ds-button';
-export * from './components/Accordion/ds-accordion';
 export * from './components/ListItem/ds-list-item';
 export * from './components/Checkbox/ds-checkbox';
 export * from './components/Badge/ds-badge';
 export * from './components/BreadcrumbItem/ds-breadcrumb-item';
 export * from './components/Separator/ds-separator';
+export * from './components/Accordion/ds-accordion';
 export * from './components/NavControl/ds-nav-control';
 export * from './components/PaginationDot/ds-pagination-dot';
 export * from './components/AutoplayToggle/ds-autoplay-toggle';

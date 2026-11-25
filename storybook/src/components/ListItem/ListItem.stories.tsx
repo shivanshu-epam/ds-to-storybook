@@ -66,6 +66,54 @@ export const Size: Story = {
   },
 };
 
+/** Figma Type=Menu. */
+export const Menu: Story = {
+  name: 'Menu',
+  args: { type: 'menu' },
+};
+
+/** Figma Type=File. */
+export const FileStory: Story = {
+  name: 'File',
+  args: { type: 'file' },
+};
+
+/** Figma Type=Setting. */
+export const Setting: Story = {
+  name: 'Setting',
+  args: { type: 'setting' },
+};
+
+/** Figma State=Disabled. */
+export const Disabled: Story = {
+  name: 'Disabled',
+  args: { disabled: true },
+};
+
+/** Figma State=Selected. */
+export const Selected: Story = {
+  name: 'Selected',
+  args: { state: 'selected' },
+};
+
+/** Figma State=Activated. */
+export const Activated: Story = {
+  name: 'Activated',
+  args: { state: 'activated' },
+};
+
+/** Figma State=Dragged. */
+export const Dragged: Story = {
+  name: 'Dragged',
+  args: { state: 'dragged' },
+};
+
+/** Figma State=Skeleton. */
+export const Skeleton: Story = {
+  name: 'Skeleton',
+  args: { state: 'skeleton' },
+};
+
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
   name: "Figma variants",

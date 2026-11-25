@@ -10,6 +10,19 @@ export class FigmaHttpError extends Error {
   }
 }
 
+/** Figma asked for a wait too long to sit out: usually the token's plan allowance for REST reads is used up. */
+export class FigmaRateLimitError extends Error {
+  constructor(readonly retryAfterSeconds: number, readonly planTier?: string, readonly limitType?: string) {
+    const until = new Date(Date.now() + retryAfterSeconds * 1000);
+    const human = retryAfterSeconds >= 86400 ? `${Math.round(retryAfterSeconds / 3600)} hours` : retryAfterSeconds >= 3600 ? `${Math.round(retryAfterSeconds / 360) / 10} hours` : `${Math.round(retryAfterSeconds / 60)} minutes`;
+    super([
+      `Figma's rate limit for this token: it asks to wait ${human} (until about ${until.toISOString().slice(0, 16).replace('T', ' ')} UTC)${planTier || limitType ? ` [plan tier: ${planTier ?? '?'}, limit: ${limitType ?? '?'}]` : ''}.`,
+      'Figma limits REST reads by the seat and plan of the token owner; low tiers allow only a few file reads.',
+      'Options: use a token from an account with a Dev or Full seat on a paid plan; wait until then (responses already read are cached, so the next run continues); or read a file you own (duplicate a community file into your drafts).',
+    ].join(' '));
+  }
+}
+
 /** What the extractor needs from Figma; FigmaClient implements it, tests can pass a stub. */
 export interface FigmaReader {
   file(fileKey: string, depth?: number, version?: string): Promise<FileResponse>;
@@ -25,6 +38,7 @@ export interface FigmaReader {
 export interface FigmaRenderer {
   images(fileKey: string, ids: string[], format: 'svg' | 'png', version?: string, scale?: number): Promise<{ images: Record<string, string | null> }>;
   fetchText(url: string): Promise<string>;
+  fetchBinary(url: string): Promise<Buffer>;
 }
 
 export interface FigmaClientOptions {
@@ -35,6 +49,8 @@ export interface FigmaClientOptions {
   refresh?: boolean;
   /** Retries for rate limits (429), temporary server errors (5xx) and network failures. */
   maxRetries?: number;
+  /** Longest rate-limit wait to sit out (default 300 s); a longer Retry-After stops with FigmaRateLimitError. */
+  maxRateLimitWaitSeconds?: number;
   /** First backoff delay for 5xx and network retries (default 2000 ms). */
   retryBaseMs?: number;
   log?: (msg: string) => void;
@@ -145,8 +161,15 @@ export class FigmaClient implements FigmaReader, FigmaRenderer {
         await this.wait(this.backoff(attempt), `Network error reaching Figma; retrying (${attempt + 1}/${maxRetries})`);
         continue;
       }
-      if (res.status === 429 && attempt < maxRetries) {
+      if (res.status === 429) {
         const wait = Number(res.headers.get('retry-after') ?? '60');
+        // Figma limits REST calls by the token owner's seat and plan. A short wait is a burst limit; a long one
+        // (hours or days) is the plan's allowance running out: waiting is no answer, so stop and say so.
+        const maxWait = this.opts.maxRateLimitWaitSeconds ?? 300;
+        if (wait > maxWait || attempt >= maxRetries) {
+          await res.text();
+          throw new FigmaRateLimitError(wait, res.headers.get('x-figma-plan-tier') ?? undefined, res.headers.get('x-figma-rate-limit-type') ?? undefined);
+        }
         await this.wait(wait * 1000, `Figma rate limit hit; waiting ${wait}s (retry ${attempt + 1}/${maxRetries})`);
         continue;
       }

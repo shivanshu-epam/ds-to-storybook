@@ -41,7 +41,12 @@ export interface ComponentTarget {
 }
 
 export interface Config {
-  figma: { fileKey: string; apiBase?: string };
+  figma: {
+    fileKey: string;
+    apiBase?: string;
+    /** A ds-sync Figma plugin export (figma-export.zip): read instead of the REST API when present. */
+    export?: string;
+  };
   /** Existing code repo to compare against (drift report). Optional for generation. */
   repo?: {
     path: string;

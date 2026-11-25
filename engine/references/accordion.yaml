@@ -1,0 +1,37 @@
+# Reference spec: Accordion. Structure for every design system; values (names, options) come from each system.
+id: accordion
+title: Accordion
+matches:
+  behaviours: [disclosure, accordion]
+  names: ["accordion", "collapsible", "expand", "disclosure"]
+primaryAxis: [type, variant, size, alignment]
+sections:
+  - { id: overview, required: true }
+  - { id: preview, required: true }
+  - { id: variants, required: true }
+  - { id: states, required: false }
+  - { id: accessibility, required: true }
+  - { id: usage, required: true }
+  - { id: api, required: true }
+  - { id: anatomy, required: false }
+  - { id: related, required: false }
+  - { id: code, required: true }
+stories:
+  default: true
+  perPrimaryValue: true      # one story per value of the main variant property
+  perProperty: true          # one story per other property, all its values side by side
+  perOption: true            # one story per optional part (boolean or slot)
+  perPropState: true         # disabled, error, warning, read-only, loading, selected
+  allVariants: test          # every designed Figma variant, in a test-only story
+accessibility:
+  pattern: "wai-aria/accordion"
+  role: "button (header) + region (panel)"
+  name: "The header text names the panel."
+  keyboard:
+    - { key: "Enter / Space", action: "toggle" }
+related: ["accordion item"]
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use an accordion to let people show and hide sections of related content, keeping long pages short."
+  whenNotToUse:
+    - "Do not hide content people need to compare or always read in an accordion."

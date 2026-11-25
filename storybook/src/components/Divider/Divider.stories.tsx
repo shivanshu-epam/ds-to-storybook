@@ -92,6 +92,30 @@ export const Color: Story = {
   },
 };
 
+/** Figma Style=Dotted. */
+export const Dotted: Story = {
+  name: 'Dotted',
+  args: { styleVariant: 'dotted' },
+};
+
+/** Figma Style=Dash. */
+export const Dash: Story = {
+  name: 'Dash',
+  args: { styleVariant: 'dash' },
+};
+
+/** Figma State=Disabled. */
+export const Disabled: Story = {
+  name: 'Disabled',
+  args: { disabled: true },
+};
+
+/** Figma State=Selected. */
+export const Selected: Story = {
+  name: 'Selected',
+  args: { state: 'selected' },
+};
+
 /** Every Figma variant once, at its Figma width. Used by "ds-sync visual" to compare with Figma's own renders. */
 export const FigmaVariants: Story = {
   name: "Figma variants",

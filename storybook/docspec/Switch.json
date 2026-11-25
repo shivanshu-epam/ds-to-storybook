@@ -1,0 +1,285 @@
+{
+  "specVersion": "1.0",
+  "component": "Switch",
+  "title": "Components/Switch",
+  "kind": {
+    "id": "switch",
+    "title": "Switch",
+    "from": "behaviour"
+  },
+  "behaviour": "switch",
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2425654086033038120",
+    "sets": [
+      {
+        "id": "723:3038",
+        "name": "Switch",
+        "page": "↳ Switch",
+        "variants": 12
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "995:37",
+        "name": "Documentation"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "Show Inner Content",
+      "type": "BOOLEAN",
+      "props": [
+        "showInnerContent"
+      ],
+      "role": "option",
+      "default": true,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Value",
+      "type": "VARIANT",
+      "props": [
+        "checked / defaultChecked",
+        "checked"
+      ],
+      "role": "appearance",
+      "default": "Off",
+      "control": "boolean",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Off",
+          "coverage": "shown"
+        },
+        {
+          "figma": "On",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Interaction",
+      "type": "VARIANT",
+      "props": [
+        "interaction"
+      ],
+      "role": "state",
+      "default": "Default",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Default",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Disabled",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Loading",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Size",
+      "type": "VARIANT",
+      "props": [
+        "size"
+      ],
+      "role": "appearance",
+      "default": "Medium",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Medium",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Small",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": [
+        "Value"
+      ]
+    },
+    {
+      "export": "DisabledDoesNotToggle",
+      "name": "Disabled does not toggle",
+      "visibility": "docs",
+      "shows": [
+        "Value"
+      ]
+    },
+    {
+      "export": "LoadingDoesNotToggle",
+      "name": "Loading does not toggle",
+      "visibility": "docs",
+      "shows": [
+        "Value",
+        "Interaction"
+      ]
+    },
+    {
+      "export": "ValueAndInteraction",
+      "name": "Value and interaction",
+      "visibility": "dev",
+      "shows": [
+        "Value",
+        "Interaction"
+      ]
+    },
+    {
+      "export": "Size",
+      "name": "Size",
+      "visibility": "dev",
+      "shows": [
+        "Size"
+      ]
+    },
+    {
+      "export": "Loading",
+      "name": "Loading",
+      "visibility": "dev",
+      "shows": [
+        "Interaction"
+      ]
+    },
+    {
+      "export": "Options",
+      "name": "Optional parts",
+      "visibility": "dev",
+      "shows": [
+        "Show Inner Content"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "Value",
+        "Interaction",
+        "Size"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "present",
+      "heading": "State"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "present",
+      "heading": "Usage"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "wai-aria/switch",
+    "role": "switch",
+    "name": "Visible label or aria-label.",
+    "keyboard": [
+      {
+        "key": "Space",
+        "action": "toggle"
+      },
+      {
+        "key": "Enter",
+        "action": "toggle"
+      }
+    ],
+    "source": "reference"
+  },
+  "related": [],
+  "coverage": {
+    "properties": {
+      "total": 4,
+      "covered": 4
+    },
+    "values": {
+      "total": 7,
+      "shown": 7,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 12,
+      "rendered": 12
+    },
+    "sections": {
+      "required": 7,
+      "present": 7
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

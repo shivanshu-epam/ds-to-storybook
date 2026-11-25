@@ -49,6 +49,18 @@ export const State: Story = {
   },
 };
 
+/** Figma State=Disabled. */
+export const Disabled: Story = {
+  name: 'Disabled',
+  args: { disabled: true },
+};
+
+/** Figma State=Selected. */
+export const Selected: Story = {
+  name: 'Selected',
+  args: { state: 'selected' },
+};
+
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
   name: "Optional parts",

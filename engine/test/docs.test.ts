@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { lintDocs } from '../src/docs/lint.ts';
-import { codeExample, docsPage, isBuildingBlock, plainLabel, polishStories, templateSections } from '../src/generate/docs.ts';
+import { codeExample, designReviewPage, docsPage, isBuildingBlock, plainLabel, polishStories, templateSections } from '../src/generate/docs.ts';
 import type { IRComponentSet } from '../src/ir/types.ts';
 
 describe('documentation standard (fidelity step 6)', () => {
@@ -72,12 +72,13 @@ export const FigmaVariants: Story = {
     const template = "## isDisabled\n\n<Canvas of={Stories.IsDisabled} />\n\n## Options\n\nShown one at a time.\n\n<Canvas of={Stories.Options} />";
     expect(templateSections(template).map((x) => x.story)).toEqual(['IsDisabled', 'Options']);
     const set = { name: 'Accordion', nodeId: '1:2', description: '', docFrames: [], variants: [{}, {}, {}] } as unknown as IRComponentSet;
-    const page = docsPage({
+    const input: Parameters<typeof docsPage>[0] = {
       name: 'Accordion', title: 'Components/Accordion', framework: 'react', tier: 3, sets: [set], fileKey: 'F', version: '9',
       report: { name: 'Accordion', figmaSets: [], files: [], props: [{ prop: 'leading', figma: 'leading (variant)' }, { prop: 'showLeading', figma: 'showLeading (boolean)' }], assumptions: [], gaps: [], dependencies: {}, nested: { layers: 1, checked: 6, matched: 6, stateVariants: 0, mismatches: [] } },
       composition: [{ component: 'AccordionItem', title: 'Components/AccordionItem', buildingBlock: true, layer: 'Item', count: 5, driven: [{ prop: 'showLeading', from: ['leading'] }], fixed: [] }],
       exposed: [], templateMdx: template, buildingBlock: false, usedIn: [], knownIssues: [], modes: ['light', 'dark'], packageName: 'pkg',
-    });
+    };
+    const page = docsPage(input);
     expect(page).toContain('<strong>No description in Figma.</strong>');
     expect(page).toContain('### Disabled');
     expect(page).toContain('### Optional parts');
@@ -85,7 +86,11 @@ export const FigmaVariants: Story = {
     expect(page).toContain('### Content');
     expect(page).toContain('## Composition');
     expect(page).toContain('showLeading: follows leading');
-    expect(page).toContain('Nested consistency: 6/6');
+    // Fidelity diagnostics are on the Design review page, linked from the developer page.
+    expect(page).not.toContain('Nested consistency');
+    expect(page).toContain('./?path=/docs/components-accordion-design-review--docs');
+    expect(designReviewPage(input)).toContain('Nested consistency: 6/6');
+    expect(designReviewPage(input)).toContain('<Meta title="Components/Accordion/Design review" />');
     expect(page).toContain('(light, dark)');
     expect(page).not.toMatch(/^## isDisabled/m);
     expect(page).toContain('<Meta of={Stories} />');

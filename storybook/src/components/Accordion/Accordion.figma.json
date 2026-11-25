@@ -16,6 +16,10 @@
       "figma": "Style (variant)"
     },
     {
+      "prop": "size",
+      "figma": "Size (variant)"
+    },
+    {
       "prop": "value / defaultValue",
       "figma": "State=Expanded"
     },
@@ -284,12 +288,12 @@
             "Element",
             "Tokens",
             "Rendered size",
+            "Small 12px · Medium 14px · Large 16px",
             "Title",
             "text-style/heading/xs/*",
-            "14px",
+            "Small 12px · Medium 12px · Large 14px",
             "Body",
-            "text-style/body/sm/*",
-            "12px"
+            "text-style/body/sm/*"
           ]
         },
         {
@@ -299,11 +303,11 @@
             "Property",
             "Value",
             "Header and panel padding (horizontal)",
-            "space/inset/md · 12",
+            "Small: space/inset/sm · 8; Medium: space/inset/md · 12; Large: space/inset/lg · 16",
             "Header and panel padding (vertical)",
-            "space/inset/sm · 8",
+            "Small: space/inset/xs · 4; Medium: space/inset/sm · 8; Large: space/inset/md · 12",
             "Chevron",
-            "Icon/nav/chevron-down/20 · 20px",
+            "Chevron instance · Small 16px · Medium 20px · Large 24px",
             "Item width",
             "360 (fixed)"
           ]
@@ -312,7 +316,7 @@
           "heading": "Variants & states",
           "level": 3,
           "paragraphs": [
-            "10 variants: Style (2) × State (5).",
+            "30 variants: Size (3) × Style (2) × State (5). Grid below shows Medium; see the size comparison for all sizes.",
             "State \\ Style",
             "Bordered",
             "Borderless",

@@ -42,6 +42,24 @@ The default configuration (every property at its Figma default).
 
 <Canvas of={Stories.GroupStates} />
 
+## Usage
+
+### When to use
+
+<ul><li>{"Use a checkbox for a square control that people select or clear, on its own, as a labeled field, or as a titled group of fields."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use it to turn one option on or off, or to let people choose any number of options from a list."}{" "}<small>{"(ds-sync guidance)"}</small></li><li>{"Pick the layer you need: CheckboxControl for the bare box, CheckboxField for the control with its label and messages, or CheckboxGroup for a titled group of fields."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use CheckboxControl as the leading or trailing control of a list item in multi-select lists."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
+### When not to use
+
+<ul><li>{"Do not use a checkbox when people may choose only one of several options: use radio buttons."}{" "}<small>{"(ds-sync guidance)"}</small></li><li>{"Do not use a checkbox for a setting that applies at once: use a switch."}{" "}<small>{"(ds-sync guidance)"}</small></li><li>{"Do not place CheckboxControl alone where the option needs a visible label: use CheckboxField, which adds the label and value text."}{" "}<small>{"(Figma docs, ds-sync guidance)"}</small></li></ul>
+
+### Variants
+
+<ul><li><strong>{"Unselected"}</strong>: {"Use Unselected when the option is not chosen."}{" "}<small>{"(Figma properties, Figma docs)"}</small></li><li><strong>{"Selected"}</strong>: {"Use Selected when the option is chosen; the box shows a check."}{" "}<small>{"(Figma docs)"}</small></li><li><strong>{"Indeterminate"}</strong>: {"Use Indeterminate for a mixed selection; the box shows a dash and is exposed as aria-checked=\"mixed\"."}{" "}<small>{"(Figma docs)"}</small></li><li><strong>{"Error-Unselected"}</strong>: {"Use Error-Unselected for an unchosen option in a field in the Invalid state, which adds an error border and message."}{" "}<small>{"(Figma docs, Figma properties)"}</small></li><li><strong>{"Error-Selected"}</strong>: {"Use Error-Selected for a chosen option in a field in the Invalid state."}{" "}<small>{"(Figma docs, Figma properties)"}</small></li><li><strong>{"Error-Indeterminate"}</strong>: {"Use Error-Indeterminate for a mixed selection in a field in the Invalid state."}{" "}<small>{"(Figma docs, Figma properties)"}</small></li></ul>
+
+### Content
+
+<ul><li>{"Write the Value text to describe what checking the box means."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Use the Label text for the field or group title."}{" "}<small>{"(Figma docs)"}</small></li><li>{"Add a description under the label or helper text under the field only when the option needs supporting text."}{" "}<small>{"(Figma docs)"}</small></li></ul>
+
 ## Properties
 
 ### State
@@ -88,19 +106,7 @@ This is a standard Web Component: it works in any framework, or none.
 
 <Source language="html" code={"<script>import 'figma-design-system-web-components';</script>\n<ds-checkbox label=\"Checkbox label\" on:change={handle}></ds-checkbox>"} dark />
 
-## Design reference
-
-<ul><li>Figma: <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=178-1224">{"CheckboxControl"}</a>, <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=190-1205">{"CheckboxField"}</a>, <a href="https://www.figma.com/design/I983NcgqSiY14YkpJbwjG8?node-id=192-1420">{"CheckboxGroup"}</a> · version 2425019839612435738 · 116 designed variants</li><li>{"Visual check: not run for this version yet (\"ds-sync visual\")."}</li></ul>
-
-### Scorecard
-
-<p>{"One line per fidelity measure: ✓ pass, ⚠ needs a look, ✗ fails, – not applicable or not measured."}</p>
-<ul><li>{"– Visual fidelity: not measured: run ds-sync visual"}</li><li>{"✓ Variants: 116 designed variants shown"}</li><li>{"✓ Properties: 14/14 Figma properties mapped"}</li><li>{"– Nested consistency: no nested components"}</li><li>{"✓ Interaction: WAI-ARIA checkbox pattern, tested in the stories"}</li><li>{"✓ Tokens: every colour is a token"}</li><li>{"⚠ Accessibility: axe in every Figma mode; 1 accepted known issue"}</li><li>{"⚠ Documentation: description; 0/14 props described"}</li><li>{"⚠ Open decisions: 0 open questions; 1 generator note"}</li></ul>
-
-<details>
-  <summary>Generation notes: what Figma does not specify, and approximations</summary>
-  <ul><li>{"Figma Type=Error-* (no message) became an `invalid` prop; State=Invalid (with message) became `error`."}</li><li>{"CheckboxGroup passes readOnly and disabled to its checkboxes through React context."}</li></ul>
-</details>
+<p><small>Design review (Figma links, visual check, fidelity scorecard, generation notes): <a href="./?path=/docs/components-checkbox-design-review--docs" target="_top">{"Checkbox › Design review"}</a></small></p>
 
 <h2>{"Usage"}</h2>
 <p style={{ whiteSpace: 'pre-line' }}>{"A checkbox is a square control that users select or clear — used on its own, as a labeled field, or as a titled group of fields."}</p>

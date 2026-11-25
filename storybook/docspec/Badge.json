@@ -1,0 +1,346 @@
+{
+  "specVersion": "1.0",
+  "component": "Badge",
+  "title": "Components/Badge",
+  "kind": {
+    "id": "badge",
+    "title": "Badge",
+    "from": "name"
+  },
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2425654086033038120",
+    "sets": [
+      {
+        "id": "211:1961",
+        "name": "Badge",
+        "page": "↳ badge",
+        "variants": 135
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1330:140",
+        "name": "Documentation / Usage"
+      },
+      {
+        "id": "1330:491",
+        "name": "Documentation / Style"
+      },
+      {
+        "id": "1330:933",
+        "name": "Documentation / Accessibility"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "Has leading icon",
+      "type": "BOOLEAN",
+      "props": [
+        "hasLeadingIcon"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Is dismissible",
+      "type": "BOOLEAN",
+      "props": [
+        "isDismissible"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Label",
+      "type": "TEXT",
+      "props": [
+        "label"
+      ],
+      "role": "content",
+      "default": "Label",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Status",
+      "type": "VARIANT",
+      "props": [
+        "status"
+      ],
+      "role": "state",
+      "default": "Success",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Success",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Warning",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Error",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Info",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Neutral",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Style",
+      "type": "VARIANT",
+      "props": [
+        "styleVariant"
+      ],
+      "role": "appearance",
+      "default": "Filled",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Filled",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Outlined",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Subtle",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Type",
+      "type": "VARIANT",
+      "props": [
+        "type"
+      ],
+      "role": "appearance",
+      "default": "Text",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Text",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Numeric",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Dot",
+          "coverage": "shown"
+        }
+      ]
+    },
+    {
+      "figma": "Size",
+      "type": "VARIANT",
+      "props": [
+        "size"
+      ],
+      "role": "appearance",
+      "default": "Sm",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Sm",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Md",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Lg",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": []
+    },
+    {
+      "export": "StatusAndStyle",
+      "name": "Status and style",
+      "visibility": "dev",
+      "shows": [
+        "Label",
+        "Status",
+        "Style"
+      ]
+    },
+    {
+      "export": "Type",
+      "name": "Type",
+      "visibility": "dev",
+      "shows": [
+        "Label",
+        "Type"
+      ]
+    },
+    {
+      "export": "Size",
+      "name": "Size",
+      "visibility": "dev",
+      "shows": [
+        "Label",
+        "Size"
+      ]
+    },
+    {
+      "export": "Outlined",
+      "name": "Outlined",
+      "visibility": "dev",
+      "shows": [
+        "Style"
+      ]
+    },
+    {
+      "export": "Subtle",
+      "name": "Subtle",
+      "visibility": "dev",
+      "shows": [
+        "Style"
+      ]
+    },
+    {
+      "export": "Options",
+      "name": "Optional parts",
+      "visibility": "dev",
+      "shows": [
+        "Has leading icon",
+        "Is dismissible",
+        "Label"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "Status",
+        "Style",
+        "Type",
+        "Size"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "present",
+      "heading": "Usage"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "none",
+    "role": "none (presentational)",
+    "name": "Not focusable; text content is read in place.",
+    "source": "reference"
+  },
+  "related": [],
+  "coverage": {
+    "properties": {
+      "total": 7,
+      "covered": 7
+    },
+    "values": {
+      "total": 14,
+      "shown": 14,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 135,
+      "rendered": 135
+    },
+    "sections": {
+      "required": 7,
+      "present": 7
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

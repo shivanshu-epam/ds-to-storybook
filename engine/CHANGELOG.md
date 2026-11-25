@@ -2,9 +2,33 @@
 
 All notable changes to ds-sync. The CLI (npm package `ds-sync`) and the Claude Code plugin (`ds-sync@ds-sync`) are released together under one version.
 
+## Unreleased
+
+### Documentation engine, phase 1
+
+- Each component gets a Component Doc Spec (`docspec/<Component>.json`, schema in `schemas/component-doc-spec.schema.json`) and the Storybook gets `DOCS-COVERAGE.md`. Together they check that every Figma property, value and designed variant is in Storybook, and that the docs page has the sections its kind requires. The standard is in `standards/production-ready.md`.
+- Reference specs for 23 component kinds plus a generic fallback (`references/*.yaml`). The kind comes from the behaviour found in the Figma structure, then from the name.
+- New stories, from the Carbon Button pilot (`docs/pilots/carbon-button.md`): one per value of the main appearance property (Secondary, Ghost, Danger and so on), one per state a prop sets (Disabled, Skeleton, Error and so on), and clicks shown in the Actions panel. Story exports never shadow JavaScript globals or the component's imports.
+- Code mode (`generate.code`): the API of components that already exist in code is read from the module the team imports (TypeScript, including `forwardRef` and polymorphic components), and each Figma property is mapped to it. The generated components take the code's prop and value names (`kind`, `hasIconOnly`, `size: 'lg'`). The output is `CODE-MAP.md` and `code-map.json`, listing every mapping, the props that exist only in code, and the Figma items with no code counterpart, for review.
+- The `react-code` target: a Storybook of the team's real components, imported from their package and set up from Figma through the code map. It writes stories for every Figma property, value and designed variant the code can express, controls from the code's types, and a docs page with the Figma-to-code table and the props that exist only in code. Hover, focus and pressed states count as interactive. Example data Figma lacks goes in `code.examples`, and parents in `code.parents`.
+- Decisions can mark a Figma property `"role": "internal"` (a construction helper such as Carbon's Resizer). It keeps its Figma default and stays out of the controls, stories and props table. Decisions can also rename a variant property's `values` without code (`"Danger primary": "danger"`).
+- Decisions can make a Figma value its own component: `"components": { "Skeleton": "ButtonSkeleton" }`. The value leaves the prop's public type and control, the component file exports `ButtonSkeleton` (which renders that design and takes every other prop), and its story renders it. Nested instances that use the value keep the exact design.
+- Internal properties are also hidden in the Web Components Storybooks.
+- Fidelity diagnostics (Figma links, visual check, scorecard, generation notes) moved off the developer page to a "Design review" page under each component. The developer page links to it.
+- Enhance mode, for teams that already have a Storybook (code mode with `generate.code.stories` pointing at their stories). ds-sync reads their story files (CSF in JavaScript or TypeScript: title, component, args, controls and what each story renders) and checks every Figma value against them. Each value is reported as shown, only reachable through a control, shown by interaction, missing, or not in code. It writes the stories for whatever is missing to a `<Name>.figma.stories` file next to theirs, titled "<their title>/Figma coverage" and using their own import paths. Their files are never edited. It previews in `.ds-sync/enhance/` (with ENHANCE-REPORT.md), and `ds-sync enhance apply` adds the files.
+- Usage guidance (roadmap phase 5). `ds-sync generate` writes one evidence file per component to `.ds-sync/usage/`: numbered sources from Figma (description, documentation frames, properties), the team's code (prop descriptions, in code mode), this system's components of the same kind, and new general guidance per kind in the reference specs. The `write-usage` skill drafts When to use, When not to use, per-variant and content guidance, with every sentence citing those sources. `ds-sync usage` runs it headless (or records a session's answer with `--from`), keeps only sentences whose citations exist, and stores them with the cited text in `ds-sync.decisions.json` as a proposal with its own status. Docs pages show the Usage section, marked as a draft until a person accepts it.
+- `ds-sync docs check`: the documentation gate. It fails when a gap appears that the reviewed baseline (`ds-sync.docs-baseline.json`, committed) does not accept, and reports gaps that closed. `--update-baseline` records the current state, and `--strict` fails on any gap. The GitHub workflow runs it and reports the result in the pull request.
+
 ## 0.2.0
 
 The first public release. Version 0.1.0 was never published.
+
+### Read Figma without API limits
+
+- The ds-sync Figma plugin saves `figma-export.zip`: the file as the REST API returns it, with styles, variables (on any plan) and renders. ds-sync reads it instead of the API (`figma.export` in the config; `--source api|export`). There are no API limits, and no token is needed. The GitHub workflow runs when a new export is committed.
+- Tested on a third design system, Carbon v11, read only through the plugin export. The fixes it led to: tokens bound by variable id, CSS-safe variable names, reserved JavaScript and element names, unique icon names, valid Storybook toolbar keys, and per-mode story tests only for collections that hold colours.
+- Accessibility from structure: a button or link whose label is hidden in a variant (icon-only) is named by its label text; a component that contains other controls is not itself made a button, link or switch; a disclosure whose header holds a control uses it as the trigger.
+- When Figma's API asks for a long wait (its allowance is used up), ds-sync stops at once with an explanation instead of waiting for days.
 
 ### Generate
 

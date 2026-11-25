@@ -1,0 +1,314 @@
+{
+  "specVersion": "1.0",
+  "component": "InputField",
+  "title": "Components/Form/InputField",
+  "kind": {
+    "id": "text-input",
+    "title": "Text input",
+    "from": "name"
+  },
+  "buildingBlock": false,
+  "figma": {
+    "fileKey": "I983NcgqSiY14YkpJbwjG8",
+    "version": "2425654086033038120",
+    "sets": [
+      {
+        "id": "428:2042",
+        "name": "InputField",
+        "page": "↳ Form",
+        "variants": 6
+      }
+    ],
+    "docFrames": [
+      {
+        "id": "1021:263",
+        "name": "Documentation"
+      }
+    ]
+  },
+  "properties": [
+    {
+      "figma": "Required",
+      "type": "BOOLEAN",
+      "props": [
+        "required"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Helper Message",
+      "type": "BOOLEAN",
+      "props": [
+        "helperMessage"
+      ],
+      "role": "option",
+      "default": false,
+      "control": "boolean",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Label/Text",
+      "type": "TEXT",
+      "props": [
+        "labelText"
+      ],
+      "role": "content",
+      "default": "Email address",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Value/Text",
+      "type": "TEXT",
+      "props": [
+        "valueText"
+      ],
+      "role": "content",
+      "default": "Enter your email",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Helper/Text",
+      "type": "TEXT",
+      "props": [
+        "helperText"
+      ],
+      "role": "content",
+      "default": "We'll never share your email",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Error/Text",
+      "type": "TEXT",
+      "props": [
+        "errorText"
+      ],
+      "role": "content",
+      "default": "Enter a valid email address",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "Success/Text",
+      "type": "TEXT",
+      "props": [
+        "successText"
+      ],
+      "role": "content",
+      "default": "Email verified",
+      "control": "text",
+      "coverage": "shown"
+    },
+    {
+      "figma": "State",
+      "type": "VARIANT",
+      "props": [
+        "state",
+        "disabled"
+      ],
+      "role": "state",
+      "default": "Default",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Default",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Focused",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Invalid",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Success",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Disabled",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Read-only",
+          "coverage": "shown"
+        }
+      ]
+    }
+  ],
+  "stories": [
+    {
+      "export": "Default",
+      "name": "Default",
+      "visibility": "dev",
+      "shows": []
+    },
+    {
+      "export": "State",
+      "name": "State",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "Disabled",
+      "name": "Disabled",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "Invalid",
+      "name": "Invalid",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "Success",
+      "name": "Success",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "ReadOnly",
+      "name": "Read-only",
+      "visibility": "dev",
+      "shows": [
+        "State"
+      ]
+    },
+    {
+      "export": "Options",
+      "name": "Optional parts",
+      "visibility": "dev",
+      "shows": [
+        "Required",
+        "Helper Message"
+      ]
+    },
+    {
+      "export": "FigmaVariants",
+      "name": "Figma variants",
+      "visibility": "test",
+      "shows": [
+        "State"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "overview",
+      "required": true,
+      "status": "present",
+      "heading": "Overview"
+    },
+    {
+      "id": "preview",
+      "required": true,
+      "status": "present",
+      "heading": "Preview"
+    },
+    {
+      "id": "variants",
+      "required": true,
+      "status": "present",
+      "heading": "Variants"
+    },
+    {
+      "id": "states",
+      "required": false,
+      "status": "present",
+      "heading": "State"
+    },
+    {
+      "id": "accessibility",
+      "required": true,
+      "status": "present",
+      "heading": "Accessibility"
+    },
+    {
+      "id": "usage",
+      "required": true,
+      "status": "present",
+      "heading": "Usage"
+    },
+    {
+      "id": "api",
+      "required": true,
+      "status": "present",
+      "heading": "Properties"
+    },
+    {
+      "id": "anatomy",
+      "required": false,
+      "status": "present",
+      "heading": "Composition"
+    },
+    {
+      "id": "related",
+      "required": false,
+      "status": "missing"
+    },
+    {
+      "id": "code",
+      "required": true,
+      "status": "present",
+      "heading": "Code"
+    }
+  ],
+  "accessibility": {
+    "pattern": "native input",
+    "role": "textbox",
+    "name": "Visible label linked to the field; helper and error text described by.",
+    "keyboard": [
+      {
+        "key": "Tab",
+        "action": "focus"
+      }
+    ],
+    "source": "reference"
+  },
+  "related": [
+    "form"
+  ],
+  "coverage": {
+    "properties": {
+      "total": 8,
+      "covered": 8
+    },
+    "values": {
+      "total": 6,
+      "shown": 6,
+      "control": 0,
+      "missing": 0
+    },
+    "variants": {
+      "total": 6,
+      "rendered": 6
+    },
+    "sections": {
+      "required": 7,
+      "present": 7
+    },
+    "complete": true
+  },
+  "gaps": [
+    {
+      "item": "description",
+      "message": "No description in Figma or in decisions: the overview has no prose."
+    }
+  ]
+}

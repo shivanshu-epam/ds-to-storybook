@@ -1,0 +1,36 @@
+# Reference spec: Tooltip. Structure for every design system; values (names, options) come from each system.
+id: tooltip
+title: Tooltip
+matches:
+  behaviours: []
+  names: ["tool ?tip", "toggletip", "popover", "coachmark", "definition"]
+primaryAxis: [type, variant, position, alignment]
+sections:
+  - { id: overview, required: true }
+  - { id: preview, required: true }
+  - { id: variants, required: true }
+  - { id: states, required: false }
+  - { id: accessibility, required: true }
+  - { id: usage, required: true }
+  - { id: api, required: true }
+  - { id: anatomy, required: false }
+  - { id: related, required: false }
+  - { id: code, required: true }
+stories:
+  default: true
+  perPrimaryValue: true      # one story per value of the main variant property
+  perProperty: true          # one story per other property, all its values side by side
+  perOption: true            # one story per optional part (boolean or slot)
+  perPropState: true         # disabled, error, warning, read-only, loading, selected
+  allVariants: test          # every designed Figma variant, in a test-only story
+accessibility:
+  pattern: "wai-aria/tooltip"
+  role: "tooltip"
+  name: "Describes its trigger (aria-describedby)."
+  keyboard:
+    - { key: "Escape", action: "dismiss" }
+guidance:  # general guidance for this kind (ds-sync standard); usage drafts may cite it, systems refine it
+  whenToUse:
+    - "Use a tooltip for a short label or hint about an element, shown on hover or focus."
+  whenNotToUse:
+    - "Do not put essential information or interactive content in a tooltip."

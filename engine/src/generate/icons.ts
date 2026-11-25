@@ -54,7 +54,24 @@ export async function exportIcons(renderer: FigmaRenderer, ir: FigmaIR, refs: Ma
     if (!url) continue;
     out.push({ figmaName, name: iconExportName(figmaName), nodeId: id, svg: normalizeSvg(await renderer.fetchText(url)) });
   }
-  return out.sort((a, b) => a.name.localeCompare(b.name));
+  return uniqueIcons(out);
+}
+
+/** One export per icon name. Components share a Figma name (templates look icons up by it, so the first wins), or
+ * different names reduce to one identifier ("Checkbox" and "checkbox"): those get a numbered name. */
+export function uniqueIcons(icons: IconAsset[]): IconAsset[] {
+  const byFigma = new Set<string>();
+  const names = new Set<string>();
+  const out: IconAsset[] = [];
+  for (const icon of [...icons].sort((a, b) => a.name.localeCompare(b.name) || a.nodeId.localeCompare(b.nodeId))) {
+    if (byFigma.has(icon.figmaName)) continue;
+    byFigma.add(icon.figmaName);
+    let name = icon.name;
+    for (let i = 2; names.has(name); i++) name = `${icon.name}${i}`;
+    names.add(name);
+    out.push({ ...icon, name });
+  }
+  return out;
 }
 
 /** Colours an SVG paints with (fills and strokes, gradients as "url"). */

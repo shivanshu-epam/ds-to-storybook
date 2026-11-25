@@ -82,6 +82,18 @@ export const Size: Story = {
   },
 };
 
+/** Figma Style=Outlined. */
+export const Outlined: Story = {
+  name: 'Outlined',
+  args: { styleVariant: 'outlined' },
+};
+
+/** Figma Style=Subtle. */
+export const Subtle: Story = {
+  name: 'Subtle',
+  args: { styleVariant: 'subtle' },
+};
+
 /** Figma boolean properties, each switched from its default. */
 export const Options: Story = {
   name: "Optional parts",
