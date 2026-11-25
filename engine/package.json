@@ -1,6 +1,6 @@
 {
   "name": "ds-sync",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Generate and sync a tested Storybook (React or Web Components) from any Figma design system, with optional Claude Code skills for the judgement calls.",
   "keywords": [
     "figma",

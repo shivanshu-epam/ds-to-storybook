@@ -17,8 +17,8 @@ The CLI (npm package `ds-sync`, in `engine/`) and the Claude Code plugin (`engin
 4. Merge to `main`, then tag the release commit and push the tag:
 
    ```bash
-   git tag v0.2.0
-   git push origin v0.2.0
+   git tag v0.3.0
+   git push origin v0.3.0
    ```
 
    The `release` workflow (`.github/workflows/release.yml`) checks that the tag, the package and the plugin have the same version. It then type-checks, tests, builds and publishes to npm with provenance.
