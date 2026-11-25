@@ -368,7 +368,10 @@ export function generateStyles(variants: IRVariant[], model: StyleModel, resolve
       // Overrides are for rare, isolated variants: at most 5% (min 1), each weighed as 3 rules so a real pattern wins ties.
       const maxExceptions = Math.max(1, Math.floor(usable.length * 0.05));
       let best: { deps: string[]; groups: Map<string, { axes: Record<string, string>; value: string }>; exceptions: number[]; cost: number } | undefined;
-      for (const set of subsets(allAxes)) {
+      // When no axis set stays within the override limit (variants with the same values but different styles: a
+      // variant whose name lacks a property, or two copies), the full set is used with as many overrides as it needs.
+      for (const [set, limit] of [...subsets(allAxes).map((x) => [x, maxExceptions] as const), [allAxes, Infinity] as const]) {
+        if (best && limit === Infinity) break;
         const counts = new Map<string, Map<string, number>>();
         usable.forEach((v, i) => {
           const key = set.map((a) => v.values[a]).join('|');
@@ -378,7 +381,7 @@ export function generateStyles(variants: IRVariant[], model: StyleModel, resolve
         });
         const majority = new Map([...counts].map(([k, c]) => [k, [...c].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]![0]]));
         const exceptions = usable.map((v, i) => (majority.get(set.map((a) => v.values[a]).join('|')) === values[i] ? -1 : i)).filter((i) => i >= 0);
-        if (exceptions.length > maxExceptions) continue;
+        if (exceptions.length > limit) continue;
         const cost = counts.size + exceptions.length * 3;
         if (best && cost >= best.cost) continue;
         const groups = new Map<string, { axes: Record<string, string>; value: string }>();

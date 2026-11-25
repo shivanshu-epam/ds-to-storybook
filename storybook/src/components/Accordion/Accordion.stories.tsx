@@ -13,9 +13,10 @@ const t = (n: number) => `${TITLE} ${n}`;
 const meta = {
   title: "Components/Accordion",
   component: Accordion,
-  args: { variant: 'bordered', expandMode: 'single', headingLevel: 3, children: null },
+  args: { variant: 'bordered', size: 'medium', expandMode: 'single', headingLevel: 3, children: null },
   argTypes: {
     variant: { control: 'inline-radio', options: ['bordered', 'borderless'], description: 'Figma: Style' },
+    size: { control: 'inline-radio', options: ['small', 'large', 'medium'], description: 'Figma: Size' },
     expandMode: { control: 'inline-radio', options: ['single', 'multiple'], description: 'Figma docs: single- or multiple-expand' },
     headingLevel: { control: 'inline-radio', options: [2, 3, 4, 5, 6], description: 'Not in Figma (archetype default 3)' },
     children: { table: { disable: true } },
@@ -102,6 +103,34 @@ export const Styles: Story = {
   ),
 };
 
+/** Figma Size: Small, Large, Medium. */
+export const SizeValues: Story = {
+  name: 'Size',
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <Stack>
+      <Labelled label='Small'>
+        <Accordion {...args} size='small' defaultValue={['x0']}>
+          <AccordionItem value="x0" title={t(1)}>{BODY}</AccordionItem>
+          <AccordionItem value="y0" title={t(2)}>{BODY}</AccordionItem>
+        </Accordion>
+      </Labelled>
+      <Labelled label='Large'>
+        <Accordion {...args} size='large' defaultValue={['x1']}>
+          <AccordionItem value="x1" title={t(3)}>{BODY}</AccordionItem>
+          <AccordionItem value="y1" title={t(4)}>{BODY}</AccordionItem>
+        </Accordion>
+      </Labelled>
+      <Labelled label='Medium'>
+        <Accordion {...args} size='medium' defaultValue={['x2']}>
+          <AccordionItem value="x2" title={t(5)}>{BODY}</AccordionItem>
+          <AccordionItem value="y2" title={t(6)}>{BODY}</AccordionItem>
+        </Accordion>
+      </Labelled>
+    </Stack>
+  ),
+};
+
 /** Figma State axis. Pseudo states are forced with data-force-state. */
 export const States: Story = {
   name: "States",
@@ -172,35 +201,95 @@ export const FigmaVariants: Story = {
   parameters: { controls: { disable: true } },
   render: () => (
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
-      <div data-figma-variant='236:1535' title='Style=Bordered, State=Default' style={{ display: 'flex', width: 360 }}>
-        <Accordion variant='bordered' defaultValue={[]}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      <div data-figma-variant='236:1535' title='Style=Bordered, State=Default, Size=Medium' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='medium' defaultValue={[]}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
       </div>
-      <div data-figma-variant='236:1569' title='Style=Bordered, State=Hover' style={{ display: 'flex', width: 360 }}>
-        <Accordion variant='bordered' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="hover">{BODY}</AccordionItem></Accordion>
+      <div data-figma-variant='236:1569' title='Style=Bordered, State=Hover, Size=Medium' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='medium' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="hover">{BODY}</AccordionItem></Accordion>
       </div>
-      <div data-figma-variant='236:1603' title='Style=Bordered, State=Focused' style={{ display: 'flex', width: 360 }}>
-        <Accordion variant='bordered' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="focus">{BODY}</AccordionItem></Accordion>
+      <div data-figma-variant='236:1603' title='Style=Bordered, State=Focused, Size=Medium' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='medium' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="focus">{BODY}</AccordionItem></Accordion>
       </div>
-      <div data-figma-variant='236:1637' title='Style=Bordered, State=Expanded' style={{ display: 'flex', width: 360 }}>
-        <Accordion variant='bordered' defaultValue={['v']}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      <div data-figma-variant='236:1637' title='Style=Bordered, State=Expanded, Size=Medium' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='medium' defaultValue={['v']}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
       </div>
-      <div data-figma-variant='236:1671' title='Style=Bordered, State=Disabled' style={{ display: 'flex', width: 360 }}>
-        <Accordion variant='bordered' defaultValue={[]}><AccordionItem value="v" title={TITLE} disabled>{BODY}</AccordionItem></Accordion>
+      <div data-figma-variant='236:1671' title='Style=Bordered, State=Disabled, Size=Medium' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='medium' defaultValue={[]}><AccordionItem value="v" title={TITLE} disabled>{BODY}</AccordionItem></Accordion>
       </div>
-      <div data-figma-variant='236:1705' title='Style=Borderless, State=Default' style={{ display: 'flex', width: 360 }}>
-        <Accordion variant='borderless' defaultValue={[]}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      <div data-figma-variant='236:1705' title='Style=Borderless, State=Default, Size=Medium' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='medium' defaultValue={[]}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
       </div>
-      <div data-figma-variant='236:1739' title='Style=Borderless, State=Hover' style={{ display: 'flex', width: 360 }}>
-        <Accordion variant='borderless' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="hover">{BODY}</AccordionItem></Accordion>
+      <div data-figma-variant='236:1739' title='Style=Borderless, State=Hover, Size=Medium' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='medium' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="hover">{BODY}</AccordionItem></Accordion>
       </div>
-      <div data-figma-variant='236:1773' title='Style=Borderless, State=Focused' style={{ display: 'flex', width: 360 }}>
-        <Accordion variant='borderless' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="focus">{BODY}</AccordionItem></Accordion>
+      <div data-figma-variant='236:1773' title='Style=Borderless, State=Focused, Size=Medium' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='medium' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="focus">{BODY}</AccordionItem></Accordion>
       </div>
-      <div data-figma-variant='236:1807' title='Style=Borderless, State=Expanded' style={{ display: 'flex', width: 360 }}>
-        <Accordion variant='borderless' defaultValue={['v']}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      <div data-figma-variant='236:1807' title='Style=Borderless, State=Expanded, Size=Medium' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='medium' defaultValue={['v']}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
       </div>
-      <div data-figma-variant='236:1841' title='Style=Borderless, State=Disabled' style={{ display: 'flex', width: 360 }}>
-        <Accordion variant='borderless' defaultValue={[]}><AccordionItem value="v" title={TITLE} disabled>{BODY}</AccordionItem></Accordion>
+      <div data-figma-variant='236:1841' title='Style=Borderless, State=Disabled, Size=Medium' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='medium' defaultValue={[]}><AccordionItem value="v" title={TITLE} disabled>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:225' title='Style=Bordered, State=Default, Size=Small' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='small' defaultValue={[]}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:231' title='Style=Bordered, State=Hover, Size=Small' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='small' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="hover">{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:237' title='Style=Bordered, State=Focused, Size=Small' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='small' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="focus">{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:243' title='Style=Bordered, State=Expanded, Size=Small' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='small' defaultValue={['v']}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:249' title='Style=Bordered, State=Disabled, Size=Small' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='small' defaultValue={[]}><AccordionItem value="v" title={TITLE} disabled>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:255' title='Style=Borderless, State=Default, Size=Small' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='small' defaultValue={[]}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:261' title='Style=Borderless, State=Hover, Size=Small' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='small' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="hover">{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:267' title='Style=Borderless, State=Focused, Size=Small' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='small' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="focus">{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:273' title='Style=Borderless, State=Expanded, Size=Small' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='small' defaultValue={['v']}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:279' title='Style=Borderless, State=Disabled, Size=Small' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='small' defaultValue={[]}><AccordionItem value="v" title={TITLE} disabled>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:285' title='Style=Bordered, State=Default, Size=Large' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='large' defaultValue={[]}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:291' title='Style=Bordered, State=Hover, Size=Large' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='large' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="hover">{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:297' title='Style=Bordered, State=Focused, Size=Large' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='large' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="focus">{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:303' title='Style=Bordered, State=Expanded, Size=Large' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='large' defaultValue={['v']}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:309' title='Style=Bordered, State=Disabled, Size=Large' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='bordered' size='large' defaultValue={[]}><AccordionItem value="v" title={TITLE} disabled>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:315' title='Style=Borderless, State=Default, Size=Large' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='large' defaultValue={[]}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:321' title='Style=Borderless, State=Hover, Size=Large' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='large' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="hover">{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:327' title='Style=Borderless, State=Focused, Size=Large' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='large' defaultValue={[]}><AccordionItem value="v" title={TITLE} data-force-state="focus">{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:333' title='Style=Borderless, State=Expanded, Size=Large' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='large' defaultValue={['v']}><AccordionItem value="v" title={TITLE}>{BODY}</AccordionItem></Accordion>
+      </div>
+      <div data-figma-variant='1835:339' title='Style=Borderless, State=Disabled, Size=Large' style={{ display: 'flex', width: 360 }}>
+        <Accordion variant='borderless' size='large' defaultValue={[]}><AccordionItem value="v" title={TITLE} disabled>{BODY}</AccordionItem></Accordion>
       </div>
     </div>
   ),

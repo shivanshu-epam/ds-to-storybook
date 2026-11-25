@@ -11,13 +11,13 @@
   "buildingBlock": false,
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2420998788157412873",
+    "version": "2425654086033038120",
     "sets": [
       {
         "id": "236:1875",
         "name": "AccordionItem",
         "page": "↳ accordion",
-        "variants": 10
+        "variants": 30
       }
     ],
     "docFrames": [
@@ -90,6 +90,31 @@
           "coverage": "shown"
         }
       ]
+    },
+    {
+      "figma": "Size",
+      "type": "VARIANT",
+      "props": [
+        "size"
+      ],
+      "role": "appearance",
+      "default": "Medium",
+      "control": "inline-radio",
+      "coverage": "shown",
+      "values": [
+        {
+          "figma": "Small",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Large",
+          "coverage": "shown"
+        },
+        {
+          "figma": "Medium",
+          "coverage": "shown"
+        }
+      ]
     }
   ],
   "stories": [
@@ -120,6 +145,14 @@
       ]
     },
     {
+      "export": "SizeValues",
+      "name": "Size",
+      "visibility": "dev",
+      "shows": [
+        "Size"
+      ]
+    },
+    {
       "export": "States",
       "name": "States",
       "visibility": "dev",
@@ -138,7 +171,8 @@
       "name": "Figma variants",
       "visibility": "test",
       "shows": [
-        "Style"
+        "Style",
+        "Size"
       ]
     }
   ],
@@ -219,18 +253,18 @@
   ],
   "coverage": {
     "properties": {
-      "total": 2,
-      "covered": 2
+      "total": 3,
+      "covered": 3
     },
     "values": {
-      "total": 7,
-      "shown": 7,
+      "total": 10,
+      "shown": 10,
       "control": 0,
       "missing": 0
     },
     "variants": {
-      "total": 10,
-      "rendered": 10
+      "total": 30,
+      "rendered": 30
     },
     "sections": {
       "required": 7,

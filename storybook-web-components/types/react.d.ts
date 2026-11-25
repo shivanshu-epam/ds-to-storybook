@@ -43,7 +43,7 @@ declare module 'react' {
       'ds-badge': El<DsBadge, { status?: "success" | "warning" | "error" | "info" | "neutral"; styleVariant?: "filled" | "outlined" | "subtle"; type?: "text" | "numeric" | "dot"; size?: "sm" | "md" | "lg"; hasLeadingIcon?: boolean; isDismissible?: boolean; label?: string }>;
       'ds-breadcrumb-item': El<DsBreadcrumbItem, { type?: "link" | "current" | "collapse"; disabled?: boolean; hasIcon?: boolean; label?: string }>;
       'ds-separator': El<DsSeparator, { type?: "slash" | "chevron" }>;
-      'ds-accordion': El<DsAccordion, { variant?: "bordered" | "borderless"; expandMode?: 'single' | 'multiple'; headingLevel?: number; value?: string[] }>;
+      'ds-accordion': El<DsAccordion, { variant?: "bordered" | "borderless"; size?: "small" | "large" | "medium"; expandMode?: 'single' | 'multiple'; headingLevel?: number; value?: string[] }>;
       'ds-accordion-item': El<DsAccordionItem, { value?: string; heading?: string; disabled?: boolean }>;
       'ds-nav-control': El<DsNavControl, { direction?: "prev" | "next"; disabled?: boolean }>;
       'ds-pagination-dot': El<DsPaginationDot, {  }>;

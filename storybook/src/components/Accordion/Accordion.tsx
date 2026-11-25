@@ -8,6 +8,7 @@ interface Ctx {
   isOpen: (value: string) => boolean;
   toggle: (value: string) => void;
   variant?: string;
+  size?: string;
   headingLevel: 2 | 3 | 4 | 5 | 6;
 }
 
@@ -16,6 +17,8 @@ const AccordionContext = createContext<Ctx | null>(null);
 export interface AccordionProps {
   /** Figma: AccordionItem Style. Default bordered. */
   variant?: 'bordered' | 'borderless';
+  /** Figma: AccordionItem Size. Default medium. */
+  size?: 'small' | 'large' | 'medium';
   /** Figma docs: single- or multiple-expand. Default single (one panel open at a time). */
   expandMode?: 'single' | 'multiple';
   /** Heading level wrapping each trigger. Not specified in Figma; default 3. */
@@ -29,7 +32,7 @@ export interface AccordionProps {
   className?: string;
 }
 
-export function Accordion({ variant = 'bordered', expandMode = 'single', headingLevel = 3, value, defaultValue, onValueChange, children, className }: AccordionProps) {
+export function Accordion({ variant = 'bordered', size = 'medium', expandMode = 'single', headingLevel = 3, value, defaultValue, onValueChange, children, className }: AccordionProps) {
   const [inner, setInner] = useState<string[]>(defaultValue ?? []);
   const open = value ?? inner;
   const ref = useRef<HTMLDivElement>(null);
@@ -49,7 +52,7 @@ export function Accordion({ variant = 'bordered', expandMode = 'single', heading
     headers[target]?.focus();
   };
   return (
-    <AccordionContext.Provider value={{ isOpen: (v) => open.includes(v), toggle, variant, headingLevel }}>
+    <AccordionContext.Provider value={{ isOpen: (v) => open.includes(v), toggle, variant, size, headingLevel }}>
       <div ref={ref} className={[styles.accordion, className].filter(Boolean).join(' ')} onKeyDown={onKeyDown}>
         {children}
       </div>
@@ -77,7 +80,7 @@ export function AccordionItem({ value, title, disabled, children, 'data-force-st
   const open = ctx.isOpen(value);
   const Heading = `h${ctx.headingLevel}` as const;
   return (
-    <div className={styles.item} data-variant={ctx.variant} data-state={open ? 'open' : 'closed'} data-disabled={disabled ? '' : undefined}>
+    <div className={styles.item} data-variant={ctx.variant} data-size={ctx.size} data-state={open ? 'open' : 'closed'} data-disabled={disabled ? '' : undefined}>
       <Heading className={styles.heading}>
         <button
           type="button"

@@ -3,9 +3,9 @@
 Every component the Figma file defines, checked against its generated stories and docs page (Component Doc Spec v1, one JSON per component in `docspec/`).
 
 - Components: 27; every Figma item in Storybook: 26/27
-- Figma properties in Storybook: 117/118
-- Property values: 241 shown in a story, 14 reachable through a control or by interaction, 0 missing
-- Designed variants rendered: 1390/1390
+- Figma properties in Storybook: 118/119
+- Property values: 244 shown in a story, 14 reachable through a control or by interaction, 0 missing
+- Designed variants rendered: 1410/1410
 - Required docs sections present: 188/189
 
 | Component | Kind | Properties | Values (shown / control / missing) | Variants | Sections | Complete |
@@ -16,7 +16,7 @@ Every component the Figma file defines, checked against its generated stories an
 | Badge | Badge | 7/7 | 14 / 0 / 0 | 135/135 | 7/7 | yes |
 | BreadcrumbItem | Navigation | 4/4 | 7 / 0 / 0 | 8/8 | 7/7 | yes |
 | Separator | Divider | 1/1 | 2 / 0 / 0 | 2/2 | 7/7 | yes |
-| Accordion | Accordion | 2/2 | 7 / 0 / 0 | 10/10 | 7/7 | yes |
+| Accordion | Accordion | 3/3 | 10 / 0 / 0 | 30/30 | 7/7 | yes |
 | NavControl | Navigation | 2/2 | 6 / 0 / 0 | 8/8 | 7/7 | yes |
 | PaginationDot | Navigation | 1/1 | 2 / 0 / 0 | 2/2 | 6/7 | yes |
 | AutoplayToggle | Switch | 1/1 | 2 / 0 / 0 | 2/2 | 7/7 | yes |

@@ -14,8 +14,13 @@ const part = (test: RegExp, extra: Partial<RoleDef> & Pick<RoleDef, 'role' | 'ki
   },
 });
 
+/** A Figma variant property besides the style and the state (Size...): set on the accordion, shared by its items. */
+export interface AccordionAxis { figma: string; prop: string; attr: string; options: { figma: string; value: string }[]; default: string }
+
 export interface AccordionCore {
   set: IRComponentSet;
+  /** Other variant properties (Size...), each a prop of the accordion like the style. */
+  extraAxes: AccordionAxis[];
   css: string;
   styleAxis: { figma: string; options: { figma: string; value: string }[]; default: string } | undefined;
   stateAxis: string;
@@ -35,6 +40,12 @@ export function accordionTemplate(ctx: TemplateContext, name: string): TemplateR
   const item = `${name}Item`;
   const styleAxis = set.properties.find((p) => p.type === 'VARIANT' && /^(style|variant|type)$/i.test(p.name));
   const stateAxisName = set.properties.find((p) => p.type === 'VARIANT' && /^state$/i.test(p.name))?.name ?? 'State';
+  // Other variant properties (Size...): props of the accordion, passed to every item like the style.
+  const camelName = (n: string) => kebab(n).replace(/-([a-z0-9])/g, (_m, c: string) => c.toUpperCase());
+  const extraAxes: AccordionAxis[] = set.properties
+    .filter((p) => p.type === 'VARIANT' && p !== styleAxis && p.name !== stateAxisName && (p.options?.length ?? 0) > 1)
+    .map((p) => ({ figma: p.name, prop: camelName(p.name), attr: kebab(p.name), options: (p.options ?? []).map((o) => ({ figma: o, value: kebab(o) })), default: kebab(String(p.default)) }))
+    .filter((a) => !['variant', 'expandMode', 'headingLevel', 'value', 'defaultValue', 'children', 'className'].includes(a.prop));
 
   const state: StateAxis = { figma: stateAxisName, states: {} };
   for (const s of axisOptions(set, stateAxisName)) {
@@ -48,7 +59,7 @@ export function accordionTemplate(ctx: TemplateContext, name: string): TemplateR
   }
   const model: StyleModel = {
     rootClass: 'item',
-    axes: styleAxis ? [{ figma: styleAxis.name, attr: 'variant', values: Object.fromEntries((styleAxis.options ?? []).map((o) => [o, kebab(o)])) }] : [],
+    axes: [...(styleAxis ? [{ figma: styleAxis.name, attr: 'variant', values: Object.fromEntries((styleAxis.options ?? []).map((o) => [o, kebab(o)])) }] : []), ...extraAxes.map((a) => ({ figma: a.figma, attr: a.attr, values: Object.fromEntries(a.options.map((o) => [o.figma, o.value])) }))],
     stateAxes: [state],
     roles: [
       { role: 'root', kind: 'box', find: (v) => ({ style: v.style }) },
@@ -88,13 +99,13 @@ interface Ctx {
   isOpen: (value: string) => boolean;
   toggle: (value: string) => void;
   variant?: string;
-  headingLevel: 2 | 3 | 4 | 5 | 6;
+${extraAxes.map((a) => `  ${a.prop}?: string;\n`).join('')}  headingLevel: 2 | 3 | 4 | 5 | 6;
 }
 
 const AccordionContext = createContext<Ctx | null>(null);
 
 export interface ${name}Props {
-${styleAxis ? `  /** Figma: ${set.name} ${styleAxis.name}. Default ${defaultVariant}. */\n  variant?: ${variants.map(q).join(' | ')};\n` : ''}  /** Figma docs: single- or multiple-expand. Default single (one panel open at a time). */
+${styleAxis ? `  /** Figma: ${set.name} ${styleAxis.name}. Default ${defaultVariant}. */\n  variant?: ${variants.map(q).join(' | ')};\n` : ''}${extraAxes.map((a) => `  /** Figma: ${set.name} ${a.figma}. Default ${a.default}. */\n  ${a.prop}?: ${a.options.map((o) => q(o.value)).join(' | ')};\n`).join('')}  /** Figma docs: single- or multiple-expand. Default single (one panel open at a time). */
   expandMode?: 'single' | 'multiple';
   /** Heading level wrapping each trigger. Not specified in Figma; default 3. */
   headingLevel?: 2 | 3 | 4 | 5 | 6;
@@ -107,7 +118,7 @@ ${styleAxis ? `  /** Figma: ${set.name} ${styleAxis.name}. Default ${defaultVari
   className?: string;
 }
 
-export function ${name}({ ${styleAxis ? `variant = ${q(defaultVariant!)}, ` : ''}expandMode = 'single', headingLevel = 3, value, defaultValue, onValueChange, children, className }: ${name}Props) {
+export function ${name}({ ${styleAxis ? `variant = ${q(defaultVariant!)}, ` : ''}${extraAxes.map((a) => `${a.prop} = ${q(a.default)}, `).join('')}expandMode = 'single', headingLevel = 3, value, defaultValue, onValueChange, children, className }: ${name}Props) {
   const [inner, setInner] = useState<string[]>(defaultValue ?? []);
   const open = value ?? inner;
   const ref = useRef<HTMLDivElement>(null);
@@ -127,7 +138,7 @@ export function ${name}({ ${styleAxis ? `variant = ${q(defaultVariant!)}, ` : ''
     headers[target]?.focus();
   };
   return (
-    <AccordionContext.Provider value={{ isOpen: (v) => open.includes(v), toggle, ${styleAxis ? 'variant, ' : ''}headingLevel }}>
+    <AccordionContext.Provider value={{ isOpen: (v) => open.includes(v), toggle, ${styleAxis ? 'variant, ' : ''}${extraAxes.map((a) => `${a.prop}, `).join('')}headingLevel }}>
       <div ref={ref} className={[styles.accordion, className].filter(Boolean).join(' ')} onKeyDown={onKeyDown}>
         {children}
       </div>
@@ -155,7 +166,7 @@ export function ${item}({ value, title, disabled, children, 'data-force-state': 
   const open = ctx.isOpen(value);
   const Heading = \`h\${ctx.headingLevel}\` as const;
   return (
-    <div className={styles.item} data-variant={ctx.variant} data-state={open ? 'open' : 'closed'} data-disabled={disabled ? '' : undefined}>
+    <div className={styles.item} data-variant={ctx.variant}${extraAxes.map((a) => ` data-${a.attr}={ctx.${a.prop}}`).join('')} data-state={open ? 'open' : 'closed'} data-disabled={disabled ? '' : undefined}>
       <Heading className={styles.heading}>
         <button
           type="button"
@@ -202,9 +213,9 @@ const t = (n: number) => \`\${TITLE} \${n}\`;
 const meta = {
   title: 'Components/${name}',
   component: ${name},
-  args: { ${styleAxis ? `variant: ${q(defaultVariant!)}, ` : ''}expandMode: 'single', headingLevel: 3, children: null },
+  args: { ${styleAxis ? `variant: ${q(defaultVariant!)}, ` : ''}${extraAxes.map((a) => `${a.prop}: ${q(a.default)}, `).join('')}expandMode: 'single', headingLevel: 3, children: null },
   argTypes: {
-${styleAxis ? `    variant: { control: 'inline-radio', options: [${variants.map(q).join(', ')}], description: 'Figma: ${styleAxis.name}' },\n` : ''}    expandMode: { control: 'inline-radio', options: ['single', 'multiple'], description: 'Figma docs: single- or multiple-expand' },
+${styleAxis ? `    variant: { control: 'inline-radio', options: [${variants.map(q).join(', ')}], description: 'Figma: ${styleAxis.name}' },\n` : ''}${extraAxes.map((a) => `    ${a.prop}: { control: 'inline-radio', options: [${a.options.map((o) => q(o.value)).join(', ')}], description: ${q(`Figma: ${a.figma}`)} },\n`).join('')}    expandMode: { control: 'inline-radio', options: ['single', 'multiple'], description: 'Figma docs: single- or multiple-expand' },
     headingLevel: { control: 'inline-radio', options: [2, 3, 4, 5, 6], description: 'Not in Figma (archetype default 3)' },
     children: { table: { disable: true } },
   },
@@ -274,6 +285,17 @@ ${(styleAxis.options ?? []).map((o, i) => `      <Labelled label=${q(o)}>\n     
   ),
 };
 ` : ''}
+${extraAxes.map((a) => `/** Figma ${a.figma}: ${a.options.map((o) => o.figma).join(', ')}. */
+export const ${a.prop.charAt(0).toUpperCase()}${a.prop.slice(1)}Values: Story = {
+  name: ${q(a.figma)},
+  parameters: { controls: { disable: true } },
+  render: (args) => (
+    <Stack>
+${a.options.map((o, i) => `      <Labelled label=${q(o.figma)}>\n        <${name} {...args} ${a.prop}=${q(o.value)} defaultValue={['x${i}']}>\n          <${item} value="x${i}" title={t(${i * 2 + 1})}>{BODY}</${item}>\n          <${item} value="y${i}" title={t(${i * 2 + 2})}>{BODY}</${item}>\n        </${name}>\n      </Labelled>`).join('\n')}
+    </Stack>
+  ),
+};
+`).join('\n')}
 /** Figma ${stateAxisName} axis. Pseudo states are forced with data-force-state. */
 export const States: Story = {
   parameters: { controls: { disable: true } },
@@ -313,6 +335,7 @@ export const Keyboard: Story = {
 
   const mapping: ComponentReport['props'] = [
     ...(styleAxis ? [{ prop: 'variant', figma: `${styleAxis.name} (variant)` }] : []),
+    ...extraAxes.map((a) => ({ prop: a.prop, figma: `${a.figma} (variant)` })),
     { prop: 'value / defaultValue', figma: `${stateAxisName}=Expanded` },
     { prop: `${item} disabled`, figma: `${stateAxisName}=Disabled` },
     { prop: `${item} title`, figma: 'header label text' },
@@ -326,13 +349,14 @@ export const Keyboard: Story = {
       const st = (v.values[stateAxisName] ?? '').toLowerCase();
       const open = /expanded|open/.test(st);
       const force = /hover/.test(st) ? ' data-force-state="hover"' : /focus/.test(st) ? ' data-force-state="focus"' : /disabled/.test(st) ? ' disabled' : '';
-      const variant = styleAxis ? ` variant=${q(kebab(v.values[styleAxis.name] ?? defaultVariant!))}` : '';
+      const variant = (styleAxis ? ` variant=${q(kebab(v.values[styleAxis.name] ?? defaultVariant!))}` : '') + extraAxes.map((a) => ` ${a.prop}=${q(kebab(v.values[a.figma] ?? a.default))}`).join('');
       return { variant: v, jsx: `<${name}${variant} defaultValue={${open ? "['v']" : '[]'}}><${item} value="v" title={TITLE}${force}>{BODY}</${item}></${name}>` };
     }))}\n` },
     {
       path: `${dir}/${name}.mdx`,
       content: mdxPage(name, name, [
         ...(styleAxis ? [{ heading: 'Styles', story: 'Styles' }] : []),
+        ...extraAxes.map((a) => ({ heading: a.figma, story: `${a.prop.charAt(0).toUpperCase()}${a.prop.slice(1)}Values` })),
         { heading: 'States', story: 'States' },
         { heading: 'Single and multiple expand', story: 'MultipleExpand' },
       ]),
@@ -342,6 +366,7 @@ export const Keyboard: Story = {
   const core: AccordionCore = {
     set,
     css,
+    extraAxes,
     styleAxis: styleAxis ? { figma: styleAxis.name, options: (styleAxis.options ?? []).map((o) => ({ figma: o, value: kebab(o) })), default: defaultVariant! } : undefined,
     stateAxis: stateAxisName,
     states: stateList,

@@ -173,3 +173,16 @@ describe('known issues per mode', () => {
     expect(acceptKnownIssue(stories, 'always')).toContain("a11y: { test: 'todo' },");
   });
 });
+
+describe('variants that share their values', () => {
+  it('fall back to every axis with overrides instead of failing', () => {
+    // A variant whose name lacks a property reads the same values as another but is styled differently.
+    // Three variants with the same values and three fills: more overrides than any axis set allows (the old search had no answer).
+    const variants = [v({ Variant: 'Primary' }, '#111111', 12), v({ Variant: 'Primary' }, '#eeeeee', 12), v({ Variant: 'Primary' }, '#444444', 12), v({ Variant: 'Secondary' }, '#222222', 12)];
+    const model: StyleModel = { axes: [{ figma: 'Variant', attr: 'variant', values: { Primary: 'primary', Secondary: 'secondary' } }], stateAxes: [], roles: [{ role: 'root', kind: 'box', find: (x) => ({ style: x.style }) }] };
+    const out = generateStyles(variants, model, new TokenResolver(tokens));
+    expect(out.dependencies['root.background']![0]).toBe('Variant');
+    expect(out.css).toContain('#222222');
+    expect(out.dependencies['root.background']!.at(-1)).toMatch(/variant overrides?$/);
+  });
+});

@@ -1901,7 +1901,8 @@
         "border",
         "focus",
         "bordered",
-        "default"
+        "default",
+        "medium"
       ],
       "variableId": "VariableID:11:32",
       "token": "--border-strong",
@@ -1915,7 +1916,8 @@
         "inset",
         "space",
         "bordered",
-        "default"
+        "default",
+        "medium"
       ],
       "variableId": "VariableID:14:9",
       "token": "--space-stack-xs",
@@ -1928,10 +1930,25 @@
         "inset",
         "space",
         "bordered",
-        "default"
+        "default",
+        "medium"
       ],
       "variableId": "VariableID:14:10",
       "token": "--space-inline-md",
+      "reason": "bound"
+    },
+    {
+      "value": "16px",
+      "hint": [
+        "inline",
+        "inset",
+        "space",
+        "bordered",
+        "default",
+        "large"
+      ],
+      "variableId": "VariableID:14:11",
+      "token": "--space-inline-lg",
       "reason": "bound"
     },
     {
@@ -2420,21 +2437,6 @@
       ],
       "variableId": "VariableID:14:12",
       "token": "--space-stack-lg",
-      "reason": "bound"
-    },
-    {
-      "value": "16px",
-      "hint": [
-        "block",
-        "stack",
-        "inset",
-        "space",
-        "confirmation",
-        "small",
-        "open"
-      ],
-      "variableId": "VariableID:14:11",
-      "token": "--space-stack-md",
       "reason": "bound"
     },
     {

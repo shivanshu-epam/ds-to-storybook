@@ -1424,12 +1424,12 @@ let uid = 0;
 export class ${cls} extends LitElement {
   static override styles = [unsafeCSS(':host { display: contents; }'), unsafeCSS(css)];
   static override properties = {
-${core.styleAxis ? '    variant: { type: String, reflect: true },\n' : ''}    expandMode: { type: String, attribute: 'expand-mode' },
+${core.styleAxis ? '    variant: { type: String, reflect: true },\n' : ''}${core.extraAxes.map((a) => `    ${a.prop}: { type: String, reflect: true },\n`).join('')}    expandMode: { type: String, attribute: 'expand-mode' },
     headingLevel: { type: Number, attribute: 'heading-level' },
     value: { type: Array },
   };
 
-${core.styleAxis ? `  /** Figma: ${core.set.name} ${core.styleAxis.figma}. */\n  declare variant: ${variants.map(js).join(' | ')};\n` : ''}  /** Figma docs: single- or multiple-expand. */
+${core.styleAxis ? `  /** Figma: ${core.set.name} ${core.styleAxis.figma}. */\n  declare variant: ${variants.map(js).join(' | ')};\n` : ''}${core.extraAxes.map((a) => `  /** Figma: ${core.set.name} ${a.figma}. */\n  declare ${a.prop}: ${a.options.map((o) => js(o.value)).join(' | ')};\n`).join('')}  /** Figma docs: single- or multiple-expand. */
   declare expandMode: 'single' | 'multiple';
   /** Not specified in Figma; default 3. */
   declare headingLevel: number;
@@ -1438,7 +1438,7 @@ ${core.styleAxis ? `  /** Figma: ${core.set.name} ${core.styleAxis.figma}. */\n 
 
   constructor() {
     super();
-${core.styleAxis ? `    this.variant = ${js(core.styleAxis.default)};\n` : ''}    this.expandMode = 'single';
+${core.styleAxis ? `    this.variant = ${js(core.styleAxis.default)};\n` : ''}${core.extraAxes.map((a) => `    this.${a.prop} = ${js(a.default)};\n`).join('')}    this.expandMode = 'single';
     this.headingLevel = 3;
     this.value = [];
     this.addEventListener('accordion-toggle', (e) => this.toggle((e as CustomEvent<string>).detail));
@@ -1468,7 +1468,7 @@ ${core.styleAxis ? `    this.variant = ${js(core.styleAxis.default)};\n` : ''}  
   override updated() {
     for (const item of this.items) {
       item.open = this.value.includes(item.value);
-${core.styleAxis ? '      item.variant = this.variant;\n' : ''}      item.headingLevel = this.headingLevel;
+${core.styleAxis ? '      item.variant = this.variant;\n' : ''}${core.extraAxes.map((a) => `      item.${a.prop} = this.${a.prop};\n`).join('')}      item.headingLevel = this.headingLevel;
     }
   }
 
@@ -1486,7 +1486,7 @@ export class ${itemCls} extends LitElement {
     disabled: { type: Boolean, reflect: true },
     open: { type: Boolean, reflect: true },
     variant: { type: String },
-    headingLevel: { type: Number },
+${core.extraAxes.map((a) => `    ${a.prop}: { type: String },\n`).join('')}    headingLevel: { type: Number },
     forceState: { type: String, attribute: 'data-force-state' },
   };
 
@@ -1498,7 +1498,7 @@ export class ${itemCls} extends LitElement {
   /** Set by the parent accordion. */
   declare open: boolean;
   declare variant: string | undefined;
-  declare headingLevel: number;
+${core.extraAxes.map((a) => `  declare ${a.prop}: string | undefined;\n`).join('')}  declare headingLevel: number;
   declare forceState: string | undefined;
   private readonly uid = \`acc-\${++uid}\`;
 
@@ -1520,7 +1520,7 @@ export class ${itemCls} extends LitElement {
   }
 
   override render() {
-    return html\`<div class="item" data-variant=\${this.variant ?? nothing} data-state=\${this.open ? 'open' : 'closed'} ?data-disabled=\${this.disabled}>
+    return html\`<div class="item" data-variant=\${this.variant ?? nothing}${core.extraAxes.map((a) => ` data-${a.attr}=\${this.${a.prop} ?? nothing}`).join('')} data-state=\${this.open ? 'open' : 'closed'} ?data-disabled=\${this.disabled}>
       <div class="heading" role="heading" aria-level=\${this.headingLevel}>
         <button type="button" id=\${\`\${this.uid}-header\`} class="header" aria-expanded=\${this.open ? 'true' : 'false'} aria-controls=\${\`\${this.uid}-panel\`} ?disabled=\${this.disabled} data-force-state=\${this.forceState ?? nothing}
           @click=\${() => this.dispatchEvent(new CustomEvent('accordion-toggle', { detail: this.value, bubbles: true, composed: true }))}>
@@ -1545,7 +1545,7 @@ declare global {
 }
 `;
 
-  const acc = (attrs: string, items: string) => `html\`<${tag} ${core.styleAxis ? 'variant=${args.variant} ' : ''}expand-mode=\${args.expandMode} heading-level=\${args.headingLevel}${attrs ? ' ' + attrs : ''}>${items}</${tag}>\``;
+  const acc = (attrs: string, items: string) => `html\`<${tag} ${core.styleAxis ? 'variant=${args.variant} ' : ''}${core.extraAxes.map((a) => `${a.attr.toLowerCase()}=\${args.${a.prop}} `).join('')}expand-mode=\${args.expandMode} heading-level=\${args.headingLevel}${attrs ? ' ' + attrs : ''}>${items}</${tag}>\``;
   const item = (v: string, n: number, extra = '') => `<${itemTag} value="${v}" heading=\${t(${n})}${extra ? ' ' + extra : ''}>\${BODY}</${itemTag}>`;
   const headers = `const headers = (canvas: HTMLElement) => [...canvas.querySelectorAll('${itemTag}')].map((i) => within(i.shadowRoot as unknown as HTMLElement).getByRole('button'));`;
   const stateItem = (s: string, i: number) => {
@@ -1570,9 +1570,9 @@ ${headers}
 const meta = {
   title: 'Components/${name}',
   component: '${tag}',
-  args: { ${core.styleAxis ? `variant: ${js(core.styleAxis.default)}, ` : ''}expandMode: 'single', headingLevel: 3 },
+  args: { ${core.styleAxis ? `variant: ${js(core.styleAxis.default)}, ` : ''}${core.extraAxes.map((a) => `${a.prop}: ${js(a.default)}, `).join('')}expandMode: 'single', headingLevel: 3 },
   argTypes: {
-${core.styleAxis ? `    variant: { control: 'inline-radio', options: ${js(variants)}, description: ${js(`Figma: ${core.styleAxis.figma}`)} },\n` : ''}    expandMode: { control: 'inline-radio', options: ['single', 'multiple'], description: 'Figma docs: single- or multiple-expand' },
+${core.styleAxis ? `    variant: { control: 'inline-radio', options: ${js(variants)}, description: ${js(`Figma: ${core.styleAxis.figma}`)} },\n` : ''}${core.extraAxes.map((a) => `    ${a.prop}: { control: 'inline-radio', options: ${js(a.options.map((o) => o.value))}, description: ${js(`Figma: ${a.figma}`)} },\n`).join('')}    expandMode: { control: 'inline-radio', options: ['single', 'multiple'], description: 'Figma docs: single- or multiple-expand' },
     headingLevel: { control: 'inline-radio', options: [2, 3, 4, 5, 6], description: 'Not in Figma (archetype default 3)' },
   },
   decorators: [(story) => html\`<div style="width:${core.width}px;max-width:100%">\${story()}</div>\`],
@@ -1628,6 +1628,16 @@ ${core.styleAxis.options.map((x, i) => `    labelled(${js(x.figma)}, ${acc(`vari
   ]),
 };
 ` : ''}
+${core.extraAxes.map((a) => `
+/** Figma ${a.figma}. */
+export const ${a.prop.charAt(0).toUpperCase()}${a.prop.slice(1)}Values: Story = {
+  name: ${js(a.figma)},
+  parameters: { controls: { disable: true } },
+  render: (args) => stack([
+${a.options.map((x, i) => `    labelled(${js(x.figma)}, ${acc(`${a.attr.toLowerCase()}=${js(x.value)} .value=\${['x${i}']}`, `${item(`x${i}`, i * 2 + 1)}${item(`y${i}`, i * 2 + 2)}`).replace(`${a.attr.toLowerCase()}=\${args.${a.prop}} `, '')}),`).join('\n')}
+  ]),
+};
+`).join('')}
 /** Figma ${core.stateAxis} axis. Pseudo states are forced with data-force-state. */
 export const States: Story = {
   parameters: { controls: { disable: true } },
@@ -1665,6 +1675,7 @@ export const Keyboard: Story = {
         path: `${dir}/${name}.mdx`,
         content: mdx(name, core.set.description || leadSentence(core.set.docFrames), [
           ...(core.styleAxis ? [{ heading: 'Styles', story: 'Styles' }] : []),
+          ...core.extraAxes.map((a) => ({ heading: a.figma, story: `${a.prop.charAt(0).toUpperCase()}${a.prop.slice(1)}Values` })),
           { heading: 'States', story: 'States' },
           { heading: 'Single and multiple expand', story: 'MultipleExpand' },
         ], usage(o, tag, '', `\n  <${itemTag} value="one" heading=${js(core.title)}>${core.body}</${itemTag}>\n`, 'value-change'), docs),
@@ -1673,7 +1684,7 @@ export const Keyboard: Story = {
     tags: [tag, itemTag],
     module: tag,
     typings: [
-      { tag, className: cls, props: [...(core.styleAxis ? [{ name: 'variant', type: variants.map(js).join(' | ') }] : []), { name: 'expandMode', type: "'single' | 'multiple'" }, { name: 'headingLevel', type: 'number' }, { name: 'value', type: 'string[]' }] },
+      { tag, className: cls, props: [...(core.styleAxis ? [{ name: 'variant', type: variants.map(js).join(' | ') }] : []), ...core.extraAxes.map((a) => ({ name: a.prop, type: a.options.map((o) => js(o.value)).join(' | ') })), { name: 'expandMode', type: "'single' | 'multiple'" }, { name: 'headingLevel', type: 'number' }, { name: 'value', type: 'string[]' }] },
       { tag: itemTag, className: itemCls, props: [{ name: 'value', type: 'string' }, { name: 'heading', type: 'string' }, { name: 'disabled', type: 'boolean' }] },
     ],
     notes: [],

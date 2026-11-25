@@ -15,14 +15,15 @@ const headers = (canvas: HTMLElement) => [...canvas.querySelectorAll('ds-accordi
 const meta = {
   title: "Components/Accordion",
   component: 'ds-accordion',
-  args: { variant: "bordered", expandMode: 'single', headingLevel: 3 },
+  args: { variant: "bordered", size: "medium", expandMode: 'single', headingLevel: 3 },
   argTypes: {
     variant: { control: 'inline-radio', options: ["bordered","borderless"], description: "Figma: Style" },
+    size: { control: 'inline-radio', options: ["small","large","medium"], description: "Figma: Size" },
     expandMode: { control: 'inline-radio', options: ['single', 'multiple'], description: 'Figma docs: single- or multiple-expand' },
     headingLevel: { control: 'inline-radio', options: [2, 3, 4, 5, 6], description: 'Not in Figma (archetype default 3)' },
   },
   decorators: [(story) => html`<div style="width:360px;max-width:100%">${story()}</div>`],
-  render: (args) => html`<ds-accordion variant=${args.variant} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="one" heading=${t(1)}>${BODY}</ds-accordion-item><ds-accordion-item value="two" heading=${t(2)}>${BODY}</ds-accordion-item><ds-accordion-item value="three" heading=${t(3)}>${BODY}</ds-accordion-item></ds-accordion>`,
+  render: (args) => html`<ds-accordion variant=${args.variant} size=${args.size} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="one" heading=${t(1)}>${BODY}</ds-accordion-item><ds-accordion-item value="two" heading=${t(2)}>${BODY}</ds-accordion-item><ds-accordion-item value="three" heading=${t(3)}>${BODY}</ds-accordion-item></ds-accordion>`,
   parameters: { figma: { fileKey: "I983NcgqSiY14YkpJbwjG8", nodeId: "236:1875" } },
 } satisfies Meta;
 
@@ -46,7 +47,7 @@ export const SingleExpand: Story = {
   name: "Single expand",
   tags: ['!dev'],
   args: { expandMode: 'single' },
-  render: (args) => html`<ds-accordion variant=${args.variant} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="one" heading=${t(1)}>${BODY}</ds-accordion-item><ds-accordion-item value="two" heading=${t(2)}>${BODY}</ds-accordion-item></ds-accordion>`,
+  render: (args) => html`<ds-accordion variant=${args.variant} size=${args.size} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="one" heading=${t(1)}>${BODY}</ds-accordion-item><ds-accordion-item value="two" heading=${t(2)}>${BODY}</ds-accordion-item></ds-accordion>`,
   play: async ({ canvasElement }) => {
     const [a, b] = headers(canvasElement);
     await userEvent.click(a!);
@@ -75,8 +76,20 @@ export const Styles: Story = {
   name: "Styles",
   parameters: { controls: { disable: true } },
   render: (args) => stack([
-    labelled("Bordered", html`<ds-accordion expand-mode=${args.expandMode} heading-level=${args.headingLevel} variant="bordered" .value=${['v0']}><ds-accordion-item value="v0" heading=${t(1)}>${BODY}</ds-accordion-item><ds-accordion-item value="w0" heading=${t(2)}>${BODY}</ds-accordion-item></ds-accordion>`),
-    labelled("Borderless", html`<ds-accordion expand-mode=${args.expandMode} heading-level=${args.headingLevel} variant="borderless" .value=${['v1']}><ds-accordion-item value="v1" heading=${t(3)}>${BODY}</ds-accordion-item><ds-accordion-item value="w1" heading=${t(4)}>${BODY}</ds-accordion-item></ds-accordion>`),
+    labelled("Bordered", html`<ds-accordion size=${args.size} expand-mode=${args.expandMode} heading-level=${args.headingLevel} variant="bordered" .value=${['v0']}><ds-accordion-item value="v0" heading=${t(1)}>${BODY}</ds-accordion-item><ds-accordion-item value="w0" heading=${t(2)}>${BODY}</ds-accordion-item></ds-accordion>`),
+    labelled("Borderless", html`<ds-accordion size=${args.size} expand-mode=${args.expandMode} heading-level=${args.headingLevel} variant="borderless" .value=${['v1']}><ds-accordion-item value="v1" heading=${t(3)}>${BODY}</ds-accordion-item><ds-accordion-item value="w1" heading=${t(4)}>${BODY}</ds-accordion-item></ds-accordion>`),
+  ]),
+};
+
+
+/** Figma Size. */
+export const SizeValues: Story = {
+  name: "Size",
+  parameters: { controls: { disable: true } },
+  render: (args) => stack([
+    labelled("Small", html`<ds-accordion variant=${args.variant} expand-mode=${args.expandMode} heading-level=${args.headingLevel} size="small" .value=${['x0']}><ds-accordion-item value="x0" heading=${t(1)}>${BODY}</ds-accordion-item><ds-accordion-item value="y0" heading=${t(2)}>${BODY}</ds-accordion-item></ds-accordion>`),
+    labelled("Large", html`<ds-accordion variant=${args.variant} expand-mode=${args.expandMode} heading-level=${args.headingLevel} size="large" .value=${['x1']}><ds-accordion-item value="x1" heading=${t(3)}>${BODY}</ds-accordion-item><ds-accordion-item value="y1" heading=${t(4)}>${BODY}</ds-accordion-item></ds-accordion>`),
+    labelled("Medium", html`<ds-accordion variant=${args.variant} expand-mode=${args.expandMode} heading-level=${args.headingLevel} size="medium" .value=${['x2']}><ds-accordion-item value="x2" heading=${t(5)}>${BODY}</ds-accordion-item><ds-accordion-item value="y2" heading=${t(6)}>${BODY}</ds-accordion-item></ds-accordion>`),
   ]),
 };
 
@@ -85,11 +98,11 @@ export const States: Story = {
   name: "States",
   parameters: { controls: { disable: true } },
   render: (args) => stack([
-    labelled("Default", html`<ds-accordion variant=${args.variant} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="s0" heading=${t(1)}>${BODY}</ds-accordion-item></ds-accordion>`),
-    labelled("Hover", html`<ds-accordion variant=${args.variant} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="s1" heading=${t(2)} data-force-state="hover">${BODY}</ds-accordion-item></ds-accordion>`),
-    labelled("Focused", html`<ds-accordion variant=${args.variant} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="s2" heading=${t(3)} data-force-state="focus">${BODY}</ds-accordion-item></ds-accordion>`),
-    labelled("Expanded", html`<ds-accordion variant=${args.variant} expand-mode=${args.expandMode} heading-level=${args.headingLevel} .value=${['s3']}><ds-accordion-item value="s3" heading=${t(4)}>${BODY}</ds-accordion-item></ds-accordion>`),
-    labelled("Disabled", html`<ds-accordion variant=${args.variant} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="s4" heading=${t(5)} ?disabled=${true}>${BODY}</ds-accordion-item></ds-accordion>`),
+    labelled("Default", html`<ds-accordion variant=${args.variant} size=${args.size} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="s0" heading=${t(1)}>${BODY}</ds-accordion-item></ds-accordion>`),
+    labelled("Hover", html`<ds-accordion variant=${args.variant} size=${args.size} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="s1" heading=${t(2)} data-force-state="hover">${BODY}</ds-accordion-item></ds-accordion>`),
+    labelled("Focused", html`<ds-accordion variant=${args.variant} size=${args.size} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="s2" heading=${t(3)} data-force-state="focus">${BODY}</ds-accordion-item></ds-accordion>`),
+    labelled("Expanded", html`<ds-accordion variant=${args.variant} size=${args.size} expand-mode=${args.expandMode} heading-level=${args.headingLevel} .value=${['s3']}><ds-accordion-item value="s3" heading=${t(4)}>${BODY}</ds-accordion-item></ds-accordion>`),
+    labelled("Disabled", html`<ds-accordion variant=${args.variant} size=${args.size} expand-mode=${args.expandMode} heading-level=${args.headingLevel}><ds-accordion-item value="s4" heading=${t(5)} ?disabled=${true}>${BODY}</ds-accordion-item></ds-accordion>`),
   ]),
 };
 
