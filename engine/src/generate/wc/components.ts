@@ -8,6 +8,7 @@ import { docTabs, kebab, leadSentence, pascal } from '../templates/common.ts';
 import type { AccordionCore } from '../templates/accordion.ts';
 import type { ActionCore } from '../templates/action.ts';
 import type { CheckboxCore } from '../templates/checkbox.ts';
+import { decidedInternal } from '../../decisions/decisions.ts';
 import { axisControl, axisData, figmaNote, axisDefault, axisType, behaviourLine, isIcon, packName, lookupExpr, SHAPES, type GenericCore, type InstanceProp, type InstanceRef, type LayerInfo } from '../templates/generic.ts';
 import type { IRComponentSet, IRPart } from '../../ir/types.ts';
 import { wcRadio } from './radio.ts';
@@ -663,14 +664,17 @@ ${a.values.map((v) => `    labelled(${js(v.figma)}, ${el(overFor(a, v.figma))}),
 };`);
     sections.push({ heading: a.figma, story: n });
   }
-  if (booleans.length) {
+  // Internal Figma properties (a decision): kept at their Figma default, not shown as API.
+  const internal = (figma: string) => decidedInternal(ctx.sets.main ?? Object.values(ctx.sets)[0]!, figma);
+  const shownBooleans = booleans.filter((b) => !internal(b.p.name));
+  if (shownBooleans.length) {
     const n = storyName('Options');
     stories.push(`/** Figma boolean properties, each switched from its default. */
 export const ${n}: Story = {
   parameters: { controls: { disable: true } },
   render: (args) => row([
     labelled('Default', ${el()}),
-${booleans.map((b) => `    labelled(${js(`${b.p.name}: ${String(b.p.default) === 'true' ? 'off' : 'on'}`)}, ${el({ [b.prop]: String(b.p.default) !== 'true' })}),`).join('\n')}
+${shownBooleans.map((b) => `    labelled(${js(`${b.p.name}: ${String(b.p.default) === 'true' ? 'off' : 'on'}`)}, ${el({ [b.prop]: String(b.p.default) !== 'true' })}),`).join('\n')}
   ]),
 };`);
     sections.push({ heading: 'Options', story: n });
@@ -811,10 +815,10 @@ const meta = {
   argTypes: {
 ${[
     ...(sw ? [`    checked: { control: 'boolean', description: ${js(`On or off. Figma: ${sw.axis.figma}`)} },`, `    accessibleLabel: { control: 'text', description: 'Accessible name (Figma has no label)' },`] : []),
-    ...enumAxes.map((a) => `    ${a.prop}: ${axisControl(a, js)},`),
+    ...enumAxes.map((a) => `    ${a.prop}: ${internal(a.figma) ? `{ table: { disable: true }, description: ${js(`Internal (Figma ${a.figma}).`)} }` : axisControl(a, js)},`),
     ...(hasDisabled ? [`    disabled: { control: 'boolean', description: 'Figma: State=Disabled' },`] : []),
-    ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${js(figmaNote(b.p.name, b.description))} },`),
-    ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${js(figmaNote(t.p.name, t.description))} },`),
+    ...booleans.map((b) => `    ${b.prop}: ${internal(b.p.name) ? `{ table: { disable: true }, description: ${js(`Internal (Figma ${b.p.name}).`)} }` : `{ control: 'boolean', description: ${js(figmaNote(b.p.name, b.description))} }`},`),
+    ...texts.map((t) => `    ${t.prop}: ${internal(t.p.name) ? `{ table: { disable: true }, description: ${js(`Internal (Figma ${t.p.name}).`)} }` : `{ control: 'text', description: ${js(figmaNote(t.p.name, t.description))} }`},`),
     ...exposed.map((e) => `    ${e.prop}: ${e.axis ? axisControl({ ...e.axis, figma: `${e.exposed!.name} › ${e.axis.figma}` }, js) : `{ control: '${e.type === 'boolean' ? 'boolean' : 'text'}', description: ${js(`Figma: ${e.exposed!.name} › ${e.figma}`)} }`},`),
   ].join('\n')}
   },

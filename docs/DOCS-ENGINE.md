@@ -276,7 +276,7 @@ All ten questions are answered.
 | --- | --- |
 | 1. Foundation | Done: `engine/standards/production-ready.md`, `schemas/component-doc-spec.schema.json`, 24 reference specs in `engine/references/` |
 | 2. Spec builder | Done: a doc spec and coverage check for every component of every system (`docspec/`, `DOCS-COVERAGE.md`). Diagnostics moved to a Design review page per component |
-| 3. Decisions | Partly done: `role: internal` (Carbon Button's Resizer) and value names. Separate components such as Skeleton come from code mode (`<ButtonSkeleton>`); there is no decision role for them yet |
+| 3. Decisions | Done for the roadmap's three: `role: internal` (Resizer), value names, and separate components (`Skeleton` → `ButtonSkeleton`), proposed for Carbon Button. Web Components do not yet get a separate element for a separate component |
 | 4. Generation | Done for the pilot: per-value and per-state stories, and code mode (`generate.code`, the `react-code` target). See docs/pilots/carbon-button.md |
 | 5. *write* skill | Built: evidence packs, the write-usage skill, `ds-sync usage`, cited-source checks, and the Usage section. Piloted on Carbon Button (draft, not yet accepted). The other components still need drafting and review |
 | 6. Validation | Done: `ds-sync docs check` against a reviewed baseline, in the GitHub workflow |

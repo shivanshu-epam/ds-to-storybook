@@ -130,6 +130,14 @@
                     "type": "string",
                     "pattern": "^[A-Za-z0-9][\\w.-]*$"
                   }
+                },
+                "components": {
+                  "type": "object",
+                  "description": "Figma value -> component name: values that are their own component in code (Skeleton -> ButtonSkeleton).",
+                  "additionalProperties": {
+                    "type": "string",
+                    "pattern": "^[A-Z][A-Za-z0-9]*$"
+                  }
                 }
               }
             }

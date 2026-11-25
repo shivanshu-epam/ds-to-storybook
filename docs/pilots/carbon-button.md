@@ -194,3 +194,15 @@ Carbon's Figma file has no documentation frames, so Button's evidence pack (`.ds
 - The Usage section appears on Button's page in both Carbon Storybooks, marked as a draft.
 - The gate reports the "usage" gap closed.
 - Confidence is 0.45, because most sentences rest on general guidance rather than Carbon's own words. Carbon's team would raise it by adding usage frames in Figma.
+
+## 9. Separate component (Phase 3)
+
+A proposed decision for Carbon Button: `"State": { "components": { "Skeleton": "ButtonSkeleton" } }`.
+
+**What changes in the generated Button:**
+- `state` no longer offers "skeleton", so its control is hidden.
+- `Button.tsx` exports `ButtonSkeleton(props: Omit<ButtonProps, 'state'>)`, which renders the skeleton design.
+- The Skeleton story renders `<ButtonSkeleton>`.
+- Components that place a skeleton button inside them, such as DataTableSkeletonBase, keep the exact design.
+
+With this, all three Phase 3 items for the Carbon Button pilot are decisions: Resizer internal, sizes as code values (from code mode), and Skeleton as its own component. Button's and DataTableSkeletonBase's story tests pass (19/19).

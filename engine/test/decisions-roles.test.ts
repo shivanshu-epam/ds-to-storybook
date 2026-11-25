@@ -61,3 +61,33 @@ describe('documentation gate', () => {
     expect(checkSpecs('storybook', [spec('Button', ['section:usage'])], {}).added).toHaveLength(1);
   });
 });
+
+describe('decision roles: separate components', () => {
+  const skel: FigmaNode = {
+    id: 'K:1', name: 'Button', type: 'COMPONENT_SET',
+    componentPropertyDefinitions: { State: { type: 'VARIANT', defaultValue: 'Enabled', variantOptions: ['Enabled', 'Hover', 'Skeleton'] } },
+    children: ['Enabled', 'Hover', 'Skeleton'].map((v, i) => ({ id: `K:${i + 2}`, name: `State=${v}`, type: 'COMPONENT' as const, layoutMode: 'HORIZONTAL' as const, absoluteBoundingBox: box(80, 32), children: [] })),
+  };
+  const kset = buildComponentSet({ target: { id: 'K:1', archetype: 'generic', figma: { page: 'p', componentSet: { id: 'K:1', name: 'Button' } } }, set: skel, docFrames: [], componentNames: {}, resolve: () => undefined });
+
+  it('validates the component name and value', () => {
+    const f: DecisionsFile = { version: 1, sets: { Button: { status: 'accepted', props: { State: { components: { Enabled: 'X', Skeleton: 'buttonSkeleton', Purple: 'P' } } } } } };
+    expect(validateDecisions(f, { components: [kset] } as never).map((p) => p.message)).toEqual([
+      '"Enabled" is the Figma default: it cannot be a separate component.',
+      '"buttonSkeleton" is not a PascalCase component name.',
+      '"Purple" is not a value of this Figma property.',
+    ]);
+  });
+
+  it('takes the value out of the prop, exports the component and gives it a story', () => {
+    setActiveDecisions(activeDecisions({ version: 1, sets: { Button: { status: 'accepted', props: { State: { components: { Skeleton: 'ButtonSkeleton' } } } } } }, 'accepted'));
+    const r = genericTemplate({ fileKey: 'F', version: '1', sets: { main: kset }, resolver: new TokenResolver(loadTokens({ variables: {} })), icons: new Map() } as never, 'Button', { title: 'Button', instance: () => undefined });
+    const tsx = r.files.find((f) => /Button\.tsx$/.test(f.path))!.content;
+    const stories = r.files.find((f) => f.path.endsWith('.stories.tsx'))!.content;
+    expect(tsx).toMatch(/state\?: 'enabled';/);
+    expect(tsx).toContain("export function ButtonSkeleton(props: Omit<ButtonProps, 'state'>) {\n  return <Button {...props} state={'skeleton' as never} />;");
+    expect(stories).toContain("import { Button, ButtonSkeleton, type ButtonProps } from './Button';");
+    expect(stories).toContain('render: (args) => <ButtonSkeleton {...args} />,');
+    expect(stories).toContain("state: 'skeleton' as never");
+  });
+});

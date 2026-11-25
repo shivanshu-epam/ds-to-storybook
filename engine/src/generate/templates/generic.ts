@@ -8,7 +8,7 @@
  * - Behaviour (keyboard, focus, ARIA roles) is NOT inferred: the report and docs say so.
  */
 import { codeAxis, codeBoolean } from '../../code/map.ts';
-import { decidedDescription, decidedInternal, decidedName, decidedValue } from '../../decisions/decisions.ts';
+import { decidedComponent, decidedDescription, decidedInternal, decidedName, decidedValue } from '../../decisions/decisions.ts';
 import type { IRComponentSet, IRPart, IRProperty, IRVariant } from '../../ir/types.ts';
 import { JS_RESERVED } from '../../util/reserved.ts';
 import { generateStyles, type Found, type RoleDef, type StateAxis, type StyleModel, type VariantAxis } from '../styles.ts';
@@ -34,6 +34,8 @@ export interface AxisValue {
   value: string;
   role: 'base' | 'pseudo' | 'disabled' | 'enum';
   state?: string;
+  /** A separate component in code (a decision): not part of the prop's public type. */
+  component?: string;
 }
 
 export interface AxisInfo {
@@ -52,14 +54,16 @@ export interface AxisInfo {
 }
 
 /** How an axis appears in code: True/False axes are booleans, the rest string unions. quote() quotes a string. */
-export const axisType = (a: AxisInfo, quote: (s: string) => string) => (a.boolean ? 'boolean' : a.options.map(quote).join(' | '));
+/** Values a separate component renders (a decision) are not part of the prop's public type or control. */
+const publicOptions = (a: AxisInfo) => a.options.filter((o) => !a.values.some((v) => v.component && v.value === o));
+export const axisType = (a: AxisInfo, quote: (s: string) => string) => (a.boolean ? 'boolean' : publicOptions(a).map(quote).join(' | '));
 export const axisDefault = (a: AxisInfo, quote: (s: string) => string) => (a.boolean ? String(a.defaultValue === 'true') : quote(a.defaultValue));
 export const axisLiteral = (a: AxisInfo, value: string, quote: (s: string) => string) => (a.boolean ? String(value === 'true') : quote(value));
 /** data-* attribute value from a code reference: booleans render as "true" / "false", as the CSS expects. */
 export const axisData = (a: AxisInfo, ref: string) => (a.boolean ? `${ref} ? 'true' : 'false'` : ref);
 /** Storybook control for an axis. */
 export const axisControl = (a: AxisInfo, quote: (s: string) => string) =>
-  a.boolean ? `{ control: 'boolean', description: ${quote(figmaNote(a.figma, a.description))} }` : `{ control: '${a.options.length > 5 ? 'select' : 'inline-radio'}', options: [${a.options.map(quote).join(', ')}], description: ${quote(figmaNote(a.figma, a.description))} }`;
+  a.boolean ? `{ control: 'boolean', description: ${quote(figmaNote(a.figma, a.description))} }` : `{ control: '${publicOptions(a).length > 5 ? 'select' : 'inline-radio'}', options: [${publicOptions(a).map(quote).join(', ')}], description: ${quote(figmaNote(a.figma, a.description))} }`;
 
 export function analyzeAxes(set: IRComponentSet): AxisInfo[] {
   const used = new Set<string>();
@@ -89,7 +93,8 @@ export function analyzeAxes(set: IRComponentSet): AxisInfo[] {
         if (isState && o === String(p.default)) return { figma: o, value: kebab(o), role: 'base' };
         if (isState && pseudo) return { figma: o, value: kebab(o), role: 'pseudo', state: pseudo.state };
         if (isState && /^disabled$/i.test(o)) return { figma: o, value: 'disabled', role: 'disabled' };
-        return { figma: o, value: val(o), role: 'enum' };
+        const component = decidedComponent(set, p.name, o);
+        return { figma: o, value: val(o), role: 'enum', ...(component ? { component } : {}) };
       });
       let prop = decidedName(set, p.name) ?? code?.prop ?? camel(p.name);
       if (RESERVED.has(prop) || used.has(prop)) prop = `${prop}Variant`;
@@ -127,7 +132,7 @@ function variantObject(a: AxisInfo, figma: string): string {
   if (!v) return '{}';
   if (v.role === 'pseudo') return `{ 'data-force-state': '${v.state}' }`;
   if (v.role === 'disabled') return '{ disabled: true }';
-  return a.options.length > 1 ? `{ ${a.prop}: ${axisLiteral(a, v.value, q)} }` : '{}';
+  return a.options.length > 1 ? `{ ${a.prop}: ${axisLiteral(a, v.value, q)}${v.component ? ' as never' : ''} }` : '{}';
 }
 
 export interface PropPlan {
@@ -435,7 +440,8 @@ export function mergedToggles(entry: RegistryEntry): SlotToggle[] {
 
 /** One prop set on a placed instance, independent of the output framework. */
 export type InstanceProp =
-  | { prop: string; kind: 'string'; value: string }
+  /** internal: a value a separate component renders (a decision); set through a cast, it is not in the public type. */
+  | { prop: string; kind: 'string'; value: string; internal?: boolean }
   | { prop: string; kind: 'boolean'; value: boolean }
   | { prop: string; kind: 'icon'; value: string }
   /** A slot's visibility toggle set on a placed instance. prop is the boolean (Web Components keep it); React passes
@@ -466,14 +472,14 @@ export function variantProps(axes: AxisInfo[], values: Record<string, string>): 
     if (!v) continue;
     if (v.role === 'pseudo') out.push({ prop: 'data-force-state', kind: 'force-state', value: v.state! });
     else if (v.role === 'disabled') out.push({ prop: 'disabled', kind: 'boolean', value: true });
-    else if (a.options.length > 1 && v.value !== a.defaultValue) out.push(a.boolean ? { prop: a.prop, kind: 'boolean', value: v.value === 'true' } : { prop: a.prop, kind: 'string', value: v.value });
+    else if (a.options.length > 1 && v.value !== a.defaultValue) out.push(a.boolean ? { prop: a.prop, kind: 'boolean', value: v.value === 'true' } : { prop: a.prop, kind: 'string', value: v.value, ...(v.component ? { internal: true } : {}) });
   }
   return out;
 }
 
 export function reactAttrs(props: InstanceProp[], text?: string): string[] {
   const attrs = props.map((p) =>
-    p.kind === 'string' ? `${p.prop}=${JSON.stringify(p.value)}`
+    p.kind === 'string' ? (p.internal ? `${p.prop}={${JSON.stringify(p.value)} as never}` : `${p.prop}=${JSON.stringify(p.value)}`)
       : p.kind === 'boolean' ? (p.value ? p.prop : `${p.prop}={false}`)
       : p.kind === 'icon' ? `${p.prop}={<Icon name="${p.value}" />}`
       : p.kind === 'toggle' ? `${p.slot}={${p.value && p.icon ? sizedIcon(p.icon, p.size) : 'null'}}`
@@ -2412,7 +2418,7 @@ export const Default: Story = {
       else if (a === radio?.axis) { if (val.value === radio.on) out.push('defaultChecked: true'); }
       else if (val.role === 'pseudo') force.push(val.state!);
       else if (val.role === 'disabled') out.push('disabled: true');
-      else if (a.options.length > 1) out.push(`${a.prop}: ${axisLiteral(a, val.value, q)}`);
+      else if (a.options.length > 1) out.push(`${a.prop}: ${axisLiteral(a, val.value, q)}${val.component ? ' as never' : ''}`);
     }
     if (force.length) out.push(`'data-force-state': ${q(force.join(' '))}`);
     return `{ ${out.join(', ')} }`;
@@ -2507,7 +2513,7 @@ export const ${n}: Story = {
   const own = (a: AxisInfo) => a !== sw?.axis && a !== radio?.axis && a.options.length > 1;
   const primaryAxis = PRIMARY_AXIS.map((n) => multi.find((a) => own(a) && a.kind === 'variant' && !a.boolean && a.figma.trim().toLowerCase() === n)).find(Boolean);
   if (primaryAxis && primaryAxis.options.length <= 12) {
-    for (const v of primaryAxis.values.filter((x) => x.role === 'enum' && x.value !== primaryAxis.defaultValue)) {
+    for (const v of primaryAxis.values.filter((x) => x.role === 'enum' && x.value !== primaryAxis.defaultValue && !x.component)) {
       stories.push(`/** Figma ${primaryAxis.figma}=${v.figma}. */
 export const ${storyName(v.figma)}: Story = {
   name: ${q(v.figma)},
@@ -2524,7 +2530,11 @@ export const ${storyName('Disabled')}: Story = {
   }
   for (const a of multi.filter((x) => own(x) && x.kind === 'state')) {
     for (const v of a.values.filter((x) => x.role === 'enum' && x.value !== a.defaultValue)) {
-      stories.push(`/** Figma ${a.figma}=${v.figma}. */
+      stories.push(v.component ? `/** Figma ${a.figma}=${v.figma}: its own component, ${v.component}. */
+export const ${storyName(v.figma)}: Story = {
+  name: ${q(v.figma)},
+  render: (args) => <${v.component} {...args} />,
+};` : `/** Figma ${a.figma}=${v.figma}. */
 export const ${storyName(v.figma)}: Story = {
   name: ${q(v.figma)},
   args: { ${a.prop}: ${axisLiteral(a, v.value, q)} },
@@ -2552,7 +2562,7 @@ ${[...shownBooleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String
 
   const argTypes = [
     ...(sw ? [`    checked: { control: 'boolean', description: ${q(`On or off (controlled). Figma: ${sw.axis.figma}`)} },`, `    defaultChecked: { control: 'boolean' },`] : []),
-    ...propAxes.map((a) => `    ${a.prop}: ${internal(a.figma) ? `{ table: { disable: true }, description: ${q(`Internal (Figma ${a.figma}).`)} }` : axisControl(a, q)},`),
+    ...propAxes.map((a) => `    ${a.prop}: ${internal(a.figma) ? `{ table: { disable: true }, description: ${q(`Internal (Figma ${a.figma}).`)} }` : !a.boolean && publicOptions(a).length < 2 ? `{ table: { disable: true }, description: ${q(`Figma: ${a.figma}. Its other values are separate components (${a.values.filter((v) => v.component).map((v) => v.component).join(', ')}).`)} }` : axisControl(a, q)},`),
     ...(hasDisabled ? [`    disabled: { control: 'boolean', description: 'Figma: State=Disabled' },`] : []),
     ...booleans.map((b) => `    ${b.prop}: ${internal(b.p.name) ? `{ table: { disable: true }, description: ${q(`Internal (Figma ${b.p.name}).`)} }` : `{ control: 'boolean', description: ${q(figmaNote(b.p.name, b.description))} }`},`),
     ...texts.map((t) => `    ${t.prop}: ${internal(t.p.name) ? `{ table: { disable: true }, description: ${q(`Internal (Figma ${t.p.name}).`)} }` : `{ control: 'text', description: ${q(figmaNote(t.p.name, t.description))} }`},`),
@@ -2709,7 +2719,7 @@ ${[...shownBooleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String
 import type { Meta, StoryObj } from '@storybook/react-vite';
 ${dialog ? "import { useState } from 'react';\nimport { expect, fn, userEvent, within } from 'storybook/test';\n" : ''}${sw || radio?.kind === 'control' || radio?.kind === 'field' || input || disclosure || rootTag !== 'div' || (collection && (collection.selection !== 'none' || listy(collection))) || trig || combo ? "import { expect, fn, userEvent, within } from 'storybook/test';\n" : radio ? "import { expect, userEvent, within } from 'storybook/test';\n" : ''}
 import { Labelled, Matrix, Row } from '../../storybook/layout';
-${storyIcons ? "import { Icon } from '../../icons/Icon';\n" : ''}import { ${name}, type ${name}Props } from './${name}';
+${storyIcons ? "import { Icon } from '../../icons/Icon';\n" : ''}import { ${[name, ...axes.flatMap((a) => a.values.flatMap((v) => (v.component ? [v.component] : [])))].join(', ')}, type ${name}Props } from './${name}';
 
 const meta = {
   title: ${q(opts.title)},
@@ -2756,7 +2766,7 @@ ${stories.join('\n\n')}
   if (responsive.size) css = [...responsive].reduce((c, a) => makeResponsive(c, a.attr, a.options), css);
   const core: GenericCore = { ...(combo ? { combo } : {}), ...(trig ? { trigger: { prop: trig.prop, trigger: trig.trigger, panel: trig.panel } } : {}), ...(collection ? { collection } : {}), ...(repeatList.length ? { repeats: repeatList } : {}), ...(responsive.size ? { responsive: [...responsive].map((a) => a.prop) } : {}), ...(rootTag !== 'div' ? { rootTag, ...(busyAxis ? { busyProp: busyAxis.prop } : {}), ...(needsName ? { storyLabel: humanize(name.replace(/([a-z])([A-Z])/g, '$1 $2')) } : {}), ...(nameFrom ? { nameFrom } : {}) } : {}), ...(disclosure ? { disclosure: { prop: disclosure.axis.prop, header: byPath.get(disclosure.header)!.role, panel: byPath.get(disclosure.panel)!.role, headerPath: disclosure.header, ...(disTrigger() ? { triggerPath: disTrigger()!.path } : {}) } } : {}), slots: slotList, toggles: mergedBooleans.map((b) => ({ b, slot: [...merged.values()].find((x) => x.toggle!.figma === b.p.name)! })), set, css, layers: all, axes, booleans, texts, hasDisabled, defaults, assumptions, gaps: uniqueGaps, mapping, nestedProps, exposed: exposedProps, nestedCheck, title: opts.title, description: set.description, rowAxis, colAxis, multi, consumed: [...consumed], ...(sw ? { behavior: sw } : {}), ...(input ? { input } : {}), ...(dialog ? { dialog } : {}), visual, ...(radio ? { radio, radioLayers: { ...(controlLayer ? { control: controlLayer.role } : {}), ...(rowPath !== undefined ? { row: byPath.get(rowPath)?.role ?? 'root' } : {}), ...(labelLayer ? { label: labelLayer.role } : {}), ...(itemsLayer ? { items: itemsLayer.role } : {}), ...(groupLabelLayer ? { groupLabel: groupLabelLayer.role } : {}), ...(controlName ? { controlComponent: controlName } : {}), ...(itemsLayer ? (() => { const f = all.find((c) => c.parent === itemsLayer.path && kindOf(c) === 'radio-field'); const n = f ? opts.instance(f.part)?.component : undefined; return n ? { fieldComponent: n } : {}; })() : {}), ...(forwardState ? { forwardStates: controlStates.filter((o) => stateProp?.options.includes(o)) } : {}) } } : {}) };
   const files = [
-    { path: `${dir}/${name}.tsx`, content: withReactImports(tsx) },
+    { path: `${dir}/${name}.tsx`, content: withReactImports(tsx + separateComponents(name, axes)) },
     { path: `${dir}/${name}.module.css`, content: css },
     { path: `${dir}/${name}.stories.tsx`, content: storiesFile },
     { path: `${dir}/${name}.mdx`, content: mdxPage(name, name, sections) },
@@ -2767,4 +2777,15 @@ ${stories.join('\n\n')}
     report: { name, figmaSets: [`${set.name} (${set.nodeId})`], files: files.map((f) => f.path), props: mapping, assumptions, gaps: uniqueGaps, dependencies: styles.dependencies, ...(nestedCheck.layers ? { nested: nestedCheck } : {}) },
     core,
   };
+}
+
+/** Figma values decided to be their own component in code ("Skeleton" -> ButtonSkeleton): each renders the
+ * component with that value, and takes every other prop. */
+export function separateComponents(name: string, axes: AxisInfo[]): string {
+  return axes.flatMap((a) => a.values.filter((v) => v.component).map((v) => `
+/** Figma ${a.figma}=${v.figma}, as its own component (ds-sync.decisions.json). */
+export function ${v.component}(props: Omit<${name}Props, '${a.prop}'>) {
+  return <${name} {...props} ${a.prop}={${axisLiteral(a, v.value, q)} as never} />;
+}
+`)).join('');
 }

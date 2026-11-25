@@ -18,6 +18,9 @@ export interface PropDecision {
   role?: 'api' | 'internal';
   /** Code names for a variant property's values: Figma value -> code value ("Danger primary" -> "danger"). */
   values?: Record<string, string>;
+  /** Figma values that are their own component in code: Figma value -> component name ("Skeleton" -> "ButtonSkeleton").
+   * The value leaves the prop's type; the component renders that design. */
+  components?: Record<string, string>;
   /** Overrides the set's status for this property. */
   status?: DecisionStatus;
   /** A change an AI proposed after this property was accepted. The accepted fields stay in force until a person
@@ -170,6 +173,15 @@ export function validateDecisions(file: unknown, ir?: FigmaIR): DecisionProblem[
         const vs = Object.values(pd.values);
         if (new Set(vs).size !== vs.length) err(setName, 'Two Figma values have the same code value.', prop);
       }
+      if (pd.components !== undefined) {
+        const fp = sets?.flatMap((s) => s.properties).find((x) => x.name === prop);
+        if (fp && fp.type !== 'VARIANT') err(setName, 'components apply to variant properties only.', prop);
+        for (const [fv, comp] of Object.entries(pd.components)) {
+          if (fp?.options && !fp.options.includes(fv)) err(setName, `"${fv}" is not a value of this Figma property.`, prop);
+          if (fp && String(fp.default) === fv) err(setName, `"${fv}" is the Figma default: it cannot be a separate component.`, prop);
+          if (typeof comp !== 'string' || !/^[A-Z][A-Za-z0-9]*$/.test(comp)) err(setName, `"${comp}" is not a PascalCase component name.`, prop);
+        }
+      }
       const rn = pd.revision?.name;
       if (rn !== undefined && (!IDENT.test(rn) || RESERVED.has(rn))) err(setName, `Revision "${rn}" is not a usable camelCase name.`, prop);
     }
@@ -188,7 +200,7 @@ export interface ActiveDecision {
   archetype?: Archetype;
   description?: string;
   usage?: UsageDecision;
-  props: Map<string, { name?: string; description?: string; role?: 'api' | 'internal'; values?: Record<string, string> }>;
+  props: Map<string, { name?: string; description?: string; role?: 'api' | 'internal'; values?: Record<string, string>; components?: Record<string, string> }>;
   status: DecisionStatus;
 }
 
@@ -199,7 +211,7 @@ export function activeDecisions(file: DecisionsFile | undefined, level: ApplyLev
   if (!file || level === 'none') return out;
   const ok = (s: DecisionStatus | undefined) => s === 'accepted' || (level === 'proposed' && s === 'proposed');
   for (const [setName, d] of Object.entries(file.sets)) {
-    const props = new Map<string, { name?: string; description?: string; role?: 'api' | 'internal'; values?: Record<string, string> }>();
+    const props = new Map<string, { name?: string; description?: string; role?: 'api' | 'internal'; values?: Record<string, string>; components?: Record<string, string> }>();
     for (const [prop, pd] of Object.entries(d.props ?? {})) {
       // Previewing proposals shows pending revisions too.
       const rev = level === 'proposed' ? pd.revision : undefined;
@@ -208,8 +220,9 @@ export function activeDecisions(file: DecisionsFile | undefined, level: ApplyLev
       const description = (base ? pd.description : undefined) ?? rev?.description;
       const role = base ? pd.role : undefined;
       const values = base ? pd.values : undefined;
-      if (!name && !description && !role && !values) continue;
-      props.set(prop, { ...(name ? { name } : {}), ...(description ? { description } : {}), ...(role ? { role } : {}), ...(values ? { values } : {}) });
+      const components = base ? pd.components : undefined;
+      if (!name && !description && !role && !values && !components) continue;
+      props.set(prop, { ...(name ? { name } : {}), ...(description ? { description } : {}), ...(role ? { role } : {}), ...(values ? { values } : {}), ...(components ? { components } : {}) });
     }
     const description = ok(d.status) ? d.description : undefined;
     const archetype = ok(d.status) ? d.archetype : undefined;
@@ -232,6 +245,11 @@ export function decidedName(set: Pick<IRComponentSet, 'name'>, figmaProp: string
 /** A Figma property decided to be internal (not API): hidden from controls and the props table. */
 export function decidedInternal(set: Pick<IRComponentSet, 'name'>, figmaProp: string): boolean {
   return ACTIVE.get(set.name)?.props.get(figmaProp)?.role === 'internal';
+}
+
+/** The separate component a Figma value is, when decided ("Skeleton" -> "ButtonSkeleton"). */
+export function decidedComponent(set: Pick<IRComponentSet, 'name'>, figmaProp: string, figmaValue: string): string | undefined {
+  return ACTIVE.get(set.name)?.props.get(figmaProp)?.components?.[figmaValue];
 }
 
 /** Code value decided for one value of a Figma variant property, if any. */
