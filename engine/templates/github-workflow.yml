@@ -167,6 +167,14 @@ jobs:
           tests="$RUNNER_TEMP/tests-$(basename "$dir").json"
           ds-sync audit --dir "$dir" $( [ -f "$tests" ] && echo --tests "$tests" )
 
+      # The documentation gate: every Figma property, value and designed variant in Storybook, and the docs sections
+      # each kind needs. Gaps accepted in ds-sync.docs-baseline.json pass; new ones fail and are listed in the PR.
+      - name: Documentation check
+        id: docs
+        if: steps.changes.outputs.changed == 'true'
+        continue-on-error: true
+        run: ds-sync docs check | tee "$RUNNER_TEMP/docs.txt"
+
       - name: Keep the change images and visual report
         if: steps.changes.outputs.changed == 'true'
         uses: actions/upload-artifact@v7
@@ -177,6 +185,7 @@ jobs:
             .ds-sync/visual/
             .ds-sync/changes.md
             .ds-sync/audit.md
+            .ds-sync/docs-check.md
           if-no-files-found: ignore
 
       - name: Write the pull request description
@@ -189,6 +198,8 @@ jobs:
             echo
             echo "- Story tests (every Figma mode): **${{ steps.test.outcome }}**"
             if [ -n "${{ steps.visual.outputs.summary }}" ]; then echo "- Visual check against Figma: ${{ steps.visual.outputs.summary }}"; fi
+            echo "- Documentation check (new gaps fail; accepted gaps are in ds-sync.docs-baseline.json): **${{ steps.docs.outcome }}**"
+            if [ -f .ds-sync/docs-check.md ]; then echo; echo "<details><summary>Documentation check</summary>"; echo; cat .ds-sync/docs-check.md; echo; echo "</details>"; fi
             if [ -f .ds-sync/audit-summary.md ]; then echo; cat .ds-sync/audit-summary.md; fi
             echo "- Before/after Figma renders of the changed variants and the visual report: the \`ds-sync-review\` artifact of [this workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
           } > "$RUNNER_TEMP/pr-body.md"

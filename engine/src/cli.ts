@@ -22,6 +22,7 @@ import { existsSync as exists, readFileSync } from 'node:fs';
 import { extractIR } from './ir/extract.ts';
 import { loadIR, paths, stepAnalyze, stepExtract, stepReport, stepSpecs } from './pipeline.ts';
 import { loadDotEnv, writeJson, writeText } from './util/core.ts';
+import { baselineOf, checkMarkdown, checkSpecs, loadSpecs, type Baseline, type CheckResult } from './docspec/check.ts';
 import { decide, hasProposals, activeDecisions, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel } from './decisions/decisions.ts';
 import { buildReview, writeReview } from './review/review.ts';
 import { lintDocs, lintMarkdown } from './docs/lint.ts';
@@ -57,6 +58,7 @@ Commands:
             the status of entries (--only A,B; --by <name>). Accepting is a person's call.
   eval      Compare the generated API with a reference library: --reference <components folder>
   docs lint Check every generated docs page against the documentation standard → out/docs-lint.md
+  docs check  Fail on documentation gaps not in the reviewed baseline (--update-baseline, --strict) → out/docs-check.md
             (--dir <generated project>; --strict fails on any error)
   audit     Scorecards of the generated project, one status per fidelity measure → out/audit.md
             (--tests <vitest json report> adds real test results; --strict fails on any ✗)
@@ -188,6 +190,7 @@ async function main() {
       by: { type: 'string' },
       tests: { type: 'string' },
       strict: { type: 'boolean', default: false },
+      'update-baseline': { type: 'boolean', default: false },
       yes: { type: 'boolean', default: false },
       ci: { type: 'boolean', default: false },
       refresh: { type: 'boolean', default: false },
@@ -325,8 +328,33 @@ async function main() {
       break;
     }
     case 'docs': {
-      if ((positionals[1] ?? 'lint') !== 'lint') throw new Error(`Unknown docs action "${positionals[1]}" (lint).`);
+      const action = positionals[1] ?? 'lint';
+      if (action !== 'lint' && action !== 'check') throw new Error(`Unknown docs action "${action}" (lint, check).`);
       const g = config.generate;
+      if (action === 'check') {
+        // The documentation gate: doc specs against the reviewed baseline; new gaps fail.
+        const dirs = values.dir ? [values.dir] : g?.targets?.length ? g.targets.map((t) => t.outDir) : g ? [g.outDir] : [];
+        // Next to the config, committed: gaps accepted for now are reviewed in the pull request like decisions.
+        const baselineFile = resolve(config.baseDir, 'ds-sync.docs-baseline.json');
+        const baseline: Baseline = exists(baselineFile) ? (JSON.parse(readFileSync(baselineFile, 'utf8')) as Baseline) : { version: 1, targets: {} };
+        const results: CheckResult[] = [];
+        for (const d of dirs) {
+          const specs = loadSpecs(resolve(config.baseDir, d));
+          if (!specs) { log(`Docs check: no docspec/ in ${d} (run ds-sync generate first)`); continue; }
+          if (values['update-baseline']) baseline.targets[d] = baselineOf(specs);
+          results.push(checkSpecs(d, specs, values.strict ? {} : baseline.targets[d]));
+        }
+        if (values['update-baseline']) { writeJson(baselineFile, baseline); log(`Docs check: baseline updated → ${baselineFile} (review it in the pull request)`); }
+        const file = join(p.out, 'docs-check.md');
+        writeText(file, checkMarkdown(results, Boolean(values.strict)));
+        for (const r of results) {
+          log(`Docs check (${r.dir}): ${r.complete}/${r.components} complete; ${r.added.length} new gap(s), ${r.known} known, ${r.fixed.length} closed`);
+          for (const a of r.added.slice(0, 10)) log(`  ✗ ${a.component}: ${a.message}`);
+        }
+        log(`Docs check → ${file}`);
+        if (results.some((r) => r.added.length)) process.exitCode = 1;
+        break;
+      }
       const dirs = values.dir ? [values.dir] : g?.targets?.length ? g.targets.map((t) => t.outDir) : g ? [g.outDir] : [];
       const results = dirs.map((d) => ({ ...lintDocs(resolve(config.baseDir, d)), dir: d }));
       const file = join(p.out, 'docs-lint.md');

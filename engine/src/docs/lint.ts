@@ -21,7 +21,7 @@ export interface LintResult {
 
 /** What each rule checks, for the report. */
 export const RULES: Record<string, string> = {
-  'required-section': 'Every public page has Overview, Preview, Accessibility, Code and Design reference; Properties when the component has props; Behaviour and keyboard when its stories test interaction (STANDARD 3).',
+  'required-section': 'Every public page has Overview, Preview, Accessibility and Code, and a Design reference (on its Design review page); Properties when the component has props; Behaviour and keyboard when its stories test interaction (STANDARD 3).',
   'empty-section': 'A section with nothing to say is omitted, not left empty (STANDARD 3).',
   'no-description': 'The Overview says what the component is for (STANDARD 3.1, Overview).',
   'plain-label': 'Property labels are plain language, not code or CSS selectors (STANDARD 3.2).',
@@ -78,6 +78,10 @@ export function lintDocs(projectDir: string): LintResult {
     const stories = readdirSync(join(root, n)).find((f) => /\.stories\.tsx?$/.test(f));
     const title = stories ? /title: "([^"]+)"|title: '([^']+)'/.exec(readFileSync(join(root, n, stories), 'utf8')) : null;
     if (title) titles.add(slug(title[1] ?? title[2]!));
+    // The component's Design review page (fidelity diagnostics, kept off the developer page).
+    const review = join(root, n, `${n}.review.mdx`);
+    const rt = existsSync(review) ? /<Meta title=("[^"]+")/.exec(readFileSync(review, 'utf8')) : null;
+    if (rt) titles.add(slug(JSON.parse(rt[1]!) as string));
   }
   let pages = 0;
   for (const name of names) {
@@ -87,7 +91,10 @@ export function lintDocs(projectDir: string): LintResult {
     const buildingBlock = /tags=\{\['!dev'\]\}/.test(mdx);
     pages++;
     const secs = sections(mdx);
-    const has = (h: string) => secs.some((s) => s.level === 2 && s.heading === h);
+    // Design reference: on the component's Design review page when there is one (the developer page links to it).
+    const reviewFile = join(dir, `${name}.review.mdx`);
+    const reviewSecs = existsSync(reviewFile) ? sections(readFileSync(reviewFile, 'utf8')) : [];
+    const has = (h: string) => [...secs, ...(h === 'Design reference' ? reviewSecs : [])].some((s) => s.level === 2 && s.heading === h);
     const props = sourceProps(dir, name) ?? [];
     const storiesFile = readdirSync(dir).find((f) => /\.stories\.tsx?$/.test(f));
     const stories = storiesFile ? readFileSync(join(dir, storiesFile), 'utf8') : '';
@@ -134,7 +141,7 @@ export function lintDocs(projectDir: string): LintResult {
     }
 
     // Design reference
-    const ref = secs.find((s) => s.heading === 'Design reference');
+    const ref = [...secs, ...reviewSecs].find((s) => s.heading === 'Design reference');
     if (ref) {
       const body = ref.body.join(' ');
       if (!/figma\.com\/design\//.test(body)) add('figma-link', 'error', 'No link to the Figma component set.');

@@ -8,6 +8,7 @@ import { parse as parseYaml } from 'yaml';
 import type { IRComponentSet } from '../ir/types.ts';
 import type { ComponentReport } from '../generate/templates/common.ts';
 import { propPlan } from '../generate/templates/generic.ts';
+import { decidedInternal } from '../decisions/decisions.ts';
 import type { Coverage, DocSpec, DocSpecProperty, DocSpecSection, DocSpecStory, Reference, Source } from './types.ts';
 
 /** Bundled with the engine: src/docspec/ and dist/ both reach references/ from here. */
@@ -130,6 +131,11 @@ export function buildDocSpec(x: DocSpecInput): DocSpec {
     }
     const valueMissing = values?.some((v) => v.coverage === 'missing');
     const coverage: Coverage = mentioned ? 'shown' : arg || props.length ? 'control' : 'missing';
+    // A decision marks Figma construction properties internal: not API, so not expected in Storybook.
+    if (decidedInternal(s, p.name)) {
+      properties.push({ figma: p.name, type: p.type, props, role, default: p.default as string | boolean, control: 'hidden', coverage: 'n/a', ...(p.type === 'VARIANT' ? { values: (p.options ?? []).map((o) => ({ figma: o, coverage: 'n/a' as Coverage })) } : {}), description: { text: 'Internal: a Figma construction property, not part of the API (ds-sync.decisions.json).', source: 'decision' } });
+      continue;
+    }
     const desc = props.map((pr) => x.descriptions?.[pr]).find(Boolean);
     properties.push({
       figma: p.name, type: p.type, props, role, default: p.default as string | boolean, control, coverage,
@@ -160,7 +166,7 @@ export function buildDocSpec(x: DocSpecInput): DocSpec {
   const description = main.description?.trim() ? { text: main.description.trim(), source: 'figma' as Source } : x.decidedDescription ? { text: x.decidedDescription, source: 'decision' as Source } : undefined;
   if (!description) gaps.push({ item: 'description', message: 'No description in Figma or in decisions: the overview has no prose.' });
 
-  const allValues = properties.flatMap((p) => p.values ?? []);
+  const allValues = properties.flatMap((p) => p.values ?? []).filter((v) => v.coverage !== 'n/a');
   const propsCovered = properties.filter((p) => p.coverage !== 'missing').length;
   const valuesMissing = allValues.filter((v) => v.coverage === 'missing').length;
   return {

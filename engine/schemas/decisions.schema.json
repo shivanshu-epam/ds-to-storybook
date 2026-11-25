@@ -115,6 +115,21 @@
                       }
                     }
                   }
+                },
+                "role": {
+                  "enum": [
+                    "api",
+                    "internal"
+                  ],
+                  "description": "internal: a Figma construction property, not part of the API (hidden from controls and the props table)."
+                },
+                "values": {
+                  "type": "object",
+                  "description": "Figma value -> code value, for a variant property.",
+                  "additionalProperties": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][\\w.-]*$"
+                  }
                 }
               }
             }

@@ -8,7 +8,7 @@
  * - Behaviour (keyboard, focus, ARIA roles) is NOT inferred: the report and docs say so.
  */
 import { codeAxis, codeBoolean } from '../../code/map.ts';
-import { decidedDescription, decidedName } from '../../decisions/decisions.ts';
+import { decidedDescription, decidedInternal, decidedName, decidedValue } from '../../decisions/decisions.ts';
 import type { IRComponentSet, IRPart, IRProperty, IRVariant } from '../../ir/types.ts';
 import { JS_RESERVED } from '../../util/reserved.ts';
 import { generateStyles, type Found, type RoleDef, type StateAxis, type StyleModel, type VariantAxis } from '../styles.ts';
@@ -83,7 +83,7 @@ export function analyzeAxes(set: IRComponentSet): AxisInfo[] {
       const isState = !isBool && opts.some((o) => PSEUDO.some((x) => x.test.test(o)) || /^disabled$/i.test(o));
       // Code mode: the code prop and value names (code wins for the API); values code lacks keep Figma's name.
       const code = isState ? undefined : codeAxis(set, p.name);
-      const val = (o: string) => code?.value(o) ?? kebab(o);
+      const val = (o: string) => decidedValue(set, p.name, o) ?? code?.value(o) ?? kebab(o);
       const values: AxisValue[] = opts.map((o) => {
         const pseudo = PSEUDO.find((x) => x.test.test(o));
         if (isState && o === String(p.default)) return { figma: o, value: kebab(o), role: 'base' };
@@ -2219,7 +2219,9 @@ ${input.clear ? `:where(.${input.clear}) { appearance: none; border: 0; padding:
 ${styles.css}${overlayFill()}`;
 
   // Stories
-  const multi = axes.filter((a) => a.values.length > 1);
+  // Internal Figma properties (a decision): kept at their Figma default, not shown as API in stories or controls.
+  const internal = (figma: string) => decidedInternal(set, figma);
+  const multi = axes.filter((a) => a.values.length > 1 && !internal(a.figma));
   const stateAxis = multi.find((a) => a.kind === 'state');
   const rowAxis = multi.find((a) => a !== stateAxis);
   const colAxis = stateAxis ?? multi.find((a) => a !== rowAxis);
@@ -2531,7 +2533,8 @@ export const ${storyName(v.figma)}: Story = {
   }
   // Toggles merged into a slot: switched by passing the Figma icon (or null when Figma shows it by default).
   const toggled = slotList.filter((x) => x.toggle && (x.toggle.default || x.toggle.icon));
-  if (booleans.length || toggled.length) {
+  const shownBooleans = booleans.filter((b) => !internal(b.p.name));
+  if (shownBooleans.length || toggled.length) {
     const n = storyName('Options');
     if (toggled.some((x) => !x.toggle!.default)) storyIcons = true;
     stories.push(`/** Figma boolean properties, each switched from its default. */
@@ -2540,7 +2543,7 @@ export const ${n}: Story = {
   render: (args) => (
     <Row>
       <Labelled label="Default"><${name} {...args} /></Labelled>
-${[...booleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.default) === 'true' ? 'off' : 'on'}`)}><${name} {...args} ${b.prop}={${String(b.p.default) !== 'true'}} /></Labelled>`), ...toggled.map((x) => `      <Labelled label=${q(`${x.toggle!.figma}: ${x.toggle!.default ? 'off' : 'on'}`)}><${name} {...args} ${x.prop}={${x.toggle!.default ? 'null' : sizedIcon(x.toggle!.icon!, x.toggle!.size)}} /></Labelled>`)].join('\n')}
+${[...shownBooleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.default) === 'true' ? 'off' : 'on'}`)}><${name} {...args} ${b.prop}={${String(b.p.default) !== 'true'}} /></Labelled>`), ...toggled.map((x) => `      <Labelled label=${q(`${x.toggle!.figma}: ${x.toggle!.default ? 'off' : 'on'}`)}><${name} {...args} ${x.prop}={${x.toggle!.default ? 'null' : sizedIcon(x.toggle!.icon!, x.toggle!.size)}} /></Labelled>`)].join('\n')}
     </Row>
   ),
 };`);
@@ -2549,10 +2552,10 @@ ${[...booleans.map((b) => `      <Labelled label=${q(`${b.p.name}: ${String(b.p.
 
   const argTypes = [
     ...(sw ? [`    checked: { control: 'boolean', description: ${q(`On or off (controlled). Figma: ${sw.axis.figma}`)} },`, `    defaultChecked: { control: 'boolean' },`] : []),
-    ...propAxes.map((a) => `    ${a.prop}: ${axisControl(a, q)},`),
+    ...propAxes.map((a) => `    ${a.prop}: ${internal(a.figma) ? `{ table: { disable: true }, description: ${q(`Internal (Figma ${a.figma}).`)} }` : axisControl(a, q)},`),
     ...(hasDisabled ? [`    disabled: { control: 'boolean', description: 'Figma: State=Disabled' },`] : []),
-    ...booleans.map((b) => `    ${b.prop}: { control: 'boolean', description: ${q(figmaNote(b.p.name, b.description))} },`),
-    ...texts.map((t) => `    ${t.prop}: { control: 'text', description: ${q(figmaNote(t.p.name, t.description))} },`),
+    ...booleans.map((b) => `    ${b.prop}: ${internal(b.p.name) ? `{ table: { disable: true }, description: ${q(`Internal (Figma ${b.p.name}).`)} }` : `{ control: 'boolean', description: ${q(figmaNote(b.p.name, b.description))} }`},`),
+    ...texts.map((t) => `    ${t.prop}: ${internal(t.p.name) ? `{ table: { disable: true }, description: ${q(`Internal (Figma ${t.p.name}).`)} }` : `{ control: 'text', description: ${q(figmaNote(t.p.name, t.description))} }`},`),
     ...exposedProps.map((e) => `    ${e.prop}: ${e.axis ? axisControl({ ...e.axis, figma: `${e.exposed!.name} › ${e.axis.figma}` }, q) : `{ control: '${e.type === 'boolean' ? 'boolean' : 'text'}', description: ${q(`Figma: ${e.exposed!.name} › ${e.figma}`)} }`},`),
     ...repeatList.map((r) => `    ${r.prop}: { control: false, description: ${q(`Your own ${r.component} items; ${name} sets ${r.driven.map((d) => d.prop).join(', ') || 'nothing'} on each.`)} },`),
     ...slotList.map((x) => `    ${x.prop}: { control: false, description: ${q(figmaNote(x.kind === 'swap' ? `${x.figma} (instance swap)` : `${x.figma} (placeholder)`, x.description))} },`),

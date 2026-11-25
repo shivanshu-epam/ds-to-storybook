@@ -1,5 +1,5 @@
 /** Scenario 2: Figma design system -> a fresh, tested Storybook project. */
-import { composition, docsPage, isBuildingBlock, polishStories, templateSections } from './docs.ts';
+import { composition, designReviewPage, docsPage, isBuildingBlock, polishStories, templateSections } from './docs.ts';
 import { activeDecisions, decidedSetDescription, decisionsReport, DECISIONS_FILE, loadDecisions, setActiveDecisions, validateDecisions, type ApplyLevel, type DecisionsFile } from '../decisions/decisions.ts';
 import { buildDocSpec, coverageReport, loadReferences, pickReference } from '../docspec/build.ts';
 import { matchExport, moduleExports, readComponentApis } from '../code/api.ts';
@@ -355,7 +355,8 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
     });
   });
   const cardOf = new Map(cards.map((x) => [x.component, x]));
-  const applyDocs = (list: GeneratedFile[], framework: 'react' | 'wc', packageName: string) => {
+  const applyDocs = (list: GeneratedFile[], framework: 'react' | 'wc', packageName: string): GeneratedFile[] => {
+    const reviews: GeneratedFile[] = [];
     for (const { c, ctx, result } of results) {
       const dir = `src/components/${c.name}/`;
       const page = list.find((f) => f.path.startsWith(dir) && f.path.endsWith('.mdx'));
@@ -371,7 +372,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
       const comp = compositions.get(c.name) ?? [];
       const exposed = (core?.exposed ?? []).map((e) => ({ prop: e.prop, layer: e.exposed!.name, figma: e.figma, component: e.exposed!.entry.component }));
       const issue = gen.overrides?.knownIssues?.[c.name];
-      page.content = docsPage({
+      const docsInput: Parameters<typeof docsPage>[0] = {
         name: c.name, title, framework,
         tier: c.template === 'accordion' || comp.length || exposed.length ? 3 : c.template === 'generic' ? 1 : 2,
         sets: Object.values(ctx.sets), fileKey: ir.fileKey, version: ir.version, report: result.report,
@@ -381,8 +382,11 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
         ...(visual[c.name] ? { visual: visual[c.name] } : {}),
         ...decisionDocs(Object.values(ctx.sets)),
         ...(cardOf.get(c.name) ? { scorecard: scorecardLines(cardOf.get(c.name)!) } : {}),
-      });
+      };
+      page.content = docsPage(docsInput);
+      reviews.push({ path: `${dir}${c.name}.review.mdx`, content: designReviewPage(docsInput) });
     }
+    return reviews;
   };
 
   // Foundations: variables first; the file's local styles add what variables lack (shadows, or everything without them).
@@ -476,7 +480,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
       );
       log(`react-code: ${codeComponents.length} components render ${from}; docs coverage ${specs.filter((x) => x.coverage.complete).length}/${specs.length}`);
     } else if (t.target === 'react') {
-      applyDocs(files, 'react', packageName);
+      outFiles.push(...applyDocs(files, 'react', packageName));
       // Component Doc Spec v1 for every component, checked against the stories and docs page just written.
       const refs = loadReferences();
       const specs = results.map(({ c, ctx, result }) => {
@@ -519,7 +523,7 @@ export async function generateStorybook(config: LoadedConfig, gen: GenerateConfi
         wc.push({ name: c.name, r });
         outFiles.push(...r.files);
       }
-      applyDocs(wc.flatMap((x) => x.r.files), 'wc', packageName);
+      outFiles.push(...applyDocs(wc.flatMap((x) => x.r.files), 'wc', packageName));
       outFiles.push(
         ...wcProjectFiles({
           name: packageName,

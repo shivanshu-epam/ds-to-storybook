@@ -269,3 +269,16 @@ Ordered by how much the answer changes the design.
 | 10. Success | **Documentation completeness, and 100% accuracy to what Figma specifies.** "100%" is defined measurably: every Figma component, variant, property, value, token binding and documentation frame is present in the Storybook and verified by a check, and every visual difference beyond the rendering threshold (2% of pixels, size within 1 px) is either fixed or listed with its cause. Pixel-identical output is not the definition: browsers and Figma rasterise text and edges differently. A gate fails on any unlisted difference | The completeness and fidelity gates become release-blocking per component, reported per measure (no averaged score). Today's measures (variants, properties, nested consistency, tokens, visual) are the base; the spec adds API, stories, controls and provenance |
 
 All ten questions are answered.
+
+## 9. Status (25 Nov 2026)
+
+| Phase | Status |
+| --- | --- |
+| 1. Foundation | Done: `engine/standards/production-ready.md`, `schemas/component-doc-spec.schema.json`, 24 reference specs in `engine/references/` |
+| 2. Spec builder | Done: a doc spec and coverage check for every component of every system (`docspec/`, `DOCS-COVERAGE.md`). Diagnostics moved to a Design review page per component |
+| 3. Decisions | Partly done: `role: internal` (Carbon Button's Resizer) and value names. Separate components such as Skeleton come from code mode (`<ButtonSkeleton>`); there is no decision role for them yet |
+| 4. Generation | Done for the pilot: per-value and per-state stories, and code mode (`generate.code`, the `react-code` target). See docs/pilots/carbon-button.md |
+| 5. *write* skill | Not started: usage guidance is the one section missing on every component in all three systems |
+| 6. Validation | Done: `ds-sync docs check` against a reviewed baseline, in the GitHub workflow |
+| 7. Expand | Coverage runs on every component already. Each reference spec still needs checking on two systems |
+| 8. Product | Not started |

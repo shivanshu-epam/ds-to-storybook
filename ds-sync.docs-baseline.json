@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "targets": {
+    "storybook": {
+      "Accordion": [
+        "section:usage",
+        "description"
+      ],
+      "Alert": [
+        "section:usage",
+        "description"
+      ],
+      "AutoplayToggle": [
+        "section:usage",
+        "description"
+      ],
+      "AvatarGlyph": [
+        "section:usage",
+        "description"
+      ],
+      "AvatarIdentity": [
+        "section:usage",
+        "description"
+      ],
+      "Badge": [
+        "section:usage",
+        "description"
+      ],
+      "BreadcrumbItem": [
+        "section:usage",
+        "description"
+      ],
+      "Button": [
+        "section:usage",
+        "description"
+      ],
+      "Checkbox": [
+        "Has label",
+        "section:usage",
+        "description"
+      ],
+      "DatePicker": [
+        "section:usage",
+        "description"
+      ],
+      "Dialog": [
+        "section:usage",
+        "description"
+      ],
+      "Divider": [
+        "section:usage",
+        "description"
+      ],
+      "Dropdown": [
+        "section:usage",
+        "description"
+      ],
+      "DropdownMenu": [
+        "section:usage",
+        "description"
+      ],
+      "DropdownTrigger": [
+        "section:usage",
+        "description"
+      ],
+      "Form": [
+        "section:usage",
+        "description"
+      ],
+      "Input": [
+        "section:usage",
+        "description"
+      ],
+      "InputControl": [
+        "section:usage",
+        "description"
+      ],
+      "InputField": [
+        "section:usage",
+        "description"
+      ],
+      "ListItem": [
+        "section:usage",
+        "description"
+      ],
+      "NavControl": [
+        "section:usage",
+        "description"
+      ],
+      "PaginationDot": [
+        "section:usage",
+        "section:api",
+        "description"
+      ],
+      "RadioControl": [
+        "section:usage",
+        "description"
+      ],
+      "RadioField": [
+        "section:usage",
+        "description"
+      ],
+      "RadioGroup": [
+        "section:usage",
+        "description"
+      ],
+      "Separator": [
+        "section:usage",
+        "description"
+      ],
+      "Switch": [
+        "section:usage",
+        "description"
+      ]
+    }
+  }
+}
