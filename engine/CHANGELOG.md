@@ -2,7 +2,9 @@
 
 All notable changes to ds-sync. The CLI (npm package `ds-sync`) and the Claude Code plugin (`ds-sync@ds-sync`) are released together under one version.
 
-## Unreleased
+## 0.3.0
+
+The first version published to npm (0.2.0 was prepared but never published; its notes follow). It adds the documentation engine, code mode, usage guidance and enhance mode.
 
 ### Documentation engine, phase 1
 
@@ -21,7 +23,7 @@ All notable changes to ds-sync. The CLI (npm package `ds-sync`) and the Claude C
 
 ## 0.2.0
 
-The first public release. Version 0.1.0 was never published.
+Not published to npm: its contents ship in 0.3.0. Version 0.1.0 was never published either.
 
 ### Read Figma without API limits
 

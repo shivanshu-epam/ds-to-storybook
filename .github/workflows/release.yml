@@ -1,4 +1,4 @@
-# Publish the ds-sync CLI to npm when a version tag is pushed (git tag v0.2.0 && git push origin v0.2.0). See docs/RELEASING.md.
+# Publish the ds-sync CLI to npm when a version tag is pushed (git tag v0.3.0 && git push origin v0.3.0). See docs/RELEASING.md.
 # Authentication, either:
 #   - npm trusted publishing (recommended): on npmjs.com, package ds-sync > Settings > Trusted publishing, add this
 #     repository and the workflow file "release.yml". No secret needed.

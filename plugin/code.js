@@ -5,7 +5,7 @@
 // variant). ds-sync reads it instead of the REST API (figma.export in ds-sync.config.json).
 // "Export variables only" writes figma-variables.json, the older variables-only format (generate.variablesExport).
 
-const PLUGIN_VERSION = '0.2.0';
+const PLUGIN_VERSION = '0.3.0';
 const FORMAT = 'ds-sync/figma-export@1';
 const SHAPES = new Set(['VECTOR', 'BOOLEAN_OPERATION', 'ELLIPSE', 'LINE', 'STAR', 'REGULAR_POLYGON', 'POLYGON']);
 
