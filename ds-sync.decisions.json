@@ -1237,9 +1237,9 @@
       }
     },
     "Button": {
-      "status": "proposed",
+      "status": "accepted",
       "usage": {
-        "status": "proposed",
+        "status": "accepted",
         "by": "ai:claude",
         "confidence": 0.9,
         "setHash": "5e65221861d7f0970d2ffa0484b4dd1931dde1fcf020b9675710ae4fbeb02125",

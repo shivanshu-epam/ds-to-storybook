@@ -6,11 +6,11 @@ Every component the Figma file defines, checked against its generated stories an
 - Figma properties in Storybook: 117/118
 - Property values: 241 shown in a story, 14 reachable through a control or by interaction, 0 missing
 - Designed variants rendered: 1390/1390
-- Required docs sections present: 161/189
+- Required docs sections present: 162/189
 
 | Component | Kind | Properties | Values (shown / control / missing) | Variants | Sections | Complete |
 | --- | --- | --- | --- | --- | --- | --- |
-| Button | Button | 7/7 | 8 / 7 / 0 | 180/180 | 6/7 | yes |
+| Button | Button | 7/7 | 8 / 7 / 0 | 180/180 | 7/7 | yes |
 | ListItem | List | 7/7 | 16 / 0 / 0 | 108/108 | 6/7 | yes |
 | Checkbox | Checkbox | 11/12 | 22 / 7 / 0 | 116/116 | 6/7 | no |
 | Badge | Badge | 7/7 | 14 / 0 / 0 | 135/135 | 6/7 | yes |
@@ -42,7 +42,6 @@ Every component the Figma file defines, checked against its generated stories an
 
 ### Button
 
-- The docs page has no "usage" section (required for button components).
 - No description in Figma or in decisions: the overview has no prose.
 
 ### ListItem
