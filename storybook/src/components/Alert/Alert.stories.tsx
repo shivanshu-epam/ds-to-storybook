@@ -6,7 +6,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { Alert, type AlertProps } from './Alert';
 
 const meta = {
-  title: "Components/Alert",
+  title: 'Components/Alert/Alert',
   component: Alert,
   argTypes: {
     sentiment: { control: 'inline-radio', options: ['danger', 'neutral', 'info', 'success', 'warning'], description: 'Figma: Sentiment' },

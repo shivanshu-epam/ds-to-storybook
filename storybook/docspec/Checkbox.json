@@ -1,7 +1,7 @@
 {
   "specVersion": "1.0",
   "component": "Checkbox",
-  "title": "Components/Checkbox",
+  "title": "Components/Checkbox/Checkbox",
   "kind": {
     "id": "checkbox",
     "title": "Checkbox",
@@ -11,7 +11,7 @@
   "buildingBlock": false,
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2425654086033038120",
+    "version": "2426030304199502103",
     "sets": [
       {
         "id": "178:1224",

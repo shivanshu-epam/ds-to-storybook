@@ -7,7 +7,7 @@ import { matrix, row, labelled } from '../../storybook/layout';
 import './ds-badge';
 
 const meta = {
-  title: "Components/Badge",
+  title: "Components/Badge/Badge",
   component: 'ds-badge',
   args: { status: "success", styleVariant: "filled", type: "text", size: "sm", hasLeadingIcon: false, isDismissible: false, label: "Label" },
   argTypes: {

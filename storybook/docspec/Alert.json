@@ -1,7 +1,7 @@
 {
   "specVersion": "1.0",
   "component": "Alert",
-  "title": "Components/Alert",
+  "title": "Components/Alert/Alert",
   "kind": {
     "id": "notification",
     "title": "Notification",
@@ -10,7 +10,7 @@
   "buildingBlock": false,
   "figma": {
     "fileKey": "I983NcgqSiY14YkpJbwjG8",
-    "version": "2425654086033038120",
+    "version": "2426030304199502103",
     "sets": [
       {
         "id": "516:2837",

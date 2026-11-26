@@ -7,7 +7,7 @@ import { matrix, row, labelled, shadowOf } from '../../storybook/layout';
 import './ds-switch';
 
 const meta = {
-  title: "Components/Switch",
+  title: "Components/Switch/Switch",
   component: 'ds-switch',
   args: { checked: false, accessibleLabel: "Switch", interaction: "default", size: "medium", disabled: false, showInnerContent: true },
   argTypes: {

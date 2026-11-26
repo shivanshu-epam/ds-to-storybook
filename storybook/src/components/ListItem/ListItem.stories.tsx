@@ -6,7 +6,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { ListItem, type ListItemProps } from './ListItem';
 
 const meta = {
-  title: "Components/ListItem",
+  title: 'Components/List-item/ListItem',
   component: ListItem,
   argTypes: {
     type: { control: 'inline-radio', options: ['default', 'menu', 'file', 'setting'], description: 'Figma: Type' },

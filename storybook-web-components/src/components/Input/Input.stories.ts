@@ -8,7 +8,7 @@ import { matrix, row, labelled, shadowOf } from '../../storybook/layout';
 import './ds-input';
 
 const meta = {
-  title: "Components/Input",
+  title: "Components/Input/Input",
   component: 'ds-input',
   args: { appearance: "outlined", size: "sm", state: "default", disabled: false, required: true, showLeadingIcon: true, showTrailingIcon: false, clearable: false, showCharacterCount: false, label: "Label", placeholder: "Placeholder text", helperText: "We'll never share this.", characterCount: "0/100" },
   argTypes: {

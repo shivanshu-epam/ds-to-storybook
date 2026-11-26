@@ -46,7 +46,7 @@
 }
 
 .item .label {
-  color: var(--interactive-fg-secondary-default);
+  color: var(--interactive-fg-secondary-hover);
 }
 
 .item:where([data-size="medium"]) .label {
@@ -135,15 +135,15 @@
 }
 
 .item:where([data-size="medium"][data-state="open"]) .panel {
-  padding: var(--space-stack-xs) var(--space-inline-md) var(--space-inline-md) var(--space-inline-md);
+  padding: var(--space-stack-xs) var(--space-stack-sm) var(--space-stack-sm) var(--space-stack-sm);
 }
 
 .item:where([data-size="small"][data-state="open"]) .panel {
-  padding: var(--space-inset-xs) var(--space-stack-xs) var(--space-stack-xs) var(--space-stack-xs);
+  padding: var(--space-inset-xs) var(--space-stack-sm) var(--space-stack-sm) var(--space-stack-sm);
 }
 
 .item:where([data-size="large"][data-state="open"]) .panel {
-  padding: var(--space-inline-md) var(--space-inline-lg) var(--space-inline-lg) var(--space-inline-lg);
+  padding: var(--space-inline-md) var(--space-stack-sm) var(--space-stack-sm) var(--space-stack-sm);
 }
 
 .item:where([data-size="medium"][data-state="open"]) .body {
@@ -158,5 +158,5 @@
 
 .item:where([data-size="large"][data-state="open"]) .body {
   font-size: 14px;
-  line-height: 21px;
+  line-height: 20px;
 }

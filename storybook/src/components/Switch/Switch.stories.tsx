@@ -6,7 +6,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { Switch, type SwitchProps } from './Switch';
 
 const meta = {
-  title: "Components/Switch",
+  title: 'Components/Switch/Switch',
   component: Switch,
   args: { 'aria-label': 'Switch', onCheckedChange: fn() },
   argTypes: {

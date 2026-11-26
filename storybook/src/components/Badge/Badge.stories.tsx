@@ -6,7 +6,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { Badge, type BadgeProps } from './Badge';
 
 const meta = {
-  title: "Components/Badge",
+  title: 'Components/Badge/Badge',
   component: Badge,
   argTypes: {
     status: { control: 'inline-radio', options: ['success', 'warning', 'error', 'info', 'neutral'], description: 'Figma: Status' },

@@ -11,7 +11,7 @@ const BODY = 'Panel content goes here. This text explains the section in more de
 const t = (n: number) => `${TITLE} ${n}`;
 
 const meta = {
-  title: "Components/Accordion",
+  title: "Components/Accordion/Accordion",
   component: Accordion,
   args: { variant: 'bordered', size: 'medium', expandMode: 'single', headingLevel: 3, children: null },
   argTypes: {

@@ -9,22 +9,22 @@
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  gap: var(--space-stack-lg);
+  gap: var(--space-stack-md);
   opacity: 1;
   overflow: hidden;
-  padding: var(--space-stack-lg) var(--space-stack-lg) var(--space-stack-lg) var(--space-stack-lg);
+  padding: var(--space-stack-sm) var(--space-stack-sm) var(--space-stack-sm) var(--space-stack-sm);
   width: 420px;
 }
 
 .root .sectionHeading {
   align-self: stretch;
-  color: var(--interactive-fg-secondary-default);
+  color: var(--interactive-fg-secondary-hover);
   display: block;
   flex-shrink: 1;
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 16px;
   font-weight: 600;
-  line-height: 21px;
+  line-height: 24px;
   opacity: 1;
   white-space: normal;
 }
@@ -37,7 +37,7 @@
   flex-direction: column;
   flex-shrink: 1;
   flex-wrap: nowrap;
-  gap: var(--space-inline-lg);
+  gap: var(--space-stack-md);
   opacity: 1;
   overflow: hidden;
 }
@@ -68,7 +68,7 @@
 }
 
 .root .label {
-  color: var(--interactive-fg-secondary-default);
+  color: var(--interactive-fg-secondary-hover);
   display: block;
   flex-shrink: 1;
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;

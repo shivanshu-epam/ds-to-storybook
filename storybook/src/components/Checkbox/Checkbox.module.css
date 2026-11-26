@@ -437,11 +437,11 @@
 }
 
 .field .heading {
-  color: var(--interactive-fg-secondary-default);
+  color: var(--interactive-fg-secondary-hover);
 }
 
 .field .valueText {
-  color: var(--interactive-fg-secondary-default);
+  color: var(--interactive-fg-secondary-hover);
 }
 
 .field:where([data-disabled]) .heading {
@@ -514,7 +514,7 @@
 }
 
 .group .legend {
-  color: var(--interactive-fg-secondary-default);
+  color: var(--interactive-fg-secondary-hover);
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 14px;
   font-weight: 400;

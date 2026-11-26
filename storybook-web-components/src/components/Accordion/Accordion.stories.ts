@@ -13,7 +13,7 @@ const t = (n: number) => `${TITLE} ${n}`;
 const headers = (canvas: HTMLElement) => [...canvas.querySelectorAll('ds-accordion-item')].map((i) => within(i.shadowRoot as unknown as HTMLElement).getByRole('button'));
 
 const meta = {
-  title: "Components/Accordion",
+  title: "Components/Accordion/Accordion",
   component: 'ds-accordion',
   args: { variant: "bordered", size: "medium", expandMode: 'single', headingLevel: 3 },
   argTypes: {

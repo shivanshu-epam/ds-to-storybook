@@ -7,7 +7,7 @@ import { matrix, row, labelled } from '../../storybook/layout';
 import './ds-alert';
 
 const meta = {
-  title: "Components/Alert",
+  title: "Components/Alert/Alert",
   component: 'ds-alert',
   args: { sentiment: "neutral", size: "sm", state: "default" },
   argTypes: {

@@ -1,7 +1,7 @@
 {
   "note": "How each Figma value became CSS. \"bound-by-id\": bound to a variable in Figma and mapped to the token of that same variable (variable ids known: Variables API or the ds-sync plugin export). \"bound\": bound to a variable and matched to a token by value (variable ids not known). \"raw-in-figma\": not bound in Figma, kept as a raw value. \"no-matching-token\": bound in Figma, but no token has that value.",
   "counts": {
-    "bound": 262,
+    "bound": 274,
     "rawInFigma": 10,
     "noMatchingToken": 0
   },
@@ -742,6 +742,214 @@
       "reason": "bound"
     },
     {
+      "value": "#f9fafb",
+      "hint": [
+        "bg",
+        "surface",
+        "mobile"
+      ],
+      "variableId": "VariableID:11:3",
+      "token": "--surface-bg-default",
+      "reason": "bound"
+    },
+    {
+      "value": "16px",
+      "hint": [
+        "block",
+        "stack",
+        "inset",
+        "space",
+        "mobile"
+      ],
+      "variableId": "VariableID:1536:13",
+      "token": "--space-stack-md",
+      "reason": "bound"
+    },
+    {
+      "value": "16px",
+      "hint": [
+        "inline",
+        "inset",
+        "space",
+        "mobile"
+      ],
+      "variableId": "VariableID:1536:20",
+      "token": "--space-inline-lg",
+      "reason": "bound"
+    },
+    {
+      "value": "32px",
+      "hint": [
+        "stack",
+        "gap",
+        "space",
+        "mobile"
+      ],
+      "variableId": "VariableID:1536:16",
+      "token": "--space-stack-xl",
+      "reason": "bound"
+    },
+    {
+      "value": "24px",
+      "hint": [
+        "block",
+        "stack",
+        "inset",
+        "space",
+        "tablet"
+      ],
+      "variableId": "VariableID:1536:13",
+      "token": "--space-stack-md",
+      "reason": "bound"
+    },
+    {
+      "value": "32px",
+      "hint": [
+        "inline",
+        "inset",
+        "space",
+        "tablet"
+      ],
+      "variableId": "VariableID:1536:20",
+      "token": "--space-inline-lg",
+      "reason": "bound"
+    },
+    {
+      "value": "48px",
+      "hint": [
+        "stack",
+        "gap",
+        "space",
+        "tablet"
+      ],
+      "variableId": "VariableID:1536:16",
+      "token": "--space-stack-xl",
+      "reason": "bound"
+    },
+    {
+      "value": "40px",
+      "hint": [
+        "block",
+        "stack",
+        "inset",
+        "space",
+        "desktop"
+      ],
+      "variableId": "VariableID:1536:13",
+      "token": "--space-stack-md",
+      "reason": "bound"
+    },
+    {
+      "value": "80px",
+      "hint": [
+        "inline",
+        "inset",
+        "space",
+        "desktop"
+      ],
+      "variableId": "VariableID:1536:20",
+      "token": "--space-inline-lg",
+      "reason": "bound"
+    },
+    {
+      "value": "64px",
+      "hint": [
+        "stack",
+        "gap",
+        "space",
+        "desktop"
+      ],
+      "variableId": "VariableID:1536:16",
+      "token": "--space-stack-xl",
+      "reason": "bound"
+    },
+    {
+      "value": "#111827",
+      "hint": [
+        "fg",
+        "text",
+        "mobile"
+      ],
+      "variableId": "VariableID:11:14",
+      "token": "--interactive-fg-secondary-hover",
+      "reason": "bound"
+    },
+    {
+      "value": "12px",
+      "hint": [
+        "block",
+        "stack",
+        "inset",
+        "space",
+        "mobile"
+      ],
+      "variableId": "VariableID:1536:17",
+      "token": "--space-stack-sm",
+      "reason": "bound"
+    },
+    {
+      "value": "16px",
+      "hint": [
+        "stack",
+        "gap",
+        "space",
+        "mobile"
+      ],
+      "variableId": "VariableID:1536:12",
+      "token": "--space-stack-md",
+      "reason": "bound"
+    },
+    {
+      "value": "16px",
+      "hint": [
+        "block",
+        "stack",
+        "inset",
+        "space",
+        "tablet"
+      ],
+      "variableId": "VariableID:1536:17",
+      "token": "--space-stack-sm",
+      "reason": "bound"
+    },
+    {
+      "value": "24px",
+      "hint": [
+        "stack",
+        "gap",
+        "space",
+        "tablet"
+      ],
+      "variableId": "VariableID:1536:12",
+      "token": "--space-stack-md",
+      "reason": "bound"
+    },
+    {
+      "value": "24px",
+      "hint": [
+        "block",
+        "stack",
+        "inset",
+        "space",
+        "desktop"
+      ],
+      "variableId": "VariableID:1536:17",
+      "token": "--space-stack-sm",
+      "reason": "bound"
+    },
+    {
+      "value": "32px",
+      "hint": [
+        "stack",
+        "gap",
+        "space",
+        "desktop"
+      ],
+      "variableId": "VariableID:1536:12",
+      "token": "--space-stack-md",
+      "reason": "bound"
+    },
+    {
       "value": "#ffffff",
       "hint": [
         "bg",
@@ -1329,23 +1537,6 @@
       "reason": "bound"
     },
     {
-      "value": "#f9fafb",
-      "hint": [
-        "bg",
-        "surface",
-        "control",
-        "interactive",
-        "sm",
-        "unchecked",
-        "unselected",
-        "default",
-        "enabled"
-      ],
-      "variableId": "VariableID:11:3",
-      "token": "--surface-bg-default",
-      "reason": "bound"
-    },
-    {
       "value": "4px",
       "hint": [
         "radius",
@@ -1436,20 +1627,6 @@
       ],
       "variableId": null,
       "reason": "raw-in-figma"
-    },
-    {
-      "value": "#111827",
-      "hint": [
-        "fg",
-        "text",
-        "unchecked",
-        "unselected",
-        "default",
-        "enabled"
-      ],
-      "variableId": "VariableID:11:14",
-      "token": "--interactive-fg-secondary-default",
-      "reason": "bound"
     },
     {
       "value": "#6b7280",
@@ -2101,22 +2278,6 @@
       "reason": "bound"
     },
     {
-      "value": "16px",
-      "hint": [
-        "inline",
-        "inset",
-        "space",
-        "danger",
-        "md",
-        "with",
-        "action",
-        "close"
-      ],
-      "variableId": "VariableID:514:113",
-      "token": "--space-inline-lg",
-      "reason": "bound"
-    },
-    {
       "value": "12px",
       "hint": [
         "inline",
@@ -2171,20 +2332,6 @@
       ],
       "variableId": "VariableID:514:114",
       "token": "--space-inset-sm",
-      "reason": "bound"
-    },
-    {
-      "value": "12px",
-      "hint": [
-        "inline",
-        "inset",
-        "space",
-        "neutral",
-        "sm",
-        "default"
-      ],
-      "variableId": "VariableID:514:112",
-      "token": "--space-inline-md",
       "reason": "bound"
     },
     {
@@ -2848,6 +2995,48 @@
       ],
       "variableId": "VariableID:370:23",
       "token": "--interactive-fg-secondary-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#f9fafb",
+      "hint": [
+        "bg",
+        "surface",
+        "small",
+        "read",
+        "only",
+        "false"
+      ],
+      "variableId": "VariableID:11:75",
+      "token": "--surface-bg-default",
+      "reason": "bound"
+    },
+    {
+      "value": "#e5e7eb",
+      "hint": [
+        "border",
+        "focus",
+        "small",
+        "read",
+        "only",
+        "false"
+      ],
+      "variableId": "VariableID:11:76",
+      "token": "--border-interactive-disabled",
+      "reason": "bound"
+    },
+    {
+      "value": "#4b5563",
+      "hint": [
+        "fg",
+        "text",
+        "small",
+        "read",
+        "only",
+        "false"
+      ],
+      "variableId": "VariableID:11:77",
+      "token": "--interactive-fg-readonly",
       "reason": "bound"
     },
     {
@@ -3665,60 +3854,6 @@
       ],
       "variableId": "VariableID:826:24",
       "token": "--interactive-fg-readonly",
-      "reason": "bound"
-    },
-    {
-      "value": "#f9fafb",
-      "hint": [
-        "bg",
-        "surface",
-        "small",
-        "read",
-        "only",
-        "false"
-      ],
-      "variableId": "VariableID:11:75",
-      "token": "--surface-bg-default",
-      "reason": "bound"
-    },
-    {
-      "value": "#e5e7eb",
-      "hint": [
-        "border",
-        "focus",
-        "small",
-        "read",
-        "only",
-        "false"
-      ],
-      "variableId": "VariableID:11:76",
-      "token": "--border-interactive-disabled",
-      "reason": "bound"
-    },
-    {
-      "value": "#4b5563",
-      "hint": [
-        "fg",
-        "text",
-        "small",
-        "read",
-        "only",
-        "false"
-      ],
-      "variableId": "VariableID:11:77",
-      "token": "--interactive-fg-readonly",
-      "reason": "bound"
-    },
-    {
-      "value": "24px",
-      "hint": [
-        "stack",
-        "gap",
-        "space",
-        "default"
-      ],
-      "variableId": "VariableID:14:16",
-      "token": "--space-stack-lg",
       "reason": "bound"
     }
   ]

@@ -8,7 +8,7 @@ import { labelled, matrix, row, shadowOf, stack } from '../../storybook/layout';
 import './ds-checkbox';
 
 const meta = {
-  title: "Components/Checkbox",
+  title: "Components/Checkbox/Checkbox",
   component: 'ds-checkbox',
   args: { size: "sm", label: "Checkbox label", heading: "Label", onChange: fn() },
   argTypes: {

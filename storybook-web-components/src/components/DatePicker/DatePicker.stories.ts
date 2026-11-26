@@ -7,7 +7,7 @@ import { matrix, row, labelled } from '../../storybook/layout';
 import './ds-date-picker';
 
 const meta = {
-  title: "Components/DatePicker",
+  title: "Components/Date Picker/DatePicker",
   component: 'ds-date-picker',
   args: { type: "single", state: "default", disabled: false, showCalendar: false },
   argTypes: {

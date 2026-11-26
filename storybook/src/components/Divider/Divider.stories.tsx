@@ -5,7 +5,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { Divider, type DividerProps } from './Divider';
 
 const meta = {
-  title: "Components/Divider",
+  title: 'Components/Divider/Divider',
   component: Divider,
   argTypes: {
     orientation: { control: 'inline-radio', options: ['horizontal', 'vertical'], description: 'Figma: Orientation' },
