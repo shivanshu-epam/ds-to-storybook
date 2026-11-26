@@ -54,7 +54,7 @@
 }
 
 .root:where([data-type="current"]) .label {
-  color: var(--interactive-fg-secondary-default);
+  color: var(--interactive-fg-secondary-hover);
   display: block;
   flex-shrink: 1;
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;

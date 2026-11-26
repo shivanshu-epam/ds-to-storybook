@@ -7,7 +7,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { Input, type InputProps } from './Input';
 
 const meta = {
-  title: "Components/Input",
+  title: 'Components/Input/Input',
   component: Input,
   args: { onChange: fn() },
   argTypes: {

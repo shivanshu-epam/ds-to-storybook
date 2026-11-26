@@ -12,7 +12,7 @@
   gap: var(--space-stack-xs);
   opacity: 1;
   overflow: hidden;
-  padding: var(--space-inset-xs) 0 var(--space-inset-xs) 0;
+  padding: var(--space-inset-xs) var(--space-stack-sm) var(--space-inset-xs) var(--space-stack-sm);
   width: 320px;
 }
 

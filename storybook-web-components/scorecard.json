@@ -1,6 +1,6 @@
 {
   "fileKey": "I983NcgqSiY14YkpJbwjG8",
-  "version": "2425654086033038120",
+  "version": "2426030304199502103",
   "components": [
     {
       "component": "Button",
@@ -54,6 +54,66 @@
           "name": "Documentation",
           "status": "warn",
           "value": "description; 0/10 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "warn",
+          "value": "0 open questions; 1 generator note"
+        }
+      ]
+    },
+    {
+      "component": "ViewportsButton",
+      "template": "button",
+      "figma": {
+        "sets": [
+          "Viewports / button"
+        ],
+        "nodeIds": [
+          "1895:160"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "n/a",
+          "value": "no nested components"
+        },
+        {
+          "name": "Interaction",
+          "status": "pass",
+          "value": "WAI-ARIA button pattern, tested in the stories"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
         },
         {
           "name": "Open decisions",
@@ -123,6 +183,66 @@
       ]
     },
     {
+      "component": "ViewportsListItem",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / list-item"
+        ],
+        "nodeIds": [
+          "1895:5566"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "pass",
+          "value": "6/6 nested values match Figma (1 nested layers)"
+        },
+        {
+          "name": "Interaction",
+          "status": "n/a",
+          "value": "visuals only (display component)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "pass",
+          "value": "0 open questions; 0 generator notes"
+        }
+      ]
+    },
+    {
       "component": "Checkbox",
       "template": "checkbox",
       "figma": {
@@ -187,6 +307,66 @@
       ]
     },
     {
+      "component": "ViewportsCheckbox",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / checkbox"
+        ],
+        "nodeIds": [
+          "1895:4368"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "n/a",
+          "value": "no nested components"
+        },
+        {
+          "name": "Interaction",
+          "status": "warn",
+          "value": "visuals only: the name suggests behaviour that no template provides (add an archetype decision)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "warn",
+          "value": "0 open questions; 3 generator notes"
+        }
+      ]
+    },
+    {
       "component": "Badge",
       "template": "generic",
       "figma": {
@@ -243,6 +423,66 @@
           "name": "Open decisions",
           "status": "warn",
           "value": "0 open questions; 1 generator note"
+        }
+      ]
+    },
+    {
+      "component": "ViewportsBadge",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / badge"
+        ],
+        "nodeIds": [
+          "1896:484"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "pass",
+          "value": "21/21 nested values match Figma (1 nested layers)"
+        },
+        {
+          "name": "Interaction",
+          "status": "n/a",
+          "value": "visuals only (display component)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "pass",
+          "value": "0 open questions; 0 generator notes"
         }
       ]
     },
@@ -367,6 +607,66 @@
       ]
     },
     {
+      "component": "ViewportsBreadcrumb",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / breadcrumb"
+        ],
+        "nodeIds": [
+          "1896:827"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "pass",
+          "value": "12/12 nested values match Figma (2 nested layers)"
+        },
+        {
+          "name": "Interaction",
+          "status": "n/a",
+          "value": "visuals only (display component)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "pass",
+          "value": "0 open questions; 0 generator notes"
+        }
+      ]
+    },
+    {
       "component": "Accordion",
       "template": "accordion",
       "figma": {
@@ -423,6 +723,66 @@
           "name": "Open decisions",
           "status": "pass",
           "value": "0 open questions; 0 generator notes"
+        }
+      ]
+    },
+    {
+      "component": "ViewportsAccordion",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / accordion"
+        ],
+        "nodeIds": [
+          "1896:1280"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "n/a",
+          "value": "no nested components"
+        },
+        {
+          "name": "Interaction",
+          "status": "warn",
+          "value": "visuals only: the name suggests behaviour that no template provides (add an archetype decision)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "warn",
+          "value": "0 open questions; 3 generator notes"
         }
       ]
     },
@@ -607,6 +967,66 @@
       ]
     },
     {
+      "component": "ViewportsCarousel",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / carousel"
+        ],
+        "nodeIds": [
+          "1896:82"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "pass",
+          "value": "6/6 nested values match Figma (2 nested layers)"
+        },
+        {
+          "name": "Interaction",
+          "status": "n/a",
+          "value": "visuals only (display component)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "pass",
+          "value": "0 open questions; 0 generator notes"
+        }
+      ]
+    },
+    {
       "component": "AvatarIdentity",
       "template": "generic",
       "figma": {
@@ -727,6 +1147,66 @@
       ]
     },
     {
+      "component": "ViewportsAvatar",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / avatar"
+        ],
+        "nodeIds": [
+          "1897:122"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "pass",
+          "value": "24/24 nested values match Figma (2 nested layers)"
+        },
+        {
+          "name": "Interaction",
+          "status": "n/a",
+          "value": "visuals only (display component)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "pass",
+          "value": "0 open questions; 0 generator notes"
+        }
+      ]
+    },
+    {
       "component": "Alert",
       "template": "generic",
       "figma": {
@@ -787,6 +1267,66 @@
       ]
     },
     {
+      "component": "ViewportsAlert",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / alert"
+        ],
+        "nodeIds": [
+          "1897:928"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "pass",
+          "value": "9/9 nested values match Figma (1 nested layers)"
+        },
+        {
+          "name": "Interaction",
+          "status": "n/a",
+          "value": "visuals only (display component)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "pass",
+          "value": "0 open questions; 0 generator notes"
+        }
+      ]
+    },
+    {
       "component": "Dialog",
       "template": "dialog",
       "figma": {
@@ -843,6 +1383,66 @@
           "name": "Open decisions",
           "status": "warn",
           "value": "0 open questions; 7 generator notes"
+        }
+      ]
+    },
+    {
+      "component": "ViewportsDialog",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / dialog"
+        ],
+        "nodeIds": [
+          "1897:1797"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "n/a",
+          "value": "no nested components"
+        },
+        {
+          "name": "Interaction",
+          "status": "n/a",
+          "value": "visuals only (display component)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "pass",
+          "value": "0 open questions; 0 generator notes"
         }
       ]
     },
@@ -1027,14 +1627,14 @@
       ]
     },
     {
-      "component": "Divider",
+      "component": "ViewportsRadio",
       "template": "generic",
       "figma": {
         "sets": [
-          "Divider"
+          "Viewports / Radio"
         ],
         "nodeIds": [
-          "697:1083"
+          "1897:2646"
         ]
       },
       "buildingBlock": false,
@@ -1047,12 +1647,12 @@
         {
           "name": "Variants",
           "status": "pass",
-          "value": "540 designed variants shown"
+          "value": "3 designed variants shown"
         },
         {
           "name": "Properties",
           "status": "pass",
-          "value": "6/6 Figma properties mapped"
+          "value": "1/1 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
@@ -1061,8 +1661,8 @@
         },
         {
           "name": "Interaction",
-          "status": "n/a",
-          "value": "visuals only (display component)"
+          "status": "pass",
+          "value": "behaviour comes from a nested component (WAI-ARIA radio)"
         },
         {
           "name": "Tokens",
@@ -1077,7 +1677,7 @@
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/6 props described"
+          "value": "description; 0/1 props described"
         },
         {
           "name": "Open decisions",
@@ -1087,14 +1687,14 @@
       ]
     },
     {
-      "component": "DatePicker",
+      "component": "ViewportsDropdown",
       "template": "generic",
       "figma": {
         "sets": [
-          "Date Picker"
+          "Viewports / Dropdown"
         ],
         "nodeIds": [
-          "660:4998"
+          "1897:3885"
         ]
       },
       "buildingBlock": false,
@@ -1107,82 +1707,22 @@
         {
           "name": "Variants",
           "status": "pass",
-          "value": "21 designed variants shown"
+          "value": "3 designed variants shown"
         },
         {
           "name": "Properties",
           "status": "pass",
-          "value": "4/4 Figma properties mapped"
+          "value": "1/1 Figma properties mapped"
         },
         {
           "name": "Nested consistency",
-          "status": "n/a",
-          "value": "no nested components"
-        },
-        {
-          "name": "Interaction",
-          "status": "n/a",
-          "value": "visuals only (display component)"
-        },
-        {
-          "name": "Tokens",
-          "status": "warn",
-          "value": "2 raw colour values (not bound to a variable in Figma)"
-        },
-        {
-          "name": "Accessibility",
-          "status": "warn",
-          "value": "axe in every Figma mode; 1 accepted known issue"
-        },
-        {
-          "name": "Documentation",
-          "status": "warn",
-          "value": "description; 0/4 props described"
-        },
-        {
-          "name": "Open decisions",
-          "status": "warn",
-          "value": "0 open questions; 1 generator note"
-        }
-      ]
-    },
-    {
-      "component": "Switch",
-      "template": "switch",
-      "figma": {
-        "sets": [
-          "Switch"
-        ],
-        "nodeIds": [
-          "723:3038"
-        ]
-      },
-      "buildingBlock": false,
-      "measures": [
-        {
-          "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
-        },
-        {
-          "name": "Variants",
           "status": "pass",
-          "value": "12 designed variants shown"
-        },
-        {
-          "name": "Properties",
-          "status": "pass",
-          "value": "5/5 Figma properties mapped"
-        },
-        {
-          "name": "Nested consistency",
-          "status": "n/a",
-          "value": "no nested components"
+          "value": "18/18 nested values match Figma (2 nested layers)"
         },
         {
           "name": "Interaction",
           "status": "pass",
-          "value": "WAI-ARIA switch pattern, tested in the stories"
+          "value": "behaviour comes from a nested component (WAI-ARIA menu)"
         },
         {
           "name": "Tokens",
@@ -1191,78 +1731,18 @@
         },
         {
           "name": "Accessibility",
-          "status": "warn",
-          "value": "axe in every Figma mode; 1 accessible-name note to confirm"
+          "status": "pass",
+          "value": "axe in every Figma mode"
         },
         {
           "name": "Documentation",
           "status": "warn",
-          "value": "description; 0/5 props described"
+          "value": "description; 0/1 props described"
         },
         {
           "name": "Open decisions",
-          "status": "warn",
-          "value": "0 open questions; 1 generator note"
-        }
-      ]
-    },
-    {
-      "component": "Input",
-      "template": "input",
-      "figma": {
-        "sets": [
-          "Input"
-        ],
-        "nodeIds": [
-          "836:4005"
-        ]
-      },
-      "buildingBlock": false,
-      "measures": [
-        {
-          "name": "Visual fidelity",
-          "status": "n/a",
-          "value": "not measured: run ds-sync visual"
-        },
-        {
-          "name": "Variants",
           "status": "pass",
-          "value": "60 designed variants shown"
-        },
-        {
-          "name": "Properties",
-          "status": "warn",
-          "value": "14/16 Figma properties mapped; not exposed: Leading icon, Trailing icon"
-        },
-        {
-          "name": "Nested consistency",
-          "status": "n/a",
-          "value": "no nested components"
-        },
-        {
-          "name": "Interaction",
-          "status": "pass",
-          "value": "native input pattern, tested in the stories"
-        },
-        {
-          "name": "Tokens",
-          "status": "pass",
-          "value": "every colour is a token"
-        },
-        {
-          "name": "Accessibility",
-          "status": "warn",
-          "value": "axe in every Figma mode; 3 accepted known issues; 1 accessible-name note to confirm"
-        },
-        {
-          "name": "Documentation",
-          "status": "warn",
-          "value": "description; 0/14 props described"
-        },
-        {
-          "name": "Open decisions",
-          "status": "warn",
-          "value": "0 open questions; 5 generator notes"
+          "value": "0 open questions; 0 generator notes"
         }
       ]
     },
@@ -1447,6 +1927,66 @@
       ]
     },
     {
+      "component": "ViewportsForm",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / Form"
+        ],
+        "nodeIds": [
+          "1898:622"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "pass",
+          "value": "21/21 nested values match Figma (1 nested layers)"
+        },
+        {
+          "name": "Interaction",
+          "status": "n/a",
+          "value": "visuals only (display component)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "pass",
+          "value": "0 open questions; 0 generator notes"
+        }
+      ]
+    },
+    {
       "component": "InputControl",
       "template": "generic",
       "figma": {
@@ -1623,6 +2163,486 @@
           "name": "Open decisions",
           "status": "warn",
           "value": "0 open questions; 4 generator notes"
+        }
+      ]
+    },
+    {
+      "component": "Divider",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Divider"
+        ],
+        "nodeIds": [
+          "697:1083"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "540 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "6/6 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "n/a",
+          "value": "no nested components"
+        },
+        {
+          "name": "Interaction",
+          "status": "n/a",
+          "value": "visuals only (display component)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/6 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "pass",
+          "value": "0 open questions; 0 generator notes"
+        }
+      ]
+    },
+    {
+      "component": "ViewportsDivider",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / divider"
+        ],
+        "nodeIds": [
+          "1896:183"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "pass",
+          "value": "12/12 nested values match Figma (1 nested layers)"
+        },
+        {
+          "name": "Interaction",
+          "status": "n/a",
+          "value": "visuals only (display component)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "pass",
+          "value": "0 open questions; 0 generator notes"
+        }
+      ]
+    },
+    {
+      "component": "DatePicker",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Date Picker"
+        ],
+        "nodeIds": [
+          "660:4998"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "21 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "4/4 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "n/a",
+          "value": "no nested components"
+        },
+        {
+          "name": "Interaction",
+          "status": "n/a",
+          "value": "visuals only (display component)"
+        },
+        {
+          "name": "Tokens",
+          "status": "warn",
+          "value": "2 raw colour values (not bound to a variable in Figma)"
+        },
+        {
+          "name": "Accessibility",
+          "status": "warn",
+          "value": "axe in every Figma mode; 1 accepted known issue"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/4 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "warn",
+          "value": "0 open questions; 1 generator note"
+        }
+      ]
+    },
+    {
+      "component": "ViewportsDatePicker",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / Date Picker"
+        ],
+        "nodeIds": [
+          "1898:2113"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "pass",
+          "value": "6/6 nested values match Figma (1 nested layers)"
+        },
+        {
+          "name": "Interaction",
+          "status": "n/a",
+          "value": "visuals only (display component)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "pass",
+          "value": "0 open questions; 0 generator notes"
+        }
+      ]
+    },
+    {
+      "component": "Switch",
+      "template": "switch",
+      "figma": {
+        "sets": [
+          "Switch"
+        ],
+        "nodeIds": [
+          "723:3038"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "12 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "5/5 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "n/a",
+          "value": "no nested components"
+        },
+        {
+          "name": "Interaction",
+          "status": "pass",
+          "value": "WAI-ARIA switch pattern, tested in the stories"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "warn",
+          "value": "axe in every Figma mode; 1 accessible-name note to confirm"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/5 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "warn",
+          "value": "0 open questions; 1 generator note"
+        }
+      ]
+    },
+    {
+      "component": "ViewportsSwitch",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / Switch"
+        ],
+        "nodeIds": [
+          "1896:279"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "n/a",
+          "value": "no nested components"
+        },
+        {
+          "name": "Interaction",
+          "status": "pass",
+          "value": "behaviour comes from a nested component (WAI-ARIA switch)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "warn",
+          "value": "0 open questions; 1 generator note"
+        }
+      ]
+    },
+    {
+      "component": "Input",
+      "template": "input",
+      "figma": {
+        "sets": [
+          "Input"
+        ],
+        "nodeIds": [
+          "836:4005"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "60 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "warn",
+          "value": "14/16 Figma properties mapped; not exposed: Leading icon, Trailing icon"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "n/a",
+          "value": "no nested components"
+        },
+        {
+          "name": "Interaction",
+          "status": "pass",
+          "value": "native input pattern, tested in the stories"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "warn",
+          "value": "axe in every Figma mode; 3 accepted known issues; 1 accessible-name note to confirm"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/14 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "warn",
+          "value": "0 open questions; 5 generator notes"
+        }
+      ]
+    },
+    {
+      "component": "ViewportsInput",
+      "template": "generic",
+      "figma": {
+        "sets": [
+          "Viewports / Input"
+        ],
+        "nodeIds": [
+          "1898:3295"
+        ]
+      },
+      "buildingBlock": false,
+      "measures": [
+        {
+          "name": "Visual fidelity",
+          "status": "n/a",
+          "value": "not measured: run ds-sync visual"
+        },
+        {
+          "name": "Variants",
+          "status": "pass",
+          "value": "3 designed variants shown"
+        },
+        {
+          "name": "Properties",
+          "status": "pass",
+          "value": "1/1 Figma properties mapped"
+        },
+        {
+          "name": "Nested consistency",
+          "status": "n/a",
+          "value": "no nested components"
+        },
+        {
+          "name": "Interaction",
+          "status": "pass",
+          "value": "behaviour comes from a nested component (native input)"
+        },
+        {
+          "name": "Tokens",
+          "status": "pass",
+          "value": "every colour is a token"
+        },
+        {
+          "name": "Accessibility",
+          "status": "pass",
+          "value": "axe in every Figma mode"
+        },
+        {
+          "name": "Documentation",
+          "status": "warn",
+          "value": "description; 0/1 props described"
+        },
+        {
+          "name": "Open decisions",
+          "status": "pass",
+          "value": "0 open questions; 0 generator notes"
         }
       ]
     }

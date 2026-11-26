@@ -72,7 +72,7 @@
 }
 
 .root:where([data-state="filled"]) .value {
-  color: var(--interactive-fg-secondary-default);
+  color: var(--interactive-fg-secondary-hover);
 }
 
 .root:where([data-state="read-only"]) .value {
@@ -80,11 +80,11 @@
 }
 
 .root:where([data-state="error"]) .value {
-  color: var(--interactive-fg-secondary-default);
+  color: var(--interactive-fg-secondary-hover);
 }
 
 .root:where([data-state="success"]) .value {
-  color: var(--interactive-fg-secondary-default);
+  color: var(--interactive-fg-secondary-hover);
 }
 
 .root:where([data-state="error"]) .errorIcon {

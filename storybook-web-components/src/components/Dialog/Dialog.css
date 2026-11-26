@@ -33,7 +33,7 @@
   gap: var(--space-inline-lg);
   opacity: 1;
   overflow: hidden;
-  padding: var(--space-stack-lg) var(--space-stack-lg) var(--space-inline-lg) var(--space-stack-lg);
+  padding: var(--space-stack-lg) var(--space-stack-sm) var(--space-inline-lg) var(--space-stack-sm);
 }
 
 .root .headerTextCol {
@@ -51,7 +51,7 @@
 
 .root .title {
   align-self: stretch;
-  color: var(--interactive-fg-secondary-default);
+  color: var(--interactive-fg-secondary-hover);
   display: block;
   flex-shrink: 1;
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -82,7 +82,7 @@
   gap: var(--space-inline-lg);
   opacity: 1;
   overflow: hidden;
-  padding: 0 var(--space-stack-lg) var(--space-stack-lg) var(--space-stack-lg);
+  padding: 0 var(--space-stack-sm) var(--space-stack-lg) var(--space-stack-sm);
 }
 
 .root .dividerBottom {
@@ -107,7 +107,7 @@
   justify-content: flex-end;
   opacity: 1;
   overflow: hidden;
-  padding: 0 var(--space-stack-lg) var(--space-stack-lg) var(--space-stack-lg);
+  padding: 0 var(--space-stack-sm) var(--space-stack-lg) var(--space-stack-sm);
 }
 
 .root .primaryButton {

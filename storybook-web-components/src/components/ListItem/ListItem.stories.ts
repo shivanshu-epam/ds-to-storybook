@@ -7,7 +7,7 @@ import { matrix, row, labelled } from '../../storybook/layout';
 import './ds-list-item';
 
 const meta = {
-  title: "Components/ListItem",
+  title: "Components/List-item/ListItem",
   component: 'ds-list-item',
   args: { type: "default", state: "default", size: "sm", disabled: false, hasLeadingControl: false, hasTrailingControl: false },
   argTypes: {

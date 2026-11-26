@@ -5,16 +5,18 @@
 .root {
   background: transparent;
   box-shadow: none;
-  display: inline-flex;
+  display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   opacity: 1;
+  width: 400px;
 }
 
 .root .interactionWrapper {
   background: transparent;
   box-shadow: none;
   display: flex;
+  flex: 1 1 0;
   flex-direction: row;
   flex-shrink: 1;
   flex-wrap: nowrap;
@@ -25,12 +27,12 @@
 .root .visualContainer {
   border-radius: 8px;
   display: flex;
+  flex: 1 1 0;
   flex-direction: row;
-  flex-shrink: 0;
+  flex-shrink: 1;
   flex-wrap: nowrap;
   opacity: 1;
   overflow: hidden;
-  width: 400px;
 }
 
 .root .leadingIcon {
@@ -59,8 +61,7 @@
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 13px;
   font-weight: 600;
-  line-height: 15.73px;
-  min-height: 16px;
+  line-height: 20px;
   opacity: 1;
   white-space: normal;
 }
@@ -72,8 +73,7 @@
   font-family: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 12px;
   font-weight: 400;
-  line-height: 14.52px;
-  min-height: 15px;
+  line-height: 18px;
   opacity: 1;
   white-space: normal;
 }
@@ -105,12 +105,12 @@
 
 .root:where([data-size="md"]) .visualContainer {
   gap: var(--space-inline-md);
-  padding: var(--space-inset-md) var(--space-inline-lg) var(--space-inset-md) var(--space-inline-lg);
+  padding: var(--space-inset-md) var(--space-stack-sm) var(--space-inset-md) var(--space-stack-sm);
 }
 
 .root:where([data-size="sm"]) .visualContainer {
   gap: var(--space-inline-sm);
-  padding: var(--space-inset-sm) var(--space-inline-md) var(--space-inset-sm) var(--space-inline-md);
+  padding: var(--space-inset-sm) var(--space-stack-sm) var(--space-inset-sm) var(--space-stack-sm);
 }
 
 .root:where([data-sentiment="danger"]) .leadingIcon {

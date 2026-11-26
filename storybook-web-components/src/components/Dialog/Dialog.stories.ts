@@ -9,7 +9,7 @@ import './ds-dialog';
 import type { DsDialog } from './ds-dialog';
 
 const meta = {
-  title: "Components/Dialog",
+  title: "Components/Dialog/Dialog",
   component: 'ds-dialog',
   args: { type: "confirmation", size: "small", state: "open", hasCloseButton: true, hasSecondaryAction: true, hasSubtitle: false, scrollableContent: false, titleValue: "Dialog title", subtitle: "Supporting context text", bodyContent: "Dialog body copy goes here." },
   argTypes: {

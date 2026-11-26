@@ -154,7 +154,7 @@
 .root:where([data-size="sm"]) .label {
   font-size: 11px;
   letter-spacing: 0.03px;
-  line-height: 17px;
+  line-height: 16px;
 }
 
 .root:where([data-size="md"]) .label {
@@ -164,13 +164,13 @@
 
 .root:where([data-size="lg"]) .label {
   font-size: 14px;
-  line-height: 21px;
+  line-height: 20px;
 }
 
 .root:where([data-size="sm"]) .requiredIndicator {
   font-size: 11px;
   letter-spacing: 0.03px;
-  line-height: 17px;
+  line-height: 16px;
 }
 
 .root:where([data-size="md"]) .requiredIndicator {
@@ -180,7 +180,7 @@
 
 .root:where([data-size="lg"]) .requiredIndicator {
   font-size: 14px;
-  line-height: 21px;
+  line-height: 20px;
 }
 
 .root:where([data-type="outlined"]) .container {
@@ -225,7 +225,7 @@
 
 .root:where([data-size="md"]) .value {
   font-size: 14px;
-  line-height: 21px;
+  line-height: 20px;
 }
 
 .root:where([data-size="lg"]) .value {
@@ -316,13 +316,13 @@
 
 .root:where([data-size="sm"]) .counterText {
   font-size: 11px;
-  line-height: 17px;
+  line-height: 16px;
   width: 30px;
 }
 
 .root:where([data-size="md"]) .counterText {
   font-size: 11px;
-  line-height: 17px;
+  line-height: 16px;
   width: 30px;
 }
 
@@ -366,12 +366,12 @@
 
 .root:where([data-type="outlined"][data-size="sm"]) .helperText {
   font-size: 11px;
-  line-height: 17px;
+  line-height: 16px;
 }
 
 .root:where([data-type="outlined"][data-size="md"]) .helperText {
   font-size: 11px;
-  line-height: 17px;
+  line-height: 16px;
 }
 
 .root:where([data-type="outlined"][data-size="lg"]) .helperText {
@@ -381,12 +381,12 @@
 
 .root:where([data-type="filled"][data-size="sm"]) .helperText {
   font-size: 11px;
-  line-height: 17px;
+  line-height: 16px;
 }
 
 .root:where([data-type="filled"][data-size="md"]) .helperText {
   font-size: 11px;
-  line-height: 17px;
+  line-height: 16px;
 }
 
 .root:where([data-type="filled"][data-size="lg"]) .helperText {
@@ -396,12 +396,12 @@
 
 .root:where([data-type="borderless"][data-size="sm"]) .helperText {
   font-size: 11px;
-  line-height: 17px;
+  line-height: 16px;
 }
 
 .root:where([data-type="borderless"][data-size="md"]) .helperText {
   font-size: 11px;
-  line-height: 17px;
+  line-height: 16px;
 }
 
 .root:where([data-type="borderless"][data-size="lg"]) .helperText {

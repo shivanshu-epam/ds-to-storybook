@@ -11,7 +11,7 @@ const STATE_ARGS: Record<string, Partial<CheckboxProps>> = { 'Enabled': {}, 'Hov
 const FIELD_STATE_ARGS: Record<string, Partial<CheckboxProps>> = { 'Enabled': {}, 'Focus': { 'data-force-state': 'focus' }, 'Invalid': { error: 'Error message goes here' }, 'Warning': { warning: 'Warning message goes here' }, 'Read-Only': { readOnly: true, defaultChecked: true }, 'Disabled': { disabled: true } };
 
 const meta = {
-  title: "Components/Checkbox",
+  title: "Components/Checkbox/Checkbox",
   component: Checkbox,
   args: { size: 'sm', label: 'Checkbox label', heading: 'Label', onChange: fn() },
   argTypes: {

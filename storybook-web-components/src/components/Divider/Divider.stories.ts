@@ -6,7 +6,7 @@ import { matrix, row, labelled } from '../../storybook/layout';
 import './ds-divider';
 
 const meta = {
-  title: "Components/Divider",
+  title: "Components/Divider/Divider",
   component: 'ds-divider',
   args: { orientation: "horizontal", styleVariant: "solid", size: "sm", color: "light", state: "default", disabled: false },
   argTypes: {

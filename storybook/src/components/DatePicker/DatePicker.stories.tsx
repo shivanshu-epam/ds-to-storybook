@@ -6,7 +6,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { DatePicker, type DatePickerProps } from './DatePicker';
 
 const meta = {
-  title: "Components/DatePicker",
+  title: 'Components/Date Picker/DatePicker',
   component: DatePicker,
   argTypes: {
     type: { control: 'inline-radio', options: ['single', 'range', 'date-time'], description: 'Figma: Type' },

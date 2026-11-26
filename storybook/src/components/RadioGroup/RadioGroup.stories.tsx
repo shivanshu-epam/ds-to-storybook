@@ -64,13 +64,13 @@ export const FigmaVariants: Story = {
     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 24 }}>
       {[
         { id: '529:489', name: 'State=Enabled, Horizontal=false', width: 280, props: { state: 'enabled', horizontal: false } as Partial<RadioGroupProps> },
-        { id: '529:516', name: 'State=Enabled, Horizontal=true', width: 960, props: { state: 'enabled', horizontal: true } as Partial<RadioGroupProps> },
+        { id: '529:516', name: 'State=Enabled, Horizontal=true', width: 1000, props: { state: 'enabled', horizontal: true } as Partial<RadioGroupProps> },
         { id: '529:543', name: 'State=Read-Only, Horizontal=false', width: 280, props: { state: 'read-only', horizontal: false } as Partial<RadioGroupProps> },
-        { id: '529:576', name: 'State=Read-Only, Horizontal=true', width: 960, props: { state: 'read-only', horizontal: true } as Partial<RadioGroupProps> },
+        { id: '529:576', name: 'State=Read-Only, Horizontal=true', width: 1000, props: { state: 'read-only', horizontal: true } as Partial<RadioGroupProps> },
         { id: '529:609', name: 'State=Invalid, Horizontal=false', width: 280, props: { state: 'invalid', horizontal: false } as Partial<RadioGroupProps> },
-        { id: '529:644', name: 'State=Invalid, Horizontal=true', width: 1141, props: { state: 'invalid', horizontal: true } as Partial<RadioGroupProps> },
+        { id: '529:644', name: 'State=Invalid, Horizontal=true', width: 1181, props: { state: 'invalid', horizontal: true } as Partial<RadioGroupProps> },
         { id: '529:679', name: 'State=Warning, Horizontal=false', width: 280, props: { state: 'warning', horizontal: false } as Partial<RadioGroupProps> },
-        { id: '529:714', name: 'State=Warning, Horizontal=true', width: 1178, props: { state: 'warning', horizontal: true } as Partial<RadioGroupProps> },
+        { id: '529:714', name: 'State=Warning, Horizontal=true', width: 1218, props: { state: 'warning', horizontal: true } as Partial<RadioGroupProps> },
       ].map((v) => (
         <div key={v.id} data-figma-variant={v.id} title={v.name} style={{ display: 'flex', width: v.width }}>
           <RadioGroup {...args} {...v.props} />

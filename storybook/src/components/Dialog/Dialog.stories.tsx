@@ -8,7 +8,7 @@ import { Labelled, Matrix, Row } from '../../storybook/layout';
 import { Dialog, type DialogProps } from './Dialog';
 
 const meta = {
-  title: "Components/Dialog",
+  title: 'Components/Dialog/Dialog',
   component: Dialog,
   // Variant stories show open, non-modal dialogs in the page.
   args: { open: true, modal: false, onOpenChange: fn() },

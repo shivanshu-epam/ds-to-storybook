@@ -5,12 +5,13 @@
 .root {
   background: transparent;
   box-shadow: none;
-  display: inline-flex;
+  display: flex;
   flex-wrap: nowrap;
 }
 
 .root .line {
   display: block;
+  flex-shrink: 1;
 }
 
 .root:where([data-orientation="horizontal"]) {
@@ -26,11 +27,7 @@
 }
 
 .root:where([data-orientation="horizontal"]) .line {
-  flex-shrink: 0;
-}
-
-.root:where([data-orientation="vertical"]) .line {
-  flex-shrink: 1;
+  flex: 1 1 0;
 }
 
 .root:where([data-color="light"]) .line {
@@ -67,6 +64,14 @@
 
 .root:where([data-color="info"]) .line {
   opacity: 1;
+}
+
+.root:where([data-orientation="horizontal"][data-size="sm"]) {
+  width: 24px;
+}
+
+.root:where([data-orientation="horizontal"][data-size="md"]) {
+  width: 48px;
 }
 
 .root:where([data-style="solid"][data-color="light"]) .line {
@@ -190,11 +195,17 @@
 .root:where([data-orientation="vertical"][data-style="dotted"]) .line {
   margin: 0 -0.5px 0 -0.5px;
   padding: 0 0.5px 0 0.5px;
+  width: 2px;
 }
 
 .root:where([data-orientation="vertical"][data-style="dash"]) .line {
   margin: 0 -0.5px 0 -0.5px;
   padding: 0 0.5px 0 0.5px;
+  width: 2px;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"]) .line {
+  width: 1px;
 }
 
 .root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"][data-color="light"]) .line {
@@ -631,62 +642,50 @@
 
 .root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"]) .line {
   height: 1px;
-  width: 24px;
 }
 
 .root:where([data-orientation="horizontal"][data-style="solid"][data-size="md"]) .line {
   height: 1px;
-  width: 48px;
 }
 
 .root:where([data-orientation="horizontal"][data-style="dotted"][data-size="sm"]) .line {
   height: 2px;
-  width: 24px;
 }
 
 .root:where([data-orientation="horizontal"][data-style="dotted"][data-size="md"]) .line {
   height: 2px;
-  width: 48px;
 }
 
 .root:where([data-orientation="horizontal"][data-style="dash"][data-size="sm"]) .line {
   height: 2px;
-  width: 24px;
 }
 
 .root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"]) .line {
   height: 2px;
-  width: 48px;
 }
 
 .root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"]) .line {
   height: 24px;
-  width: 1px;
 }
 
 .root:where([data-orientation="vertical"][data-style="solid"][data-size="md"]) .line {
   height: 48px;
-  width: 1px;
 }
 
 .root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"]) .line {
   height: 24px;
-  width: 2px;
 }
 
 .root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"]) .line {
   height: 48px;
-  width: 2px;
 }
 
 .root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"]) .line {
   height: 24px;
-  width: 2px;
 }
 
 .root:where([data-orientation="vertical"][data-style="dash"][data-size="md"]) .line {
   height: 48px;
-  width: 2px;
 }
 
 .root:where([data-disabled]) {
@@ -788,21 +787,33 @@
 .root:where([data-orientation="vertical"][data-style="dotted"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   margin: 0 -1px 0 -1px;
   padding: 0 1px 0 1px;
+  width: 4px;
 }
 
 .root:where([data-orientation="vertical"][data-style="dotted"][data-state="selected"]) .line {
   margin: 0 -1px 0 -1px;
   padding: 0 1px 0 1px;
+  width: 4px;
 }
 
 .root:where([data-orientation="vertical"][data-style="dash"]:is(:focus-visible, [data-force-state~="focus"])) .line {
   margin: 0 -1px 0 -1px;
   padding: 0 1px 0 1px;
+  width: 4px;
 }
 
 .root:where([data-orientation="vertical"][data-style="dash"][data-state="selected"]) .line {
   margin: 0 -1px 0 -1px;
   padding: 0 1px 0 1px;
+  width: 4px;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"]:is(:focus-visible, [data-force-state~="focus"])) .line {
+  width: 2px;
+}
+
+.root:where([data-orientation="vertical"][data-style="solid"][data-state="selected"]) .line {
+  width: 2px;
 }
 
 .root:where([data-orientation="horizontal"][data-style="solid"][data-size="sm"]:is(:focus-visible, [data-force-state~="focus"])) .line {
@@ -851,52 +862,4 @@
 
 .root:where([data-orientation="horizontal"][data-style="dash"][data-size="md"][data-state="selected"]) .line {
   height: 4px;
-}
-
-.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"]:is(:focus-visible, [data-force-state~="focus"])) .line {
-  width: 2px;
-}
-
-.root:where([data-orientation="vertical"][data-style="solid"][data-size="sm"][data-state="selected"]) .line {
-  width: 2px;
-}
-
-.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"]:is(:focus-visible, [data-force-state~="focus"])) .line {
-  width: 2px;
-}
-
-.root:where([data-orientation="vertical"][data-style="solid"][data-size="md"][data-state="selected"]) .line {
-  width: 2px;
-}
-
-.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"]:is(:focus-visible, [data-force-state~="focus"])) .line {
-  width: 4px;
-}
-
-.root:where([data-orientation="vertical"][data-style="dotted"][data-size="sm"][data-state="selected"]) .line {
-  width: 4px;
-}
-
-.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"]:is(:focus-visible, [data-force-state~="focus"])) .line {
-  width: 4px;
-}
-
-.root:where([data-orientation="vertical"][data-style="dotted"][data-size="md"][data-state="selected"]) .line {
-  width: 4px;
-}
-
-.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"]:is(:focus-visible, [data-force-state~="focus"])) .line {
-  width: 4px;
-}
-
-.root:where([data-orientation="vertical"][data-style="dash"][data-size="sm"][data-state="selected"]) .line {
-  width: 4px;
-}
-
-.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"]:is(:focus-visible, [data-force-state~="focus"])) .line {
-  width: 4px;
-}
-
-.root:where([data-orientation="vertical"][data-style="dash"][data-size="md"][data-state="selected"]) .line {
-  width: 4px;
 }

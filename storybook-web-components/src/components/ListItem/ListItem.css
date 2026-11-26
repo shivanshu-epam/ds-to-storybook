@@ -178,20 +178,17 @@
 
 .root:where([data-size="sm"]) .headline {
   font-size: 12px;
-  line-height: 14.52px;
-  min-height: 15px;
+  line-height: 18px;
 }
 
 .root:where([data-size="md"]) .headline {
   font-size: 13px;
-  line-height: 15.73px;
-  min-height: 16px;
+  line-height: 20px;
 }
 
 .root:where([data-size="lg"]) .headline {
   font-size: 14px;
-  line-height: 16.94px;
-  min-height: 17px;
+  line-height: 20px;
 }
 
 .root:where([data-type="default"]) .trailingControl {
@@ -288,41 +285,23 @@
   display: none;
 }
 
-.root:where([data-type="file"][data-size="md"]) .supportingText {
-  min-height: 15px;
-}
-
-.root:where([data-type="file"][data-size="lg"]) .supportingText {
-  min-height: 16px;
-}
-
-.root:where([data-type="setting"][data-size="md"]) .supportingText {
-  min-height: 15px;
-}
-
-.root:where([data-type="setting"][data-size="lg"]) .supportingText {
-  min-height: 16px;
-}
-
 .root:where([data-type="file"]) .metadata {
   color: var(--interactive-fg-readonly);
 }
 
 .root:where([data-type="file"][data-size="sm"]) .metadata {
   font-size: 11px;
-  line-height: 13.31px;
+  line-height: 16px;
 }
 
 .root:where([data-type="file"][data-size="md"]) .metadata {
   font-size: 12px;
-  line-height: 14.52px;
-  min-height: 15px;
+  line-height: 18px;
 }
 
 .root:where([data-type="file"][data-size="lg"]) .metadata {
   font-size: 13px;
-  line-height: 15.73px;
-  min-height: 16px;
+  line-height: 20px;
 }
 
 .root:where([data-type="menu"][data-size="sm"]) .trailingIcon {
@@ -387,32 +366,32 @@
 
 .root:where([data-type="file"][data-size="sm"]) .supportingText {
   font-size: 11px;
-  line-height: 13.31px;
+  line-height: 16px;
 }
 
 .root:where([data-type="file"][data-size="md"]) .supportingText {
   font-size: 12px;
-  line-height: 14.52px;
+  line-height: 18px;
 }
 
 .root:where([data-type="file"][data-size="lg"]) .supportingText {
   font-size: 13px;
-  line-height: 15.73px;
+  line-height: 20px;
 }
 
 .root:where([data-type="setting"][data-size="sm"]) .supportingText {
   font-size: 11px;
-  line-height: 13.31px;
+  line-height: 16px;
 }
 
 .root:where([data-type="setting"][data-size="md"]) .supportingText {
   font-size: 12px;
-  line-height: 14.52px;
+  line-height: 18px;
 }
 
 .root:where([data-type="setting"][data-size="lg"]) .supportingText {
   font-size: 13px;
-  line-height: 15.73px;
+  line-height: 20px;
 }
 
 .root:where(:is(:hover:not([data-disabled]), [data-force-state~="hover"])) .visualContainer {

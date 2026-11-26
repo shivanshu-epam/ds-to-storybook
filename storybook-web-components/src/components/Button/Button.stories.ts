@@ -8,7 +8,7 @@ import { labelled, matrix, row, shadowOf } from '../../storybook/layout';
 import './ds-button';
 
 const meta = {
-  title: "Components/Button",
+  title: "Components/Button/Button",
   component: 'ds-button',
   args: { variant: "primary", size: "sm", radius: "default", disabled: false, label: "Button", onClick: fn() },
   argTypes: {

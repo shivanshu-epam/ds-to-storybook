@@ -11,7 +11,7 @@ const ROW_VALUES: Record<string, ButtonProps['variant']> = { 'Primary': 'primary
 const STATE_ARGS: Record<string, Partial<ButtonProps>> = { 'Default': {}, 'Hover': { 'data-force-state': 'hover' }, 'Pressed': { 'data-force-state': 'pressed' }, 'Focused': { 'data-force-state': 'focus' }, 'Disabled': { disabled: true } };
 
 const meta = {
-  title: "Components/Button",
+  title: "Components/Button/Button",
   component: Button,
   args: { variant: 'primary', size: 'sm', radius: 'default', children: 'Button', onClick: fn() },
   argTypes: {
